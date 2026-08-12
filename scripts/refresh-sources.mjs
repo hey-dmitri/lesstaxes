@@ -127,7 +127,6 @@ for (const source of REFRESHABLE) {
 }
 
 for (const source of MANUAL) {
-  const path = resolve(SRC, source.file);
   try {
     const upstream = await download(source.url, { userAgent: source.userAgent });
     const marker = resolve(SRC, `.${source.file}.upstream-sha`);
