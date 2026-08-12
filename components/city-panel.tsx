@@ -72,7 +72,7 @@ export function CityPanel({ title, state, filingStatus, onChange, salaryLabel, s
 
   return (
     <section
-      className="flex min-h-0 flex-col rounded-lg border"
+      className="flex flex-col rounded-lg border lg:min-h-0"
       style={{ borderColor: 'var(--rule-strong)', background: 'var(--surface)' }}
     >
       <h2
@@ -82,7 +82,7 @@ export function CityPanel({ title, state, filingStatus, onChange, salaryLabel, s
         {title}
       </h2>
 
-      <div className="flex min-h-0 flex-1 flex-col gap-3.5 overflow-y-auto px-4 py-3.5">
+      <div className="flex flex-col gap-3.5 px-4 py-3.5 lg:min-h-0 lg:flex-1 lg:overflow-y-auto">
         <LocationPicker
           id={`location-${title.replace(/\s+/g, '-').toLowerCase()}`}
           label="City or area"

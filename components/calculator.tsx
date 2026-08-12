@@ -129,7 +129,7 @@ export function Calculator({ initial }: CalculatorProps) {
   }
 
   return (
-    <main className="flex min-h-0 flex-1 flex-col gap-3">
+    <main id="main" className="flex flex-1 flex-col gap-3 lg:h-0 lg:min-h-0 lg:overflow-hidden">
       {/* Household — one compact bar, since it is two fields that apply to both cities. */}
       <section
         className="flex shrink-0 flex-wrap items-end gap-x-5 gap-y-3 rounded-lg border px-4 py-3"
@@ -175,7 +175,7 @@ export function Calculator({ initial }: CalculatorProps) {
         />
 
         <section
-          className="flex min-h-0 flex-col rounded-lg border"
+          className="flex flex-col rounded-lg border lg:min-h-0"
           style={{ borderColor: 'var(--rule-strong)', background: 'var(--surface)' }}
         >
           <h2
@@ -199,7 +199,7 @@ export function Calculator({ initial }: CalculatorProps) {
               }
             />
           ) : (
-            <div className="flex min-h-0 flex-1 flex-col items-center justify-center gap-3 px-6 py-8 text-center">
+            <div className="flex flex-col items-center justify-center gap-3 px-6 py-8 text-center lg:min-h-0 lg:flex-1">
               {sameCity ? (
                 <p className="text-sm" style={{ color: 'var(--bad)' }}>
                   Both cities are the same. Pick a different destination.

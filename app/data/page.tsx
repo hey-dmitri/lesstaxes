@@ -1,0 +1,91 @@
+import type { Metadata } from 'next';
+
+import { DatasetBrowser } from '@/components/dataset-browser';
+import { DATASET_SOURCES } from '@/lib/dataset-rows';
+import { PageShell, Prose } from '@/components/page-shell';
+
+export const metadata: Metadata = {
+  title: 'The data — LessTaxes',
+  description:
+    'Every figure the calculator uses, for all 438 US locations, with the federal source and vintage of each.',
+};
+
+export default function DataPage() {
+  return (
+    <PageShell
+      title="The data"
+      standfirst="Every number the calculator uses, for all 438 locations. Look up somewhere you know and check it against your own experience — that is the point of this page."
+    >
+      <DatasetBrowser />
+
+      <Prose>
+        <h2>Where each number comes from</h2>
+        <div className="overflow-x-auto rounded border" style={{ borderColor: 'var(--rule)' }}>
+          <table className="w-full border-collapse text-sm">
+            <thead>
+              <tr style={{ borderBottom: '1px solid var(--rule-strong)' }}>
+                <th scope="col" className="px-3 py-2 text-left text-[0.65rem] font-semibold uppercase tracking-wider" style={{ color: 'var(--muted)' }}>Data</th>
+                <th scope="col" className="px-3 py-2 text-left text-[0.65rem] font-semibold uppercase tracking-wider" style={{ color: 'var(--muted)' }}>Source</th>
+                <th scope="col" className="px-3 py-2 text-left text-[0.65rem] font-semibold uppercase tracking-wider" style={{ color: 'var(--muted)' }}>Licence</th>
+              </tr>
+            </thead>
+            <tbody>
+              {DATASET_SOURCES.map((s) => (
+                <tr key={s.what} style={{ borderBottom: '1px solid var(--rule)' }}>
+                  <td className="px-3 py-1.5">{s.what}</td>
+                  <td className="px-3 py-1.5">{s.source}</td>
+                  <td className="px-3 py-1.5" style={{ color: 'var(--muted)' }}>{s.licence}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        <p>
+          Total ongoing cost of this data: <strong>nothing</strong>. There are no paid feeds and no
+          API calls when you use the site — every figure is committed to the repository and bundled
+          into the page. The raw source files are committed too, so the whole dataset can be rebuilt
+          offline and can never change underneath a link someone already shared.
+        </p>
+
+        <h2>What this data cannot tell you</h2>
+        <ul>
+          <li>
+            <strong>Local income tax outside New York City uses state averages.</strong>{' '}
+            Philadelphia, Columbus, Detroit, Louisville, Kansas City and Portland all levy more than
+            their state average, so those cities are understated. A documented average is honest; a
+            remembered city rate would not be.
+          </li>
+          <li>
+            <strong>Buffalo, Rochester, Syracuse and Albany carry no local income tax</strong>{' '}
+            — correctly. New York&rsquo;s statewide average is generated entirely by New York City and
+            Yonkers, and applying it upstate would invent a tax that does not exist.
+          </li>
+          <li>
+            <strong>Rural entries use statewide price levels.</strong> No federal agency publishes a
+            rural-only price index, so &ldquo;Rest of Texas&rdquo; blends Texas cities back in and may
+            overstate rural costs.
+          </li>
+          <li>
+            <strong>Sales tax local rates are state averages.</strong> Chicago&rsquo;s actual 10.25% is
+            above the Illinois average used here.
+          </li>
+          <li>
+            <strong>Home and renters insurance are missing entirely.</strong> No per-state dataset is
+            loaded yet, so ownership costs are understated everywhere and badly in Florida and
+            Louisiana.
+          </li>
+          <li>
+            <strong>Smaller towns and US territories are not covered.</strong> The federal price
+            index only exists for metropolitan areas; territories have separate tax systems
+            altogether. Rural fallbacks cover the former.
+          </li>
+          <li>
+            <strong>The data lags.</strong> Prices and housing are 2024 figures, the most recent
+            published. Tax rules are for 2026.
+          </li>
+        </ul>
+      </Prose>
+    </PageShell>
+  );
+}

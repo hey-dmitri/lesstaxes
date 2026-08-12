@@ -128,8 +128,9 @@ card before you even send it.
 
 **Build:** the `/methodology` page documenting every source and assumption, and the `/data` page —
 a searchable browser over every figure in the dataset, adapted from the Stage 2 review page
-(PROJECT.md D26). Full keyboard and screen-reader pass. Phone layout. Performance tuning,
-including splitting the dataset so only the two selected metros are downloaded.
+(PROJECT.md D26). Full keyboard and screen-reader pass. Phone layout. Performance measured — the
+dataset split was investigated and rejected on the numbers (see PROJECT.md
+section 10).
 
 **You'll see:** the finished site, checked properly on your phone.
 

@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from 'next';
+import Link from 'next/link';
 
 import './globals.css';
 import { ThemeToggle } from '@/components/theme-toggle';
@@ -65,8 +66,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         safety valve for short windows, rather than pushing the answer below
         the fold where it stops being an answer.
       */}
-      <body className="lg:h-dvh lg:overflow-hidden">
-        <div className="mx-auto flex h-full w-full max-w-[112rem] flex-col px-4 py-3 sm:px-6">
+      <body>
+        {/* Keyboard users land here first and can jump past the header. */}
+        <a
+          href="#main"
+          className="sr-only focus:not-sr-only focus:absolute focus:left-3 focus:top-3 focus:z-50 focus:rounded focus:px-3 focus:py-2 focus:text-sm focus:font-semibold"
+          style={{ background: 'var(--accent)', color: '#ffffff' }}
+        >
+          Skip to the calculator
+        </a>
+        <div className="mx-auto flex min-h-dvh w-full max-w-[112rem] flex-col px-4 py-3 sm:px-6">
           <header className="flex shrink-0 items-center justify-between gap-4 pb-3">
             <div className="flex items-baseline gap-3">
               <span
@@ -88,12 +97,22 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           {children}
 
           <footer
-            className="shrink-0 pt-2 text-[0.68rem] leading-snug"
+            className="flex shrink-0 flex-wrap items-center gap-x-4 gap-y-1 pt-2 text-[0.68rem] leading-snug"
             style={{ color: 'var(--muted)' }}
           >
-            Estimates from public federal data — Census, BEA, BLS, IRS and state revenue
-            departments. <strong>Not financial, tax or legal advice.</strong> No accounts, no
-            tracking, nothing stored.
+            <nav className="flex gap-4" aria-label="About this site">
+              <Link href="/methodology" className="underline underline-offset-2" style={{ color: 'var(--accent)' }}>
+                How it works
+              </Link>
+              <Link href="/data" className="underline underline-offset-2" style={{ color: 'var(--accent)' }}>
+                The data
+              </Link>
+            </nav>
+            <span className="flex-1">
+              Estimates from public federal data — Census, BEA, BLS, IRS and state revenue
+              departments. <strong>Not financial, tax or legal advice.</strong> No accounts, no
+              tracking, nothing stored.
+            </span>
           </footer>
         </div>
       </body>

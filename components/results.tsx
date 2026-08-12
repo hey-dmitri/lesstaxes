@@ -242,7 +242,7 @@ export function Results({
   const max = Math.max(...result.breakdown.map((b) => Math.abs(b.delta)), 1);
 
   return (
-    <div aria-live="polite" className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto px-4 py-3.5">
+    <div aria-live="polite" className="flex flex-col gap-3 px-4 py-3.5 lg:min-h-0 lg:flex-1 lg:overflow-y-auto">
       <style>{`@keyframes fade-rise { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }`}</style>
 
       <Headline result={result} animate={animate} />

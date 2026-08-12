@@ -12,7 +12,7 @@ Free, no accounts, no tracking, no database. All figures come from public federa
 
 ## Status
 
-**Stage 7 of 10 — share card and rich link previews.**
+**Stage 8 of 10 — methodology, data browser, accessibility, performance.**
 
 | Component | State |
 |---|---|
@@ -30,7 +30,9 @@ Free, no accounts, no tracking, no database. All figures come from public federa
 | Results: headline, breakdown, break-even, reveal | ✅ |
 | Share links — URL-encoded, dataset version pinned | ✅ |
 | Share card PNG + rich link previews | ✅ |
-| **Stage 8 — methodology, /data page, accessibility, mobile, performance** | ⬜ next |
+| `/methodology` and public `/data` browser | ✅ |
+| Accessibility, mobile layout, performance measured | ✅ |
+| **Stage 9 — quarterly data refresh automation** | ⬜ next |
 
 **577 tests**, including 24 golden values reproduced exactly from the IRS rate tables.
 Total data cost: **$0**. No paid feeds, no runtime API calls.

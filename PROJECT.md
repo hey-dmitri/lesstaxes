@@ -440,7 +440,7 @@ Rendered in the user's current theme. Filename should be descriptive, e.g.
 | Offline | Should work after first load |
 | Accessibility | Keyboard navigable, screen-reader labelled, WCAG AA contrast in both themes, never colour-alone for meaning |
 | Motion | All animation gated behind `prefers-reduced-motion` |
-| Payload | Dataset must be small enough not to hurt first load — split by metro if needed so only the two selected metros are fetched |
+| Payload | **Measured at Stage 8: 238 KB gzipped on first load, of which the datasets are only 49 KB (20%) and the React/Next runtime is 189 KB (80%).** The planned per-metro split was therefore NOT done: it would save at most ~40 KB while forcing the engine from synchronous to asynchronous, which is a bad trade. JSON compresses far better than the assumption behind that plan item allowed for. County records — 15 KB gzipped and never read by the engine — are split into a separate file and correctly excluded from the client. |
 
 ---
 
