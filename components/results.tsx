@@ -228,7 +228,15 @@ function DetailTable({ result }: { result: ComparisonResult }) {
   );
 }
 
-export function Results({ result, animate }: { result: ComparisonResult; animate: boolean }) {
+export function Results({
+  result,
+  animate,
+  share,
+}: {
+  result: ComparisonResult;
+  animate: boolean;
+  share?: React.ReactNode;
+}) {
   const [showDetail, setShowDetail] = useState(false);
   const to = metro(result.destination.metroId).shortName;
   const max = Math.max(...result.breakdown.map((b) => Math.abs(b.delta)), 1);
@@ -258,7 +266,8 @@ export function Results({ result, animate }: { result: ComparisonResult; animate
         </p>
       </div>
 
-      <div className="mt-auto border-t pt-2.5" style={{ borderColor: 'var(--rule)' }}>
+      <div className="mt-auto flex flex-col gap-2.5 border-t pt-2.5" style={{ borderColor: 'var(--rule)' }}>
+        {share}
         <button
           type="button"
           onClick={() => setShowDetail((v) => !v)}

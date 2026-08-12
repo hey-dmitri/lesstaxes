@@ -12,7 +12,7 @@ Free, no accounts, no tracking, no database. All figures come from public federa
 
 ## Status
 
-**Stage 5 of 10 — results and reveal.** The product now answers the question.
+**Stage 6 of 10 — share links.** The product works end to end.
 
 | Component | State |
 |---|---|
@@ -28,9 +28,10 @@ Free, no accounts, no tracking, no database. All figures come from public federa
 | Leftover, city/salary decomposition, break-even solver | ✅ |
 | Input form — pickers, housing, cars, theme | ✅ |
 | Results: headline, breakdown, break-even, reveal | ✅ |
-| **Stage 6 — share links** | ⬜ next |
+| Share links — URL-encoded, dataset version pinned | ✅ |
+| **Stage 7 — share card and rich link previews** | ⬜ next |
 
-**542 tests**, including 24 golden values reproduced exactly from the IRS rate tables.
+**566 tests**, including 24 golden values reproduced exactly from the IRS rate tables.
 Total data cost: **$0**. No paid feeds, no runtime API calls.
 
 ### Rebuilding the dataset
