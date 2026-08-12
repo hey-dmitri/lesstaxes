@@ -7,12 +7,14 @@
  */
 
 import {
+  breakEvenSentence,
   compare,
   formatPercent,
   formatUSD,
   localJurisdiction,
   localTaxOptions,
   metro,
+  percentIsMeaningful,
   type ComparisonResult,
 } from '@/engine';
 import type { SharedCity, SharedComparison } from '@/lib/share-link';
@@ -61,12 +63,18 @@ export function describeComparison(result: ComparisonResult): ComparisonSummary 
       .replace(/[^a-z0-9]+/g, '-')
       .replace(/^-+|-+$/g, '');
 
+  // The percentage is measured against leftover money in the origin city, so
+  // it says nothing when there is none. The monthly figure always holds.
+  const spare = percentIsMeaningful(result)
+    ? `${formatPercent(Math.abs(result.deltaPct))} ${better ? 'more' : 'less'} spare cash, `
+    : '';
+  const breakEven = breakEvenSentence(result);
+
   return {
     title: `${from} → ${to}: ${amount} a year ${better ? 'better off' : 'worse off'}`,
     description:
-      `${formatPercent(Math.abs(result.deltaPct))} ${better ? 'more' : 'less'} spare cash, ` +
-      `${formatUSD(Math.abs(result.deltaMonthly))} a month. ` +
-      `Break-even salary in ${to}: ${formatUSD(result.breakEvenSalary)}. ` +
+      `${spare}${formatUSD(Math.abs(result.deltaMonthly))} a month. ` +
+      (breakEven ? `${breakEven} ` : '') +
       `Income tax, property tax, sales tax, housing, cars and cost of living, from public federal data.`,
     slug: `${slugify(from)}-to-${slugify(to)}`,
   };

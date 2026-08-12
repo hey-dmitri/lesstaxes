@@ -11,6 +11,8 @@ import { describeComparison, jurisdictionsFor } from '@/lib/shared-comparison';
 import {
   compare,
   DATASET_VERSION,
+  defaultCarCount,
+  defaultRent,
   formatUSD,
   type FilingStatus,
   type Household,
@@ -41,7 +43,7 @@ export function Calculator({ initial }: CalculatorProps) {
   const [origin, setOrigin] = useState<CityFormState>(() =>
     initial
       ? { ...initial.origin }
-      : resetCityForLocation(DEFAULT_ORIGIN, DEFAULT_SALARY, 'single', 'rent'),
+      : resetCityForLocation(DEFAULT_ORIGIN, DEFAULT_SALARY, 'single', 'rent', 0),
   );
   const [destination, setDestination] = useState<CityFormState>(() =>
     initial
@@ -74,18 +76,57 @@ export function Calculator({ initial }: CalculatorProps) {
     }
   }, [filingStatus, children, origin, destination]);
 
-  function changeFilingStatus(next: FilingStatus) {
-    setFilingStatus(next);
+  /**
+   * Re-derive the fields that depend on the household, but only where the user
+   * has not overridden them. Cars and rent both follow from filing status and
+   * children — a second adult adds a car, a child adds a bedroom — so leaving
+   * them stale after a change would quietly answer the wrong question. Anything
+   * typed by hand is left exactly as typed.
+   */
+  function applyHousehold(nextStatus: FilingStatus, nextChildren: number) {
+    setFilingStatus(nextStatus);
+    setChildren(nextChildren);
+
     for (const [state, setState] of [
       [origin, setOrigin],
       [destination, setDestination],
     ] as const) {
-      const wasSuggested =
-        state.cars === resetCityForLocation(state.metroId, 0, filingStatus, 'rent').cars;
-      if (wasSuggested) {
-        setState({ ...state, cars: resetCityForLocation(state.metroId, 0, next, 'rent').cars });
+      const before = { filingStatus, children };
+      const after = { filingStatus: nextStatus, children: nextChildren };
+      const patch: Partial<CityFormState> = {};
+
+      if (state.cars === defaultCarCount(state.metroId, filingStatus)) {
+        patch.cars = defaultCarCount(state.metroId, nextStatus);
       }
+      if (
+        state.housing.tenure === 'rent' &&
+        state.housing.monthlyRent === defaultRent(state.metroId, state.grossSalary, before)
+      ) {
+        patch.housing = {
+          tenure: 'rent',
+          monthlyRent: defaultRent(state.metroId, state.grossSalary, after),
+        };
+      }
+      if (Object.keys(patch).length > 0) setState({ ...state, ...patch });
     }
+  }
+
+  /** Same idea for salary: an untouched rent should track what was entered. */
+  function changeSalary(state: CityFormState, setState: (s: CityFormState) => void) {
+    return (grossSalary: number) => {
+      const household = { filingStatus, children };
+      const patch: Partial<CityFormState> = { grossSalary };
+      if (
+        state.housing.tenure === 'rent' &&
+        state.housing.monthlyRent === defaultRent(state.metroId, state.grossSalary, household)
+      ) {
+        patch.housing = {
+          tenure: 'rent',
+          monthlyRent: defaultRent(state.metroId, grossSalary, household),
+        };
+      }
+      setState({ ...state, ...patch });
+    };
   }
 
   const household: Household = { filingStatus, children };
@@ -139,12 +180,17 @@ export function Calculator({ initial }: CalculatorProps) {
           <SelectField
             label="Filing status"
             value={filingStatus}
-            onChange={changeFilingStatus}
+            onChange={(next) => applyHousehold(next, children)}
             options={FILING_OPTIONS}
           />
         </div>
         <div className="w-32">
-          <CountField label="Children" value={children} onChange={setChildren} max={10} />
+          <CountField
+            label="Children"
+            value={children}
+            onChange={(next) => applyHousehold(filingStatus, next)}
+            max={10}
+          />
         </div>
         <p className="flex-1 text-[0.68rem] leading-snug" style={{ color: 'var(--muted)' }}>
           These apply to both cities. Filing status alone can swing the answer by thousands, so it
@@ -157,7 +203,9 @@ export function Calculator({ initial }: CalculatorProps) {
           title="Where you live now"
           state={origin}
           filingStatus={filingStatus}
+          childCount={children}
           onChange={setOrigin}
+          onSalaryChange={changeSalary(origin, setOrigin)}
           salaryLabel="Current household salary"
           salaryHint="Total household wages before tax"
         />
@@ -165,7 +213,9 @@ export function Calculator({ initial }: CalculatorProps) {
           title="Where you'd move"
           state={destination}
           filingStatus={filingStatus}
+          childCount={children}
           onChange={setDestination}
+          onSalaryChange={changeSalary(destination, setDestination)}
           salaryLabel="Salary there"
           salaryHint={
             destination.grossSalary !== origin.grossSalary

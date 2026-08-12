@@ -24,6 +24,8 @@ function Row({ row }: { row: DatasetRow }) {
         )}
       </th>
       <td className={td} style={{ color: 'var(--ink)' }}>{formatUSD(row.rent)}</td>
+      <td className={td} style={{ color: 'var(--ink)' }}>{formatUSD(row.rent1br)}</td>
+      <td className={td} style={{ color: 'var(--ink)' }}>{formatUSD(row.rent3br)}</td>
       <td className={td} style={{ color: 'var(--ink)' }}>{formatUSD(row.homePrice)}</td>
       <td className={td} style={{ color: 'var(--ink)' }}>{pct(row.propertyTaxRate, 2)}</td>
       <td className={td} style={{ color: 'var(--ink)' }}>{row.vehiclesPerAdult.toFixed(2)}</td>
@@ -102,7 +104,9 @@ export function DatasetBrowser() {
                 Location
               </th>
               {[
-                ['Rent/mo', 'Median gross rent'],
+                ['Rent/mo', 'Median gross rent, all unit sizes'],
+                ['1 bed', 'Median gross rent for a one-bedroom'],
+                ['3 bed', 'Median gross rent for a three-bedroom'],
                 ['Home price', 'Median home value'],
                 ['Prop tax', 'Effective rate actually paid'],
                 ['Cars/adult', 'Vehicles per adult'],

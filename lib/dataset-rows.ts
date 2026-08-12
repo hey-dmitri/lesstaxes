@@ -7,8 +7,8 @@
  * experience (PROJECT.md D26).
  */
 
-import salesTax from '@/data/2026.1/sales-tax.json';
-import states from '@/data/2026.1/states.json';
+import salesTax from '@/data/2026.2/sales-tax.json';
+import states from '@/data/2026.2/states.json';
 import { allMetros, housingDefaults, localTaxOptions, localJurisdiction, transportDefaults } from '@/engine';
 
 export interface DatasetRow {
@@ -17,7 +17,11 @@ export interface DatasetRow {
   detail: string;
   state: string;
   isRural: boolean;
+  /** Metro-wide median across all unit sizes — the raw published figure. */
   rent: number;
+  /** Local median for a one-bedroom and a three-bedroom, before income scaling. */
+  rent1br: number;
+  rent3br: number;
   homePrice: number;
   propertyTaxRate: number;
   vehiclesPerAdult: number;
@@ -53,6 +57,8 @@ export const DATASET_ROWS: DatasetRow[] = allMetros().map((m) => {
     state: m.primaryState,
     isRural: m.type === 'restOfState',
     rent: housing.medianRentMonthly,
+    rent1br: housing.rentByBedrooms[1],
+    rent3br: housing.rentByBedrooms[3],
     homePrice: housing.medianHomePrice,
     propertyTaxRate: housing.effectivePropertyTaxRate,
     vehiclesPerAdult: transport.vehiclesPerAdult,
@@ -85,6 +91,16 @@ export const DATASET_SOURCES = [
   {
     what: 'Rent, home values, property tax paid',
     source: 'Census ACS 2024 5-year estimates (B25064, B25077, B25103)',
+    licence: 'Public domain',
+  },
+  {
+    what: 'Rent by unit size',
+    source: 'Census ACS 2024 5-year estimates (B25031)',
+    licence: 'Public domain',
+  },
+  {
+    what: 'How rent scales with income',
+    source: 'Census ACS 2024 5-year estimates (B25074), national',
     licence: 'Public domain',
   },
   {

@@ -1,6 +1,6 @@
 import { ImageResponse } from 'next/og';
 
-import { formatUSD, formatPercent, metro } from '@/engine';
+import { formatUSD, formatPercent, metro, percentIsMeaningful } from '@/engine';
 import { decodeComparison } from '@/lib/share-link';
 import { comparisonFromShared } from '@/lib/shared-comparison';
 
@@ -29,7 +29,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ pay
   const { payload } = await params;
 
   let card: {
-    from: string; to: string; delta: number; pct: number; monthly: number;
+    from: string; to: string; delta: number; pct: number | null; monthly: number;
     rows: Array<{ label: string; delta: number }>; version: string;
   };
 
@@ -39,7 +39,9 @@ export async function GET(_request: Request, { params }: { params: Promise<{ pay
       from: metro(result.origin.metroId).shortName,
       to: metro(result.destination.metroId).shortName,
       delta: result.delta,
-      pct: result.deltaPct,
+      // Null when the origin city has no leftover money to measure against —
+      // dividing by it produces figures like "589.9% more spare cash".
+      pct: percentIsMeaningful(result) ? result.deltaPct : null,
       monthly: result.deltaMonthly,
       rows: result.breakdown.slice(0, 4).map((r) => ({ label: r.label, delta: r.delta })),
       version: result.datasetVersion,
@@ -96,7 +98,10 @@ export async function GET(_request: Request, { params }: { params: Promise<{ pay
             {formatUSD(Math.abs(card.delta))}
           </div>
           <div style={{ display: 'flex', fontSize: 26, color: INK, marginTop: 10 }}>
-            {`a year ${better ? 'better off' : 'worse off'} · ${formatUSD(Math.abs(card.monthly))} a month · ${formatPercent(Math.abs(card.pct))} ${better ? 'more' : 'less'} spare cash`}
+            {`a year ${better ? 'better off' : 'worse off'} · ${formatUSD(Math.abs(card.monthly))} a month` +
+              (card.pct === null
+                ? ''
+                : ` · ${formatPercent(Math.abs(card.pct))} ${better ? 'more' : 'less'} spare cash`)}
           </div>
         </div>
 

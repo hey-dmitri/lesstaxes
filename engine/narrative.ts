@@ -1,0 +1,212 @@
+/**
+ * How the result is described in words.
+ *
+ * This lives in the engine, not in a component, because three surfaces have to
+ * agree: the results panel, the downloadable share card, and the rich link
+ * preview a messaging app renders. When they disagreed, the same move was
+ * described three different ways depending on where you read it.
+ *
+ * These functions decide WHAT is true about a result. Rendering is left to the
+ * caller, so the interface can colour and emphasise the parts while the card
+ * and the link description stay plain text.
+ */
+
+import { metro } from './dataset';
+import { formatUSD } from './money';
+import type { ComparisonResult, USD } from './types';
+
+// ---------------------------------------------------------------------------
+// Why the answer came out the way it did
+// ---------------------------------------------------------------------------
+
+export interface WhyNarrative {
+  /** Always positive. How much the city itself costs more or less. */
+  cityAmount: USD;
+  cityCheaper: boolean;
+  /** False when both salaries match, in which case there is no pay effect. */
+  salaryChanged: boolean;
+  /** Always positive. What the pay change is worth. */
+  salaryAmount: USD;
+  paidMore: boolean;
+  /**
+   * The two effects pull AGAINST each other (a cheaper city with a pay cut, or
+   * a pricier city with a rise) rather than compounding.
+   *
+   * This distinction is the whole point of the type. Describing compounding
+   * effects with "but ... outweighs it" is not a wording infelicity, it is
+   * false: a pay cut into a pricier city does not partly offset the expense,
+   * it adds to it, and the reader is told the opposite.
+   */
+  opposed: boolean;
+  /** The pay change is the larger of the two forces. */
+  salaryWins: boolean;
+}
+
+export function whyNarrative(result: ComparisonResult): WhyNarrative {
+  const cityCheaper = result.cityEffect >= 0;
+  const paidMore = result.salaryEffect >= 0;
+
+  return {
+    cityAmount: Math.abs(result.cityEffect),
+    cityCheaper,
+    salaryChanged: result.destination.grossSalary !== result.origin.grossSalary,
+    salaryAmount: Math.abs(result.salaryEffect),
+    paidMore,
+    opposed: cityCheaper !== paidMore,
+    salaryWins: Math.abs(result.salaryEffect) > Math.abs(result.cityEffect),
+  };
+}
+
+/** The clause that follows "<city> is $X cheaper/pricier a year to live in". */
+export function whyClause(why: WhyNarrative): string {
+  if (!why.salaryChanged) return ' at the same salary.';
+
+  const amount = formatUSD(why.salaryAmount);
+  const change = why.paidMore ? 'pay rise' : 'pay cut';
+
+  // Compounding: both forces push the same way, so nothing is being offset.
+  if (!why.opposed) {
+    return why.paidMore
+      ? `, and the ${change} adds another ${amount} on top.`
+      : `, and the ${change} costs another ${amount} on top.`;
+  }
+
+  // Opposed: one force partly or wholly cancels the other.
+  if (why.salaryWins) {
+    return why.paidMore
+      ? `, but the ${change} is worth ${amount} — more than enough to cover it.`
+      : `, but the ${change} costs ${amount} — more than the saving.`;
+  }
+  return why.paidMore
+    ? `, but the ${change} is only worth ${amount} — not enough to cover it.`
+    : `, but the ${change} costs ${amount} — not enough to wipe out the saving.`;
+}
+
+/** The complete sentence, for surfaces that cannot render rich text. */
+export function whySentence(result: ComparisonResult): string {
+  const why = whyNarrative(result);
+  const to = metro(result.destination.metroId).shortName;
+  const direction = why.cityCheaper ? 'cheaper' : 'pricier';
+  return `${to} is ${formatUSD(why.cityAmount)} ${direction} a year to live in${whyClause(why)}`;
+}
+
+// ---------------------------------------------------------------------------
+// Break-even salary
+// ---------------------------------------------------------------------------
+
+export interface BreakEvenNarrative {
+  salary: USD;
+  /** Distance from the destination salary on the table. Negative = headroom. */
+  gap: USD;
+  kind: 'needs-more' | 'has-headroom' | 'level';
+  /** The salary the gap is measured against. */
+  against: USD;
+  /** True when that is simply what they earn today, because pay is unchanged. */
+  againstIsCurrentPay: boolean;
+}
+
+/**
+ * Break-even, expressed against the destination salary actually on the table.
+ *
+ * "You'd need $139,163 in Austin" and "You'd need $161,683 in Chicago" are the
+ * same sentence carrying opposite news — one is a pay cut you can absorb, the
+ * other is a rise you have to negotiate — and the reader was left to subtract
+ * their own salary to find out which. The gap is the actionable part, so it is
+ * computed here rather than left implicit.
+ *
+ * Measuring against the DESTINATION salary rather than today's pay also makes
+ * this line incapable of contradicting the headline. Leftover money rises
+ * monotonically with salary, so the destination salary sits below break-even
+ * exactly when the move loses money — "you'd need more" and "less in your
+ * pocket" now always appear together, and never against each other.
+ *
+ * Null when there is no break-even salary to quote, which happens when the
+ * destination wins even at zero income.
+ */
+export function breakEvenNarrative(result: ComparisonResult): BreakEvenNarrative | null {
+  const salary = result.breakEvenSalary;
+  if (salary <= 0) return null;
+
+  const against = result.destination.grossSalary;
+  const gap = salary - against;
+  // Under a rounding error apart is "the same salary", not a $12 pay rise.
+  const kind = Math.abs(gap) < 500 ? 'level' : gap > 0 ? 'needs-more' : 'has-headroom';
+  return {
+    salary,
+    gap,
+    kind,
+    against,
+    againstIsCurrentPay: against === result.origin.grossSalary,
+  };
+}
+
+/**
+ * The compact form, for link previews and anywhere else without room to
+ * breathe. Messaging apps truncate a description at around 150 characters, so
+ * the two directions are kept short and deliberately parallel — the gap and
+ * the word before it are the only difference, which is what makes them quick
+ * to tell apart. The results panel says the same thing at more length.
+ */
+export function breakEvenSentence(result: ComparisonResult): string | null {
+  const be = breakEvenNarrative(result);
+  if (!be) return null;
+
+  const to = metro(result.destination.metroId).shortName;
+  const reference = breakEvenReference(be);
+
+  if (be.kind === 'level') return `You'd break even in ${to} at about ${reference}.`;
+
+  const gap = formatUSD(Math.abs(be.gap));
+  return be.kind === 'needs-more'
+    ? `You'd need ${formatUSD(be.salary)} in ${to} to break even — ${gap} more than ${reference}.`
+    : `You'd break even in ${to} at ${formatUSD(be.salary)} — ${gap} less than ${reference}.`;
+}
+
+/** What the gap is measured against, named so the reader can check it. */
+export function breakEvenReference(be: BreakEvenNarrative): string {
+  return be.againstIsCurrentPay
+    ? 'you earn now'
+    : `the ${formatUSD(be.against)} you'd be paid there`;
+}
+
+// ---------------------------------------------------------------------------
+// When there is no spare cash to take a percentage of
+// ---------------------------------------------------------------------------
+
+/**
+ * Whether "X% more spare cash" means anything.
+ *
+ * The percentage is measured against what is left over in the ORIGIN city. For
+ * a large share of real households that figure is at or below zero — typical
+ * local costs come to more than the salary — and dividing by it produces
+ * garbage: a $964 shortfall turns a $5,688 gain into "589.9% more spare cash",
+ * and the ratio flips sign as the denominator crosses zero while the wording
+ * keeps taking its direction from the delta.
+ *
+ * The difference itself stays perfectly valid. Only the ratio is suppressed.
+ */
+export function percentIsMeaningful(result: ComparisonResult): boolean {
+  return result.origin.leftover > 0;
+}
+
+export interface Shortfall {
+  metroId: string;
+  /** Always positive: how far past the salary the yearly costs run. */
+  shortBy: USD;
+}
+
+/**
+ * Cities where modelled costs exceed what the job pays.
+ *
+ * Not an error and not rare — at the local median rent and average household
+ * spending, a family of four on a middling salary comes out short almost
+ * everywhere. But "money in your pocket: -$17,786" is meaningless without
+ * saying so, and the reader deserves to know which lever to pull.
+ */
+export function shortfalls(result: ComparisonResult): Shortfall[] {
+  const out: Shortfall[] = [];
+  for (const city of [result.origin, result.destination]) {
+    if (city.leftover <= 0) out.push({ metroId: city.metroId, shortBy: Math.abs(city.leftover) });
+  }
+  return out;
+}

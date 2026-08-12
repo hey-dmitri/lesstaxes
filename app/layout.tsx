@@ -107,11 +107,25 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <Link href="/data" className="underline underline-offset-2" style={{ color: 'var(--accent)' }}>
                 The data
               </Link>
+              {/* Always reachable, on every page, for the reader who spots a wrong figure. */}
+              <Link href="/data#report" className="underline underline-offset-2" style={{ color: 'var(--accent)' }}>
+                Report a problem
+              </Link>
             </nav>
             <span className="flex-1">
               Estimates from public federal data — Census, BEA, BLS, IRS and state revenue
               departments. <strong>Not financial, tax or legal advice.</strong> No accounts, no
               tracking, nothing stored.
+            </span>
+            <span className="whitespace-nowrap">
+              Built by{' '}
+              <a
+                href="https://heydmitri.com/"
+                className="underline underline-offset-2"
+                style={{ color: 'var(--accent)' }}
+              >
+                Dmitri
+              </a>
             </span>
           </footer>
         </div>

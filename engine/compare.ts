@@ -21,9 +21,11 @@
  */
 
 import {
+  bedroomsFor,
   defaultLocalJurisdictions,
   housingDefaults,
   metro,
+  rentDefault,
   salesTaxRules,
   TAXABLE_SHARES,
   transportDefaults,
@@ -156,6 +158,19 @@ export function computeCity(
 // ---------------------------------------------------------------------------
 
 /**
+ * The rent this household is quoted in a metro.
+ *
+ * Sized from household composition and scaled for income — see bedroomsFor and
+ * rentFactorForIncome. Both corrections matter: the raw metro median priced a
+ * family of four and a single person identically, and priced a $150,000 earner
+ * as though they rented like a household on the metro median income.
+ */
+export function defaultRent(metroId: string, grossSalary: USD, household: Household): USD {
+  const bedrooms = bedroomsFor(adultsIn(household.filingStatus), household.children);
+  return rentDefault(metroId, grossSalary, bedrooms);
+}
+
+/**
  * A sensible starting point for a city, so the form produces a useful answer
  * with zero typing (PROJECT.md D4). Every value is editable.
  */
@@ -174,7 +189,7 @@ export function defaultCityInputs(
     cars: defaultCarCount(metroId, household.filingStatus),
     housing:
       tenure === 'rent'
-        ? { tenure: 'rent', monthlyRent: h.medianRentMonthly }
+        ? { tenure: 'rent', monthlyRent: defaultRent(metroId, grossSalary, household) }
         : {
             tenure: 'own',
             homePrice: h.medianHomePrice,
@@ -249,8 +264,37 @@ export function breakEvenSalary(
   originLeftover: USD,
   options: CityComputeOptions = {},
 ): USD | null {
+  const destination = inputs.destination;
+
+  /**
+   * Rent depends on income now, so a salary the solver is testing implies a
+   * different rent than the one on screen. Whether it should follow depends on
+   * where the current figure came from: a prefill still sitting at its default
+   * should move with the salary, because that is what the household would
+   * actually rent; a figure the user typed is their own and is held fixed.
+   *
+   * Without this, quoting a break-even salary and then entering it produced an
+   * answer a few hundred dollars off zero, because the rent shifted underneath.
+   */
+  const rentTracksSalary =
+    destination.housing.tenure === 'rent' &&
+    destination.housing.monthlyRent ===
+      defaultRent(destination.metroId, destination.grossSalary, inputs.household);
+
+  const cityAt = (salary: USD): CityInputs =>
+    rentTracksSalary && destination.housing.tenure === 'rent'
+      ? {
+          ...destination,
+          grossSalary: salary,
+          housing: {
+            tenure: 'rent',
+            monthlyRent: defaultRent(destination.metroId, salary, inputs.household),
+          },
+        }
+      : { ...destination, grossSalary: salary };
+
   const leftoverAt = (salary: USD) =>
-    computeCity({ ...inputs.destination, grossSalary: salary }, inputs.household, options).leftover;
+    computeCity(cityAt(salary), inputs.household, options).leftover;
 
   let low = 0;
   let high = Math.max(inputs.origin.grossSalary, inputs.destination.grossSalary) * 4 + 250_000;

@@ -1,7 +1,10 @@
 'use client';
 
 import {
+  bedroomsFor,
+  adultsIn,
   defaultCarCount,
+  defaultRent,
   formatUSD,
   housingDefaults,
   localTaxOptions,
@@ -9,6 +12,7 @@ import {
   transportDefaults,
   type CityInputs,
   type FilingStatus,
+  type Household,
   type Housing,
 } from '@/engine';
 import { CountField, MoneyField, PercentField, Segmented, Checkbox } from '@/components/fields';
@@ -23,16 +27,31 @@ interface Props {
   title: string;
   state: CityFormState;
   filingStatus: FilingStatus;
+  childCount: number;
   onChange: (next: CityFormState) => void;
+  /** Salary is handled by the parent, which keeps an untouched rent in step. */
+  onSalaryChange: (salary: number) => void;
   salaryLabel: string;
   salaryHint?: React.ReactNode;
 }
 
-/** Housing defaults for a metro at a given tenure. */
-export function housingFor(metroId: string, tenure: 'rent' | 'own'): Housing {
+/**
+ * Housing defaults for a metro.
+ *
+ * Rent now depends on the household and the salary as well as the place: a
+ * family of four is quoted a larger unit than a single person, and a high
+ * earner is quoted what high earners actually pay rather than the median across
+ * the entire rental stock.
+ */
+export function housingFor(
+  metroId: string,
+  tenure: 'rent' | 'own',
+  salary: number,
+  household: Household,
+): Housing {
   const h = housingDefaults(metroId);
   return tenure === 'rent'
-    ? { tenure: 'rent', monthlyRent: h.medianRentMonthly }
+    ? { tenure: 'rent', monthlyRent: defaultRent(metroId, salary, household) }
     : {
         tenure: 'own',
         homePrice: h.medianHomePrice,
@@ -48,23 +67,37 @@ export function resetCityForLocation(
   salary: number,
   filingStatus: FilingStatus,
   tenure: 'rent' | 'own',
+  children = 0,
 ): CityFormState {
   const options = localTaxOptions(metroId);
   return {
     metroId,
     grossSalary: salary,
     cars: defaultCarCount(metroId, filingStatus),
-    housing: housingFor(metroId, tenure),
+    housing: housingFor(metroId, tenure, salary, { filingStatus, children }),
     localOptIns: Object.fromEntries(options.map((o) => [o.jurisdictionId, o.defaultApplies])),
   };
 }
 
-export function CityPanel({ title, state, filingStatus, onChange, salaryLabel, salaryHint }: Props) {
+export function CityPanel({
+  title,
+  state,
+  filingStatus,
+  childCount,
+  onChange,
+  onSalaryChange,
+  salaryLabel,
+  salaryHint,
+}: Props) {
   const m = metro(state.metroId);
   const defaults = housingDefaults(state.metroId);
   const transport = transportDefaults(state.metroId);
   const suggestedCars = defaultCarCount(state.metroId, filingStatus);
   const optionalLocals = localTaxOptions(state.metroId).filter((o) => o.optional);
+
+  const household: Household = { filingStatus, children: childCount };
+  const bedrooms = bedroomsFor(adultsIn(filingStatus), childCount);
+  const suggestedRent = defaultRent(state.metroId, state.grossSalary, household);
 
   const set = (patch: Partial<CityFormState>) => onChange({ ...state, ...patch });
   const setHousing = (patch: Partial<Housing>) =>
@@ -89,7 +122,13 @@ export function CityPanel({ title, state, filingStatus, onChange, salaryLabel, s
           value={state.metroId}
           onChange={(metroId) =>
             onChange(
-              resetCityForLocation(metroId, state.grossSalary, filingStatus, state.housing.tenure),
+              resetCityForLocation(
+                metroId,
+                state.grossSalary,
+                filingStatus,
+                state.housing.tenure,
+                childCount,
+              ),
             )
           }
         />
@@ -97,14 +136,16 @@ export function CityPanel({ title, state, filingStatus, onChange, salaryLabel, s
         <MoneyField
           label={salaryLabel}
           value={state.grossSalary}
-          onChange={(grossSalary) => set({ grossSalary })}
+          onChange={onSalaryChange}
           hint={salaryHint}
         />
 
         <Segmented
           label="Housing"
           value={state.housing.tenure}
-          onChange={(tenure) => set({ housing: housingFor(state.metroId, tenure) })}
+          onChange={(tenure) =>
+            set({ housing: housingFor(state.metroId, tenure, state.grossSalary, household) })
+          }
           options={[
             { value: 'rent', label: 'Rent' },
             { value: 'own', label: 'Own' },
@@ -117,7 +158,28 @@ export function CityPanel({ title, state, filingStatus, onChange, salaryLabel, s
             value={state.housing.monthlyRent}
             onChange={(monthlyRent) => setHousing({ monthlyRent })}
             suffix="/mo"
-            hint={`Median here is ${formatUSD(defaults.medianRentMonthly)}/mo`}
+            /*
+              The old hint read "Median here is $1,430/mo", which sounded like
+              what someone at your income pays. It was the median across every
+              rented unit in the metro, regardless of size or who lives in it.
+              Saying what the figure is, and what share of the salary it comes
+              to, makes a wrong default visible instead of silent.
+            */
+            hint={
+              <>
+                {state.housing.monthlyRent === suggestedRent
+                  ? `Typical for a ${bedrooms}-bedroom here at this salary`
+                  : `Typical here is ${formatUSD(suggestedRent)}/mo for ${bedrooms} bedrooms`}
+                {state.grossSalary > 0 && (
+                  <>
+                    {' '}
+                    &mdash;{' '}
+                    {((state.housing.monthlyRent * 12) / state.grossSalary * 100).toFixed(0)}% of
+                    this salary
+                  </>
+                )}
+              </>
+            }
           />
         ) : (
           <>
