@@ -32,6 +32,13 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+# ...but the template carries no secrets and must be committed, so anyone
+# reading the repo knows which variables exist. Real values live in .env.local,
+# which stays ignored.
+!.env.example
+
+# generated review pages (published as artifacts, not part of the site)
+.stage*-report.html
 
 # vercel
 .vercel

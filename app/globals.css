@@ -1,26 +1,124 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/*
+ * LessTaxes design tokens.
+ *
+ * Cool carbon-paper neutrals with an ink-blue accent — the register of an
+ * official document rather than a fintech dashboard, because the product's
+ * whole claim is that its numbers are traceable to federal tables.
+ *
+ * Green and red are reserved for SEMANTICS ONLY (better off / worse off) and
+ * are never used decoratively. They are also never the sole carrier of
+ * meaning: every gain or loss is signed as well as coloured.
+ */
+
+@theme {
+  --font-sans: ui-sans-serif, -apple-system, "Segoe UI", system-ui, sans-serif;
+  --font-serif: ui-serif, Georgia, "Iowan Old Style", "Times New Roman", serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+:root {
+  --ground: #f7f8fa;
+  --surface: #ffffff;
+  --surface-sunken: #f1f3f7;
+  --ink: #171a21;
+  --ink-soft: #3d4453;
+  --muted: #656d7e;
+  --rule: #e1e5ec;
+  --rule-strong: #c9d0dc;
+  --accent: #2c4c8c;
+  --accent-soft: #e8eefb;
+  --good: #0f7a4d;
+  --bad: #b4241c;
+  --focus: #2c4c8c;
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  :root:not([data-theme="light"]) {
+    --ground: #101319;
+    --surface: #171b23;
+    --surface-sunken: #12161d;
+    --ink: #e6e9ef;
+    --ink-soft: #c3c9d6;
+    --muted: #8e97a8;
+    --rule: #262c38;
+    --rule-strong: #39414f;
+    --accent: #7fa3e8;
+    --accent-soft: #1a2436;
+    --good: #4ade80;
+    --bad: #f87171;
+    --focus: #7fa3e8;
   }
 }
 
+:root[data-theme="dark"] {
+  --ground: #101319;
+  --surface: #171b23;
+  --surface-sunken: #12161d;
+  --ink: #e6e9ef;
+  --ink-soft: #c3c9d6;
+  --muted: #8e97a8;
+  --rule: #262c38;
+  --rule-strong: #39414f;
+  --accent: #7fa3e8;
+  --accent-soft: #1a2436;
+  --good: #4ade80;
+  --bad: #f87171;
+  --focus: #7fa3e8;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  html:not([data-theme="light"]) { color-scheme: dark; }
+}
+html[data-theme="dark"] { color-scheme: dark; }
+html[data-theme="light"] { color-scheme: light; }
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+  background: var(--ground);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Figures line up in columns everywhere in this product. */
+.tnum {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+:where(a, button, input, select, textarea, [tabindex]):focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Hide the spinner on number inputs — salary fields are not steppers. */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
 }

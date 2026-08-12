@@ -1,0 +1,2654 @@
+{
+  "datasetVersion": "2026.1",
+  "vintage": {
+    "acs": 2024,
+    "estimates": "5-year"
+  },
+  "source": {
+    "name": "US Census Bureau, American Community Survey 2024 5-year estimates",
+    "url": "https://api.census.gov/data/2024/acs/acs5",
+    "licence": "US Government work — public domain",
+    "tables": {
+      "B25064": "Median gross rent",
+      "B25077": "Median value, owner-occupied units",
+      "B25103": "Median real estate taxes paid",
+      "B25044": "Tenure by vehicles available",
+      "B09021": "Population 18 years and over",
+      "B25010": "Average household size"
+    }
+  },
+  "notes": [
+    "effectivePropertyTaxRate = median real estate taxes paid / median home value. This is an EFFECTIVE rate as actually experienced, not a statutory millage rate — it already reflects assessment ratios, homestead exemptions and caps.",
+    "Figures are metro-wide medians. A specific home may differ substantially, which is why every housing field is editable in the interface."
+  ],
+  "byMetro": {
+    "10180": {
+      "medianRentMonthly": 1141,
+      "medianHomePrice": 178700,
+      "medianPropertyTaxPaid": 2346,
+      "effectivePropertyTaxRate": 0.01313
+    },
+    "10420": {
+      "medianRentMonthly": 1033,
+      "medianHomePrice": 213000,
+      "medianPropertyTaxPaid": 3115,
+      "effectivePropertyTaxRate": 0.01462
+    },
+    "10500": {
+      "medianRentMonthly": 950,
+      "medianHomePrice": 157300,
+      "medianPropertyTaxPaid": 1771,
+      "effectivePropertyTaxRate": 0.01126
+    },
+    "10540": {
+      "medianRentMonthly": 1320,
+      "medianHomePrice": 376400,
+      "medianPropertyTaxPaid": 3261,
+      "effectivePropertyTaxRate": 0.00866
+    },
+    "10580": {
+      "medianRentMonthly": 1280,
+      "medianHomePrice": 285900,
+      "medianPropertyTaxPaid": 5125,
+      "effectivePropertyTaxRate": 0.01793
+    },
+    "10740": {
+      "medianRentMonthly": 1156,
+      "medianHomePrice": 287800,
+      "medianPropertyTaxPaid": 2428,
+      "effectivePropertyTaxRate": 0.00844
+    },
+    "10780": {
+      "medianRentMonthly": 946,
+      "medianHomePrice": 175200,
+      "medianPropertyTaxPaid": 975,
+      "effectivePropertyTaxRate": 0.00557
+    },
+    "10900": {
+      "medianRentMonthly": 1365,
+      "medianHomePrice": 300800,
+      "medianPropertyTaxPaid": 4868,
+      "effectivePropertyTaxRate": 0.01618
+    },
+    "11020": {
+      "medianRentMonthly": 885,
+      "medianHomePrice": 161100,
+      "medianPropertyTaxPaid": 1724,
+      "effectivePropertyTaxRate": 0.0107
+    },
+    "11100": {
+      "medianRentMonthly": 1086,
+      "medianHomePrice": 208700,
+      "medianPropertyTaxPaid": 3014,
+      "effectivePropertyTaxRate": 0.01444
+    },
+    "11180": {
+      "medianRentMonthly": 1000,
+      "medianHomePrice": 246300,
+      "medianPropertyTaxPaid": 3427,
+      "effectivePropertyTaxRate": 0.01391
+    },
+    "11200": {
+      "medianRentMonthly": 1388,
+      "medianHomePrice": 390300,
+      "medianPropertyTaxPaid": 5589,
+      "effectivePropertyTaxRate": 0.01432
+    },
+    "11260": {
+      "medianRentMonthly": 1458,
+      "medianHomePrice": 379100,
+      "medianPropertyTaxPaid": 4535,
+      "effectivePropertyTaxRate": 0.01196
+    },
+    "11460": {
+      "medianRentMonthly": 1463,
+      "medianHomePrice": 374100,
+      "medianPropertyTaxPaid": 5678,
+      "effectivePropertyTaxRate": 0.01518
+    },
+    "11500": {
+      "medianRentMonthly": 826,
+      "medianHomePrice": 156600,
+      "medianPropertyTaxPaid": 653,
+      "effectivePropertyTaxRate": 0.00417
+    },
+    "11540": {
+      "medianRentMonthly": 1060,
+      "medianHomePrice": 268900,
+      "medianPropertyTaxPaid": 3716,
+      "effectivePropertyTaxRate": 0.01382
+    },
+    "11700": {
+      "medianRentMonthly": 1296,
+      "medianHomePrice": 370900,
+      "medianPropertyTaxPaid": 2016,
+      "effectivePropertyTaxRate": 0.00544
+    },
+    "12020": {
+      "medianRentMonthly": 1201,
+      "medianHomePrice": 310200,
+      "medianPropertyTaxPaid": 2508,
+      "effectivePropertyTaxRate": 0.00809
+    },
+    "12060": {
+      "medianRentMonthly": 1672,
+      "medianHomePrice": 367600,
+      "medianPropertyTaxPaid": 2920,
+      "effectivePropertyTaxRate": 0.00794
+    },
+    "12100": {
+      "medianRentMonthly": 1373,
+      "medianHomePrice": 331700,
+      "medianPropertyTaxPaid": 6312,
+      "effectivePropertyTaxRate": 0.01903
+    },
+    "12220": {
+      "medianRentMonthly": 1026,
+      "medianHomePrice": 247500,
+      "medianPropertyTaxPaid": 1199,
+      "effectivePropertyTaxRate": 0.00484
+    },
+    "12260": {
+      "medianRentMonthly": 1120,
+      "medianHomePrice": 226100,
+      "medianPropertyTaxPaid": 1399,
+      "effectivePropertyTaxRate": 0.00619
+    },
+    "12420": {
+      "medianRentMonthly": 1726,
+      "medianHomePrice": 465000,
+      "medianPropertyTaxPaid": 7140,
+      "effectivePropertyTaxRate": 0.01535
+    },
+    "12540": {
+      "medianRentMonthly": 1300,
+      "medianHomePrice": 338300,
+      "medianPropertyTaxPaid": 2984,
+      "effectivePropertyTaxRate": 0.00882
+    },
+    "12580": {
+      "medianRentMonthly": 1611,
+      "medianHomePrice": 391300,
+      "medianPropertyTaxPaid": 3922,
+      "effectivePropertyTaxRate": 0.01002
+    },
+    "12620": {
+      "medianRentMonthly": 1041,
+      "medianHomePrice": 214100,
+      "medianPropertyTaxPaid": 2481,
+      "effectivePropertyTaxRate": 0.01159
+    },
+    "12700": {
+      "medianRentMonthly": 1678,
+      "medianHomePrice": 629000,
+      "medianPropertyTaxPaid": 4239,
+      "effectivePropertyTaxRate": 0.00674
+    },
+    "12940": {
+      "medianRentMonthly": 1135,
+      "medianHomePrice": 241100,
+      "medianPropertyTaxPaid": 1357,
+      "effectivePropertyTaxRate": 0.00563
+    },
+    "12980": {
+      "medianRentMonthly": 968,
+      "medianHomePrice": 162800,
+      "medianPropertyTaxPaid": 2368,
+      "effectivePropertyTaxRate": 0.01455
+    },
+    "13020": {
+      "medianRentMonthly": 860,
+      "medianHomePrice": 152200,
+      "medianPropertyTaxPaid": 2271,
+      "effectivePropertyTaxRate": 0.01492
+    },
+    "13140": {
+      "medianRentMonthly": 1106,
+      "medianHomePrice": 173600,
+      "medianPropertyTaxPaid": 2407,
+      "effectivePropertyTaxRate": 0.01387
+    },
+    "13220": {
+      "medianRentMonthly": 856,
+      "medianHomePrice": 129600,
+      "medianPropertyTaxPaid": 726,
+      "effectivePropertyTaxRate": 0.0056
+    },
+    "13380": {
+      "medianRentMonthly": 1555,
+      "medianHomePrice": 585800,
+      "medianPropertyTaxPaid": 4087,
+      "effectivePropertyTaxRate": 0.00698
+    },
+    "13460": {
+      "medianRentMonthly": 1697,
+      "medianHomePrice": 602600,
+      "medianPropertyTaxPaid": 3598,
+      "effectivePropertyTaxRate": 0.00597
+    },
+    "13740": {
+      "medianRentMonthly": 1117,
+      "medianHomePrice": 355200,
+      "medianPropertyTaxPaid": 2760,
+      "effectivePropertyTaxRate": 0.00777
+    },
+    "13780": {
+      "medianRentMonthly": 939,
+      "medianHomePrice": 156000,
+      "medianPropertyTaxPaid": 3864,
+      "effectivePropertyTaxRate": 0.02477
+    },
+    "13820": {
+      "medianRentMonthly": 1172,
+      "medianHomePrice": 240200,
+      "medianPropertyTaxPaid": 1156,
+      "effectivePropertyTaxRate": 0.00481
+    },
+    "13900": {
+      "medianRentMonthly": 1021,
+      "medianHomePrice": 306400,
+      "medianPropertyTaxPaid": 2802,
+      "effectivePropertyTaxRate": 0.00914
+    },
+    "13980": {
+      "medianRentMonthly": 1104,
+      "medianHomePrice": 240900,
+      "medianPropertyTaxPaid": 1560,
+      "effectivePropertyTaxRate": 0.00648
+    },
+    "14010": {
+      "medianRentMonthly": 1009,
+      "medianHomePrice": 208400,
+      "medianPropertyTaxPaid": 4524,
+      "effectivePropertyTaxRate": 0.02171
+    },
+    "14020": {
+      "medianRentMonthly": 1176,
+      "medianHomePrice": 263700,
+      "medianPropertyTaxPaid": 1821,
+      "effectivePropertyTaxRate": 0.00691
+    },
+    "14260": {
+      "medianRentMonthly": 1487,
+      "medianHomePrice": 468900,
+      "medianPropertyTaxPaid": 2415,
+      "effectivePropertyTaxRate": 0.00515
+    },
+    "14460": {
+      "medianRentMonthly": 2023,
+      "medianHomePrice": 646300,
+      "medianPropertyTaxPaid": 6883,
+      "effectivePropertyTaxRate": 0.01065
+    },
+    "14500": {
+      "medianRentMonthly": 1966,
+      "medianHomePrice": 756300,
+      "medianPropertyTaxPaid": 3998,
+      "effectivePropertyTaxRate": 0.00529
+    },
+    "14540": {
+      "medianRentMonthly": 975,
+      "medianHomePrice": 233700,
+      "medianPropertyTaxPaid": 1425,
+      "effectivePropertyTaxRate": 0.0061
+    },
+    "14580": {
+      "medianRentMonthly": 1694,
+      "medianHomePrice": 667600,
+      "medianPropertyTaxPaid": 3933,
+      "effectivePropertyTaxRate": 0.00589
+    },
+    "14740": {
+      "medianRentMonthly": 1822,
+      "medianHomePrice": 555100,
+      "medianPropertyTaxPaid": 4279,
+      "effectivePropertyTaxRate": 0.00771
+    },
+    "14860": {
+      "medianRentMonthly": 1875,
+      "medianHomePrice": 564500,
+      "medianPropertyTaxPaid": 9039,
+      "effectivePropertyTaxRate": 0.01601
+    },
+    "15180": {
+      "medianRentMonthly": 912,
+      "medianHomePrice": 136500,
+      "medianPropertyTaxPaid": 2042,
+      "effectivePropertyTaxRate": 0.01496
+    },
+    "15260": {
+      "medianRentMonthly": 1080,
+      "medianHomePrice": 242500,
+      "medianPropertyTaxPaid": 1577,
+      "effectivePropertyTaxRate": 0.0065
+    },
+    "15380": {
+      "medianRentMonthly": 1057,
+      "medianHomePrice": 226100,
+      "medianPropertyTaxPaid": 4528,
+      "effectivePropertyTaxRate": 0.02003
+    },
+    "15500": {
+      "medianRentMonthly": 1064,
+      "medianHomePrice": 241500,
+      "medianPropertyTaxPaid": 1494,
+      "effectivePropertyTaxRate": 0.00619
+    },
+    "15540": {
+      "medianRentMonthly": 1581,
+      "medianHomePrice": 401000,
+      "medianPropertyTaxPaid": 5959,
+      "effectivePropertyTaxRate": 0.01486
+    },
+    "15940": {
+      "medianRentMonthly": 908,
+      "medianHomePrice": 186200,
+      "medianPropertyTaxPaid": 2344,
+      "effectivePropertyTaxRate": 0.01259
+    },
+    "15980": {
+      "medianRentMonthly": 1712,
+      "medianHomePrice": 362200,
+      "medianPropertyTaxPaid": 2858,
+      "effectivePropertyTaxRate": 0.00789
+    },
+    "16020": {
+      "medianRentMonthly": 864,
+      "medianHomePrice": 208400,
+      "medianPropertyTaxPaid": 1358,
+      "effectivePropertyTaxRate": 0.00652
+    },
+    "16180": {
+      "medianRentMonthly": 1248,
+      "medianHomePrice": 453000,
+      "medianPropertyTaxPaid": 1870,
+      "effectivePropertyTaxRate": 0.00413
+    },
+    "16220": {
+      "medianRentMonthly": 1016,
+      "medianHomePrice": 273000,
+      "medianPropertyTaxPaid": 1645,
+      "effectivePropertyTaxRate": 0.00603
+    },
+    "16300": {
+      "medianRentMonthly": 928,
+      "medianHomePrice": 211500,
+      "medianPropertyTaxPaid": 3371,
+      "effectivePropertyTaxRate": 0.01594
+    },
+    "16540": {
+      "medianRentMonthly": 1093,
+      "medianHomePrice": 249800,
+      "medianPropertyTaxPaid": 2740,
+      "effectivePropertyTaxRate": 0.01097
+    },
+    "16580": {
+      "medianRentMonthly": 1043,
+      "medianHomePrice": 201700,
+      "medianPropertyTaxPaid": 4064,
+      "effectivePropertyTaxRate": 0.02015
+    },
+    "16620": {
+      "medianRentMonthly": 896,
+      "medianHomePrice": 141100,
+      "medianPropertyTaxPaid": 915,
+      "effectivePropertyTaxRate": 0.00648
+    },
+    "16700": {
+      "medianRentMonthly": 1605,
+      "medianHomePrice": 377500,
+      "medianPropertyTaxPaid": 1731,
+      "effectivePropertyTaxRate": 0.00459
+    },
+    "16740": {
+      "medianRentMonthly": 1473,
+      "medianHomePrice": 356400,
+      "medianPropertyTaxPaid": 2331,
+      "effectivePropertyTaxRate": 0.00654
+    },
+    "16820": {
+      "medianRentMonthly": 1598,
+      "medianHomePrice": 430300,
+      "medianPropertyTaxPaid": 3053,
+      "effectivePropertyTaxRate": 0.0071
+    },
+    "16860": {
+      "medianRentMonthly": 1163,
+      "medianHomePrice": 272400,
+      "medianPropertyTaxPaid": 1707,
+      "effectivePropertyTaxRate": 0.00627
+    },
+    "16940": {
+      "medianRentMonthly": 1160,
+      "medianHomePrice": 348700,
+      "medianPropertyTaxPaid": 1980,
+      "effectivePropertyTaxRate": 0.00568
+    },
+    "16980": {
+      "medianRentMonthly": 1430,
+      "medianHomePrice": 323000,
+      "medianPropertyTaxPaid": 6401,
+      "effectivePropertyTaxRate": 0.01982
+    },
+    "17020": {
+      "medianRentMonthly": 1414,
+      "medianHomePrice": 424700,
+      "medianPropertyTaxPaid": 2951,
+      "effectivePropertyTaxRate": 0.00695
+    },
+    "17140": {
+      "medianRentMonthly": 1105,
+      "medianHomePrice": 258600,
+      "medianPropertyTaxPaid": 3053,
+      "effectivePropertyTaxRate": 0.01181
+    },
+    "17300": {
+      "medianRentMonthly": 1207,
+      "medianHomePrice": 253300,
+      "medianPropertyTaxPaid": 1524,
+      "effectivePropertyTaxRate": 0.00602
+    },
+    "17410": {
+      "medianRentMonthly": 1050,
+      "medianHomePrice": 215400,
+      "medianPropertyTaxPaid": 3590,
+      "effectivePropertyTaxRate": 0.01667
+    },
+    "17420": {
+      "medianRentMonthly": 1006,
+      "medianHomePrice": 247000,
+      "medianPropertyTaxPaid": 1123,
+      "effectivePropertyTaxRate": 0.00455
+    },
+    "17660": {
+      "medianRentMonthly": 1492,
+      "medianHomePrice": 518700,
+      "medianPropertyTaxPaid": 2267,
+      "effectivePropertyTaxRate": 0.00437
+    },
+    "17780": {
+      "medianRentMonthly": 1178,
+      "medianHomePrice": 279700,
+      "medianPropertyTaxPaid": 3947,
+      "effectivePropertyTaxRate": 0.01411
+    },
+    "17820": {
+      "medianRentMonthly": 1699,
+      "medianHomePrice": 461800,
+      "medianPropertyTaxPaid": 1863,
+      "effectivePropertyTaxRate": 0.00403
+    },
+    "17860": {
+      "medianRentMonthly": 1070,
+      "medianHomePrice": 258700,
+      "medianPropertyTaxPaid": 2153,
+      "effectivePropertyTaxRate": 0.00832
+    },
+    "17900": {
+      "medianRentMonthly": 1193,
+      "medianHomePrice": 232400,
+      "medianPropertyTaxPaid": 1293,
+      "effectivePropertyTaxRate": 0.00556
+    },
+    "17980": {
+      "medianRentMonthly": 1069,
+      "medianHomePrice": 197300,
+      "medianPropertyTaxPaid": 1455,
+      "effectivePropertyTaxRate": 0.00737
+    },
+    "18020": {
+      "medianRentMonthly": 1127,
+      "medianHomePrice": 232800,
+      "medianPropertyTaxPaid": 1738,
+      "effectivePropertyTaxRate": 0.00747
+    },
+    "18140": {
+      "medianRentMonthly": 1274,
+      "medianHomePrice": 300800,
+      "medianPropertyTaxPaid": 3976,
+      "effectivePropertyTaxRate": 0.01322
+    },
+    "18580": {
+      "medianRentMonthly": 1275,
+      "medianHomePrice": 210400,
+      "medianPropertyTaxPaid": 3188,
+      "effectivePropertyTaxRate": 0.01515
+    },
+    "18700": {
+      "medianRentMonthly": 1410,
+      "medianHomePrice": 513000,
+      "medianPropertyTaxPaid": 4884,
+      "effectivePropertyTaxRate": 0.00952
+    },
+    "18880": {
+      "medianRentMonthly": 1633,
+      "medianHomePrice": 364100,
+      "medianPropertyTaxPaid": 1987,
+      "effectivePropertyTaxRate": 0.00546
+    },
+    "19100": {
+      "medianRentMonthly": 1614,
+      "medianHomePrice": 359500,
+      "medianPropertyTaxPaid": 5737,
+      "effectivePropertyTaxRate": 0.01596
+    },
+    "19140": {
+      "medianRentMonthly": 938,
+      "medianHomePrice": 208800,
+      "medianPropertyTaxPaid": 1342,
+      "effectivePropertyTaxRate": 0.00643
+    },
+    "19300": {
+      "medianRentMonthly": 1277,
+      "medianHomePrice": 316900,
+      "medianPropertyTaxPaid": 960,
+      "effectivePropertyTaxRate": 0.00303
+    },
+    "19340": {
+      "medianRentMonthly": 941,
+      "medianHomePrice": 174100,
+      "medianPropertyTaxPaid": 3276,
+      "effectivePropertyTaxRate": 0.01882
+    },
+    "19430": {
+      "medianRentMonthly": 1039,
+      "medianHomePrice": 201100,
+      "medianPropertyTaxPaid": 3133,
+      "effectivePropertyTaxRate": 0.01558
+    },
+    "19460": {
+      "medianRentMonthly": 847,
+      "medianHomePrice": 202500,
+      "medianPropertyTaxPaid": 661,
+      "effectivePropertyTaxRate": 0.00326
+    },
+    "19500": {
+      "medianRentMonthly": 847,
+      "medianHomePrice": 127300,
+      "medianPropertyTaxPaid": 2696,
+      "effectivePropertyTaxRate": 0.02118
+    },
+    "19660": {
+      "medianRentMonthly": 1500,
+      "medianHomePrice": 324300,
+      "medianPropertyTaxPaid": 2490,
+      "effectivePropertyTaxRate": 0.00768
+    },
+    "19740": {
+      "medianRentMonthly": 1874,
+      "medianHomePrice": 603800,
+      "medianPropertyTaxPaid": 3086,
+      "effectivePropertyTaxRate": 0.00511
+    },
+    "19780": {
+      "medianRentMonthly": 1150,
+      "medianHomePrice": 267400,
+      "medianPropertyTaxPaid": 4253,
+      "effectivePropertyTaxRate": 0.01591
+    },
+    "19820": {
+      "medianRentMonthly": 1207,
+      "medianHomePrice": 249700,
+      "medianPropertyTaxPaid": 3417,
+      "effectivePropertyTaxRate": 0.01368
+    },
+    "20020": {
+      "medianRentMonthly": 910,
+      "medianHomePrice": 170700,
+      "medianPropertyTaxPaid": 541,
+      "effectivePropertyTaxRate": 0.00317
+    },
+    "20100": {
+      "medianRentMonthly": 1354,
+      "medianHomePrice": 316600,
+      "medianPropertyTaxPaid": 1363,
+      "effectivePropertyTaxRate": 0.00431
+    },
+    "20220": {
+      "medianRentMonthly": 959,
+      "medianHomePrice": 237300,
+      "medianPropertyTaxPaid": 2919,
+      "effectivePropertyTaxRate": 0.0123
+    },
+    "20260": {
+      "medianRentMonthly": 990,
+      "medianHomePrice": 222400,
+      "medianPropertyTaxPaid": 2432,
+      "effectivePropertyTaxRate": 0.01094
+    },
+    "20500": {
+      "medianRentMonthly": 1466,
+      "medianHomePrice": 396100,
+      "medianPropertyTaxPaid": 3048,
+      "effectivePropertyTaxRate": 0.0077
+    },
+    "20580": {
+      "medianRentMonthly": 859,
+      "medianHomePrice": 158700,
+      "medianPropertyTaxPaid": 1976,
+      "effectivePropertyTaxRate": 0.01245
+    },
+    "20740": {
+      "medianRentMonthly": 1033,
+      "medianHomePrice": 259900,
+      "medianPropertyTaxPaid": 3220,
+      "effectivePropertyTaxRate": 0.01239
+    },
+    "20940": {
+      "medianRentMonthly": 1056,
+      "medianHomePrice": 309600,
+      "medianPropertyTaxPaid": 2394,
+      "effectivePropertyTaxRate": 0.00773
+    },
+    "21060": {
+      "medianRentMonthly": 964,
+      "medianHomePrice": 218800,
+      "medianPropertyTaxPaid": 1422,
+      "effectivePropertyTaxRate": 0.0065
+    },
+    "21140": {
+      "medianRentMonthly": 1047,
+      "medianHomePrice": 210400,
+      "medianPropertyTaxPaid": 1717,
+      "effectivePropertyTaxRate": 0.00816
+    },
+    "21300": {
+      "medianRentMonthly": 1059,
+      "medianHomePrice": 141100,
+      "medianPropertyTaxPaid": 3451,
+      "effectivePropertyTaxRate": 0.02446
+    },
+    "21340": {
+      "medianRentMonthly": 1079,
+      "medianHomePrice": 180200,
+      "medianPropertyTaxPaid": 3650,
+      "effectivePropertyTaxRate": 0.02026
+    },
+    "21420": {
+      "medianRentMonthly": 919,
+      "medianHomePrice": 160100,
+      "medianPropertyTaxPaid": 1389,
+      "effectivePropertyTaxRate": 0.00868
+    },
+    "21500": {
+      "medianRentMonthly": 904,
+      "medianHomePrice": 177000,
+      "medianPropertyTaxPaid": 2830,
+      "effectivePropertyTaxRate": 0.01599
+    },
+    "21660": {
+      "medianRentMonthly": 1355,
+      "medianHomePrice": 430600,
+      "medianPropertyTaxPaid": 3536,
+      "effectivePropertyTaxRate": 0.00821
+    },
+    "21780": {
+      "medianRentMonthly": 986,
+      "medianHomePrice": 204000,
+      "medianPropertyTaxPaid": 1501,
+      "effectivePropertyTaxRate": 0.00736
+    },
+    "21820": {
+      "medianRentMonthly": 1459,
+      "medianHomePrice": 298200,
+      "medianPropertyTaxPaid": 3550,
+      "effectivePropertyTaxRate": 0.0119
+    },
+    "22020": {
+      "medianRentMonthly": 967,
+      "medianHomePrice": 289100,
+      "medianPropertyTaxPaid": 3416,
+      "effectivePropertyTaxRate": 0.01182
+    },
+    "22140": {
+      "medianRentMonthly": 956,
+      "medianHomePrice": 193800,
+      "medianPropertyTaxPaid": 1317,
+      "effectivePropertyTaxRate": 0.0068
+    },
+    "22180": {
+      "medianRentMonthly": 1212,
+      "medianHomePrice": 202700,
+      "medianPropertyTaxPaid": 1788,
+      "effectivePropertyTaxRate": 0.00882
+    },
+    "22220": {
+      "medianRentMonthly": 1157,
+      "medianHomePrice": 307200,
+      "medianPropertyTaxPaid": 1665,
+      "effectivePropertyTaxRate": 0.00542
+    },
+    "22380": {
+      "medianRentMonthly": 1473,
+      "medianHomePrice": 448000,
+      "medianPropertyTaxPaid": 2051,
+      "effectivePropertyTaxRate": 0.00458
+    },
+    "22420": {
+      "medianRentMonthly": 989,
+      "medianHomePrice": 182400,
+      "medianPropertyTaxPaid": 2487,
+      "effectivePropertyTaxRate": 0.01363
+    },
+    "22500": {
+      "medianRentMonthly": 934,
+      "medianHomePrice": 170800,
+      "medianPropertyTaxPaid": 719,
+      "effectivePropertyTaxRate": 0.00421
+    },
+    "22520": {
+      "medianRentMonthly": 853,
+      "medianHomePrice": 187400,
+      "medianPropertyTaxPaid": 724,
+      "effectivePropertyTaxRate": 0.00386
+    },
+    "22540": {
+      "medianRentMonthly": 960,
+      "medianHomePrice": 222800,
+      "medianPropertyTaxPaid": 3365,
+      "effectivePropertyTaxRate": 0.0151
+    },
+    "22660": {
+      "medianRentMonthly": 1716,
+      "medianHomePrice": 569100,
+      "medianPropertyTaxPaid": 2832,
+      "effectivePropertyTaxRate": 0.00498
+    },
+    "22900": {
+      "medianRentMonthly": 866,
+      "medianHomePrice": 171200,
+      "medianPropertyTaxPaid": 997,
+      "effectivePropertyTaxRate": 0.00582
+    },
+    "23060": {
+      "medianRentMonthly": 1003,
+      "medianHomePrice": 214100,
+      "medianPropertyTaxPaid": 1632,
+      "effectivePropertyTaxRate": 0.00762
+    },
+    "23420": {
+      "medianRentMonthly": 1392,
+      "medianHomePrice": 389400,
+      "medianPropertyTaxPaid": 2844,
+      "effectivePropertyTaxRate": 0.0073
+    },
+    "23460": {
+      "medianRentMonthly": 847,
+      "medianHomePrice": 167100,
+      "medianPropertyTaxPaid": 645,
+      "effectivePropertyTaxRate": 0.00386
+    },
+    "23540": {
+      "medianRentMonthly": 1295,
+      "medianHomePrice": 266200,
+      "medianPropertyTaxPaid": 2339,
+      "effectivePropertyTaxRate": 0.00879
+    },
+    "23580": {
+      "medianRentMonthly": 1341,
+      "medianHomePrice": 350400,
+      "medianPropertyTaxPaid": 2571,
+      "effectivePropertyTaxRate": 0.00734
+    },
+    "23900": {
+      "medianRentMonthly": 1115,
+      "medianHomePrice": 268500,
+      "medianPropertyTaxPaid": 3561,
+      "effectivePropertyTaxRate": 0.01326
+    },
+    "24020": {
+      "medianRentMonthly": 1077,
+      "medianHomePrice": 232500,
+      "medianPropertyTaxPaid": 3941,
+      "effectivePropertyTaxRate": 0.01695
+    },
+    "24140": {
+      "medianRentMonthly": 965,
+      "medianHomePrice": 178700,
+      "medianPropertyTaxPaid": 1249,
+      "effectivePropertyTaxRate": 0.00699
+    },
+    "24220": {
+      "medianRentMonthly": 967,
+      "medianHomePrice": 242500,
+      "medianPropertyTaxPaid": 2690,
+      "effectivePropertyTaxRate": 0.01109
+    },
+    "24260": {
+      "medianRentMonthly": 929,
+      "medianHomePrice": 218400,
+      "medianPropertyTaxPaid": 2909,
+      "effectivePropertyTaxRate": 0.01332
+    },
+    "24300": {
+      "medianRentMonthly": 1182,
+      "medianHomePrice": 378600,
+      "medianPropertyTaxPaid": 1439,
+      "effectivePropertyTaxRate": 0.0038
+    },
+    "24340": {
+      "medianRentMonthly": 1202,
+      "medianHomePrice": 285300,
+      "medianPropertyTaxPaid": 3047,
+      "effectivePropertyTaxRate": 0.01068
+    },
+    "24420": {
+      "medianRentMonthly": 1194,
+      "medianHomePrice": 404300,
+      "medianPropertyTaxPaid": 2086,
+      "effectivePropertyTaxRate": 0.00516
+    },
+    "24500": {
+      "medianRentMonthly": 939,
+      "medianHomePrice": 265300,
+      "medianPropertyTaxPaid": 2320,
+      "effectivePropertyTaxRate": 0.00874
+    },
+    "24540": {
+      "medianRentMonthly": 1539,
+      "medianHomePrice": 471700,
+      "medianPropertyTaxPaid": 2440,
+      "effectivePropertyTaxRate": 0.00517
+    },
+    "24580": {
+      "medianRentMonthly": 1010,
+      "medianHomePrice": 257300,
+      "medianPropertyTaxPaid": 3496,
+      "effectivePropertyTaxRate": 0.01359
+    },
+    "24660": {
+      "medianRentMonthly": 1093,
+      "medianHomePrice": 231000,
+      "medianPropertyTaxPaid": 1777,
+      "effectivePropertyTaxRate": 0.00769
+    },
+    "24780": {
+      "medianRentMonthly": 993,
+      "medianHomePrice": 208900,
+      "medianPropertyTaxPaid": 1734,
+      "effectivePropertyTaxRate": 0.0083
+    },
+    "24860": {
+      "medianRentMonthly": 1150,
+      "medianHomePrice": 264600,
+      "medianPropertyTaxPaid": 1275,
+      "effectivePropertyTaxRate": 0.00482
+    },
+    "25060": {
+      "medianRentMonthly": 1097,
+      "medianHomePrice": 205000,
+      "medianPropertyTaxPaid": 1380,
+      "effectivePropertyTaxRate": 0.00673
+    },
+    "25180": {
+      "medianRentMonthly": 1159,
+      "medianHomePrice": 278100,
+      "medianPropertyTaxPaid": 1808,
+      "effectivePropertyTaxRate": 0.0065
+    },
+    "25220": {
+      "medianRentMonthly": 1003,
+      "medianHomePrice": 212900,
+      "medianPropertyTaxPaid": 882,
+      "effectivePropertyTaxRate": 0.00414
+    },
+    "25260": {
+      "medianRentMonthly": 1331,
+      "medianHomePrice": 324300,
+      "medianPropertyTaxPaid": 2425,
+      "effectivePropertyTaxRate": 0.00748
+    },
+    "25420": {
+      "medianRentMonthly": 1212,
+      "medianHomePrice": 253100,
+      "medianPropertyTaxPaid": 3190,
+      "effectivePropertyTaxRate": 0.0126
+    },
+    "25500": {
+      "medianRentMonthly": 1173,
+      "medianHomePrice": 309300,
+      "medianPropertyTaxPaid": 1777,
+      "effectivePropertyTaxRate": 0.00575
+    },
+    "25540": {
+      "medianRentMonthly": 1416,
+      "medianHomePrice": 333500,
+      "medianPropertyTaxPaid": 6436,
+      "effectivePropertyTaxRate": 0.0193
+    },
+    "25620": {
+      "medianRentMonthly": 1014,
+      "medianHomePrice": 191200,
+      "medianPropertyTaxPaid": 1373,
+      "effectivePropertyTaxRate": 0.00718
+    },
+    "25740": {
+      "medianRentMonthly": 1082,
+      "medianHomePrice": 401200,
+      "medianPropertyTaxPaid": 2936,
+      "effectivePropertyTaxRate": 0.00732
+    },
+    "25860": {
+      "medianRentMonthly": 869,
+      "medianHomePrice": 215600,
+      "medianPropertyTaxPaid": 1304,
+      "effectivePropertyTaxRate": 0.00605
+    },
+    "25940": {
+      "medianRentMonthly": 1573,
+      "medianHomePrice": 439500,
+      "medianPropertyTaxPaid": 2142,
+      "effectivePropertyTaxRate": 0.00487
+    },
+    "25980": {
+      "medianRentMonthly": 1213,
+      "medianHomePrice": 204500,
+      "medianPropertyTaxPaid": 2032,
+      "effectivePropertyTaxRate": 0.00994
+    },
+    "26140": {
+      "medianRentMonthly": 1107,
+      "medianHomePrice": 245500,
+      "medianPropertyTaxPaid": 1430,
+      "effectivePropertyTaxRate": 0.00582
+    },
+    "26300": {
+      "medianRentMonthly": 966,
+      "medianHomePrice": 194300,
+      "medianPropertyTaxPaid": 933,
+      "effectivePropertyTaxRate": 0.0048
+    },
+    "26380": {
+      "medianRentMonthly": 1014,
+      "medianHomePrice": 189700,
+      "medianPropertyTaxPaid": 897,
+      "effectivePropertyTaxRate": 0.00473
+    },
+    "26420": {
+      "medianRentMonthly": 1430,
+      "medianHomePrice": 298000,
+      "medianPropertyTaxPaid": 4810,
+      "effectivePropertyTaxRate": 0.01614
+    },
+    "26580": {
+      "medianRentMonthly": 884,
+      "medianHomePrice": 154700,
+      "medianPropertyTaxPaid": 1030,
+      "effectivePropertyTaxRate": 0.00666
+    },
+    "26620": {
+      "medianRentMonthly": 1183,
+      "medianHomePrice": 295200,
+      "medianPropertyTaxPaid": 1121,
+      "effectivePropertyTaxRate": 0.0038
+    },
+    "26820": {
+      "medianRentMonthly": 1127,
+      "medianHomePrice": 372100,
+      "medianPropertyTaxPaid": 1836,
+      "effectivePropertyTaxRate": 0.00493
+    },
+    "26900": {
+      "medianRentMonthly": 1191,
+      "medianHomePrice": 265900,
+      "medianPropertyTaxPaid": 2168,
+      "effectivePropertyTaxRate": 0.00815
+    },
+    "26980": {
+      "medianRentMonthly": 1097,
+      "medianHomePrice": 293600,
+      "medianPropertyTaxPaid": 4400,
+      "effectivePropertyTaxRate": 0.01499
+    },
+    "27060": {
+      "medianRentMonthly": 1411,
+      "medianHomePrice": 290900,
+      "medianPropertyTaxPaid": 6515,
+      "effectivePropertyTaxRate": 0.0224
+    },
+    "27100": {
+      "medianRentMonthly": 985,
+      "medianHomePrice": 193700,
+      "medianPropertyTaxPaid": 2432,
+      "effectivePropertyTaxRate": 0.01256
+    },
+    "27140": {
+      "medianRentMonthly": 1072,
+      "medianHomePrice": 200500,
+      "medianPropertyTaxPaid": 1426,
+      "effectivePropertyTaxRate": 0.00711
+    },
+    "27180": {
+      "medianRentMonthly": 997,
+      "medianHomePrice": 185300,
+      "medianPropertyTaxPaid": 1073,
+      "effectivePropertyTaxRate": 0.00579
+    },
+    "27260": {
+      "medianRentMonthly": 1513,
+      "medianHomePrice": 343400,
+      "medianPropertyTaxPaid": 2549,
+      "effectivePropertyTaxRate": 0.00742
+    },
+    "27340": {
+      "medianRentMonthly": 1265,
+      "medianHomePrice": 236400,
+      "medianPropertyTaxPaid": 1502,
+      "effectivePropertyTaxRate": 0.00635
+    },
+    "27500": {
+      "medianRentMonthly": 1037,
+      "medianHomePrice": 231600,
+      "medianPropertyTaxPaid": 3703,
+      "effectivePropertyTaxRate": 0.01599
+    },
+    "27620": {
+      "medianRentMonthly": 827,
+      "medianHomePrice": 217500,
+      "medianPropertyTaxPaid": 1597,
+      "effectivePropertyTaxRate": 0.00734
+    },
+    "27740": {
+      "medianRentMonthly": 939,
+      "medianHomePrice": 219200,
+      "medianPropertyTaxPaid": 1124,
+      "effectivePropertyTaxRate": 0.00513
+    },
+    "27780": {
+      "medianRentMonthly": 739,
+      "medianHomePrice": 121000,
+      "medianPropertyTaxPaid": 1492,
+      "effectivePropertyTaxRate": 0.01233
+    },
+    "27860": {
+      "medianRentMonthly": 929,
+      "medianHomePrice": 192200,
+      "medianPropertyTaxPaid": 1008,
+      "effectivePropertyTaxRate": 0.00524
+    },
+    "27900": {
+      "medianRentMonthly": 928,
+      "medianHomePrice": 165500,
+      "medianPropertyTaxPaid": 1202,
+      "effectivePropertyTaxRate": 0.00726
+    },
+    "27980": {
+      "medianRentMonthly": 1914,
+      "medianHomePrice": 904700,
+      "medianPropertyTaxPaid": 1466,
+      "effectivePropertyTaxRate": 0.00162
+    },
+    "28020": {
+      "medianRentMonthly": 1093,
+      "medianHomePrice": 241800,
+      "medianPropertyTaxPaid": 3498,
+      "effectivePropertyTaxRate": 0.01447
+    },
+    "28100": {
+      "medianRentMonthly": 1097,
+      "medianHomePrice": 192600,
+      "medianPropertyTaxPaid": 4266,
+      "effectivePropertyTaxRate": 0.02215
+    },
+    "28140": {
+      "medianRentMonthly": 1249,
+      "medianHomePrice": 287300,
+      "medianPropertyTaxPaid": 3126,
+      "effectivePropertyTaxRate": 0.01088
+    },
+    "28420": {
+      "medianRentMonthly": 1284,
+      "medianHomePrice": 397900,
+      "medianPropertyTaxPaid": 3013,
+      "effectivePropertyTaxRate": 0.00757
+    },
+    "28450": {
+      "medianRentMonthly": 1219,
+      "medianHomePrice": 265500,
+      "medianPropertyTaxPaid": 4179,
+      "effectivePropertyTaxRate": 0.01574
+    },
+    "28660": {
+      "medianRentMonthly": 1217,
+      "medianHomePrice": 234500,
+      "medianPropertyTaxPaid": 3294,
+      "effectivePropertyTaxRate": 0.01405
+    },
+    "28700": {
+      "medianRentMonthly": 849,
+      "medianHomePrice": 198400,
+      "medianPropertyTaxPaid": 1136,
+      "effectivePropertyTaxRate": 0.00573
+    },
+    "28740": {
+      "medianRentMonthly": 1425,
+      "medianHomePrice": 352500,
+      "medianPropertyTaxPaid": 6238,
+      "effectivePropertyTaxRate": 0.0177
+    },
+    "28880": {
+      "medianRentMonthly": 1638,
+      "medianHomePrice": 393600,
+      "medianPropertyTaxPaid": 8042,
+      "effectivePropertyTaxRate": 0.02043
+    },
+    "28940": {
+      "medianRentMonthly": 1145,
+      "medianHomePrice": 290200,
+      "medianPropertyTaxPaid": 1287,
+      "effectivePropertyTaxRate": 0.00443
+    },
+    "29020": {
+      "medianRentMonthly": 937,
+      "medianHomePrice": 165000,
+      "medianPropertyTaxPaid": 1189,
+      "effectivePropertyTaxRate": 0.00721
+    },
+    "29100": {
+      "medianRentMonthly": 1027,
+      "medianHomePrice": 247400,
+      "medianPropertyTaxPaid": 3626,
+      "effectivePropertyTaxRate": 0.01466
+    },
+    "29180": {
+      "medianRentMonthly": 977,
+      "medianHomePrice": 214400,
+      "medianPropertyTaxPaid": 1081,
+      "effectivePropertyTaxRate": 0.00504
+    },
+    "29200": {
+      "medianRentMonthly": 1107,
+      "medianHomePrice": 226100,
+      "medianPropertyTaxPaid": 1375,
+      "effectivePropertyTaxRate": 0.00608
+    },
+    "29340": {
+      "medianRentMonthly": 1081,
+      "medianHomePrice": 207800,
+      "medianPropertyTaxPaid": 888,
+      "effectivePropertyTaxRate": 0.00427
+    },
+    "29420": {
+      "medianRentMonthly": 1091,
+      "medianHomePrice": 281000,
+      "medianPropertyTaxPaid": 1238,
+      "effectivePropertyTaxRate": 0.00441
+    },
+    "29460": {
+      "medianRentMonthly": 1363,
+      "medianHomePrice": 266500,
+      "medianPropertyTaxPaid": 1933,
+      "effectivePropertyTaxRate": 0.00725
+    },
+    "29540": {
+      "medianRentMonthly": 1357,
+      "medianHomePrice": 301100,
+      "medianPropertyTaxPaid": 3975,
+      "effectivePropertyTaxRate": 0.0132
+    },
+    "29620": {
+      "medianRentMonthly": 1086,
+      "medianHomePrice": 216700,
+      "medianPropertyTaxPaid": 3380,
+      "effectivePropertyTaxRate": 0.0156
+    },
+    "29700": {
+      "medianRentMonthly": 1027,
+      "medianHomePrice": 189900,
+      "medianPropertyTaxPaid": 3421,
+      "effectivePropertyTaxRate": 0.01801
+    },
+    "29740": {
+      "medianRentMonthly": 934,
+      "medianHomePrice": 220800,
+      "medianPropertyTaxPaid": 1480,
+      "effectivePropertyTaxRate": 0.0067
+    },
+    "29820": {
+      "medianRentMonthly": 1626,
+      "medianHomePrice": 431000,
+      "medianPropertyTaxPaid": 2057,
+      "effectivePropertyTaxRate": 0.00477
+    },
+    "29940": {
+      "medianRentMonthly": 1099,
+      "medianHomePrice": 309400,
+      "medianPropertyTaxPaid": 3776,
+      "effectivePropertyTaxRate": 0.0122
+    },
+    "30020": {
+      "medianRentMonthly": 965,
+      "medianHomePrice": 161000,
+      "medianPropertyTaxPaid": 1411,
+      "effectivePropertyTaxRate": 0.00876
+    },
+    "30140": {
+      "medianRentMonthly": 1110,
+      "medianHomePrice": 242000,
+      "medianPropertyTaxPaid": 3310,
+      "effectivePropertyTaxRate": 0.01368
+    },
+    "30300": {
+      "medianRentMonthly": 1024,
+      "medianHomePrice": 331900,
+      "medianPropertyTaxPaid": 2512,
+      "effectivePropertyTaxRate": 0.00757
+    },
+    "30340": {
+      "medianRentMonthly": 1010,
+      "medianHomePrice": 252800,
+      "medianPropertyTaxPaid": 2940,
+      "effectivePropertyTaxRate": 0.01163
+    },
+    "30460": {
+      "medianRentMonthly": 1138,
+      "medianHomePrice": 281300,
+      "medianPropertyTaxPaid": 2233,
+      "effectivePropertyTaxRate": 0.00794
+    },
+    "30500": {
+      "medianRentMonthly": 1750,
+      "medianHomePrice": 434100,
+      "medianPropertyTaxPaid": 3632,
+      "effectivePropertyTaxRate": 0.00837
+    },
+    "30620": {
+      "medianRentMonthly": 922,
+      "medianHomePrice": 165300,
+      "medianPropertyTaxPaid": 1847,
+      "effectivePropertyTaxRate": 0.01117
+    },
+    "30700": {
+      "medianRentMonthly": 1082,
+      "medianHomePrice": 273500,
+      "medianPropertyTaxPaid": 4128,
+      "effectivePropertyTaxRate": 0.01509
+    },
+    "30780": {
+      "medianRentMonthly": 1055,
+      "medianHomePrice": 214100,
+      "medianPropertyTaxPaid": 1401,
+      "effectivePropertyTaxRate": 0.00654
+    },
+    "30860": {
+      "medianRentMonthly": 1201,
+      "medianHomePrice": 436800,
+      "medianPropertyTaxPaid": 1948,
+      "effectivePropertyTaxRate": 0.00446
+    },
+    "30980": {
+      "medianRentMonthly": 1060,
+      "medianHomePrice": 184400,
+      "medianPropertyTaxPaid": 2015,
+      "effectivePropertyTaxRate": 0.01093
+    },
+    "31020": {
+      "medianRentMonthly": 1206,
+      "medianHomePrice": 397500,
+      "medianPropertyTaxPaid": 3245,
+      "effectivePropertyTaxRate": 0.00816
+    },
+    "31080": {
+      "medianRentMonthly": 2063,
+      "medianHomePrice": 871300,
+      "medianPropertyTaxPaid": 5854,
+      "effectivePropertyTaxRate": 0.00672
+    },
+    "31140": {
+      "medianRentMonthly": 1116,
+      "medianHomePrice": 248700,
+      "medianPropertyTaxPaid": 1991,
+      "effectivePropertyTaxRate": 0.00801
+    },
+    "31180": {
+      "medianRentMonthly": 1159,
+      "medianHomePrice": 202700,
+      "medianPropertyTaxPaid": 3000,
+      "effectivePropertyTaxRate": 0.0148
+    },
+    "31340": {
+      "medianRentMonthly": 991,
+      "medianHomePrice": 239700,
+      "medianPropertyTaxPaid": 1216,
+      "effectivePropertyTaxRate": 0.00507
+    },
+    "31420": {
+      "medianRentMonthly": 1044,
+      "medianHomePrice": 188300,
+      "medianPropertyTaxPaid": 1746,
+      "effectivePropertyTaxRate": 0.00927
+    },
+    "31540": {
+      "medianRentMonthly": 1354,
+      "medianHomePrice": 372400,
+      "medianPropertyTaxPaid": 5932,
+      "effectivePropertyTaxRate": 0.01593
+    },
+    "31700": {
+      "medianRentMonthly": 1623,
+      "medianHomePrice": 421100,
+      "medianPropertyTaxPaid": 6999,
+      "effectivePropertyTaxRate": 0.01662
+    },
+    "31740": {
+      "medianRentMonthly": 1063,
+      "medianHomePrice": 223700,
+      "medianPropertyTaxPaid": 2999,
+      "effectivePropertyTaxRate": 0.01341
+    },
+    "31860": {
+      "medianRentMonthly": 1069,
+      "medianHomePrice": 268100,
+      "medianPropertyTaxPaid": 2745,
+      "effectivePropertyTaxRate": 0.01024
+    },
+    "31900": {
+      "medianRentMonthly": 824,
+      "medianHomePrice": 164800,
+      "medianPropertyTaxPaid": 2061,
+      "effectivePropertyTaxRate": 0.01251
+    },
+    "32580": {
+      "medianRentMonthly": 957,
+      "medianHomePrice": 140900,
+      "medianPropertyTaxPaid": 2279,
+      "effectivePropertyTaxRate": 0.01617
+    },
+    "32780": {
+      "medianRentMonthly": 1358,
+      "medianHomePrice": 430200,
+      "medianPropertyTaxPaid": 3174,
+      "effectivePropertyTaxRate": 0.00738
+    },
+    "32820": {
+      "medianRentMonthly": 1220,
+      "medianHomePrice": 245900,
+      "medianPropertyTaxPaid": 1877,
+      "effectivePropertyTaxRate": 0.00763
+    },
+    "32900": {
+      "medianRentMonthly": 1343,
+      "medianHomePrice": 391800,
+      "medianPropertyTaxPaid": 2634,
+      "effectivePropertyTaxRate": 0.00672
+    },
+    "33100": {
+      "medianRentMonthly": 1869,
+      "medianHomePrice": 443300,
+      "medianPropertyTaxPaid": 3823,
+      "effectivePropertyTaxRate": 0.00862
+    },
+    "33140": {
+      "medianRentMonthly": 976,
+      "medianHomePrice": 195500,
+      "medianPropertyTaxPaid": 1503,
+      "effectivePropertyTaxRate": 0.00769
+    },
+    "33220": {
+      "medianRentMonthly": 1016,
+      "medianHomePrice": 195400,
+      "medianPropertyTaxPaid": 2875,
+      "effectivePropertyTaxRate": 0.01471
+    },
+    "33260": {
+      "medianRentMonthly": 1400,
+      "medianHomePrice": 309400,
+      "medianPropertyTaxPaid": 3761,
+      "effectivePropertyTaxRate": 0.01216
+    },
+    "33340": {
+      "medianRentMonthly": 1139,
+      "medianHomePrice": 306400,
+      "medianPropertyTaxPaid": 4420,
+      "effectivePropertyTaxRate": 0.01443
+    },
+    "33460": {
+      "medianRentMonthly": 1440,
+      "medianHomePrice": 374000,
+      "medianPropertyTaxPaid": 3974,
+      "effectivePropertyTaxRate": 0.01063
+    },
+    "33500": {
+      "medianRentMonthly": 1039,
+      "medianHomePrice": 254000,
+      "medianPropertyTaxPaid": 2622,
+      "effectivePropertyTaxRate": 0.01032
+    },
+    "33540": {
+      "medianRentMonthly": 1184,
+      "medianHomePrice": 466400,
+      "medianPropertyTaxPaid": 4025,
+      "effectivePropertyTaxRate": 0.00863
+    },
+    "33660": {
+      "medianRentMonthly": 1052,
+      "medianHomePrice": 190700,
+      "medianPropertyTaxPaid": 888,
+      "effectivePropertyTaxRate": 0.00466
+    },
+    "33700": {
+      "medianRentMonthly": 1623,
+      "medianHomePrice": 450100,
+      "medianPropertyTaxPaid": 3216,
+      "effectivePropertyTaxRate": 0.00715
+    },
+    "33740": {
+      "medianRentMonthly": 931,
+      "medianHomePrice": 170300,
+      "medianPropertyTaxPaid": 812,
+      "effectivePropertyTaxRate": 0.00477
+    },
+    "33780": {
+      "medianRentMonthly": 1059,
+      "medianHomePrice": 228900,
+      "medianPropertyTaxPaid": 2648,
+      "effectivePropertyTaxRate": 0.01157
+    },
+    "33860": {
+      "medianRentMonthly": 1095,
+      "medianHomePrice": 191900,
+      "medianPropertyTaxPaid": 647,
+      "effectivePropertyTaxRate": 0.00337
+    },
+    "34060": {
+      "medianRentMonthly": 967,
+      "medianHomePrice": 233000,
+      "medianPropertyTaxPaid": 1106,
+      "effectivePropertyTaxRate": 0.00475
+    },
+    "34100": {
+      "medianRentMonthly": 873,
+      "medianHomePrice": 218100,
+      "medianPropertyTaxPaid": 916,
+      "effectivePropertyTaxRate": 0.0042
+    },
+    "34580": {
+      "medianRentMonthly": 1536,
+      "medianHomePrice": 545100,
+      "medianPropertyTaxPaid": 4308,
+      "effectivePropertyTaxRate": 0.0079
+    },
+    "34620": {
+      "medianRentMonthly": 906,
+      "medianHomePrice": 139400,
+      "medianPropertyTaxPaid": 1039,
+      "effectivePropertyTaxRate": 0.00745
+    },
+    "34740": {
+      "medianRentMonthly": 1028,
+      "medianHomePrice": 198300,
+      "medianPropertyTaxPaid": 2348,
+      "effectivePropertyTaxRate": 0.01184
+    },
+    "34820": {
+      "medianRentMonthly": 1255,
+      "medianHomePrice": 287700,
+      "medianPropertyTaxPaid": 944,
+      "effectivePropertyTaxRate": 0.00328
+    },
+    "34900": {
+      "medianRentMonthly": 2237,
+      "medianHomePrice": 869500,
+      "medianPropertyTaxPaid": 5995,
+      "effectivePropertyTaxRate": 0.00689
+    },
+    "34940": {
+      "medianRentMonthly": 1862,
+      "medianHomePrice": 540700,
+      "medianPropertyTaxPaid": 3386,
+      "effectivePropertyTaxRate": 0.00626
+    },
+    "34980": {
+      "medianRentMonthly": 1528,
+      "medianHomePrice": 409600,
+      "medianPropertyTaxPaid": 2060,
+      "effectivePropertyTaxRate": 0.00503
+    },
+    "35300": {
+      "medianRentMonthly": 1525,
+      "medianHomePrice": 353100,
+      "medianPropertyTaxPaid": 6759,
+      "effectivePropertyTaxRate": 0.01914
+    },
+    "35380": {
+      "medianRentMonthly": 1217,
+      "medianHomePrice": 260200,
+      "medianPropertyTaxPaid": 1565,
+      "effectivePropertyTaxRate": 0.00601
+    },
+    "35620": {
+      "medianRentMonthly": 1830,
+      "medianHomePrice": 614200,
+      "medianPropertyTaxPaid": 10001,
+      "effectivePropertyTaxRate": 0.01628
+    },
+    "35660": {
+      "medianRentMonthly": 942,
+      "medianHomePrice": 224300,
+      "medianPropertyTaxPaid": 2429,
+      "effectivePropertyTaxRate": 0.01083
+    },
+    "35840": {
+      "medianRentMonthly": 1747,
+      "medianHomePrice": 402200,
+      "medianPropertyTaxPaid": 3083,
+      "effectivePropertyTaxRate": 0.00767
+    },
+    "35980": {
+      "medianRentMonthly": 1365,
+      "medianHomePrice": 323400,
+      "medianPropertyTaxPaid": 5228,
+      "effectivePropertyTaxRate": 0.01617
+    },
+    "36100": {
+      "medianRentMonthly": 1277,
+      "medianHomePrice": 243100,
+      "medianPropertyTaxPaid": 1806,
+      "effectivePropertyTaxRate": 0.00743
+    },
+    "36220": {
+      "medianRentMonthly": 1259,
+      "medianHomePrice": 200200,
+      "medianPropertyTaxPaid": 2538,
+      "effectivePropertyTaxRate": 0.01268
+    },
+    "36260": {
+      "medianRentMonthly": 1500,
+      "medianHomePrice": 471500,
+      "medianPropertyTaxPaid": 2629,
+      "effectivePropertyTaxRate": 0.00558
+    },
+    "36420": {
+      "medianRentMonthly": 1124,
+      "medianHomePrice": 230000,
+      "medianPropertyTaxPaid": 2157,
+      "effectivePropertyTaxRate": 0.00938
+    },
+    "36500": {
+      "medianRentMonthly": 1736,
+      "medianHomePrice": 480300,
+      "medianPropertyTaxPaid": 4209,
+      "effectivePropertyTaxRate": 0.00876
+    },
+    "36540": {
+      "medianRentMonthly": 1192,
+      "medianHomePrice": 268600,
+      "medianPropertyTaxPaid": 4395,
+      "effectivePropertyTaxRate": 0.01636
+    },
+    "36740": {
+      "medianRentMonthly": 1760,
+      "medianHomePrice": 369800,
+      "medianPropertyTaxPaid": 2749,
+      "effectivePropertyTaxRate": 0.00743
+    },
+    "36780": {
+      "medianRentMonthly": 965,
+      "medianHomePrice": 225800,
+      "medianPropertyTaxPaid": 3679,
+      "effectivePropertyTaxRate": 0.01629
+    },
+    "36980": {
+      "medianRentMonthly": 907,
+      "medianHomePrice": 195400,
+      "medianPropertyTaxPaid": 1600,
+      "effectivePropertyTaxRate": 0.00819
+    },
+    "37100": {
+      "medianRentMonthly": 2317,
+      "medianHomePrice": 822700,
+      "medianPropertyTaxPaid": 5574,
+      "effectivePropertyTaxRate": 0.00678
+    },
+    "37140": {
+      "medianRentMonthly": 874,
+      "medianHomePrice": 168700,
+      "medianPropertyTaxPaid": 1316,
+      "effectivePropertyTaxRate": 0.0078
+    },
+    "37340": {
+      "medianRentMonthly": 1556,
+      "medianHomePrice": 339600,
+      "medianPropertyTaxPaid": 2311,
+      "effectivePropertyTaxRate": 0.00681
+    },
+    "37460": {
+      "medianRentMonthly": 1456,
+      "medianHomePrice": 294300,
+      "medianPropertyTaxPaid": 1660,
+      "effectivePropertyTaxRate": 0.00564
+    },
+    "37620": {
+      "medianRentMonthly": 818,
+      "medianHomePrice": 156300,
+      "medianPropertyTaxPaid": 923,
+      "effectivePropertyTaxRate": 0.00591
+    },
+    "37860": {
+      "medianRentMonthly": 1354,
+      "medianHomePrice": 286000,
+      "medianPropertyTaxPaid": 1674,
+      "effectivePropertyTaxRate": 0.00585
+    },
+    "37900": {
+      "medianRentMonthly": 955,
+      "medianHomePrice": 164200,
+      "medianPropertyTaxPaid": 3543,
+      "effectivePropertyTaxRate": 0.02158
+    },
+    "37980": {
+      "medianRentMonthly": 1480,
+      "medianHomePrice": 351900,
+      "medianPropertyTaxPaid": 5066,
+      "effectivePropertyTaxRate": 0.0144
+    },
+    "38060": {
+      "medianRentMonthly": 1702,
+      "medianHomePrice": 440900,
+      "medianPropertyTaxPaid": 1947,
+      "effectivePropertyTaxRate": 0.00442
+    },
+    "38240": {
+      "medianRentMonthly": 1254,
+      "medianHomePrice": 351400,
+      "medianPropertyTaxPaid": 1849,
+      "effectivePropertyTaxRate": 0.00526
+    },
+    "38300": {
+      "medianRentMonthly": 1053,
+      "medianHomePrice": 215000,
+      "medianPropertyTaxPaid": 2827,
+      "effectivePropertyTaxRate": 0.01315
+    },
+    "38340": {
+      "medianRentMonthly": 1097,
+      "medianHomePrice": 305400,
+      "medianPropertyTaxPaid": 4036,
+      "effectivePropertyTaxRate": 0.01322
+    },
+    "38540": {
+      "medianRentMonthly": 960,
+      "medianHomePrice": 300700,
+      "medianPropertyTaxPaid": 1920,
+      "effectivePropertyTaxRate": 0.00639
+    },
+    "38860": {
+      "medianRentMonthly": 1485,
+      "medianHomePrice": 420000,
+      "medianPropertyTaxPaid": 4215,
+      "effectivePropertyTaxRate": 0.01004
+    },
+    "38900": {
+      "medianRentMonthly": 1724,
+      "medianHomePrice": 559400,
+      "medianPropertyTaxPaid": 4765,
+      "effectivePropertyTaxRate": 0.00852
+    },
+    "38940": {
+      "medianRentMonthly": 1580,
+      "medianHomePrice": 364900,
+      "medianPropertyTaxPaid": 3267,
+      "effectivePropertyTaxRate": 0.00895
+    },
+    "39150": {
+      "medianRentMonthly": 1351,
+      "medianHomePrice": 425200,
+      "medianPropertyTaxPaid": 1750,
+      "effectivePropertyTaxRate": 0.00412
+    },
+    "39300": {
+      "medianRentMonthly": 1307,
+      "medianHomePrice": 422500,
+      "medianPropertyTaxPaid": 4867,
+      "effectivePropertyTaxRate": 0.01152
+    },
+    "39340": {
+      "medianRentMonthly": 1534,
+      "medianHomePrice": 535500,
+      "medianPropertyTaxPaid": 2361,
+      "effectivePropertyTaxRate": 0.00441
+    },
+    "39380": {
+      "medianRentMonthly": 1111,
+      "medianHomePrice": 291300,
+      "medianPropertyTaxPaid": 1467,
+      "effectivePropertyTaxRate": 0.00504
+    },
+    "39460": {
+      "medianRentMonthly": 1464,
+      "medianHomePrice": 328900,
+      "medianPropertyTaxPaid": 2785,
+      "effectivePropertyTaxRate": 0.00847
+    },
+    "39540": {
+      "medianRentMonthly": 1080,
+      "medianHomePrice": 251400,
+      "medianPropertyTaxPaid": 4099,
+      "effectivePropertyTaxRate": 0.0163
+    },
+    "39580": {
+      "medianRentMonthly": 1573,
+      "medianHomePrice": 418400,
+      "medianPropertyTaxPaid": 2878,
+      "effectivePropertyTaxRate": 0.00688
+    },
+    "39660": {
+      "medianRentMonthly": 1140,
+      "medianHomePrice": 307700,
+      "medianPropertyTaxPaid": 3211,
+      "effectivePropertyTaxRate": 0.01044
+    },
+    "39740": {
+      "medianRentMonthly": 1181,
+      "medianHomePrice": 257300,
+      "medianPropertyTaxPaid": 4239,
+      "effectivePropertyTaxRate": 0.01647
+    },
+    "39820": {
+      "medianRentMonthly": 1317,
+      "medianHomePrice": 366400,
+      "medianPropertyTaxPaid": 2542,
+      "effectivePropertyTaxRate": 0.00694
+    },
+    "39900": {
+      "medianRentMonthly": 1592,
+      "medianHomePrice": 502300,
+      "medianPropertyTaxPaid": 2246,
+      "effectivePropertyTaxRate": 0.00447
+    },
+    "40060": {
+      "medianRentMonthly": 1447,
+      "medianHomePrice": 353500,
+      "medianPropertyTaxPaid": 2532,
+      "effectivePropertyTaxRate": 0.00716
+    },
+    "40140": {
+      "medianRentMonthly": 1846,
+      "medianHomePrice": 536300,
+      "medianPropertyTaxPaid": 3945,
+      "effectivePropertyTaxRate": 0.00736
+    },
+    "40220": {
+      "medianRentMonthly": 1043,
+      "medianHomePrice": 251400,
+      "medianPropertyTaxPaid": 1940,
+      "effectivePropertyTaxRate": 0.00772
+    },
+    "40340": {
+      "medianRentMonthly": 1276,
+      "medianHomePrice": 306500,
+      "medianPropertyTaxPaid": 3209,
+      "effectivePropertyTaxRate": 0.01047
+    },
+    "40380": {
+      "medianRentMonthly": 1143,
+      "medianHomePrice": 204600,
+      "medianPropertyTaxPaid": 5146,
+      "effectivePropertyTaxRate": 0.02515
+    },
+    "40420": {
+      "medianRentMonthly": 1023,
+      "medianHomePrice": 171300,
+      "medianPropertyTaxPaid": 4045,
+      "effectivePropertyTaxRate": 0.02361
+    },
+    "40580": {
+      "medianRentMonthly": 920,
+      "medianHomePrice": 167800,
+      "medianPropertyTaxPaid": 1341,
+      "effectivePropertyTaxRate": 0.00799
+    },
+    "40660": {
+      "medianRentMonthly": 1014,
+      "medianHomePrice": 217900,
+      "medianPropertyTaxPaid": 1847,
+      "effectivePropertyTaxRate": 0.00848
+    },
+    "40900": {
+      "medianRentMonthly": 1819,
+      "medianHomePrice": 589500,
+      "medianPropertyTaxPaid": 4432,
+      "effectivePropertyTaxRate": 0.00752
+    },
+    "40980": {
+      "medianRentMonthly": 947,
+      "medianHomePrice": 152800,
+      "medianPropertyTaxPaid": 2284,
+      "effectivePropertyTaxRate": 0.01495
+    },
+    "41060": {
+      "medianRentMonthly": 1042,
+      "medianHomePrice": 272800,
+      "medianPropertyTaxPaid": 2722,
+      "effectivePropertyTaxRate": 0.00998
+    },
+    "41100": {
+      "medianRentMonthly": 1566,
+      "medianHomePrice": 510700,
+      "medianPropertyTaxPaid": 2158,
+      "effectivePropertyTaxRate": 0.00423
+    },
+    "41140": {
+      "medianRentMonthly": 895,
+      "medianHomePrice": 171300,
+      "medianPropertyTaxPaid": 1335,
+      "effectivePropertyTaxRate": 0.00779
+    },
+    "41180": {
+      "medianRentMonthly": 1113,
+      "medianHomePrice": 244800,
+      "medianPropertyTaxPaid": 2939,
+      "effectivePropertyTaxRate": 0.01201
+    },
+    "41420": {
+      "medianRentMonthly": 1399,
+      "medianHomePrice": 424100,
+      "medianPropertyTaxPaid": 3519,
+      "effectivePropertyTaxRate": 0.0083
+    },
+    "41500": {
+      "medianRentMonthly": 2055,
+      "medianHomePrice": 781000,
+      "medianPropertyTaxPaid": 4910,
+      "effectivePropertyTaxRate": 0.00629
+    },
+    "41540": {
+      "medianRentMonthly": 1274,
+      "medianHomePrice": 241200,
+      "medianPropertyTaxPaid": 2013,
+      "effectivePropertyTaxRate": 0.00835
+    },
+    "41620": {
+      "medianRentMonthly": 1583,
+      "medianHomePrice": 515400,
+      "medianPropertyTaxPaid": 2813,
+      "effectivePropertyTaxRate": 0.00546
+    },
+    "41660": {
+      "medianRentMonthly": 1155,
+      "medianHomePrice": 197100,
+      "medianPropertyTaxPaid": 2515,
+      "effectivePropertyTaxRate": 0.01276
+    },
+    "41700": {
+      "medianRentMonthly": 1363,
+      "medianHomePrice": 278800,
+      "medianPropertyTaxPaid": 4432,
+      "effectivePropertyTaxRate": 0.0159
+    },
+    "41740": {
+      "medianRentMonthly": 2246,
+      "medianHomePrice": 854700,
+      "medianPropertyTaxPaid": 5774,
+      "effectivePropertyTaxRate": 0.00676
+    },
+    "41780": {
+      "medianRentMonthly": 932,
+      "medianHomePrice": 207500,
+      "medianPropertyTaxPaid": 2411,
+      "effectivePropertyTaxRate": 0.01162
+    },
+    "41860": {
+      "medianRentMonthly": 2474,
+      "medianHomePrice": 1140700,
+      "medianPropertyTaxPaid": 8522,
+      "effectivePropertyTaxRate": 0.00747
+    },
+    "41940": {
+      "medianRentMonthly": 2840,
+      "medianHomePrice": 1447800,
+      "medianPropertyTaxPaid": 9901,
+      "effectivePropertyTaxRate": 0.00684
+    },
+    "42020": {
+      "medianRentMonthly": 1992,
+      "medianHomePrice": 824700,
+      "medianPropertyTaxPaid": 5636,
+      "effectivePropertyTaxRate": 0.00683
+    },
+    "42100": {
+      "medianRentMonthly": 2264,
+      "medianHomePrice": 1027500,
+      "medianPropertyTaxPaid": 6538,
+      "effectivePropertyTaxRate": 0.00636
+    },
+    "42140": {
+      "medianRentMonthly": 1389,
+      "medianHomePrice": 446300,
+      "medianPropertyTaxPaid": 2152,
+      "effectivePropertyTaxRate": 0.00482
+    },
+    "42200": {
+      "medianRentMonthly": 2131,
+      "medianHomePrice": 790700,
+      "medianPropertyTaxPaid": 5103,
+      "effectivePropertyTaxRate": 0.00645
+    },
+    "42220": {
+      "medianRentMonthly": 2158,
+      "medianHomePrice": 815500,
+      "medianPropertyTaxPaid": 5695,
+      "effectivePropertyTaxRate": 0.00698
+    },
+    "42340": {
+      "medianRentMonthly": 1454,
+      "medianHomePrice": 302000,
+      "medianPropertyTaxPaid": 2549,
+      "effectivePropertyTaxRate": 0.00844
+    },
+    "42540": {
+      "medianRentMonthly": 1003,
+      "medianHomePrice": 187200,
+      "medianPropertyTaxPaid": 2711,
+      "effectivePropertyTaxRate": 0.01448
+    },
+    "42660": {
+      "medianRentMonthly": 2000,
+      "medianHomePrice": 717500,
+      "medianPropertyTaxPaid": 6092,
+      "effectivePropertyTaxRate": 0.00849
+    },
+    "42680": {
+      "medianRentMonthly": 1357,
+      "medianHomePrice": 351500,
+      "medianPropertyTaxPaid": 2436,
+      "effectivePropertyTaxRate": 0.00693
+    },
+    "42700": {
+      "medianRentMonthly": 1035,
+      "medianHomePrice": 187900,
+      "medianPropertyTaxPaid": 1353,
+      "effectivePropertyTaxRate": 0.0072
+    },
+    "43100": {
+      "medianRentMonthly": 934,
+      "medianHomePrice": 232700,
+      "medianPropertyTaxPaid": 3236,
+      "effectivePropertyTaxRate": 0.01391
+    },
+    "43300": {
+      "medianRentMonthly": 1310,
+      "medianHomePrice": 248400,
+      "medianPropertyTaxPaid": 3146,
+      "effectivePropertyTaxRate": 0.01267
+    },
+    "43340": {
+      "medianRentMonthly": 1014,
+      "medianHomePrice": 191600,
+      "medianPropertyTaxPaid": 1201,
+      "effectivePropertyTaxRate": 0.00627
+    },
+    "43420": {
+      "medianRentMonthly": 995,
+      "medianHomePrice": 218300,
+      "medianPropertyTaxPaid": 1310,
+      "effectivePropertyTaxRate": 0.006
+    },
+    "43580": {
+      "medianRentMonthly": 1002,
+      "medianHomePrice": 193100,
+      "medianPropertyTaxPaid": 2744,
+      "effectivePropertyTaxRate": 0.01421
+    },
+    "43620": {
+      "medianRentMonthly": 1022,
+      "medianHomePrice": 295900,
+      "medianPropertyTaxPaid": 3312,
+      "effectivePropertyTaxRate": 0.01119
+    },
+    "43640": {
+      "medianRentMonthly": 1332,
+      "medianHomePrice": 284000,
+      "medianPropertyTaxPaid": 2028,
+      "effectivePropertyTaxRate": 0.00714
+    },
+    "43780": {
+      "medianRentMonthly": 1046,
+      "medianHomePrice": 196600,
+      "medianPropertyTaxPaid": 1739,
+      "effectivePropertyTaxRate": 0.00885
+    },
+    "43900": {
+      "medianRentMonthly": 1057,
+      "medianHomePrice": 225000,
+      "medianPropertyTaxPaid": 1224,
+      "effectivePropertyTaxRate": 0.00544
+    },
+    "44060": {
+      "medianRentMonthly": 1264,
+      "medianHomePrice": 405300,
+      "medianPropertyTaxPaid": 3309,
+      "effectivePropertyTaxRate": 0.00816
+    },
+    "44100": {
+      "medianRentMonthly": 979,
+      "medianHomePrice": 177300,
+      "medianPropertyTaxPaid": 3484,
+      "effectivePropertyTaxRate": 0.01965
+    },
+    "44140": {
+      "medianRentMonthly": 1136,
+      "medianHomePrice": 298800,
+      "medianPropertyTaxPaid": 4455,
+      "effectivePropertyTaxRate": 0.01491
+    },
+    "44180": {
+      "medianRentMonthly": 972,
+      "medianHomePrice": 230700,
+      "medianPropertyTaxPaid": 1538,
+      "effectivePropertyTaxRate": 0.00667
+    },
+    "44220": {
+      "medianRentMonthly": 872,
+      "medianHomePrice": 169900,
+      "medianPropertyTaxPaid": 2019,
+      "effectivePropertyTaxRate": 0.01188
+    },
+    "44300": {
+      "medianRentMonthly": 1207,
+      "medianHomePrice": 323500,
+      "medianPropertyTaxPaid": 3386,
+      "effectivePropertyTaxRate": 0.01047
+    },
+    "44420": {
+      "medianRentMonthly": 1068,
+      "medianHomePrice": 284500,
+      "medianPropertyTaxPaid": 1544,
+      "effectivePropertyTaxRate": 0.00543
+    },
+    "44700": {
+      "medianRentMonthly": 1734,
+      "medianHomePrice": 530700,
+      "medianPropertyTaxPaid": 3960,
+      "effectivePropertyTaxRate": 0.00746
+    },
+    "44940": {
+      "medianRentMonthly": 1057,
+      "medianHomePrice": 165300,
+      "medianPropertyTaxPaid": 881,
+      "effectivePropertyTaxRate": 0.00533
+    },
+    "45060": {
+      "medianRentMonthly": 1077,
+      "medianHomePrice": 187700,
+      "medianPropertyTaxPaid": 4565,
+      "effectivePropertyTaxRate": 0.02432
+    },
+    "45220": {
+      "medianRentMonthly": 1252,
+      "medianHomePrice": 276000,
+      "medianPropertyTaxPaid": 2038,
+      "effectivePropertyTaxRate": 0.00738
+    },
+    "45300": {
+      "medianRentMonthly": 1628,
+      "medianHomePrice": 345100,
+      "medianPropertyTaxPaid": 2569,
+      "effectivePropertyTaxRate": 0.00744
+    },
+    "45460": {
+      "medianRentMonthly": 892,
+      "medianHomePrice": 143500,
+      "medianPropertyTaxPaid": 1040,
+      "effectivePropertyTaxRate": 0.00725
+    },
+    "45500": {
+      "medianRentMonthly": 950,
+      "medianHomePrice": 160600,
+      "medianPropertyTaxPaid": 1422,
+      "effectivePropertyTaxRate": 0.00885
+    },
+    "45780": {
+      "medianRentMonthly": 939,
+      "medianHomePrice": 176300,
+      "medianPropertyTaxPaid": 2794,
+      "effectivePropertyTaxRate": 0.01585
+    },
+    "45820": {
+      "medianRentMonthly": 971,
+      "medianHomePrice": 183200,
+      "medianPropertyTaxPaid": 2638,
+      "effectivePropertyTaxRate": 0.0144
+    },
+    "45900": {
+      "medianRentMonthly": 1225,
+      "medianHomePrice": 324300,
+      "medianPropertyTaxPaid": 2740,
+      "effectivePropertyTaxRate": 0.00845
+    },
+    "45940": {
+      "medianRentMonthly": 1623,
+      "medianHomePrice": 377700,
+      "medianPropertyTaxPaid": 8909,
+      "effectivePropertyTaxRate": 0.02359
+    },
+    "46060": {
+      "medianRentMonthly": 1212,
+      "medianHomePrice": 319700,
+      "medianPropertyTaxPaid": 2272,
+      "effectivePropertyTaxRate": 0.00711
+    },
+    "46140": {
+      "medianRentMonthly": 1078,
+      "medianHomePrice": 221700,
+      "medianPropertyTaxPaid": 1911,
+      "effectivePropertyTaxRate": 0.00862
+    },
+    "46220": {
+      "medianRentMonthly": 1005,
+      "medianHomePrice": 230700,
+      "medianPropertyTaxPaid": 738,
+      "effectivePropertyTaxRate": 0.0032
+    },
+    "46300": {
+      "medianRentMonthly": 1071,
+      "medianHomePrice": 325500,
+      "medianPropertyTaxPaid": 1978,
+      "effectivePropertyTaxRate": 0.00608
+    },
+    "46340": {
+      "medianRentMonthly": 1238,
+      "medianHomePrice": 240700,
+      "medianPropertyTaxPaid": 2804,
+      "effectivePropertyTaxRate": 0.01165
+    },
+    "46520": {
+      "medianRentMonthly": 2083,
+      "medianHomePrice": 897500,
+      "medianPropertyTaxPaid": 2553,
+      "effectivePropertyTaxRate": 0.00284
+    },
+    "46540": {
+      "medianRentMonthly": 925,
+      "medianHomePrice": 172900,
+      "medianPropertyTaxPaid": 3549,
+      "effectivePropertyTaxRate": 0.02053
+    },
+    "46660": {
+      "medianRentMonthly": 1025,
+      "medianHomePrice": 201300,
+      "medianPropertyTaxPaid": 1712,
+      "effectivePropertyTaxRate": 0.0085
+    },
+    "46700": {
+      "medianRentMonthly": 2163,
+      "medianHomePrice": 617700,
+      "medianPropertyTaxPaid": 4621,
+      "effectivePropertyTaxRate": 0.00748
+    },
+    "47020": {
+      "medianRentMonthly": 1151,
+      "medianHomePrice": 208800,
+      "medianPropertyTaxPaid": 2915,
+      "effectivePropertyTaxRate": 0.01396
+    },
+    "47220": {
+      "medianRentMonthly": 1282,
+      "medianHomePrice": 221400,
+      "medianPropertyTaxPaid": 5052,
+      "effectivePropertyTaxRate": 0.02282
+    },
+    "47260": {
+      "medianRentMonthly": 1478,
+      "medianHomePrice": 340900,
+      "medianPropertyTaxPaid": 2773,
+      "effectivePropertyTaxRate": 0.00813
+    },
+    "47300": {
+      "medianRentMonthly": 1280,
+      "medianHomePrice": 330100,
+      "medianPropertyTaxPaid": 2318,
+      "effectivePropertyTaxRate": 0.00702
+    },
+    "47380": {
+      "medianRentMonthly": 1151,
+      "medianHomePrice": 234100,
+      "medianPropertyTaxPaid": 3176,
+      "effectivePropertyTaxRate": 0.01357
+    },
+    "47460": {
+      "medianRentMonthly": 1218,
+      "medianHomePrice": 408900,
+      "medianPropertyTaxPaid": 3492,
+      "effectivePropertyTaxRate": 0.00854
+    },
+    "47580": {
+      "medianRentMonthly": 1167,
+      "medianHomePrice": 217900,
+      "medianPropertyTaxPaid": 1865,
+      "effectivePropertyTaxRate": 0.00856
+    },
+    "47900": {
+      "medianRentMonthly": 2027,
+      "medianHomePrice": 579900,
+      "medianPropertyTaxPaid": 5251,
+      "effectivePropertyTaxRate": 0.00906
+    },
+    "47930": {
+      "medianRentMonthly": 1330,
+      "medianHomePrice": 317700,
+      "medianPropertyTaxPaid": 5983,
+      "effectivePropertyTaxRate": 0.01883
+    },
+    "47940": {
+      "medianRentMonthly": 977,
+      "medianHomePrice": 194800,
+      "medianPropertyTaxPaid": 2789,
+      "effectivePropertyTaxRate": 0.01432
+    },
+    "48060": {
+      "medianRentMonthly": 1213,
+      "medianHomePrice": 188200,
+      "medianPropertyTaxPaid": 2899,
+      "effectivePropertyTaxRate": 0.0154
+    },
+    "48140": {
+      "medianRentMonthly": 999,
+      "medianHomePrice": 219600,
+      "medianPropertyTaxPaid": 3218,
+      "effectivePropertyTaxRate": 0.01465
+    },
+    "48260": {
+      "medianRentMonthly": 785,
+      "medianHomePrice": 131300,
+      "medianPropertyTaxPaid": 1002,
+      "effectivePropertyTaxRate": 0.00763
+    },
+    "48300": {
+      "medianRentMonthly": 1251,
+      "medianHomePrice": 469100,
+      "medianPropertyTaxPaid": 3434,
+      "effectivePropertyTaxRate": 0.00732
+    },
+    "48540": {
+      "medianRentMonthly": 812,
+      "medianHomePrice": 156600,
+      "medianPropertyTaxPaid": 1143,
+      "effectivePropertyTaxRate": 0.0073
+    },
+    "48620": {
+      "medianRentMonthly": 987,
+      "medianHomePrice": 201200,
+      "medianPropertyTaxPaid": 2533,
+      "effectivePropertyTaxRate": 0.01259
+    },
+    "48660": {
+      "medianRentMonthly": 995,
+      "medianHomePrice": 157600,
+      "medianPropertyTaxPaid": 2475,
+      "effectivePropertyTaxRate": 0.0157
+    },
+    "48680": {
+      "medianRentMonthly": 1269,
+      "medianHomePrice": 385400,
+      "medianPropertyTaxPaid": 3014,
+      "effectivePropertyTaxRate": 0.00782
+    },
+    "48700": {
+      "medianRentMonthly": 913,
+      "medianHomePrice": 202200,
+      "medianPropertyTaxPaid": 2649,
+      "effectivePropertyTaxRate": 0.0131
+    },
+    "48900": {
+      "medianRentMonthly": 1389,
+      "medianHomePrice": 362400,
+      "medianPropertyTaxPaid": 1980,
+      "effectivePropertyTaxRate": 0.00546
+    },
+    "49020": {
+      "medianRentMonthly": 1358,
+      "medianHomePrice": 355400,
+      "medianPropertyTaxPaid": 1719,
+      "effectivePropertyTaxRate": 0.00484
+    },
+    "49180": {
+      "medianRentMonthly": 1016,
+      "medianHomePrice": 233300,
+      "medianPropertyTaxPaid": 1621,
+      "effectivePropertyTaxRate": 0.00695
+    },
+    "49340": {
+      "medianRentMonthly": 1426,
+      "medianHomePrice": 423700,
+      "medianPropertyTaxPaid": 5438,
+      "effectivePropertyTaxRate": 0.01283
+    },
+    "49420": {
+      "medianRentMonthly": 1109,
+      "medianHomePrice": 310100,
+      "medianPropertyTaxPaid": 2463,
+      "effectivePropertyTaxRate": 0.00794
+    },
+    "49620": {
+      "medianRentMonthly": 1193,
+      "medianHomePrice": 248600,
+      "medianPropertyTaxPaid": 4006,
+      "effectivePropertyTaxRate": 0.01611
+    },
+    "49660": {
+      "medianRentMonthly": 795,
+      "medianHomePrice": 149000,
+      "medianPropertyTaxPaid": 1929,
+      "effectivePropertyTaxRate": 0.01295
+    },
+    "49700": {
+      "medianRentMonthly": 1386,
+      "medianHomePrice": 424200,
+      "medianPropertyTaxPaid": 3187,
+      "effectivePropertyTaxRate": 0.00751
+    },
+    "49740": {
+      "medianRentMonthly": 993,
+      "medianHomePrice": 217800,
+      "medianPropertyTaxPaid": 1333,
+      "effectivePropertyTaxRate": 0.00612
+    },
+    "rest-of-AL": {
+      "medianRentMonthly": 1007,
+      "medianHomePrice": 209900,
+      "medianPropertyTaxPaid": 788,
+      "effectivePropertyTaxRate": 0.00375
+    },
+    "rest-of-AK": {
+      "medianRentMonthly": 1419,
+      "medianHomePrice": 352900,
+      "medianPropertyTaxPaid": 3901,
+      "effectivePropertyTaxRate": 0.01105
+    },
+    "rest-of-AZ": {
+      "medianRentMonthly": 1543,
+      "medianHomePrice": 394500,
+      "medianPropertyTaxPaid": 1879,
+      "effectivePropertyTaxRate": 0.00476
+    },
+    "rest-of-AR": {
+      "medianRentMonthly": 947,
+      "medianHomePrice": 188000,
+      "medianPropertyTaxPaid": 1040,
+      "effectivePropertyTaxRate": 0.00553
+    },
+    "rest-of-CA": {
+      "medianRentMonthly": 2036,
+      "medianHomePrice": 734700,
+      "medianPropertyTaxPaid": 5124,
+      "effectivePropertyTaxRate": 0.00697
+    },
+    "rest-of-CO": {
+      "medianRentMonthly": 1761,
+      "medianHomePrice": 539400,
+      "medianPropertyTaxPaid": 2602,
+      "effectivePropertyTaxRate": 0.00482
+    },
+    "rest-of-CT": {
+      "medianRentMonthly": 1488,
+      "medianHomePrice": 366900,
+      "medianPropertyTaxPaid": 6643,
+      "effectivePropertyTaxRate": 0.01811
+    },
+    "rest-of-DE": {
+      "medianRentMonthly": 1401,
+      "medianHomePrice": 352000,
+      "medianPropertyTaxPaid": 1768,
+      "effectivePropertyTaxRate": 0.00502
+    },
+    "rest-of-DC": {
+      "medianRentMonthly": 1954,
+      "medianHomePrice": 737100,
+      "medianPropertyTaxPaid": 4312,
+      "effectivePropertyTaxRate": 0.00585
+    },
+    "rest-of-FL": {
+      "medianRentMonthly": 1669,
+      "medianHomePrice": 359000,
+      "medianPropertyTaxPaid": 2730,
+      "effectivePropertyTaxRate": 0.0076
+    },
+    "rest-of-GA": {
+      "medianRentMonthly": 1393,
+      "medianHomePrice": 303300,
+      "medianPropertyTaxPaid": 2341,
+      "effectivePropertyTaxRate": 0.00772
+    },
+    "rest-of-HI": {
+      "medianRentMonthly": 1971,
+      "medianHomePrice": 839100,
+      "medianPropertyTaxPaid": 2239,
+      "effectivePropertyTaxRate": 0.00267
+    },
+    "rest-of-ID": {
+      "medianRentMonthly": 1238,
+      "medianHomePrice": 418600,
+      "medianPropertyTaxPaid": 2038,
+      "effectivePropertyTaxRate": 0.00487
+    },
+    "rest-of-IL": {
+      "medianRentMonthly": 1274,
+      "medianHomePrice": 263300,
+      "medianPropertyTaxPaid": 5298,
+      "effectivePropertyTaxRate": 0.02012
+    },
+    "rest-of-IN": {
+      "medianRentMonthly": 1062,
+      "medianHomePrice": 218200,
+      "medianPropertyTaxPaid": 1614,
+      "effectivePropertyTaxRate": 0.0074
+    },
+    "rest-of-IA": {
+      "medianRentMonthly": 972,
+      "medianHomePrice": 208000,
+      "medianPropertyTaxPaid": 2897,
+      "effectivePropertyTaxRate": 0.01393
+    },
+    "rest-of-KS": {
+      "medianRentMonthly": 1060,
+      "medianHomePrice": 217200,
+      "medianPropertyTaxPaid": 2798,
+      "effectivePropertyTaxRate": 0.01288
+    },
+    "rest-of-KY": {
+      "medianRentMonthly": 967,
+      "medianHomePrice": 205600,
+      "medianPropertyTaxPaid": 1544,
+      "effectivePropertyTaxRate": 0.00751
+    },
+    "rest-of-LA": {
+      "medianRentMonthly": 1064,
+      "medianHomePrice": 216500,
+      "medianPropertyTaxPaid": 1180,
+      "effectivePropertyTaxRate": 0.00545
+    },
+    "rest-of-ME": {
+      "medianRentMonthly": 1139,
+      "medianHomePrice": 296600,
+      "medianPropertyTaxPaid": 3036,
+      "effectivePropertyTaxRate": 0.01024
+    },
+    "rest-of-MD": {
+      "medianRentMonthly": 1705,
+      "medianHomePrice": 419900,
+      "medianPropertyTaxPaid": 4093,
+      "effectivePropertyTaxRate": 0.00975
+    },
+    "rest-of-MA": {
+      "medianRentMonthly": 1762,
+      "medianHomePrice": 562100,
+      "medianPropertyTaxPaid": 5992,
+      "effectivePropertyTaxRate": 0.01066
+    },
+    "rest-of-MI": {
+      "medianRentMonthly": 1129,
+      "medianHomePrice": 231600,
+      "medianPropertyTaxPaid": 2904,
+      "effectivePropertyTaxRate": 0.01254
+    },
+    "rest-of-MN": {
+      "medianRentMonthly": 1280,
+      "medianHomePrice": 329300,
+      "medianPropertyTaxPaid": 3357,
+      "effectivePropertyTaxRate": 0.01019
+    },
+    "rest-of-MS": {
+      "medianRentMonthly": 954,
+      "medianHomePrice": 169800,
+      "medianPropertyTaxPaid": 1215,
+      "effectivePropertyTaxRate": 0.00716
+    },
+    "rest-of-MO": {
+      "medianRentMonthly": 1033,
+      "medianHomePrice": 230300,
+      "medianPropertyTaxPaid": 1948,
+      "effectivePropertyTaxRate": 0.00846
+    },
+    "rest-of-MT": {
+      "medianRentMonthly": 1081,
+      "medianHomePrice": 375800,
+      "medianPropertyTaxPaid": 2693,
+      "effectivePropertyTaxRate": 0.00717
+    },
+    "rest-of-NE": {
+      "medianRentMonthly": 1072,
+      "medianHomePrice": 238600,
+      "medianPropertyTaxPaid": 3549,
+      "effectivePropertyTaxRate": 0.01487
+    },
+    "rest-of-NV": {
+      "medianRentMonthly": 1597,
+      "medianHomePrice": 435400,
+      "medianPropertyTaxPaid": 2027,
+      "effectivePropertyTaxRate": 0.00466
+    },
+    "rest-of-NH": {
+      "medianRentMonthly": 1491,
+      "medianHomePrice": 402500,
+      "medianPropertyTaxPaid": 6667,
+      "effectivePropertyTaxRate": 0.01656
+    },
+    "rest-of-NJ": {
+      "medianRentMonthly": 1720,
+      "medianHomePrice": 454400,
+      "medianPropertyTaxPaid": 9590,
+      "effectivePropertyTaxRate": 0.0211
+    },
+    "rest-of-NM": {
+      "medianRentMonthly": 1067,
+      "medianHomePrice": 248100,
+      "medianPropertyTaxPaid": 1731,
+      "effectivePropertyTaxRate": 0.00698
+    },
+    "rest-of-NY": {
+      "medianRentMonthly": 1621,
+      "medianHomePrice": 423800,
+      "medianPropertyTaxPaid": 6582,
+      "effectivePropertyTaxRate": 0.01553
+    },
+    "rest-of-NC": {
+      "medianRentMonthly": 1228,
+      "medianHomePrice": 288900,
+      "medianPropertyTaxPaid": 1896,
+      "effectivePropertyTaxRate": 0.00656
+    },
+    "rest-of-ND": {
+      "medianRentMonthly": 954,
+      "medianHomePrice": 249900,
+      "medianPropertyTaxPaid": 2468,
+      "effectivePropertyTaxRate": 0.00988
+    },
+    "rest-of-OH": {
+      "medianRentMonthly": 1034,
+      "medianHomePrice": 214800,
+      "medianPropertyTaxPaid": 2822,
+      "effectivePropertyTaxRate": 0.01314
+    },
+    "rest-of-OK": {
+      "medianRentMonthly": 1014,
+      "medianHomePrice": 199800,
+      "medianPropertyTaxPaid": 1599,
+      "effectivePropertyTaxRate": 0.008
+    },
+    "rest-of-OR": {
+      "medianRentMonthly": 1525,
+      "medianHomePrice": 477600,
+      "medianPropertyTaxPaid": 3876,
+      "effectivePropertyTaxRate": 0.00812
+    },
+    "rest-of-PA": {
+      "medianRentMonthly": 1209,
+      "medianHomePrice": 254500,
+      "medianPropertyTaxPaid": 3311,
+      "effectivePropertyTaxRate": 0.01301
+    },
+    "rest-of-RI": {
+      "medianRentMonthly": 1342,
+      "medianHomePrice": 404200,
+      "medianPropertyTaxPaid": 4900,
+      "effectivePropertyTaxRate": 0.01212
+    },
+    "rest-of-SC": {
+      "medianRentMonthly": 1180,
+      "medianHomePrice": 259000,
+      "medianPropertyTaxPaid": 1251,
+      "effectivePropertyTaxRate": 0.00483
+    },
+    "rest-of-SD": {
+      "medianRentMonthly": 946,
+      "medianHomePrice": 257400,
+      "medianPropertyTaxPaid": 2724,
+      "effectivePropertyTaxRate": 0.01058
+    },
+    "rest-of-TN": {
+      "medianRentMonthly": 1189,
+      "medianHomePrice": 286700,
+      "medianPropertyTaxPaid": 1442,
+      "effectivePropertyTaxRate": 0.00503
+    },
+    "rest-of-TX": {
+      "medianRentMonthly": 1403,
+      "medianHomePrice": 283800,
+      "medianPropertyTaxPaid": 4232,
+      "effectivePropertyTaxRate": 0.01491
+    },
+    "rest-of-UT": {
+      "medianRentMonthly": 1496,
+      "medianHomePrice": 489400,
+      "medianPropertyTaxPaid": 2525,
+      "effectivePropertyTaxRate": 0.00516
+    },
+    "rest-of-VT": {
+      "medianRentMonthly": 1234,
+      "medianHomePrice": 316600,
+      "medianPropertyTaxPaid": 5039,
+      "effectivePropertyTaxRate": 0.01592
+    },
+    "rest-of-VA": {
+      "medianRentMonthly": 1579,
+      "medianHomePrice": 383700,
+      "medianPropertyTaxPaid": 2790,
+      "effectivePropertyTaxRate": 0.00727
+    },
+    "rest-of-WA": {
+      "medianRentMonthly": 1760,
+      "medianHomePrice": 564600,
+      "medianPropertyTaxPaid": 4556,
+      "effectivePropertyTaxRate": 0.00807
+    },
+    "rest-of-WV": {
+      "medianRentMonthly": 872,
+      "medianHomePrice": 162600,
+      "medianPropertyTaxPaid": 865,
+      "effectivePropertyTaxRate": 0.00532
+    },
+    "rest-of-WI": {
+      "medianRentMonthly": 1087,
+      "medianHomePrice": 266500,
+      "medianPropertyTaxPaid": 3792,
+      "effectivePropertyTaxRate": 0.01423
+    },
+    "rest-of-WY": {
+      "medianRentMonthly": 992,
+      "medianHomePrice": 309700,
+      "medianPropertyTaxPaid": 1767,
+      "effectivePropertyTaxRate": 0.00571
+    }
+  }
+}

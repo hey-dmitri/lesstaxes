@@ -1,0 +1,165 @@
+{
+  "taxYear": 2026,
+  "datasetVersion": "2026.1",
+  "_comment": "Generated/verified against primary sources. Rates are FRACTIONS, not percentages. All dollar amounts are annual. Do not hand-edit without updating the source citation.",
+
+  "sources": {
+    "brackets": {
+      "citation": "IRS Rev. Proc. 2025-32, Section 4.01, Tables 1-4",
+      "url": "https://www.irs.gov/pub/irs-drop/rp-25-32.pdf",
+      "confidence": "primary"
+    },
+    "standardDeduction": {
+      "citation": "IRS Rev. Proc. 2025-32, Section 4.14(1)",
+      "url": "https://www.irs.gov/pub/irs-drop/rp-25-32.pdf",
+      "confidence": "primary"
+    },
+    "childTaxCredit": {
+      "citation": "IRS Rev. Proc. 2025-32, Section 4.05; phase-out thresholds are statutory under IRC 24(b)(2), made permanent by OBBBA s.70104",
+      "url": "https://www.irs.gov/pub/irs-drop/rp-25-32.pdf",
+      "confidence": "primary for amounts; SECONDARY for phase-out thresholds - see notes"
+    },
+    "saltCap": {
+      "citation": "26 U.S.C. 164(b)(6), as amended by OBBBA. Verified against statutory text: 2026 limitation $40,400; MFS half; threshold $505,000; phase-down 30% of MAGI excess; floor $10,000. Not published in Rev. Proc. 2025-32.",
+      "url": "https://www.law.cornell.edu/uscode/text/26/164",
+      "confidence": "primary"
+    },
+    "fica": {
+      "citation": "SSA Contribution and Benefit Base 2026; Medicare rates and Additional Medicare Tax thresholds are statutory under IRC 3101 and are NOT inflation-indexed",
+      "url": "https://www.ssa.gov/oact/cola/cbb.html",
+      "confidence": "primary"
+    }
+  },
+
+  "brackets": {
+    "marriedJointly": [
+      { "from": 0, "rate": 0.10 },
+      { "from": 24800, "rate": 0.12 },
+      { "from": 100800, "rate": 0.22 },
+      { "from": 211400, "rate": 0.24 },
+      { "from": 403550, "rate": 0.32 },
+      { "from": 512450, "rate": 0.35 },
+      { "from": 768700, "rate": 0.37 }
+    ],
+    "headOfHousehold": [
+      { "from": 0, "rate": 0.10 },
+      { "from": 17700, "rate": 0.12 },
+      { "from": 67450, "rate": 0.22 },
+      { "from": 105700, "rate": 0.24 },
+      { "from": 201750, "rate": 0.32 },
+      { "from": 256200, "rate": 0.35 },
+      { "from": 640600, "rate": 0.37 }
+    ],
+    "single": [
+      { "from": 0, "rate": 0.10 },
+      { "from": 12400, "rate": 0.12 },
+      { "from": 50400, "rate": 0.22 },
+      { "from": 105700, "rate": 0.24 },
+      { "from": 201775, "rate": 0.32 },
+      { "from": 256225, "rate": 0.35 },
+      { "from": 640600, "rate": 0.37 }
+    ],
+    "marriedSeparately": [
+      { "from": 0, "rate": 0.10 },
+      { "from": 12400, "rate": 0.12 },
+      { "from": 50400, "rate": 0.22 },
+      { "from": 105700, "rate": 0.24 },
+      { "from": 201775, "rate": 0.32 },
+      { "from": 256225, "rate": 0.35 },
+      { "from": 384350, "rate": 0.37 }
+    ]
+  },
+
+  "standardDeduction": {
+    "single": 16100,
+    "marriedJointly": 32200,
+    "marriedSeparately": 16100,
+    "headOfHousehold": 24150
+  },
+
+  "childTaxCredit": {
+    "perChild": 2200,
+    "refundablePerChild": 1700,
+    "phaseOutStart": {
+      "single": 200000,
+      "marriedJointly": 400000,
+      "marriedSeparately": 200000,
+      "headOfHousehold": 200000
+    },
+    "phaseOutPerThousand": 50,
+    "_note": "Credit reduces by $50 for each $1,000 (or fraction) of MAGI above the threshold."
+  },
+
+  "saltCap": {
+    "cap": {
+      "single": 40400,
+      "marriedJointly": 40400,
+      "marriedSeparately": 20200,
+      "headOfHousehold": 40400
+    },
+    "phaseDownStartMagi": {
+      "single": 505000,
+      "marriedJointly": 505000,
+      "marriedSeparately": 252500,
+      "headOfHousehold": 505000
+    },
+    "phaseDownRate": 0.30,
+    "floor": {
+      "single": 10000,
+      "marriedJointly": 10000,
+      "marriedSeparately": 5000,
+      "headOfHousehold": 10000
+    },
+    "_note": "Cap rises 1%/yr through 2029, then reverts to $10,000 in 2030. Phase-down reduces the cap by 30 cents per dollar of MAGI above the threshold, never below the floor."
+  },
+
+  "fica": {
+    "socialSecurityRate": 0.062,
+    "socialSecurityWageBase": 184500,
+    "medicareRate": 0.0145,
+    "additionalMedicareRate": 0.009,
+    "additionalMedicareThreshold": {
+      "single": 200000,
+      "marriedJointly": 250000,
+      "marriedSeparately": 125000,
+      "headOfHousehold": 200000
+    },
+    "_note": "Additional Medicare Tax thresholds are statutory and NOT inflation-indexed. They have been unchanged since 2013."
+  },
+
+  "goldenValues": {
+    "_comment": "Cumulative tax at each bracket floor, quoted verbatim from the Rev. Proc. tables. Used as golden tests - our bracket arithmetic must reproduce these to the cent.",
+    "marriedJointly": [
+      { "taxableIncome": 24800, "tax": 2480 },
+      { "taxableIncome": 100800, "tax": 11600 },
+      { "taxableIncome": 211400, "tax": 35932 },
+      { "taxableIncome": 403550, "tax": 82048 },
+      { "taxableIncome": 512450, "tax": 116896 },
+      { "taxableIncome": 768700, "tax": 206583.5 }
+    ],
+    "headOfHousehold": [
+      { "taxableIncome": 17700, "tax": 1770 },
+      { "taxableIncome": 67450, "tax": 7740 },
+      { "taxableIncome": 105700, "tax": 16155 },
+      { "taxableIncome": 201750, "tax": 39207 },
+      { "taxableIncome": 256200, "tax": 56631 },
+      { "taxableIncome": 640600, "tax": 191171 }
+    ],
+    "single": [
+      { "taxableIncome": 12400, "tax": 1240 },
+      { "taxableIncome": 50400, "tax": 5800 },
+      { "taxableIncome": 105700, "tax": 17966 },
+      { "taxableIncome": 201775, "tax": 41024 },
+      { "taxableIncome": 256225, "tax": 58448 },
+      { "taxableIncome": 640600, "tax": 192979.25 }
+    ],
+    "marriedSeparately": [
+      { "taxableIncome": 12400, "tax": 1240 },
+      { "taxableIncome": 50400, "tax": 5800 },
+      { "taxableIncome": 105700, "tax": 17966 },
+      { "taxableIncome": 201775, "tax": 41024 },
+      { "taxableIncome": 256225, "tax": 58448 },
+      { "taxableIncome": 384350, "tax": 103291.75 }
+    ]
+  }
+}
