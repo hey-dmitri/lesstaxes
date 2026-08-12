@@ -2,7 +2,7 @@ import { deflateRawSync } from 'node:zlib';
 
 import { describe, expect, it } from 'vitest';
 
-// @ts-expect-error — plain JS module, deliberately dependency-free
+// Plain JS module, deliberately dependency-free — TypeScript resolves it via allowJs.
 import { extractFromZip, readCentralDirectory } from './zip.mjs';
 
 /**
