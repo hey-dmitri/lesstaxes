@@ -11,6 +11,7 @@ export {
   compare,
   computeCity,
   defaultCityInputs,
+  defaultRent,
   breakEvenSalary,
   quickCompare,
 } from './compare';
@@ -19,9 +20,13 @@ export {
   ALL_METRO_IDS,
   ALL_SPENDING_PROFILES,
   DATASET_VERSION,
+  INCOME_RENT_CURVE,
   allMetros,
+  bedroomsFor,
   defaultLocalJurisdictions,
   housingDefaults,
+  rentDefault,
+  rentFactorForIncome,
   localJurisdiction,
   localTaxOptions,
   metro,
@@ -37,6 +42,20 @@ export { computeHousing, firstYearInterest, monthlyMortgagePayment } from './hou
 export { computeLiving, computeSalesTax, computeTransport, defaultCarCount } from './living';
 
 export { formatPercent, formatUSD, monthly, toDollars } from './money';
+
+export {
+  breakEvenNarrative,
+  breakEvenReference,
+  breakEvenSentence,
+  percentIsMeaningful,
+  shortfalls,
+  whyClause,
+  whyNarrative,
+  whySentence,
+  type BreakEvenNarrative,
+  type Shortfall,
+  type WhyNarrative,
+} from './narrative';
 
 export { applyBrackets, effectiveRate, marginalRate, type Bracket } from './tax/brackets';
 export { computeFederal } from './tax/federal';

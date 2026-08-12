@@ -1,8 +1,10 @@
 import type { Metadata } from 'next';
 
 import { DatasetBrowser } from '@/components/dataset-browser';
+import { ReportProblem } from '@/components/report-problem';
 import { DATASET_SOURCES } from '@/lib/dataset-rows';
 import { PageShell, Prose } from '@/components/page-shell';
+import { DATASET_VERSION } from '@/engine';
 
 export const metadata: Metadata = {
   title: 'The data — LessTaxes',
@@ -85,6 +87,25 @@ export default function DataPage() {
             published. Tax rules are for 2026.
           </li>
         </ul>
+
+        <h2 id="report">Found a number that looks wrong?</h2>
+        <p>
+          Please say so. Every figure here is a median for a whole metro area, and the people best
+          placed to catch one that has gone astray are the ones who live there and pay the actual
+          bill. It is worth reporting even if you are not sure &mdash; a figure that surprises
+          someone local is worth a second look either way.
+        </p>
+        <p>
+          Tell me what you were looking at, what the figure said, and what you would have expected.
+          If the answer turns out to be that the number is right and the reason is interesting, that
+          is what the limitations above are for, and it will end up written down here.
+        </p>
+        <ReportProblem
+          prompt="Two ways to reach me:"
+          subject="the data page"
+          datasetVersion={DATASET_VERSION}
+          className="!text-sm"
+        />
       </Prose>
     </PageShell>
   );

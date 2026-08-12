@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 
 import { PageShell, Prose } from '@/components/page-shell';
+import { ReportProblem } from '@/components/report-problem';
+import { DATASET_VERSION } from '@/engine';
 
 export const metadata: Metadata = {
   title: 'How it works — LessTaxes',
@@ -92,10 +94,39 @@ answer          =  in your pocket THERE  −  in your pocket HERE`}</pre>
 
         <h2>Housing</h2>
         <p>
-          Every housing field is pre-filled with the local median and is editable. If you rent, we
-          use your rent. If you own, we amortise a 30-year fixed mortgage, add property tax at the{' '}
-          <strong>effective</strong> rate — what is actually paid, after assessment ratios,
-          homestead exemptions and caps — and compute first-year interest for the itemisation test.
+          Every housing field is pre-filled and editable. If you rent, we use your rent. If you own,
+          we amortise a 30-year fixed mortgage, add property tax at the <strong>effective</strong>{' '}
+          rate — what is actually paid, after assessment ratios, homestead exemptions and caps — and
+          compute first-year interest for the itemisation test.
+        </p>
+        <p>
+          The rent we start you with is <strong>sized to your household and scaled to your
+          income</strong>, and both parts matter more than they sound.
+        </p>
+        <ul>
+          <li>
+            <strong>Size.</strong> The obvious figure to use is the metro&rsquo;s median rent, and
+            it was the wrong one: it is a median across every rented unit in the area, so a single
+            person and a family of four were quoted exactly the same rent. We now use the local
+            median for the number of bedrooms your household implies — one for the adults, another
+            for every two children.
+          </li>
+          <li>
+            <strong>Income.</strong> That median is paid by a household earning roughly the local
+            median income, and renters earn less than that. On a $150,000 salary it worked out at
+            11% of pay in Chicago, which nobody at that income pays. So the local figure is scaled
+            by a national curve built from what renters in each income band actually spend on rent.
+            The curve crosses 1.0 near $55,000 — about the typical renter&rsquo;s income — and
+            rises more slowly than income above it, because housing takes a falling share of a
+            rising income.
+          </li>
+        </ul>
+        <p>
+          The curve is deliberately <em>national</em> rather than per-metro. Rent burden varies
+          much less between cities than rent does — 14.4% in Chicago against 15.5% in Austin, while
+          the rents themselves differ by a fifth — so anchoring each city to its own burden would
+          have quietly flattened the housing difference between them, which is the one thing this
+          page exists to measure. The local median sets the price; the national curve sets the level.
         </p>
         <p>
           Mortgage <strong>principal counts as money out</strong>. It builds equity rather than
@@ -199,6 +230,22 @@ answer          =  in your pocket THERE  −  in your pocket HERE`}</pre>
             movers, closing costs and deposits are not counted.
           </li>
           <li>
+            <strong>Home prices are not adjusted for income the way rents are.</strong> If you buy,
+            the starting figure is still the metro&rsquo;s median home value, which understates
+            what a high earner buys — and property tax is computed from it, so that is understated
+            too. The rent path has been fixed and the ownership path has not.
+          </li>
+          <li>
+            <strong>The top income band is open-ended.</strong> The Census publishes rent burden
+            for &ldquo;$100,000 or more&rdquo; as a single group, so the rent curve is anchored at
+            $150,000 and extrapolated above it. Expect it to be roughest for very high earners.
+          </li>
+          <li>
+            <strong>Bedrooms are inferred, not asked.</strong> Two adults are assumed to share a
+            room and children to pair up. If you rent more space than that, or less, the rent field
+            is yours to change.
+          </li>
+          <li>
             <strong>Averages are not you.</strong> Every figure is a local median. Your rent, your
             car, your grocery bill will differ. That is why almost every field is editable.
           </li>
@@ -211,6 +258,20 @@ answer          =  in your pocket THERE  −  in your pocket HERE`}</pre>
           </Link>
           .
         </p>
+
+        <h2>Think something here is wrong?</h2>
+        <p>
+          This list is not finished, and it is not meant to be &mdash; every item on it got there
+          because someone noticed. If a number looks off for a place you know, or an assumption on
+          this page does not match how your household actually works, that is worth telling me about
+          even if you are not certain. A model is only corrected by the people it gets wrong.
+        </p>
+        <ReportProblem
+          prompt="Two ways to reach me:"
+          subject="the methodology page"
+          datasetVersion={DATASET_VERSION}
+          className="!text-sm"
+        />
 
         <p style={{ color: 'var(--muted)' }}>
           <strong>This is not financial, tax or legal advice.</strong> It is an estimate built from

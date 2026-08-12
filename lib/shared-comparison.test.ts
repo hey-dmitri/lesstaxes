@@ -76,8 +76,26 @@ describe('describeComparison', () => {
   });
 
   it('puts the actionable break-even figure in the description', () => {
-    expect(summary.description).toMatch(/Break-even salary in Austin, TX: \$139,163/);
+    // Says which side of the offer it falls on. "Break-even salary: $139,163"
+    // alone left the reader to subtract the salary themselves to find out
+    // whether that was good news or bad — and here it is bad, matching the
+    // "worse off" title rather than reading against it.
+    expect(summary.description).toMatch(/\$139,163/);
+    expect(summary.description).toMatch(/\$14,163 more than the \$125,000 you'd be paid there/);
     expect(summary.description).toMatch(/21\.0% less spare cash/);
+  });
+
+  it('drops the percentage when the origin city leaves nothing to measure', () => {
+    const struggling = {
+      ...CHICAGO_TO_AUSTIN,
+      filingStatus: 'marriedJointly' as const,
+      children: 2,
+      origin: { ...CHICAGO_TO_AUSTIN.origin, grossSalary: 60_000 },
+      destination: { ...CHICAGO_TO_AUSTIN.destination, grossSalary: 60_000 },
+    };
+    const description = describeComparison(comparisonFromShared(struggling)).description;
+    expect(description).not.toMatch(/spare cash/);
+    expect(description).toMatch(/a month/);
   });
 
   it('says "better off" when the move wins', () => {

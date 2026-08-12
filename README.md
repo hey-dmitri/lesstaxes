@@ -12,7 +12,7 @@ Free, no accounts, no tracking, no database. All figures come from public federa
 
 ## Status
 
-**Stage 9 of 10 — quarterly data refresh automation.** Feature-complete.
+**All ten stages built.** Feature-complete, not yet launched. Current dataset: **2026.2**.
 
 | Component | State |
 |---|---|
@@ -20,7 +20,7 @@ Free, no accounts, no tracking, no database. All figures come from public federa
 | State income tax — all 50 states + DC | ✅ |
 | Local income tax — engine and rate data | ✅ |
 | 387 metros + 51 rural fallbacks, price parities | ✅ |
-| Rent, home prices, effective property tax | ✅ |
+| Rent by unit size and income, home prices, effective property tax | ✅ |
 | Vehicles per adult, per-vehicle cost | ✅ |
 | Household spending profiles, 9 income brackets | ✅ |
 | Sales tax rates + grocery treatment | ✅ |
@@ -33,10 +33,28 @@ Free, no accounts, no tracking, no database. All figures come from public federa
 | `/methodology` and public `/data` browser | ✅ |
 | Accessibility, mobile layout, performance measured | ✅ |
 | Quarterly refresh workflow — opens a PR, never auto-merges | ✅ |
-| **Remaining: register a domain, point it at Vercel** | ⬜ |
+| Contact route for wrong figures — email and GitHub, prefilled | ✅ |
+| **Share links pinned to their dataset version** — see below | ⬜ |
+| **Home prices scaled to income, as rents now are** | ⬜ |
+| **Register a domain, point it at Vercel** | ⬜ |
 
-**583 tests**, including 24 golden values reproduced exactly from the IRS rate tables.
+**620 tests**, including 24 golden values reproduced exactly from the IRS rate tables.
 Total data cost: **$0**. No paid feeds, no runtime API calls.
+
+### Known gaps, in priority order
+
+1. **Share links are not actually pinned to a dataset version.** The link format
+   carries one and `compare()` echoes it back, but `engine/dataset.ts` imports a
+   single dataset directly, so every link computes against whatever is currently
+   compiled in. PROJECT.md §9.2 promises the opposite. Nothing is public yet so
+   no real links are affected — but this must land **before a domain does**, or
+   shared results will silently change under the people holding them.
+   `data/2026.1/` is kept intact on disk ready for it.
+2. **Buying is still income-blind.** Rent is now sized to the household and
+   scaled to income; home price is still the metro median, and property tax is
+   computed from it. The ownership path has the flaw the rental path just lost.
+3. **Home and renters insurance are still missing entirely**, which understates
+   ownership everywhere and badly in Florida and Louisiana.
 
 ### Rebuilding the dataset
 

@@ -1,9 +1,9 @@
 # LessTaxes — Project Vision
 
-> **Status:** Product definition complete and agreed. Technical stack NOT yet chosen (see §14).
+> **Status:** Built through Stage 9 and running locally. Two open items block launch — see §14.
 > **Audience:** This document is written so a fresh AI session or new contributor can pick the
 > project up cold, with no prior conversation, and understand exactly what is being built and why.
-> **Last updated:** 2026-08-11
+> **Last updated:** 2026-08-12
 
 ---
 
@@ -98,7 +98,7 @@ result, not a footnote. It turns the tool into something usable in a salary nego
 | D1 | Geographic granularity | **City / metro area** (~387 CBSAs) | State level cannot represent NYC city income tax or the fact that Austin ≠ rural Texas. Cost-of-living data is published per metro anyway. |
 | D2 | Data sourcing | **Free public/government data, bundled with the app** | $0/yr, no licence risk, no API keys, no backend, instant results. |
 | D3 | Household detail | **Filing status + number of children + household salary** | Filing status alone is a ~$9,000/yr swing at $150k — larger than the state-tax difference being measured. Non-negotiable input. |
-| D4 | Housing input | **Prefilled from metro medians, fully editable** | Useful answer with zero typing; accurate for those who know their real numbers. |
+| D4 | Housing input | **Prefilled, fully editable** | Useful answer with zero typing; accurate for those who know their real numbers. Rent prefills are sized to the household and scaled to income (see D27); home prices are not yet — OPEN-4. |
 | D5 | Tenure | **Independent rent/own per city** | "Rent in Chicago, buy in Austin" is the most common real relocation and where the math is most interesting. |
 | D6 | Non-housing spending | **Auto-modeled from BLS CES × BEA RPP** | Zero input, full category breakdown, every figure traceable to a federal table. |
 | D7 | Share links | **All state encoded in the URL, dataset version pinned** | No database, no cost, links never expire, no salary ever leaves the browser. |
@@ -120,6 +120,7 @@ result, not a footnote. It turns the tool into something usable in a salary nego
 | D23 | Analytics | **None whatsoever** | No scripts, no cookies, no banner, nothing to leak. |
 | D24 | Name | **LessTaxes** — public GitHub repo `lesstaxes`, domain not yet registered | Chosen 2026-08-11. Noted at the time: the name is narrower than the product, since housing, cars and cost of living often outweigh the tax difference. Owner accepted this. Name lives in a single config value and is trivial to change. |
 | D26 | Public `/data` page | **Yes — a searchable dataset browser, a first-class page beside `/methodology`** | Added 2026-08-11 after reviewing the Stage 2 prototype. `/methodology` explains *how the calculation works*; `/data` shows *every number it uses* and where each came from. Together they are the site's credibility argument, and the thing paid competitors cannot easily match. |
+| D27 | Rent prefill basis | **Local median for the household's bedroom count (ACS B25031), scaled by a national income curve (ACS B25074)** | Added 2026-08-12. The plain metro median (B25064) quoted a single person and a family of four the same rent, and quoted a $150k earner 11% of pay in Chicago. PROJECT.md §7 named HUD Fair Market Rents for the size fix; ACS B25031 was used instead — same CBSA geography, same vintage, same API, where HUD publishes on HMFA areas that do not map cleanly. The income curve is national, not per-metro: burden varies far less between cities than rent does, so a per-metro anchor would compress the very difference this site measures. |
 | D25 | Mortgage principal | **Counted as an outflow, with no annotation** | Cash-flow view: leftover equals the cash actually available. Keeps the headline honest and the UI simple. Accepted trade-off: owning looks slightly worse than it is economically, and the site does not explain why. |
 
 ---
@@ -495,7 +496,32 @@ Rendered in the user's current theme. Filename should be descriptive, e.g.
 
 ### ~~OPEN-2 — Technical stack~~ — **RESOLVED, see §16**
 
-*No open decisions remain. Ready to build.*
+### OPEN-3 — Dataset version pinning is specified but not implemented
+
+Added 2026-08-12. §9.2 and §16.2 promise that a shared link recomputes against
+the dataset it was made with, and the link format does carry the version. The
+engine does not honour it: `engine/dataset.ts` imports one dataset directly, so
+every link computes against whatever is compiled in. Building `2026.2` therefore
+changed what a `2026.1` link would show.
+
+Harmless today — nothing is public, so no links exist outside this repo. **It
+stops being harmless the moment a domain points here.** Blocking for launch.
+
+Fixing it means making the dataset accessors version-aware and threading the
+version from `ComparisonInputs` through `computeCity`. Roughly ten accessors in
+one boundary module, plus their call sites.
+
+### OPEN-4 — Ownership defaults are still income-blind
+
+Added 2026-08-12. Rent is now sized to the household (ACS B25031, by bedroom
+count) and scaled to income (a national curve from ACS B25074). Home price is
+still the metro median, and property tax is derived from it, so a high earner is
+quoted a home well below what they would buy — the same error the rent path
+carried until today, and understated property tax on top of it.
+
+No decision needed on *whether*; the open question is which statistic to use.
+ACS has no home-value-by-income cross-tab as clean as B25074, so this needs
+thought rather than a straight repeat of the rent fix.
 
 ---
 
