@@ -12,7 +12,7 @@ Free, no accounts, no tracking, no database. All figures come from public federa
 
 ## Status
 
-**Stage 3 of 10 — calculation engine complete.** No user interface yet.
+**Stage 4 of 10 — input form built.** Ready to deploy.
 
 | Component | State |
 |---|---|
@@ -26,9 +26,10 @@ Free, no accounts, no tracking, no database. All figures come from public federa
 | Sales tax rates + grocery treatment | ✅ |
 | Housing (rent, mortgage, property tax), cars, living costs | ✅ |
 | Leftover, city/salary decomposition, break-even solver | ✅ |
-| **Stage 4 — deployment, then the input form** | ⬜ next |
+| Input form — pickers, housing, cars, theme | ✅ |
+| **Stage 5 — results, breakdown and reveal** | ⬜ next |
 
-**525 tests**, including 24 golden values reproduced exactly from the IRS rate tables.
+**542 tests**, including 24 golden values reproduced exactly from the IRS rate tables.
 Total data cost: **$0**. No paid feeds, no runtime API calls.
 
 ### Rebuilding the dataset
