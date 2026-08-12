@@ -1,0 +1,89 @@
+name: Refresh dataset
+
+# Quarterly, plus on demand. Federal sources publish on their own schedules —
+# ACS in December, BEA in December, IRS in October, state tax changes in
+# January — so a quarterly sweep catches all of them within a few months.
+on:
+  schedule:
+    - cron: '0 9 1 1,4,7,10 *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Re-download upstream sources
+        env:
+          DATA_CONTACT_EMAIL: ${{ secrets.DATA_CONTACT_EMAIL }}
+        run: node scripts/refresh-sources.mjs
+
+      - name: Rebuild every dataset
+        env:
+          CENSUS_API_KEY: ${{ secrets.CENSUS_API_KEY }}
+        # --refresh bypasses the committed API cache so this genuinely re-fetches.
+        # Each build script validates its own output and exits non-zero on
+        # anything implausible, so a corrupt upstream file fails here rather
+        # than reaching a pull request.
+        run: node scripts/build-all.mjs --refresh
+
+      - name: Verify the engine still agrees with the IRS
+        # If refreshed data broke the golden values, that must stop the run.
+        run: npm run check
+
+      - name: Decide whether this is worth a pull request
+        id: triage
+        run: |
+          DATASETS_CHANGED=$(git diff --quiet -- 'data/**/*.json' && echo no || echo yes)
+          NEEDS_HUMAN=$(grep -q 'Needs a human' .refresh-summary.md && echo yes || echo no)
+          echo "datasets=$DATASETS_CHANGED" >> "$GITHUB_OUTPUT"
+          echo "human=$NEEDS_HUMAN" >> "$GITHUB_OUTPUT"
+
+          if [ "$DATASETS_CHANGED" = no ] && [ "$NEEDS_HUMAN" = no ]; then
+            echo "No figure changed. Discarding cosmetic source churn so no empty PR is opened."
+            git checkout -- .
+            git clean -fd data/ || true
+          fi
+
+      - name: Compose the pull request body
+        if: steps.triage.outputs.datasets == 'yes' || steps.triage.outputs.human == 'yes'
+        run: |
+          {
+            echo "Automated quarterly refresh of the dataset from its upstream sources."
+            echo
+            echo "**Nothing here is live until you merge it.** Vercel builds a preview of this"
+            echo "branch — open it, check a city you know on the \`/data\` page, then merge or close."
+            echo
+            echo "Every build script validates its own output, and the engine tests — including the"
+            echo "24 IRS golden values — passed against this data before this pull request opened."
+            echo
+            echo "---"
+            echo
+            cat .refresh-summary.md
+          } > .pr-body.md
+
+      - name: Open a pull request
+        if: steps.triage.outputs.datasets == 'yes' || steps.triage.outputs.human == 'yes'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          branch: data-refresh
+          # Never pushed to main directly. A human reviews the diff and a Vercel
+          # preview before any of this reaches the live site.
+          title: 'Quarterly data refresh'
+          commit-message: 'Refresh dataset from upstream federal sources'
+          delete-branch: true
+          add-paths: |
+            data/**
+          body-path: .pr-body.md

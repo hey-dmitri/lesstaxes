@@ -40,6 +40,8 @@ const SRC = resolve(DATA_DIR, 'sources');
 const ACS_YEAR = 2024;
 const ACS_DATASET = 'acs/acs5';
 const OFFLINE = process.argv.includes('--offline');
+/** Ignore the cache and pull fresh data. Used by the quarterly refresh. */
+const REFRESH = process.argv.includes('--refresh');
 
 const VEHICLE_BUCKETS = [
   // [owner variable, renter variable, vehicles represented]
@@ -96,7 +98,7 @@ const STATE_FIPS = {
 async function loadGeography(geo) {
   const cachePath = resolve(SRC, geo.cacheFile);
 
-  if (OFFLINE || existsSync(cachePath)) {
+  if (!REFRESH && (OFFLINE || existsSync(cachePath))) {
     if (!existsSync(cachePath)) {
       throw new Error(`--offline given but cache missing: ${cachePath}`);
     }

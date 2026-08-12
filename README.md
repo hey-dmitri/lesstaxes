@@ -12,7 +12,7 @@ Free, no accounts, no tracking, no database. All figures come from public federa
 
 ## Status
 
-**Stage 8 of 10 — methodology, data browser, accessibility, performance.**
+**Stage 9 of 10 — quarterly data refresh automation.** Feature-complete.
 
 | Component | State |
 |---|---|
@@ -32,9 +32,10 @@ Free, no accounts, no tracking, no database. All figures come from public federa
 | Share card PNG + rich link previews | ✅ |
 | `/methodology` and public `/data` browser | ✅ |
 | Accessibility, mobile layout, performance measured | ✅ |
-| **Stage 9 — quarterly data refresh automation** | ⬜ next |
+| Quarterly refresh workflow — opens a PR, never auto-merges | ✅ |
+| **Remaining: register a domain, point it at Vercel** | ⬜ |
 
-**577 tests**, including 24 golden values reproduced exactly from the IRS rate tables.
+**583 tests**, including 24 golden values reproduced exactly from the IRS rate tables.
 Total data cost: **$0**. No paid feeds, no runtime API calls.
 
 ### Rebuilding the dataset
@@ -47,6 +48,18 @@ node scripts/build-spending.mjs            # BLS spending baselines
 node scripts/build-sales-tax.mjs           # sales tax + grocery rules
 node scripts/build-local-income-tax.mjs    # NYC, Yonkers, state averages
 ```
+
+Or all at once:
+
+```bash
+node scripts/refresh-sources.mjs           # re-download upstream sources
+node scripts/build-all.mjs                 # rebuild every dataset
+node scripts/build-all.mjs --refresh       # ...and re-fetch the Census API too
+```
+
+A GitHub Action runs both quarterly and opens a pull request when a figure
+actually changes. It never pushes to `main` — a human reviews the diff and a
+Vercel preview first.
 
 All raw source responses are committed under `data/2026.1/sources/`, so every script
 rebuilds offline with no API key. `CENSUS_API_KEY` is only needed to fetch *fresh* ACS data;

@@ -40,6 +40,10 @@ yarn-error.log*
 # generated review pages (published as artifacts, not part of the site)
 .stage*-report.html
 
+# scratch output from the refresh workflow
+.refresh-summary.md
+.pr-body.md
+
 # vercel
 .vercel
 
