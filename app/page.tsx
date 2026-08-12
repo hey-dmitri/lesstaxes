@@ -1,10 +1,19 @@
 'use client';
 
-import { useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 
 import { CityPanel, resetCityForLocation, type CityFormState } from '@/components/city-panel';
 import { CountField, SelectField } from '@/components/fields';
-import { formatUSD, metro, type FilingStatus } from '@/engine';
+import { Results } from '@/components/results';
+import {
+  compare,
+  DATASET_VERSION,
+  formatUSD,
+  localJurisdiction,
+  localTaxOptions,
+  type FilingStatus,
+  type Household,
+} from '@/engine';
 
 const FILING_OPTIONS: Array<{ value: FilingStatus; label: string }> = [
   { value: 'single', label: 'Single' },
@@ -17,6 +26,15 @@ const DEFAULT_ORIGIN = '16980'; // Chicago
 const DEFAULT_DESTINATION = '12420'; // Austin
 const DEFAULT_SALARY = 150_000;
 
+/** Turn the user's opt-in checkboxes into the jurisdictions the engine applies. */
+function jurisdictionsFor(city: CityFormState) {
+  return localTaxOptions(city.metroId)
+    .filter((option) =>
+      option.optional ? (city.localOptIns[option.jurisdictionId] ?? false) : option.defaultApplies,
+    )
+    .map((option) => localJurisdiction(option.jurisdictionId));
+}
+
 export default function Home() {
   const [filingStatus, setFilingStatus] = useState<FilingStatus>('single');
   const [children, setChildren] = useState(0);
@@ -28,12 +46,13 @@ export default function Home() {
     resetCityForLocation(DEFAULT_DESTINATION, DEFAULT_SALARY, 'single', 'rent'),
   );
 
-  /**
-   * Filing status changes the number of adults, which changes the suggested
-   * car count. Re-derive it, but only for cities the user has not overridden
-   * away from the suggestion — otherwise changing "single" to "married" would
-   * silently discard a deliberate edit.
-   */
+  const [revealed, setRevealed] = useState(false);
+  // Animate the roll-up on the first reveal only. Re-rolling on every keystroke
+  // while someone drags a salary around would be noise, not delight.
+  const firstRevealRef = useRef(true);
+  const [animate, setAnimate] = useState(false);
+  const resultsRef = useRef<HTMLDivElement>(null);
+
   function changeFilingStatus(next: FilingStatus) {
     setFilingStatus(next);
     for (const [state, setState] of [
@@ -43,16 +62,48 @@ export default function Home() {
       const wasSuggested =
         state.cars === resetCityForLocation(state.metroId, 0, filingStatus, 'rent').cars;
       if (wasSuggested) {
-        setState({
-          ...state,
-          cars: resetCityForLocation(state.metroId, 0, next, 'rent').cars,
-        });
+        setState({ ...state, cars: resetCityForLocation(state.metroId, 0, next, 'rent').cars });
       }
     }
   }
 
+  const household: Household = { filingStatus, children };
   const sameCity = origin.metroId === destination.metroId;
-  const salaryChanged = origin.grossSalary !== destination.grossSalary;
+
+  // The result exists the moment the inputs do — there is nothing to wait for.
+  const result = useMemo(() => {
+    if (sameCity) return null;
+    return compare(
+      {
+        datasetVersion: DATASET_VERSION,
+        household,
+        origin: { metroId: origin.metroId, grossSalary: origin.grossSalary, housing: origin.housing, cars: origin.cars },
+        destination: {
+          metroId: destination.metroId,
+          grossSalary: destination.grossSalary,
+          housing: destination.housing,
+          cars: destination.cars,
+        },
+      },
+      {
+        origin: { localJurisdictions: jurisdictionsFor(origin) },
+        destination: { localJurisdictions: jurisdictionsFor(destination) },
+      },
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [origin, destination, filingStatus, children, sameCity]);
+
+  function onCompare() {
+    setRevealed(true);
+    if (firstRevealRef.current) {
+      firstRevealRef.current = false;
+      setAnimate(true);
+      window.setTimeout(() => setAnimate(false), 1200);
+    }
+    window.requestAnimationFrame(() => {
+      resultsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  }
 
   return (
     <main className="flex flex-col gap-8">
@@ -67,7 +118,6 @@ export default function Home() {
           The same in both cities. Filing status alone can swing the answer by thousands, so it is
           not optional.
         </p>
-
         <div className="grid gap-5 sm:grid-cols-2">
           <SelectField
             label="Filing status"
@@ -103,63 +153,47 @@ export default function Home() {
           onChange={setDestination}
           salaryLabel="Salary there"
           salaryHint={
-            salaryChanged
+            destination.grossSalary !== origin.grossSalary
               ? `${formatUSD(destination.grossSalary - origin.grossSalary, { signed: true })} versus what you earn now`
               : 'Defaults to your current salary — change it if the offer differs'
           }
         />
       </div>
 
-      {/*
-        Stage 4 ends here: the form captures every input the engine needs.
-        The results panel, reveal animation and share link arrive in Stage 5.
-      */}
-      <section
-        className="rounded-lg border border-dashed p-5 sm:p-6"
-        style={{ borderColor: 'var(--rule-strong)', background: 'var(--surface-sunken)' }}
-      >
-        <h2 className="mb-1 font-serif text-lg font-semibold" style={{ color: 'var(--ink)' }}>
-          Inputs captured
-        </h2>
-        <p className="mb-4 text-xs" style={{ color: 'var(--muted)' }}>
-          A temporary echo so you can confirm the form works. The real result — headline figure,
-          breakdown, break-even salary and share link — lands in the next stage.
+      {sameCity && (
+        <p
+          className="rounded border px-4 py-3 text-sm"
+          style={{ borderColor: 'var(--rule-strong)', background: 'var(--surface)', color: 'var(--bad)' }}
+        >
+          Both cities are the same. Pick a different destination to see a comparison.
         </p>
+      )}
 
-        {sameCity && (
-          <p className="mb-4 text-sm" style={{ color: 'var(--bad)' }}>
-            Both cities are the same. Pick a different destination to see a comparison.
+      {!revealed && (
+        <div className="flex flex-col items-center gap-2">
+          <button
+            type="button"
+            onClick={onCompare}
+            disabled={sameCity}
+            className="w-full rounded-lg px-6 py-3.5 text-base font-semibold transition-opacity disabled:opacity-40 sm:w-auto sm:min-w-64"
+            style={{ background: 'var(--accent)', color: '#ffffff' }}
+          >
+            Compare these cities
+          </button>
+          <p className="text-xs" style={{ color: 'var(--muted)' }}>
+            Nothing is sent anywhere. The whole calculation runs in your browser.
           </p>
-        )}
+        </div>
+      )}
 
-        <dl className="grid gap-x-8 gap-y-2 text-sm sm:grid-cols-2">
-          {[
-            ['Household', `${FILING_OPTIONS.find((f) => f.value === filingStatus)?.label}, ${children} ${children === 1 ? 'child' : 'children'}`],
-            ['From', `${metro(origin.metroId).shortName} — ${formatUSD(origin.grossSalary)}`],
-            ['To', `${metro(destination.metroId).shortName} — ${formatUSD(destination.grossSalary)}`],
-            [
-              'Housing now',
-              origin.housing.tenure === 'rent'
-                ? `Renting at ${formatUSD(origin.housing.monthlyRent)}/mo`
-                : `Owning a ${formatUSD(origin.housing.homePrice)} home`,
-            ],
-            [
-              'Housing there',
-              destination.housing.tenure === 'rent'
-                ? `Renting at ${formatUSD(destination.housing.monthlyRent)}/mo`
-                : `Owning a ${formatUSD(destination.housing.homePrice)} home`,
-            ],
-            ['Cars', `${origin.cars} now → ${destination.cars} there`],
-          ].map(([term, value]) => (
-            <div key={term} className="flex justify-between gap-4 border-b pb-1.5" style={{ borderColor: 'var(--rule)' }}>
-              <dt style={{ color: 'var(--muted)' }}>{term}</dt>
-              <dd className="text-right tnum" style={{ color: 'var(--ink)' }}>
-                {value}
-              </dd>
-            </div>
-          ))}
-        </dl>
-      </section>
+      {revealed && result && (
+        <div ref={resultsRef} className="scroll-mt-6">
+          <Results result={result} animate={animate} />
+          <p className="mt-3 text-center text-xs" style={{ color: 'var(--muted)' }}>
+            Edit anything above and this updates instantly.
+          </p>
+        </div>
+      )}
     </main>
   );
 }

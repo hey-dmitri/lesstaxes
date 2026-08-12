@@ -12,7 +12,7 @@ Free, no accounts, no tracking, no database. All figures come from public federa
 
 ## Status
 
-**Stage 4 of 10 — input form built.** Ready to deploy.
+**Stage 5 of 10 — results and reveal.** The product now answers the question.
 
 | Component | State |
 |---|---|
@@ -27,7 +27,8 @@ Free, no accounts, no tracking, no database. All figures come from public federa
 | Housing (rent, mortgage, property tax), cars, living costs | ✅ |
 | Leftover, city/salary decomposition, break-even solver | ✅ |
 | Input form — pickers, housing, cars, theme | ✅ |
-| **Stage 5 — results, breakdown and reveal** | ⬜ next |
+| Results: headline, breakdown, break-even, reveal | ✅ |
+| **Stage 6 — share links** | ⬜ next |
 
 **542 tests**, including 24 golden values reproduced exactly from the IRS rate tables.
 Total data cost: **$0**. No paid feeds, no runtime API calls.
