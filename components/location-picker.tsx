@@ -98,7 +98,7 @@ export function LocationPicker({ id, label, value, onChange, placeholder }: Prop
     <div ref={rootRef} className="relative">
       <label
         htmlFor={id}
-        className="mb-1.5 block text-[0.7rem] font-semibold uppercase tracking-[0.09em]"
+        className="mb-1 block text-[0.65rem] font-semibold uppercase tracking-[0.09em]"
         style={{ color: 'var(--muted)' }}
       >
         {label}
@@ -123,7 +123,7 @@ export function LocationPicker({ id, label, value, onChange, placeholder }: Prop
         }}
         onFocus={() => { setOpen(true); setActiveIndex(0); }}
         onKeyDown={onKeyDown}
-        className="w-full rounded border px-3 py-2.5 text-base"
+        className="w-full rounded border px-2.5 py-1.5 text-sm"
         style={{
           background: 'var(--surface)',
           borderColor: open ? 'var(--accent)' : 'var(--rule-strong)',
@@ -137,7 +137,7 @@ export function LocationPicker({ id, label, value, onChange, placeholder }: Prop
           id={listId}
           role="listbox"
           aria-label={label}
-          className="absolute z-30 mt-1 max-h-72 w-full overflow-y-auto rounded border shadow-lg"
+          className="absolute z-30 mt-1 max-h-64 w-full overflow-y-auto rounded border shadow-lg"
           style={{ background: 'var(--surface)', borderColor: 'var(--rule-strong)' }}
         >
           {options.length === 0 && (
@@ -157,7 +157,7 @@ export function LocationPicker({ id, label, value, onChange, placeholder }: Prop
                 aria-selected={option.id === value}
                 onMouseEnter={() => setActiveIndex(index)}
                 onMouseDown={(e) => { e.preventDefault(); choose(option); }}
-                className="cursor-pointer px-3 py-2"
+                className="cursor-pointer px-2.5 py-1.5"
                 style={{ background: active ? 'var(--accent-soft)' : 'transparent' }}
               >
                 <span className="block text-sm" style={{ color: 'var(--ink)' }}>

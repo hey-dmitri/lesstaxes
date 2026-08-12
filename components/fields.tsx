@@ -2,10 +2,10 @@
 
 import { useId } from 'react';
 
-const labelClass = 'mb-1.5 block text-[0.7rem] font-semibold uppercase tracking-[0.09em]';
+const labelClass = 'mb-1 block text-[0.65rem] font-semibold uppercase tracking-[0.09em]';
 const labelStyle = { color: 'var(--muted)' } as const;
 
-const inputClass = 'w-full rounded border px-3 py-2.5 text-base tnum';
+const inputClass = 'w-full rounded border px-2.5 py-1.5 text-sm tnum';
 const inputStyle = {
   background: 'var(--surface)',
   borderColor: 'var(--rule-strong)',
@@ -15,7 +15,7 @@ const inputStyle = {
 /** Text shown under a field when its value came from the dataset, not the user. */
 export function PrefillNote({ children }: { children: React.ReactNode }) {
   return (
-    <p className="mt-1 text-xs" style={{ color: 'var(--muted)' }}>
+    <p className="mt-0.5 text-[0.68rem] leading-snug" style={{ color: 'var(--muted)' }}>
       {children}
     </p>
   );
@@ -40,7 +40,7 @@ export function MoneyField({ label, value, onChange, hint, suffix, min = 0, max 
       </label>
       <div className="relative">
         <span
-          className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-base"
+          className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-sm"
           style={{ color: 'var(--muted)' }}
           aria-hidden="true"
         >
@@ -50,7 +50,7 @@ export function MoneyField({ label, value, onChange, hint, suffix, min = 0, max 
           id={id}
           type="text"
           inputMode="numeric"
-          className={`${inputClass} pl-7 ${suffix ? 'pr-14' : ''}`}
+          className={`${inputClass} pl-6 ${suffix ? 'pr-12' : ''}`}
           style={inputStyle}
           value={value === 0 ? '' : value.toLocaleString('en-US')}
           onChange={(e) => {
@@ -61,7 +61,7 @@ export function MoneyField({ label, value, onChange, hint, suffix, min = 0, max 
         />
         {suffix && (
           <span
-            className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-sm"
+            className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-xs"
             style={{ color: 'var(--muted)' }}
           >
             {suffix}
@@ -98,7 +98,7 @@ export function PercentField({ label, value, onChange, hint, max = 100, step = 0
           step={step}
           min={0}
           max={max}
-          className={`${inputClass} pr-8`}
+          className={`${inputClass} pr-7`}
           style={inputStyle}
           value={Number((value * 100).toFixed(3))}
           onChange={(e) => {
@@ -107,7 +107,7 @@ export function PercentField({ label, value, onChange, hint, max = 100, step = 0
           }}
         />
         <span
-          className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-base"
+          className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-sm"
           style={{ color: 'var(--muted)' }}
           aria-hidden="true"
         >
@@ -140,7 +140,7 @@ export function CountField({ label, value, onChange, hint, max = 12 }: CountFiel
           aria-label={`Decrease ${label.toLowerCase()}`}
           onClick={() => onChange(Math.max(0, value - 1))}
           disabled={value <= 0}
-          className="px-3 text-lg leading-none disabled:opacity-30"
+          className="px-2.5 text-base leading-none disabled:opacity-30"
           style={{ color: 'var(--muted)' }}
         >
           −
@@ -149,7 +149,7 @@ export function CountField({ label, value, onChange, hint, max = 12 }: CountFiel
           id={id}
           type="text"
           inputMode="numeric"
-          className="w-full border-x px-2 py-2.5 text-center text-base tnum"
+          className="w-full border-x px-2 py-1.5 text-center text-sm tnum"
           style={{ background: 'transparent', borderColor: 'var(--rule)', color: 'var(--ink)' }}
           value={value}
           onChange={(e) => {
@@ -162,7 +162,7 @@ export function CountField({ label, value, onChange, hint, max = 12 }: CountFiel
           aria-label={`Increase ${label.toLowerCase()}`}
           onClick={() => onChange(Math.min(max, value + 1))}
           disabled={value >= max}
-          className="px-3 text-lg leading-none disabled:opacity-30"
+          className="px-2.5 text-base leading-none disabled:opacity-30"
           style={{ color: 'var(--muted)' }}
         >
           +
@@ -190,7 +190,7 @@ export function SelectField<T extends string>({ label, value, onChange, options,
       </label>
       <select
         id={id}
-        className="w-full rounded border px-3 py-2.5 text-base"
+        className="w-full rounded border px-2.5 py-1.5 text-sm"
         style={inputStyle}
         value={value}
         onChange={(e) => onChange(e.target.value as T)}
@@ -235,7 +235,7 @@ export function Segmented<T extends string>({ label, value, onChange, options }:
               role="radio"
               aria-checked={selected}
               onClick={() => onChange(option.value)}
-              className="flex-1 rounded px-3 py-2 text-sm font-medium transition-colors"
+              className="flex-1 rounded px-3 py-1.5 text-sm font-medium transition-colors"
               style={{
                 background: selected ? 'var(--surface)' : 'transparent',
                 color: selected ? 'var(--ink)' : 'var(--muted)',

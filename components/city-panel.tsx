@@ -21,7 +21,6 @@ export interface CityFormState extends CityInputs {
 
 interface Props {
   title: string;
-  subtitle: string;
   state: CityFormState;
   filingStatus: FilingStatus;
   onChange: (next: CityFormState) => void;
@@ -60,15 +59,7 @@ export function resetCityForLocation(
   };
 }
 
-export function CityPanel({
-  title,
-  subtitle,
-  state,
-  filingStatus,
-  onChange,
-  salaryLabel,
-  salaryHint,
-}: Props) {
+export function CityPanel({ title, state, filingStatus, onChange, salaryLabel, salaryHint }: Props) {
   const m = metro(state.metroId);
   const defaults = housingDefaults(state.metroId);
   const transport = transportDefaults(state.metroId);
@@ -81,27 +72,25 @@ export function CityPanel({
 
   return (
     <section
-      className="rounded-lg border p-5 sm:p-6"
+      className="flex min-h-0 flex-col rounded-lg border"
       style={{ borderColor: 'var(--rule-strong)', background: 'var(--surface)' }}
     >
-      <header className="mb-5">
-        <h2 className="font-serif text-lg font-semibold" style={{ color: 'var(--ink)' }}>
-          {title}
-        </h2>
-        <p className="text-xs" style={{ color: 'var(--muted)' }}>
-          {subtitle}
-        </p>
-      </header>
+      <h2
+        className="shrink-0 border-b px-4 py-2.5 font-serif text-sm font-semibold"
+        style={{ borderColor: 'var(--rule)', color: 'var(--ink)' }}
+      >
+        {title}
+      </h2>
 
-      <div className="flex flex-col gap-5">
+      <div className="flex min-h-0 flex-1 flex-col gap-3.5 overflow-y-auto px-4 py-3.5">
         <LocationPicker
           id={`location-${title.replace(/\s+/g, '-').toLowerCase()}`}
           label="City or area"
           value={state.metroId}
           onChange={(metroId) =>
-            onChange({
-              ...resetCityForLocation(metroId, state.grossSalary, filingStatus, state.housing.tenure),
-            })
+            onChange(
+              resetCityForLocation(metroId, state.grossSalary, filingStatus, state.housing.tenure),
+            )
           }
         />
 
@@ -128,7 +117,7 @@ export function CityPanel({
             value={state.housing.monthlyRent}
             onChange={(monthlyRent) => setHousing({ monthlyRent })}
             suffix="/mo"
-            hint={`Median for ${m.shortName} is ${formatUSD(defaults.medianRentMonthly)}/mo`}
+            hint={`Median here is ${formatUSD(defaults.medianRentMonthly)}/mo`}
           />
         ) : (
           <>
@@ -136,9 +125,9 @@ export function CityPanel({
               label="Home price"
               value={state.housing.homePrice}
               onChange={(homePrice) => setHousing({ homePrice })}
-              hint={`Median for ${m.shortName} is ${formatUSD(defaults.medianHomePrice)}`}
+              hint={`Median here is ${formatUSD(defaults.medianHomePrice)}`}
             />
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-3">
               <PercentField
                 label="Down payment"
                 value={state.housing.downPayment}
@@ -159,13 +148,7 @@ export function CityPanel({
               onChange={(propertyTaxRate) => setHousing({ propertyTaxRate })}
               max={10}
               step={0.01}
-              hint={
-                <>
-                  {m.shortName} pays {(defaults.effectivePropertyTaxRate * 100).toFixed(2)}% of home
-                  value on average — that is the <em>effective</em> rate actually paid, not the
-                  headline millage
-                </>
-              }
+              hint={`${(defaults.effectivePropertyTaxRate * 100).toFixed(2)}% effective here — what is actually paid, not the headline millage`}
             />
           </>
         )}
@@ -175,20 +158,21 @@ export function CityPanel({
           value={state.cars}
           onChange={(cars) => set({ cars })}
           hint={
-            <>
-              {suggestedCars === state.cars ? 'Typical' : `Typical is ${suggestedCars}`} for this
-              household in {m.shortName} — {transport.vehiclesPerAdult.toFixed(2)} vehicles per
-              adult locally
-            </>
+            suggestedCars === state.cars
+              ? `Typical here — ${transport.vehiclesPerAdult.toFixed(2)} per adult`
+              : `Typical here is ${suggestedCars}`
           }
         />
 
         {optionalLocals.length > 0 && (
           <div
-            className="flex flex-col gap-3 rounded border p-3.5"
+            className="flex flex-col gap-2 rounded border p-3"
             style={{ borderColor: 'var(--rule)', background: 'var(--surface-sunken)' }}
           >
-            <p className="text-[0.7rem] font-semibold uppercase tracking-[0.09em]" style={{ color: 'var(--muted)' }}>
+            <p
+              className="text-[0.65rem] font-semibold uppercase tracking-[0.09em]"
+              style={{ color: 'var(--muted)' }}
+            >
               Local income tax
             </p>
             {optionalLocals.map((option) => (
@@ -201,12 +185,16 @@ export function CityPanel({
                 }
               />
             ))}
-            <p className="text-xs" style={{ color: 'var(--muted)' }}>
-              This metro spans several jurisdictions, and only some of them levy a local income
-              tax. It makes a real difference, so we ask rather than guess.
+            <p className="text-[0.68rem] leading-snug" style={{ color: 'var(--muted)' }}>
+              This metro spans several jurisdictions and only some levy it. It makes a real
+              difference, so we ask rather than guess.
             </p>
           </div>
         )}
+
+        <p className="mt-auto pt-1 text-[0.68rem]" style={{ color: 'var(--muted)' }}>
+          {m.name}
+        </p>
       </div>
     </section>
   );

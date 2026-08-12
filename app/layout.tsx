@@ -20,9 +20,9 @@ export const viewport: Viewport = {
  * Applies the saved theme before first paint.
  *
  * Without this, a user who chose dark sees a white flash while React hydrates.
- * It has to be inline and synchronous in <head> — anything deferred is too
- * late. Wrapped in try/catch because localStorage throws in some privacy modes,
- * and a theme preference is never worth breaking the page over.
+ * It must be inline and synchronous in <head> — anything deferred is too late.
+ * Wrapped in try/catch because localStorage throws in some privacy modes, and
+ * a theme preference is never worth breaking the page over.
  */
 const THEME_SCRIPT = `
 try {
@@ -37,18 +37,24 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
       </head>
-      <body>
-        <div className="mx-auto w-full max-w-[76rem] px-5 py-8 sm:px-8 lg:py-12">
-          <header className="mb-8 flex items-start justify-between gap-4 lg:mb-12">
-            <div>
-              <p
+      {/*
+        The whole tool is designed to fit one viewport on a desktop screen, so
+        the page itself never scrolls. Panels scroll internally instead — a
+        safety valve for short windows, rather than pushing the answer below
+        the fold where it stops being an answer.
+      */}
+      <body className="lg:h-dvh lg:overflow-hidden">
+        <div className="mx-auto flex h-full w-full max-w-[112rem] flex-col px-4 py-3 sm:px-6">
+          <header className="flex shrink-0 items-center justify-between gap-4 pb-3">
+            <div className="flex items-baseline gap-3">
+              <span
                 className="text-[0.7rem] font-semibold uppercase tracking-[0.14em]"
                 style={{ color: 'var(--muted)' }}
               >
                 LessTaxes
-              </p>
+              </span>
               <h1
-                className="mt-1 text-balance font-serif text-2xl font-semibold tracking-tight sm:text-3xl"
+                className="font-serif text-base font-semibold tracking-tight sm:text-lg"
                 style={{ color: 'var(--ink)' }}
               >
                 Will moving actually leave you better off?
@@ -60,14 +66,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           {children}
 
           <footer
-            className="mt-16 border-t pt-6 text-xs"
-            style={{ borderColor: 'var(--rule)', color: 'var(--muted)' }}
+            className="shrink-0 pt-2 text-[0.68rem] leading-snug"
+            style={{ color: 'var(--muted)' }}
           >
-            <p className="max-w-[62ch]">
-              Estimates from public federal data — Census, BEA, BLS, IRS and state revenue
-              departments. <strong>Not financial, tax or legal advice.</strong> No accounts, no
-              tracking, nothing stored.
-            </p>
+            Estimates from public federal data — Census, BEA, BLS, IRS and state revenue
+            departments. <strong>Not financial, tax or legal advice.</strong> No accounts, no
+            tracking, nothing stored.
           </footer>
         </div>
       </body>

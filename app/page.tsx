@@ -51,7 +51,6 @@ export default function Home() {
   // while someone drags a salary around would be noise, not delight.
   const firstRevealRef = useRef(true);
   const [animate, setAnimate] = useState(false);
-  const resultsRef = useRef<HTMLDivElement>(null);
 
   function changeFilingStatus(next: FilingStatus) {
     setFilingStatus(next);
@@ -77,7 +76,12 @@ export default function Home() {
       {
         datasetVersion: DATASET_VERSION,
         household,
-        origin: { metroId: origin.metroId, grossSalary: origin.grossSalary, housing: origin.housing, cars: origin.cars },
+        origin: {
+          metroId: origin.metroId,
+          grossSalary: origin.grossSalary,
+          housing: origin.housing,
+          cars: origin.cars,
+        },
         destination: {
           metroId: destination.metroId,
           grossSalary: destination.grossSalary,
@@ -100,45 +104,35 @@ export default function Home() {
       setAnimate(true);
       window.setTimeout(() => setAnimate(false), 1200);
     }
-    window.requestAnimationFrame(() => {
-      resultsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    });
   }
 
   return (
-    <main className="flex flex-col gap-8">
+    <main className="flex min-h-0 flex-1 flex-col gap-3">
+      {/* Household — one compact bar, since it is two fields that apply to both cities. */}
       <section
-        className="rounded-lg border p-5 sm:p-6"
+        className="flex shrink-0 flex-wrap items-end gap-x-5 gap-y-3 rounded-lg border px-4 py-3"
         style={{ borderColor: 'var(--rule-strong)', background: 'var(--surface)' }}
       >
-        <h2 className="mb-1 font-serif text-lg font-semibold" style={{ color: 'var(--ink)' }}>
-          Your household
-        </h2>
-        <p className="mb-5 text-xs" style={{ color: 'var(--muted)' }}>
-          The same in both cities. Filing status alone can swing the answer by thousands, so it is
-          not optional.
-        </p>
-        <div className="grid gap-5 sm:grid-cols-2">
+        <div className="min-w-56 flex-1 sm:max-w-72">
           <SelectField
             label="Filing status"
             value={filingStatus}
             onChange={changeFilingStatus}
             options={FILING_OPTIONS}
           />
-          <CountField
-            label="Children"
-            value={children}
-            onChange={setChildren}
-            max={10}
-            hint="Drives the Child Tax Credit and state child credits"
-          />
         </div>
+        <div className="w-32">
+          <CountField label="Children" value={children} onChange={setChildren} max={10} />
+        </div>
+        <p className="flex-1 text-[0.68rem] leading-snug" style={{ color: 'var(--muted)' }}>
+          These apply to both cities. Filing status alone can swing the answer by thousands, so it
+          is not optional.
+        </p>
       </section>
 
-      <div className="grid gap-6 lg:grid-cols-2">
+      <div className="grid min-h-0 flex-1 gap-3 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1.35fr)]">
         <CityPanel
           title="Where you live now"
-          subtitle="Your current situation"
           state={origin}
           filingStatus={filingStatus}
           onChange={setOrigin}
@@ -147,53 +141,59 @@ export default function Home() {
         />
         <CityPanel
           title="Where you'd move"
-          subtitle="The city you're considering"
           state={destination}
           filingStatus={filingStatus}
           onChange={setDestination}
           salaryLabel="Salary there"
           salaryHint={
             destination.grossSalary !== origin.grossSalary
-              ? `${formatUSD(destination.grossSalary - origin.grossSalary, { signed: true })} versus what you earn now`
-              : 'Defaults to your current salary — change it if the offer differs'
+              ? `${formatUSD(destination.grossSalary - origin.grossSalary, { signed: true })} versus now`
+              : 'Defaults to your current salary'
           }
         />
-      </div>
 
-      {sameCity && (
-        <p
-          className="rounded border px-4 py-3 text-sm"
-          style={{ borderColor: 'var(--rule-strong)', background: 'var(--surface)', color: 'var(--bad)' }}
+        <section
+          className="flex min-h-0 flex-col rounded-lg border"
+          style={{ borderColor: 'var(--rule-strong)', background: 'var(--surface)' }}
         >
-          Both cities are the same. Pick a different destination to see a comparison.
-        </p>
-      )}
-
-      {!revealed && (
-        <div className="flex flex-col items-center gap-2">
-          <button
-            type="button"
-            onClick={onCompare}
-            disabled={sameCity}
-            className="w-full rounded-lg px-6 py-3.5 text-base font-semibold transition-opacity disabled:opacity-40 sm:w-auto sm:min-w-64"
-            style={{ background: 'var(--accent)', color: '#ffffff' }}
+          <h2
+            className="shrink-0 border-b px-4 py-2.5 font-serif text-sm font-semibold"
+            style={{ borderColor: 'var(--rule)', color: 'var(--ink)' }}
           >
-            Compare these cities
-          </button>
-          <p className="text-xs" style={{ color: 'var(--muted)' }}>
-            Nothing is sent anywhere. The whole calculation runs in your browser.
-          </p>
-        </div>
-      )}
+            {revealed && result ? 'What it means for you' : 'Your answer'}
+          </h2>
 
-      {revealed && result && (
-        <div ref={resultsRef} className="scroll-mt-6">
-          <Results result={result} animate={animate} />
-          <p className="mt-3 text-center text-xs" style={{ color: 'var(--muted)' }}>
-            Edit anything above and this updates instantly.
-          </p>
-        </div>
-      )}
+          {revealed && result ? (
+            <Results result={result} animate={animate} />
+          ) : (
+            <div className="flex min-h-0 flex-1 flex-col items-center justify-center gap-3 px-6 py-8 text-center">
+              {sameCity ? (
+                <p className="text-sm" style={{ color: 'var(--bad)' }}>
+                  Both cities are the same. Pick a different destination.
+                </p>
+              ) : (
+                <>
+                  <p className="max-w-[34ch] text-sm" style={{ color: 'var(--muted)' }}>
+                    Everything is filled in with real local figures. Adjust anything, or just see
+                    the answer.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={onCompare}
+                    className="w-full max-w-64 rounded-lg px-6 py-3 text-base font-semibold"
+                    style={{ background: 'var(--accent)', color: '#ffffff' }}
+                  >
+                    Compare these cities
+                  </button>
+                  <p className="text-[0.68rem]" style={{ color: 'var(--muted)' }}>
+                    Nothing is sent anywhere. It all runs in your browser.
+                  </p>
+                </>
+              )}
+            </div>
+          )}
+        </section>
+      </div>
     </main>
   );
 }
