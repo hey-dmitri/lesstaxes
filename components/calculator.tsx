@@ -7,12 +7,11 @@ import { CountField, SelectField } from '@/components/fields';
 import { Results } from '@/components/results';
 import { ShareBar } from '@/components/share-bar';
 import { encodeComparison, type SharedComparison } from '@/lib/share-link';
+import { describeComparison, jurisdictionsFor } from '@/lib/shared-comparison';
 import {
   compare,
   DATASET_VERSION,
   formatUSD,
-  localJurisdiction,
-  localTaxOptions,
   type FilingStatus,
   type Household,
 } from '@/engine';
@@ -27,15 +26,6 @@ const FILING_OPTIONS: Array<{ value: FilingStatus; label: string }> = [
 const DEFAULT_ORIGIN = '16980'; // Chicago
 const DEFAULT_DESTINATION = '12420'; // Austin
 const DEFAULT_SALARY = 150_000;
-
-/** Turn the user's opt-in checkboxes into the jurisdictions the engine applies. */
-function jurisdictionsFor(city: CityFormState) {
-  return localTaxOptions(city.metroId)
-    .filter((option) =>
-      option.optional ? (city.localOptIns[option.jurisdictionId] ?? false) : option.defaultApplies,
-    )
-    .map((option) => localJurisdiction(option.jurisdictionId));
-}
 
 export interface CalculatorProps {
   /** Present when arriving via a share link, so the result opens revealed. */
@@ -78,9 +68,9 @@ export function Calculator({ initial }: CalculatorProps) {
         origin,
         destination,
       });
-      return { path: `/r/${payload}`, error: null as string | null };
+      return { payload, path: `/r/${payload}`, error: null as string | null };
     } catch (e) {
-      return { path: '', error: e instanceof Error ? e.message : 'unknown problem' };
+      return { payload: '', path: '', error: e instanceof Error ? e.message : 'unknown problem' };
     }
   }, [filingStatus, children, origin, destination]);
 
@@ -199,7 +189,14 @@ export function Calculator({ initial }: CalculatorProps) {
             <Results
               result={result}
               animate={animate}
-              share={<ShareBar path={share.path} error={share.error} />}
+              share={
+                <ShareBar
+                  path={share.path}
+                  payload={share.payload}
+                  slug={describeComparison(result).slug}
+                  error={share.error}
+                />
+              }
             />
           ) : (
             <div className="flex min-h-0 flex-1 flex-col items-center justify-center gap-3 px-6 py-8 text-center">

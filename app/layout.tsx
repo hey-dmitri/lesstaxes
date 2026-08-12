@@ -3,10 +3,32 @@ import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import { ThemeToggle } from '@/components/theme-toggle';
 
+/**
+ * Absolute base for Open Graph URLs. Messaging apps fetch preview images from
+ * their own servers, so a relative path is useless to them.
+ * Vercel injects VERCEL_URL per deployment, including previews.
+ */
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL
+  ? process.env.NEXT_PUBLIC_SITE_URL
+  : process.env.VERCEL_PROJECT_PRODUCTION_URL
+    ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+    : process.env.VERCEL_URL
+      ? `https://${process.env.VERCEL_URL}`
+      : 'http://localhost:3000';
+
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: 'LessTaxes — will moving actually leave you better off?',
   description:
     'Compare two US cities on what you would actually have left over: income tax, property tax, sales tax, housing, cars and cost of living. Free, no accounts, no tracking.',
+  openGraph: {
+    type: 'website',
+    siteName: 'LessTaxes',
+    title: 'Will moving actually leave you better off?',
+    description:
+      'Income tax, property tax, sales tax, housing, cars and cost of living — for any two US cities.',
+  },
+  twitter: { card: 'summary_large_image' },
 };
 
 export const viewport: Viewport = {

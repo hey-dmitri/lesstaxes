@@ -1,7 +1,50 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 
 import { Calculator } from '@/components/calculator';
+import { cardPath } from '@/lib/share-card';
+import { comparisonFromShared, describeComparison } from '@/lib/shared-comparison';
 import { decodeComparison, type SharedComparison } from '@/lib/share-link';
+
+/**
+ * Per-link preview.
+ *
+ * Without this a shared link arrives in iMessage or Slack as a bare URL. With
+ * it, the actual result is visible in the message thread before anyone clicks.
+ */
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ payload: string }>;
+}): Promise<Metadata> {
+  const { payload } = await params;
+
+  try {
+    const summary = describeComparison(comparisonFromShared(decodeComparison(payload)));
+    return {
+      title: `${summary.title} — LessTaxes`,
+      description: summary.description,
+      openGraph: {
+        type: 'website',
+        siteName: 'LessTaxes',
+        title: summary.title,
+        description: summary.description,
+        images: [{ url: cardPath(payload), width: 1200, height: 630, alt: summary.title }],
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: summary.title,
+        description: summary.description,
+        images: [cardPath(payload)],
+      },
+    };
+  } catch {
+    return {
+      title: 'That link didn\u2019t work — LessTaxes',
+      description: 'This share link could not be read.',
+    };
+  }
+}
 
 /**
  * A shared comparison.

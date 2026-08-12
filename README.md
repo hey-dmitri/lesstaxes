@@ -12,7 +12,7 @@ Free, no accounts, no tracking, no database. All figures come from public federa
 
 ## Status
 
-**Stage 6 of 10 — share links.** The product works end to end.
+**Stage 7 of 10 — share card and rich link previews.**
 
 | Component | State |
 |---|---|
@@ -29,9 +29,10 @@ Free, no accounts, no tracking, no database. All figures come from public federa
 | Input form — pickers, housing, cars, theme | ✅ |
 | Results: headline, breakdown, break-even, reveal | ✅ |
 | Share links — URL-encoded, dataset version pinned | ✅ |
-| **Stage 7 — share card and rich link previews** | ⬜ next |
+| Share card PNG + rich link previews | ✅ |
+| **Stage 8 — methodology, /data page, accessibility, mobile, performance** | ⬜ next |
 
-**566 tests**, including 24 golden values reproduced exactly from the IRS rate tables.
+**577 tests**, including 24 golden values reproduced exactly from the IRS rate tables.
 Total data cost: **$0**. No paid feeds, no runtime API calls.
 
 ### Rebuilding the dataset
