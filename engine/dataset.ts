@@ -1,22 +1,20 @@
 /**
- * Typed access to the committed dataset.
+ * Typed access to a dataset version.
  *
- * Like engine/tax/rules.ts, this is a boundary module: it is the only place the
- * engine reaches into `data/`. Everything downstream takes plain values, so the
- * calculation is testable against fixtures and a new dataset version is a
- * one-line change here.
+ * Reads through engine/datasets.ts rather than importing a directory, so that a
+ * shared link can resolve against the release it was made with (PROJECT.md
+ * §9.2). Every accessor takes an optional version as its last argument and
+ * defaults to the current release, which keeps the interface's call sites — the
+ * pickers, the data browser — unchanged while letting the calculation pin
+ * itself.
  */
 
-import housingData from '../data/2026.2/housing.json';
-import localTaxData from '../data/2026.2/local-income-tax.json';
-import metrosData from '../data/2026.2/metros.json';
-import salesTaxData from '../data/2026.2/sales-tax.json';
-import spendingData from '../data/2026.2/spending.json';
-import transportData from '../data/2026.2/transport.json';
+import { CURRENT_DATASET_VERSION, datasetBundle } from './datasets';
 import type { Rate, USD } from './types';
 import type { LocalTaxRules } from './tax/local';
 
-export const DATASET_VERSION = metrosData.datasetVersion;
+/** What a fresh visit computes with. Per-link resolution goes through datasetBundle. */
+export const DATASET_VERSION = CURRENT_DATASET_VERSION;
 
 // ---------------------------------------------------------------------------
 // Metros
@@ -41,19 +39,20 @@ export interface Metro {
   priceParity: PriceParity;
 }
 
-const METROS = metrosData.metros as unknown as Record<string, Metro>;
+const metros = (version?: string) =>
+  datasetBundle(version).metros.metros as Record<string, Metro>;
 
-export const ALL_METRO_IDS: readonly string[] = Object.keys(METROS);
+export const ALL_METRO_IDS: readonly string[] = Object.keys(metros());
 
-export function metro(id: string): Metro {
-  const m = METROS[id];
+export function metro(id: string, version?: string): Metro {
+  const m = metros(version)[id];
   if (!m) throw new Error(`unknown location id: ${id}`);
   return m;
 }
 
 /** Every selectable location, sorted for a picker. */
-export function allMetros(): Metro[] {
-  return Object.values(METROS).sort((a, b) => a.shortName.localeCompare(b.shortName));
+export function allMetros(version?: string): Metro[] {
+  return Object.values(metros(version)).sort((a, b) => a.shortName.localeCompare(b.shortName));
 }
 
 // ---------------------------------------------------------------------------
@@ -72,10 +71,8 @@ export interface HousingDefaults {
   effectivePropertyTaxRate: Rate;
 }
 
-const HOUSING = housingData.byMetro as unknown as Record<string, HousingDefaults>;
-
-export function housingDefaults(metroId: string): HousingDefaults {
-  const h = HOUSING[metroId];
+export function housingDefaults(metroId: string, version?: string): HousingDefaults {
+  const h = datasetBundle(version).housing.byMetro[metroId] as HousingDefaults | undefined;
   if (!h) throw new Error(`no housing data for ${metroId}`);
   return h;
 }
@@ -109,7 +106,15 @@ export interface IncomeRentCurve {
   elasticity: number;
 }
 
-export const INCOME_RENT_CURVE = housingData.incomeCurve as unknown as IncomeRentCurve;
+/**
+ * Null for releases built before the curve existed. 2026.1 shipped a single
+ * income-blind median, and a 2026.1 link has to keep reproducing exactly that.
+ */
+export function incomeRentCurve(version?: string): IncomeRentCurve | null {
+  return (datasetBundle(version).housing.incomeCurve as IncomeRentCurve | undefined) ?? null;
+}
+
+export const INCOME_RENT_CURVE = incomeRentCurve() as IncomeRentCurve;
 
 /**
  * How this household's rent compares with the typical renter's.
@@ -123,8 +128,10 @@ export const INCOME_RENT_CURVE = housingData.incomeCurve as unknown as IncomeRen
  * See the note in scripts/build-housing-transport.mjs for why this is a single
  * national curve and not a per-metro one.
  */
-export function rentFactorForIncome(income: USD): number {
-  const points = INCOME_RENT_CURVE.points;
+export function rentFactorForIncome(income: USD, version?: string): number {
+  const curve = incomeRentCurve(version);
+  if (!curve) return 1; // a release with no curve priced rent income-blind
+  const points = curve.points;
   const target = Math.max(1, income);
 
   if (target <= points[0].income) return points[0].factor;
@@ -140,18 +147,25 @@ export function rentFactorForIncome(income: USD): number {
   }
 
   const last = points[points.length - 1];
-  return last.factor * (target / last.income) ** INCOME_RENT_CURVE.elasticity;
+  return last.factor * (target / last.income) ** curve.elasticity;
 }
 
 /**
  * The rent prefill: the local median for a unit this household's size, scaled
  * for what people at this income actually pay.
  */
-export function rentDefault(metroId: string, income: USD, bedrooms: number): USD {
-  const table = housingDefaults(metroId).rentByBedrooms;
+export function rentDefault(
+  metroId: string,
+  income: USD,
+  bedrooms: number,
+  version?: string,
+): USD {
+  const defaults = housingDefaults(metroId, version);
   const size = Math.min(MAX_BEDROOMS, Math.max(0, Math.round(bedrooms)));
-  const base = table[size] ?? housingDefaults(metroId).medianRentMonthly;
-  return Math.round(base * rentFactorForIncome(income));
+  // Releases before 2026.2 carry no rent-by-size table; they priced every
+  // household at one metro-wide median, and their links must keep doing so.
+  const base = defaults.rentByBedrooms?.[size] ?? defaults.medianRentMonthly;
+  return Math.round(base * rentFactorForIncome(income, version));
 }
 
 // ---------------------------------------------------------------------------
@@ -165,10 +179,8 @@ export interface TransportDefaults {
   vehiclesPerAdult: number;
 }
 
-const TRANSPORT = transportData.byMetro as unknown as Record<string, TransportDefaults>;
-
-export function transportDefaults(metroId: string): TransportDefaults {
-  const t = TRANSPORT[metroId];
+export function transportDefaults(metroId: string, version?: string): TransportDefaults {
+  const t = datasetBundle(version).transport.byMetro[metroId] as TransportDefaults | undefined;
   if (!t) throw new Error(`no transport data for ${metroId}`);
   return t;
 }
@@ -198,9 +210,10 @@ export interface SpendingProfile {
   };
 }
 
-const PROFILES = (spendingData.profiles as unknown as SpendingProfile[])
-  .slice()
-  .sort((a, b) => a.incomeFloor - b.incomeFloor);
+const profiles = (version?: string): SpendingProfile[] =>
+  (datasetBundle(version).spending.profiles as SpendingProfile[])
+    .slice()
+    .sort((a, b) => a.incomeFloor - b.incomeFloor);
 
 /** Which BEA parity scales each spending category. */
 export const PARITY_FOR_CATEGORY: Record<keyof SpendingCategories, keyof PriceParity> = {
@@ -218,17 +231,18 @@ export const PARITY_FOR_CATEGORY: Record<keyof SpendingCategories, keyof PricePa
  * precision the survey does not have, and would hide the step structure from
  * anyone reading the methodology page.
  */
-export function spendingProfile(householdIncome: USD): SpendingProfile {
+export function spendingProfile(householdIncome: USD, version?: string): SpendingProfile {
   const income = Math.max(0, householdIncome);
-  let chosen = PROFILES[0];
-  for (const p of PROFILES) {
+  const all = profiles(version);
+  let chosen = all[0];
+  for (const p of all) {
     if (income >= p.incomeFloor) chosen = p;
     else break;
   }
   return chosen;
 }
 
-export const ALL_SPENDING_PROFILES: readonly SpendingProfile[] = PROFILES;
+export const ALL_SPENDING_PROFILES: readonly SpendingProfile[] = profiles();
 
 // ---------------------------------------------------------------------------
 // Sales tax
@@ -243,7 +257,7 @@ export interface SalesTaxRules {
   grocery: { treatment: 'exempt' | 'full' | 'reduced'; effectiveRate: Rate };
 }
 
-const SALES_TAX = salesTaxData.states as unknown as Record<string, SalesTaxRules>;
+
 
 export interface TaxableShares {
   food: { groceryPortion: number; restaurantPortion: number };
@@ -253,10 +267,14 @@ export interface TaxableShares {
   otherServices: number;
 }
 
-export const TAXABLE_SHARES = salesTaxData.taxableShares as unknown as TaxableShares;
+export function taxableShares(version?: string): TaxableShares {
+  return datasetBundle(version).salesTax.taxableShares as TaxableShares;
+}
 
-export function salesTaxRules(stateCode: string): SalesTaxRules {
-  const s = SALES_TAX[stateCode];
+export const TAXABLE_SHARES = taxableShares();
+
+export function salesTaxRules(stateCode: string, version?: string): SalesTaxRules {
+  const s = datasetBundle(version).salesTax.states[stateCode] as SalesTaxRules | undefined;
   if (!s) throw new Error(`no sales tax data for state ${stateCode}`);
   return s;
 }
@@ -273,16 +291,13 @@ export interface LocalTaxOption {
   prompt?: string;
 }
 
-const LOCAL_JURISDICTIONS = localTaxData.jurisdictions as unknown as Record<string, LocalTaxRules>;
-const LOCAL_BY_METRO = localTaxData.byMetro as unknown as Record<string, LocalTaxOption[]>;
-
 /** Local income tax options for a metro. Empty for most of the country. */
-export function localTaxOptions(metroId: string): LocalTaxOption[] {
-  return LOCAL_BY_METRO[metroId] ?? [];
+export function localTaxOptions(metroId: string, version?: string): LocalTaxOption[] {
+  return (datasetBundle(version).localTax.byMetro[metroId] as LocalTaxOption[] | undefined) ?? [];
 }
 
-export function localJurisdiction(id: string): LocalTaxRules {
-  const j = LOCAL_JURISDICTIONS[id];
+export function localJurisdiction(id: string, version?: string): LocalTaxRules {
+  const j = datasetBundle(version).localTax.jurisdictions[id] as LocalTaxRules | undefined;
   if (!j) throw new Error(`unknown local jurisdiction: ${id}`);
   return j;
 }
@@ -291,8 +306,8 @@ export function localJurisdiction(id: string): LocalTaxRules {
  * The jurisdictions that apply by default for a metro. The interface may let
  * the user override any marked optional.
  */
-export function defaultLocalJurisdictions(metroId: string): LocalTaxRules[] {
-  return localTaxOptions(metroId)
+export function defaultLocalJurisdictions(metroId: string, version?: string): LocalTaxRules[] {
+  return localTaxOptions(metroId, version)
     .filter((o) => o.defaultApplies)
-    .map((o) => localJurisdiction(o.jurisdictionId));
+    .map((o) => localJurisdiction(o.jurisdictionId, version));
 }

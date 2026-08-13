@@ -1,4 +1,6 @@
-# LessTaxes
+# Pack or Stay
+
+**Will moving actually leave you with more money?**
 
 Will you actually have more money in your pocket if you move to another city?
 
@@ -34,26 +36,20 @@ Free, no accounts, no tracking, no database. All figures come from public federa
 | Accessibility, mobile layout, performance measured | ✅ |
 | Quarterly refresh workflow — opens a PR, never auto-merges | ✅ |
 | Contact route for wrong figures — email and GitHub, prefilled | ✅ |
-| **Share links pinned to their dataset version** — see below | ⬜ |
+| Share links pinned to their dataset version | ✅ |
 | **Home prices scaled to income, as rents now are** | ⬜ |
-| **Register a domain, point it at Vercel** | ⬜ |
+| Name and domain chosen — **Pack or Stay**, `packorstay.com` | ✅ |
+| **Point `packorstay.com` at Vercel** | ⬜ |
 
-**620 tests**, including 24 golden values reproduced exactly from the IRS rate tables.
+**630 tests**, including 24 golden values reproduced exactly from the IRS rate tables.
 Total data cost: **$0**. No paid feeds, no runtime API calls.
 
 ### Known gaps, in priority order
 
-1. **Share links are not actually pinned to a dataset version.** The link format
-   carries one and `compare()` echoes it back, but `engine/dataset.ts` imports a
-   single dataset directly, so every link computes against whatever is currently
-   compiled in. PROJECT.md §9.2 promises the opposite. Nothing is public yet so
-   no real links are affected — but this must land **before a domain does**, or
-   shared results will silently change under the people holding them.
-   `data/2026.1/` is kept intact on disk ready for it.
-2. **Buying is still income-blind.** Rent is now sized to the household and
+1. **Buying is still income-blind.** Rent is now sized to the household and
    scaled to income; home price is still the metro median, and property tax is
    computed from it. The ownership path has the flaw the rental path just lost.
-3. **Home and renters insurance are still missing entirely**, which understates
+2. **Home and renters insurance are still missing entirely**, which understates
    ownership everywhere and badly in Florida and Louisiana.
 
 ### Rebuilding the dataset
@@ -73,6 +69,15 @@ Or all at once:
 node scripts/refresh-sources.mjs           # re-download upstream sources
 node scripts/build-all.mjs                 # rebuild every dataset
 node scripts/build-all.mjs --refresh       # ...and re-fetch the Census API too
+```
+
+Every script writes to the release named in `engine/datasets.ts`. To cut a new
+one — which is what a data refresh must always do, since shipped releases are
+immutable and share links resolve against them:
+
+```bash
+node scripts/cut-dataset-version.mjs       # 2026.2 -> 2026.3, registers it
+node scripts/build-all.mjs --refresh       # rebuild into the new release
 ```
 
 A GitHub Action runs both quarterly and opens a pull request when a figure

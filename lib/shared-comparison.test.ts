@@ -108,7 +108,7 @@ describe('describeComparison', () => {
 
   it('produces a filename-safe slug with no punctuation', () => {
     expect(summary.slug).toBe('chicago-il-to-austin-tx');
-    expect(cardFilename(summary.slug)).toBe('chicago-il-to-austin-tx-lesstaxes.png');
+    expect(cardFilename(summary.slug)).toBe('chicago-il-to-austin-tx-packorstay.png');
   });
 
   it('handles rural locations in the slug', () => {

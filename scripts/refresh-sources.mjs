@@ -25,9 +25,11 @@ import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { extractFromZip } from './lib/zip.mjs';
+import { CURRENT_DATASET_VERSION } from './lib/version.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
-const VERSION = '2026.1';
+/** Overridable so a new dated release can be built without editing every script. */
+const VERSION = process.env.DATASET_VERSION || CURRENT_DATASET_VERSION;
 const SRC = resolve(HERE, '..', 'data', VERSION, 'sources');
 
 const BROWSER_UA =
@@ -35,7 +37,7 @@ const BROWSER_UA =
 
 /** BLS blocks automated requests whose User-Agent carries no contact address. */
 const contact = process.env.DATA_CONTACT_EMAIL;
-const BLS_UA = `LessTaxes/0.1 (personal cost-of-living project; ${contact ?? 'no contact set'})`;
+const BLS_UA = `PackOrStay/0.1 (personal cost-of-living project; ${contact ?? 'no contact set'})`;
 
 const sha = (buffer) => createHash('sha256').update(buffer).digest('hex').slice(0, 12);
 

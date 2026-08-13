@@ -25,6 +25,15 @@ jobs:
 
       - run: npm ci
 
+      # A refresh must never rewrite a shipped release in place. Share links
+      # resolve by version (engine/datasets.ts), so editing data/<current>/
+      # would change the numbers under every link already pinned to it — the
+      # exact failure PROJECT.md §9.2 exists to prevent. Cut a new dated
+      # release first and build into that; the old one stays readable forever.
+      - name: Cut a new dataset release
+        id: cut
+        run: node scripts/cut-dataset-version.mjs
+
       - name: Re-download upstream sources
         env:
           DATA_CONTACT_EMAIL: ${{ secrets.DATA_CONTACT_EMAIL }}
@@ -45,15 +54,36 @@ jobs:
 
       - name: Decide whether this is worth a pull request
         id: triage
+        env:
+          NEW: ${{ steps.cut.outputs.version }}
+          PREV: ${{ steps.cut.outputs.previous }}
         run: |
-          DATASETS_CHANGED=$(git diff --quiet -- 'data/**/*.json' && echo no || echo yes)
+          # Compare the new release against the one it was cut from. Every file
+          # embeds its own version — in the stamp and in the snapshot paths — so
+          # both sides are normalised first, or the version bump alone would
+          # look like a change in every single file.
+          DATASETS_CHANGED=no
+          for new in data/"$NEW"/*.json; do
+            base=$(basename "$new")
+            old="data/$PREV/$base"
+            if [ ! -f "$old" ]; then DATASETS_CHANGED=yes; break; fi
+            if ! diff -q \
+              <(sed "s/$PREV/VERSION/g" "$old") \
+              <(sed "s/$NEW/VERSION/g" "$new") >/dev/null; then
+              echo "changed: $base"
+              DATASETS_CHANGED=yes
+            fi
+          done
+
           NEEDS_HUMAN=$(grep -q 'Needs a human' .refresh-summary.md && echo yes || echo no)
           echo "datasets=$DATASETS_CHANGED" >> "$GITHUB_OUTPUT"
           echo "human=$NEEDS_HUMAN" >> "$GITHUB_OUTPUT"
 
           if [ "$DATASETS_CHANGED" = no ] && [ "$NEEDS_HUMAN" = no ]; then
-            echo "No figure changed. Discarding cosmetic source churn so no empty PR is opened."
-            git checkout -- .
+            echo "No figure changed. Discarding the release so no empty PR is opened."
+            rm -rf "data/$NEW"
+            git checkout -- engine/datasets.ts
+            git checkout -- . || true
             git clean -fd data/ || true
           fi
 
@@ -61,7 +91,10 @@ jobs:
         if: steps.triage.outputs.datasets == 'yes' || steps.triage.outputs.human == 'yes'
         run: |
           {
-            echo "Automated quarterly refresh of the dataset from its upstream sources."
+            echo "Automated quarterly refresh, cut as a NEW dataset release: \`${{ steps.cut.outputs.version }}\`."
+            echo
+            echo "\`data/${{ steps.cut.outputs.previous }}/\` is untouched, so links already shared keep"
+            echo "resolving to the numbers they were made with."
             echo
             echo "**Nothing here is live until you merge it.** Vercel builds a preview of this"
             echo "branch — open it, check a city you know on the \`/data\` page, then merge or close."
@@ -86,4 +119,5 @@ jobs:
           delete-branch: true
           add-paths: |
             data/**
+            engine/datasets.ts
           body-path: .pr-body.md

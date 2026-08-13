@@ -6,7 +6,7 @@
  */
 
 import { compare, defaultCityInputs } from '../engine/compare';
-import { metro } from '../engine/dataset';
+import { DATASET_VERSION, metro } from '../engine/dataset';
 import { formatPercent, formatUSD } from '../engine/money';
 import type { ComparisonResult, FilingStatus, Household } from '../engine/types';
 
@@ -66,7 +66,7 @@ const SCENARIOS: Scenario[] = [
 function run(s: Scenario): { s: Scenario; r: ComparisonResult; household: Household } {
   const household: Household = { filingStatus: s.filingStatus, children: s.children };
   const r = compare({
-    datasetVersion: '2026.1',
+    datasetVersion: DATASET_VERSION,
     household,
     origin: defaultCityInputs(s.from, s.salary, household, s.fromTenure ?? 'rent'),
     destination: defaultCityInputs(
@@ -196,7 +196,7 @@ const cards = results
 const demo = results[0].r;
 const demoCity = demo.origin;
 
-console.log(`<title>LessTaxes — Stage 3: Worked Scenarios</title>
+console.log(`<title>Pack or Stay — Stage 3: Worked Scenarios</title>
 <style>
   :root {
     --ground:#f7f8fa; --surface:#ffffff; --ink:#171a21; --muted:#656d7e;
@@ -297,7 +297,7 @@ console.log(`<title>LessTaxes — Stage 3: Worked Scenarios</title>
          padding:.12em .38em; border-radius:3px; font-size:.85em; }
 </style>
 <div class="wrap">
-<p class="eyebrow">LessTaxes &middot; Stage 3 of 10</p>
+<p class="eyebrow">Pack or Stay &middot; Stage 3 of 10</p>
 <h1>Worked Scenarios</h1>
 <p class="sub">The complete calculation, end to end. <strong>This is the checkpoint that
 matters most</strong> &mdash; not because the code is risky, but because it is where you decide

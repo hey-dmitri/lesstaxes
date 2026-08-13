@@ -1,5 +1,5 @@
 /**
- * LessTaxes calculation engine — public API.
+ * Pack or Stay calculation engine — public API.
  *
  * Plain TypeScript, no framework dependencies. Imported by the interface, by
  * the tests, and by the link-preview image function. See engine/README.md.
@@ -17,6 +17,14 @@ export {
 } from './compare';
 
 export {
+  ALL_DATASET_VERSIONS,
+  CURRENT_DATASET_VERSION,
+  datasetBundle,
+  isKnownDatasetVersion,
+  type DatasetBundle,
+} from './datasets';
+
+export {
   ALL_METRO_IDS,
   ALL_SPENDING_PROFILES,
   DATASET_VERSION,
@@ -25,8 +33,10 @@ export {
   bedroomsFor,
   defaultLocalJurisdictions,
   housingDefaults,
+  incomeRentCurve,
   rentDefault,
   rentFactorForIncome,
+  taxableShares,
   localJurisdiction,
   localTaxOptions,
   metro,
@@ -62,6 +72,7 @@ export { computeFederal } from './tax/federal';
 export { computeFica } from './tax/fica';
 export { computeLocalTax } from './tax/local';
 export { computeStateTax, adultsIn, scheduleFor } from './tax/state';
+export { federalRules, ficaRules } from './tax/rules';
 export {
   ALL_FILING_STATUSES,
   ALL_STATE_CODES,

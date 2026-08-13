@@ -7,7 +7,7 @@
     "name": "BLS Consumer Expenditure Survey, Table 1203 — income before taxes, 2024",
     "url": "https://www.bls.gov/cex/tables/calendar-year/mean-item-share-average-standard-error/cu-income-before-taxes-2024.xlsx",
     "licence": "US Government work — public domain",
-    "snapshot": "data/2026.1/sources/bls-ces-table1203-2024.csv"
+    "snapshot": "data/2026.2/sources/bls-ces-table1203-2024.csv"
   },
   "parityMapping": {
     "food": "goods",

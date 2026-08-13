@@ -35,9 +35,11 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { CURRENT_DATASET_VERSION } from './lib/version.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
-const VERSION = '2026.1';
+/** Overridable so a new dated release can be built without editing every script. */
+const VERSION = process.env.DATASET_VERSION || CURRENT_DATASET_VERSION;
 const DATA_DIR = resolve(HERE, '..', 'data', VERSION);
 const OUT = resolve(DATA_DIR, 'local-income-tax.json');
 

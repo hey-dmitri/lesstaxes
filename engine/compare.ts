@@ -27,7 +27,7 @@ import {
   metro,
   rentDefault,
   salesTaxRules,
-  TAXABLE_SHARES,
+  taxableShares,
   transportDefaults,
   DATASET_VERSION,
 } from './dataset';
@@ -36,7 +36,7 @@ import { computeLiving, computeSalesTax, defaultCarCount } from './living';
 import { computeFederal } from './tax/federal';
 import { computeFica } from './tax/fica';
 import { computeLocalTax, type LocalTaxRules } from './tax/local';
-import { FEDERAL_RULES_2026, FICA_RULES_2026, stateRules } from './tax/rules';
+import { federalRules, ficaRules, stateRules } from './tax/rules';
 import { adultsIn, computeStateTax } from './tax/state';
 import type {
   CategoryDelta,
@@ -59,6 +59,15 @@ export interface CityComputeOptions {
    * city's own salary when computing a single city in isolation.
    */
   basketIncome?: USD;
+  /**
+   * Which shipped dataset to compute against. Defaults to the current release.
+   *
+   * This is what makes PROJECT.md §9.2 true: a shared link carries the version
+   * it was made with, and passing it here means the recipient recomputes
+   * against that data — and against that release's MODEL, since the accessors
+   * fall back to how an older bundle worked when it lacks a newer field.
+   */
+  datasetVersion?: string;
 }
 
 /** Everything about one city. */
@@ -67,11 +76,12 @@ export function computeCity(
   household: Household,
   options: CityComputeOptions = {},
 ): CityResult {
-  const m = metro(city.metroId);
+  const version = options.datasetVersion;
+  const m = metro(city.metroId, version);
   const gross = Math.max(0, city.grossSalary);
 
   // 1. FICA
-  const fica = computeFica(gross, household.filingStatus, FICA_RULES_2026);
+  const fica = computeFica(gross, household.filingStatus, ficaRules(version));
 
   // 2. Housing — produces the tax inputs the federal step needs
   const housing = computeHousing({
@@ -82,11 +92,12 @@ export function computeCity(
   // 3. State income tax
   const state = computeStateTax(
     { grossSalary: gross, filingStatus: household.filingStatus, children: household.children },
-    stateRules(m.primaryState),
+    stateRules(m.primaryState, version),
   );
 
   // 4. Local income tax — may be a surcharge on the state liability
-  const jurisdictions = options.localJurisdictions ?? defaultLocalJurisdictions(city.metroId);
+  const jurisdictions =
+    options.localJurisdictions ?? defaultLocalJurisdictions(city.metroId, version);
   let localTotal = 0;
   for (const j of jurisdictions) {
     localTotal += computeLocalTax(
@@ -110,7 +121,7 @@ export function computeCity(
       propertyTax: housing.propertyTax,
       mortgageInterest: housing.mortgageInterest,
     },
-    FEDERAL_RULES_2026,
+    federalRules(version),
   );
 
   // 6. Living costs
@@ -121,13 +132,14 @@ export function computeCity(
     householdSize: adultsIn(household.filingStatus) + Math.max(0, household.children),
     cars: city.cars,
     priceParity: m.priceParity,
+    datasetVersion: version,
   });
 
   // 7. Sales tax
   const salesTax = computeSalesTax({
     scaledCategories: living.scaledCategories,
-    rules: salesTaxRules(m.primaryState),
-    shares: TAXABLE_SHARES,
+    rules: salesTaxRules(m.primaryState, version),
+    shares: taxableShares(version),
   });
 
   // 8. Leftover
@@ -165,9 +177,14 @@ export function computeCity(
  * family of four and a single person identically, and priced a $150,000 earner
  * as though they rented like a household on the metro median income.
  */
-export function defaultRent(metroId: string, grossSalary: USD, household: Household): USD {
+export function defaultRent(
+  metroId: string,
+  grossSalary: USD,
+  household: Household,
+  version?: string,
+): USD {
   const bedrooms = bedroomsFor(adultsIn(household.filingStatus), household.children);
-  return rentDefault(metroId, grossSalary, bedrooms);
+  return rentDefault(metroId, grossSalary, bedrooms, version);
 }
 
 /**
@@ -180,16 +197,17 @@ export function defaultCityInputs(
   household: Household,
   tenure: 'rent' | 'own' = 'rent',
   mortgageRate = 0.068,
+  version?: string,
 ): CityInputs {
-  const h = housingDefaults(metroId);
+  const h = housingDefaults(metroId, version);
 
   return {
     metroId,
     grossSalary,
-    cars: defaultCarCount(metroId, household.filingStatus),
+    cars: defaultCarCount(metroId, household.filingStatus, version),
     housing:
       tenure === 'rent'
-        ? { tenure: 'rent', monthlyRent: defaultRent(metroId, grossSalary, household) }
+        ? { tenure: 'rent', monthlyRent: defaultRent(metroId, grossSalary, household, version) }
         : {
             tenure: 'own',
             homePrice: h.medianHomePrice,
@@ -279,7 +297,12 @@ export function breakEvenSalary(
   const rentTracksSalary =
     destination.housing.tenure === 'rent' &&
     destination.housing.monthlyRent ===
-      defaultRent(destination.metroId, destination.grossSalary, inputs.household);
+      defaultRent(
+        destination.metroId,
+        destination.grossSalary,
+        inputs.household,
+        options.datasetVersion,
+      );
 
   const cityAt = (salary: USD): CityInputs =>
     rentTracksSalary && destination.housing.tenure === 'rent'
@@ -288,7 +311,12 @@ export function breakEvenSalary(
           grossSalary: salary,
           housing: {
             tenure: 'rent',
-            monthlyRent: defaultRent(destination.metroId, salary, inputs.household),
+            monthlyRent: defaultRent(
+              destination.metroId,
+              salary,
+              inputs.household,
+              options.datasetVersion,
+            ),
           },
         }
       : { ...destination, grossSalary: salary };
@@ -318,8 +346,11 @@ export function compare(
   // them. Pinning it to the origin salary keeps BLS bracket boundaries out of
   // the answer — see LivingInputs.basketIncome.
   const basketIncome = inputs.origin.grossSalary;
-  const originOpts = { ...options.origin, basketIncome };
-  const destinationOpts = { ...options.destination, basketIncome };
+  // The link's version wins over any per-city override, so both halves of a
+  // comparison are always priced against the same release.
+  const datasetVersion = inputs.datasetVersion || DATASET_VERSION;
+  const originOpts = { ...options.origin, basketIncome, datasetVersion };
+  const destinationOpts = { ...options.destination, basketIncome, datasetVersion };
 
   const origin = computeCity(inputs.origin, inputs.household, originOpts);
   const destination = computeCity(inputs.destination, inputs.household, destinationOpts);
@@ -340,7 +371,7 @@ export function compare(
   const cityEffect = destinationAtOriginSalary.leftover - origin.leftover;
 
   return {
-    datasetVersion: inputs.datasetVersion || DATASET_VERSION,
+    datasetVersion,
     origin,
     destination,
     destinationAtOriginSalary,

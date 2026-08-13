@@ -31,10 +31,11 @@
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { CURRENT_DATASET_VERSION } from './lib/version.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
-/** Overridable so a new dated release can be built without editing the script. */
-const VERSION = process.env.DATASET_VERSION || '2026.1';
+/** Overridable so a new dated release can be built without editing every script. */
+const VERSION = process.env.DATASET_VERSION || CURRENT_DATASET_VERSION;
 const DATA_DIR = resolve(HERE, '..', 'data', VERSION);
 const SRC = resolve(DATA_DIR, 'sources');
 

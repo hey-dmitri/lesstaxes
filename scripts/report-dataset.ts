@@ -5,14 +5,15 @@
  *   npx tsx scripts/report-dataset.ts > .stage2-report.html
  */
 
-import metros from '../data/2026.1/metros.json';
-import metroCounties from '../data/2026.1/metros-counties.json';
-import housing from '../data/2026.1/housing.json';
-import transport from '../data/2026.1/transport.json';
-import spending from '../data/2026.1/spending.json';
-import salesTax from '../data/2026.1/sales-tax.json';
-import localTax from '../data/2026.1/local-income-tax.json';
-import states from '../data/2026.1/states.json';
+import metros from '../data/2026.2/metros.json';
+import metroCounties from '../data/2026.2/metros-counties.json';
+import housing from '../data/2026.2/housing.json';
+import transport from '../data/2026.2/transport.json';
+import spending from '../data/2026.2/spending.json';
+import salesTax from '../data/2026.2/sales-tax.json';
+import localTax from '../data/2026.2/local-income-tax.json';
+import states from '../data/2026.2/states.json';
+import { DATASET_VERSION } from '../engine/dataset';
 
 type Row = {
   id: string;
@@ -131,7 +132,7 @@ const sources = [
   .map(([a, b, c]) => `<tr><td>${esc(a)}</td><td>${esc(b)}</td><td class="muted">${esc(c)}</td></tr>`)
   .join('\n');
 
-console.log(`<title>LessTaxes — Stage 2: Dataset Browser</title>
+console.log(`<title>Pack or Stay — Stage 2: Dataset Browser</title>
 <style>
   :root {
     --ground:#f7f8fa; --surface:#ffffff; --ink:#171a21; --muted:#656d7e;
@@ -207,9 +208,9 @@ console.log(`<title>LessTaxes — Stage 2: Dataset Browser</title>
   ul { padding-left:1.15rem; max-width:70ch; } li { margin:.5rem 0; }
 </style>
 <div class="wrap">
-<p class="eyebrow">LessTaxes &middot; Stage 2 of 10</p>
+<p class="eyebrow">Pack or Stay &middot; Stage 2 of 10</p>
 <h1>Dataset Browser</h1>
-<p class="sub">Every number the calculator will use &middot; dataset <code>2026.1</code></p>
+<p class="sub">Every number the calculator will use &middot; dataset <code>${DATASET_VERSION}</code></p>
 
 <div class="tally-row">
   <div class="tally"><b>${metroCount}</b><span>metros</span></div>

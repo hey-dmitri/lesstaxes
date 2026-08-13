@@ -24,8 +24,12 @@ import type { FilingStatus, LivingBreakdown, USD } from './types';
 import { adultsIn } from './tax/state';
 
 /** Default car count for a metro and household. See PROJECT.md D17. */
-export function defaultCarCount(metroId: string, filingStatus: FilingStatus): number {
-  const { vehiclesPerAdult } = transportDefaults(metroId);
+export function defaultCarCount(
+  metroId: string,
+  filingStatus: FilingStatus,
+  version?: string,
+): number {
+  const { vehiclesPerAdult } = transportDefaults(metroId, version);
   return Math.round(vehiclesPerAdult * adultsIn(filingStatus));
 }
 
@@ -73,6 +77,8 @@ export interface LivingInputs {
   householdSize: number;
   cars: number;
   priceParity: PriceParity;
+  /** Which shipped dataset the spending profiles come from. */
+  datasetVersion?: string;
 }
 
 /**
@@ -109,7 +115,7 @@ export interface LivingResult extends LivingBreakdown {
 
 /** Re-price the national basket for this metro, then add transport. */
 export function computeLiving(inputs: LivingInputs): LivingResult {
-  const profile = spendingProfile(inputs.basketIncome);
+  const profile = spendingProfile(inputs.basketIncome, inputs.datasetVersion);
   const sizeFactor = equivalenceFactor(inputs.householdSize, profile.averageHouseholdSize);
 
   const scaledCategories = {} as SpendingCategories;

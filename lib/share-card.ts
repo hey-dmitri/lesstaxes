@@ -7,11 +7,13 @@
  * on a canvas.
  */
 
+import { SITE_SLUG } from '@/lib/site';
+
 export function cardPath(payload: string): string {
   return `/api/card/${payload}`;
 }
 
-/** Filename for a downloaded card, e.g. "chicago-il-to-austin-tx-lesstaxes.png". */
+/** Filename for a downloaded card, e.g. "chicago-il-to-austin-tx-packorstay.png". */
 export function cardFilename(slug: string): string {
-  return `${slug}-lesstaxes.png`;
+  return `${slug}-${SITE_SLUG}.png`;
 }

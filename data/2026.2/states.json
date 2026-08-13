@@ -5,7 +5,7 @@
     "citation": "Tax Foundation, \"State Individual Income Tax Rates and Brackets, 2026\"",
     "url": "https://taxfoundation.org/data/all/state/state-income-tax-rates-2026/",
     "licence": "CC BY-NC 4.0 — satisfied because this project is permanently non-commercial",
-    "snapshot": "data/2026.1/sources/taxfoundation-state-income-tax-2026.html",
+    "snapshot": "data/2026.2/sources/taxfoundation-state-income-tax-2026.html",
     "confidence": "secondary — reputable aggregator of state statutes; high-population states spot-verified against state revenue departments"
   },
   "filingStatusMapping": {

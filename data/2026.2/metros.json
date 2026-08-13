@@ -9,13 +9,13 @@
       "name": "Census Bureau, Core Based Statistical Area delineation files",
       "url": "https://www2.census.gov/programs-surveys/metro-micro/geographies/reference-files/2023/delineation-files/list1_2023.xlsx",
       "licence": "US Government work — public domain",
-      "snapshot": "data/2026.1/sources/census-cbsa-delineation-2023.csv"
+      "snapshot": "data/2026.2/sources/census-cbsa-delineation-2023.csv"
     },
     {
       "name": "Bureau of Economic Analysis, Regional Price Parities (metro and state)",
       "url": "https://apps.bea.gov/regional/downloadzip.htm",
       "licence": "US Government work — public domain",
-      "snapshot": "data/2026.1/sources/bea-rpp-metro-2024.csv"
+      "snapshot": "data/2026.2/sources/bea-rpp-metro-2024.csv"
     }
   ],
   "limitations": [

@@ -6,7 +6,7 @@
       "name": "Tax Foundation, \"State and Local Sales Tax Rates, 2026\"",
       "url": "https://taxfoundation.org/data/all/state/sales-tax-rates/",
       "licence": "CC BY-NC 4.0 — satisfied; this project is permanently non-commercial",
-      "snapshot": "data/2026.1/sources/taxfoundation-sales-tax-2026.csv",
+      "snapshot": "data/2026.2/sources/taxfoundation-sales-tax-2026.csv",
       "confidence": "secondary — reputable aggregator of state statutes"
     },
     {

@@ -3,6 +3,7 @@ import { ImageResponse } from 'next/og';
 import { formatUSD, formatPercent, metro, percentIsMeaningful } from '@/engine';
 import { decodeComparison } from '@/lib/share-link';
 import { comparisonFromShared } from '@/lib/shared-comparison';
+import { SITE_NAME, TAGLINE } from '@/lib/site';
 
 export const runtime = 'nodejs';
 
@@ -58,9 +59,9 @@ export async function GET(_request: Request, { params }: { params: Promise<{ pay
             fontSize: 44, fontWeight: 600,
           }}
         >
-          <div style={{ display: 'flex' }}>LessTaxes</div>
+          <div style={{ display: 'flex' }}>{SITE_NAME}</div>
           <div style={{ display: 'flex', fontSize: 26, color: MUTED, marginTop: 12 }}>
-            Will moving actually leave you better off?
+            {TAGLINE}
           </div>
         </div>
       ),
@@ -130,7 +131,9 @@ export async function GET(_request: Request, { params }: { params: Promise<{ pay
             borderTop: `2px solid ${RULE}`, marginTop: 22, paddingTop: 14,
           }}
         >
-          <div style={{ display: 'flex', fontWeight: 700, letterSpacing: 3 }}>LESSTAXES</div>
+          <div style={{ display: 'flex', fontWeight: 700, letterSpacing: 3 }}>
+            {SITE_NAME.toUpperCase()}
+          </div>
           <div style={{ display: 'flex' }}>{`public federal data · ${card.version}`}</div>
         </div>
       </div>

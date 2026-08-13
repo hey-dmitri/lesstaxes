@@ -8,6 +8,7 @@ import { Results } from '@/components/results';
 import { ShareBar } from '@/components/share-bar';
 import { encodeComparison, type SharedComparison } from '@/lib/share-link';
 import { describeComparison, jurisdictionsFor } from '@/lib/shared-comparison';
+import { SUPPORTING } from '@/lib/site';
 import {
   compare,
   DATASET_VERSION,
@@ -266,7 +267,7 @@ export function Calculator({ initial }: CalculatorProps) {
                     className="w-full max-w-64 rounded-lg px-6 py-3 text-base font-semibold"
                     style={{ background: 'var(--accent)', color: '#ffffff' }}
                   >
-                    Compare these cities
+                    {SUPPORTING}
                   </button>
                   <p className="text-[0.68rem]" style={{ color: 'var(--muted)' }}>
                     Nothing is sent anywhere. It all runs in your browser.

@@ -1,4 +1,4 @@
-# LessTaxes — Project Vision
+# Pack or Stay — Project Vision
 
 > **Status:** Built through Stage 9 and running locally. Two open items block launch — see §14.
 > **Audience:** This document is written so a fresh AI session or new contributor can pick the
@@ -118,7 +118,7 @@ result, not a footnote. It turns the tool into something usable in a salary nego
 | D21 | Methodology | **Dedicated `/methodology` page; results stay clean** | Credibility without UI clutter. Joined by `/data` — see D26. |
 | D22 | Destinations per comparison | **One at a time** | Matches the real decision; clean share card. Ranked multi-city deferred to v2. |
 | D23 | Analytics | **None whatsoever** | No scripts, no cookies, no banner, nothing to leak. |
-| D24 | Name | **LessTaxes** — public GitHub repo `lesstaxes`, domain not yet registered | Chosen 2026-08-11. Noted at the time: the name is narrower than the product, since housing, cars and cost of living often outweigh the tax difference. Owner accepted this. Name lives in a single config value and is trivial to change. |
+| D24 | Name | **Pack or Stay** — `packorstay.com`, public GitHub repo `packorstay` | Chosen 2026-08-13, superseding **LessTaxes** (chosen 2026-08-11) for the reason the original entry had already flagged: a tax-first name foregrounds the very thing §2 exists to argue is *not* the whole story, since housing, cars and cost of living often outweigh the tax difference. "Pack or Stay" is built around the decision rather than the calculation, and still reads correctly when the answer is *stay* — which it often is. Tagline: **"Will moving actually leave you with more money?"** Recurring supporting copy: **"Do the move math"**, which carries the analytical weight the brand name deliberately drops. Runners-up, all verified unregistered on 2026-08-13: `isitreallycheaper.com`, `shouldipack.com`, `cheaperthough.com`, `keptmore.com`, `richer.city`. The original entry claimed the name "lives in a single config value and is trivial to change"; that was aspirational — it was hardcoded in a dozen places. Made true during this rename: see `lib/site.ts`. |
 | D26 | Public `/data` page | **Yes — a searchable dataset browser, a first-class page beside `/methodology`** | Added 2026-08-11 after reviewing the Stage 2 prototype. `/methodology` explains *how the calculation works*; `/data` shows *every number it uses* and where each came from. Together they are the site's credibility argument, and the thing paid competitors cannot easily match. |
 | D27 | Rent prefill basis | **Local median for the household's bedroom count (ACS B25031), scaled by a national income curve (ACS B25074)** | Added 2026-08-12. The plain metro median (B25064) quoted a single person and a family of four the same rent, and quoted a $150k earner 11% of pay in Chicago. PROJECT.md §7 named HUD Fair Market Rents for the size fix; ACS B25031 was used instead — same CBSA geography, same vintage, same API, where HUD publishes on HMFA areas that do not map cleanly. The income curve is national, not per-metro: burden varies far less between cities than rent does, so a per-metro anchor would compress the very difference this site measures. |
 | D25 | Mortgage principal | **Counted as an outflow, with no annotation** | Cash-flow view: leftover equals the cash actually available. Keeps the headline honest and the UI simple. Accepted trade-off: owning looks slightly worse than it is economically, and the site does not explain why. |
@@ -372,7 +372,7 @@ provenance table, limitations list.
 All state lives in the URL. Nothing is stored server-side.
 
 ```
-lesstaxes.<tld>/r/<base64url payload>
+packorstay.com/r/<base64url payload>
 ```
 
 Payload contains:
@@ -416,12 +416,12 @@ Clicking "Save image" composes a purpose-built PNG (not a screen grab) and downl
 │  Housing        −$6,200    │
 │  Property tax   −$3,100    │
 │                            │
-│  LessTaxes        v2026.1  │
+│  Pack or Stay     v2026.1  │
 └───────────────────────────┘
 ```
 
 Rendered in the user's current theme. Filename should be descriptive, e.g.
-`chicago-to-austin-lesstaxes.png`.
+`chicago-to-austin-packorstay.png`.
 
 ---
 
@@ -496,20 +496,25 @@ Rendered in the user's current theme. Filename should be descriptive, e.g.
 
 ### ~~OPEN-2 — Technical stack~~ — **RESOLVED, see §16**
 
-### OPEN-3 — Dataset version pinning is specified but not implemented
+### ~~OPEN-3 — Dataset version pinning~~ — **RESOLVED 2026-08-13**
 
-Added 2026-08-12. §9.2 and §16.2 promise that a shared link recomputes against
-the dataset it was made with, and the link format does carry the version. The
-engine does not honour it: `engine/dataset.ts` imports one dataset directly, so
-every link computes against whatever is compiled in. Building `2026.2` therefore
-changed what a `2026.1` link would show.
+`engine/datasets.ts` is now a registry of every shipped release, and every
+accessor takes an optional version. `compare()` resolves the link's version once
+and prices both cities from it. Old releases keep their **behaviour**, not just
+their numbers: 2026.1 has no rent-by-bedroom table and no income curve, so its
+links still price rent income-blind exactly as that release shipped.
 
-Harmless today — nothing is public, so no links exist outside this repo. **It
-stops being harmless the moment a domain points here.** Blocking for launch.
+Two related defects were found and fixed at the same time:
 
-Fixing it means making the dataset accessors version-aware and threading the
-version from `ComparisonInputs` through `computeCity`. Roughly ten accessors in
-one boundary module, plus their call sites.
+- `engine/tax/rules.ts` was reading `data/2026.1` while `engine/dataset.ts` read
+  `data/2026.2`, each claiming in its header to be the only door into `data/`.
+- Five build scripts and the quarterly refresh were pinned to `2026.1`, so the
+  automation had been rebuilding a dataset the site no longer read. All scripts
+  now resolve one version from `scripts/lib/version.mjs`.
+- The quarterly workflow rewrote the current release **in place**, which would
+  have silently undone this pinning every quarter. It now runs
+  `scripts/cut-dataset-version.mjs` first, so a refresh always lands in a new
+  dated directory and the previous one stays readable forever.
 
 ### OPEN-4 — Ownership defaults are still income-blind
 
@@ -534,8 +539,8 @@ thought rather than a straight repeat of the rent fix.
 | Styling | **Tailwind CSS** | Custom design, utility-first |
 | Components | **shadcn/ui** (selected primitives only) | Combobox, radio group, toggle, tooltip — copy-in, no runtime dependency. Gets keyboard/screen-reader behaviour right for free |
 | Hosting | **Vercel** (Hobby tier) | $0/mo. Auto-deploy from GitHub. Preview URL per change. **Set up at Stage 4, not before** — see §16.3 |
-| Source control | **GitHub** | Public repo, `lesstaxes`. Created at Stage 4 |
-| Domain | TBD — owner will register and point at Vercel | Deliberately deferred until after Stage 3 |
+| Source control | **GitHub** | Public repo, `packorstay`. Created at Stage 4 |
+| Domain | **`packorstay.com`** — registered 2026-08-13, pointed at Vercel | Deliberately deferred until after Stage 3. See D24 |
 | Backend | **None**, except one stateless OG image function | No database, no stored state, no runtime data fetching |
 | Testing | **Unit tests on the calculation engine** | Golden-value tests against IRS worked examples. Non-negotiable — a wrong bracket must fail the build, not mislead a user |
 | Data pipeline | **Scripts → dated JSON committed to the repo** | See §16.2 |

@@ -23,6 +23,7 @@ import {
 import { applyBrackets } from '../engine/tax/brackets';
 import { computeStateTax } from '../engine/tax/state';
 import type { FilingStatus } from '../engine/types';
+import { DATASET_VERSION } from '../engine/dataset';
 
 interface Scenario {
   label: string;
@@ -122,7 +123,7 @@ const stateComparison = ALL_STATE_CODES.map((code) => {
 
 // --- render ----------------------------------------------------------------
 
-console.log(`<title>LessTaxes — Stage 1: Tax Engine Verification</title>
+console.log(`<title>Pack or Stay — Stage 1: Tax Engine Verification</title>
 <style>
   /* Light palette: cool carbon-paper neutrals, ink-blue accent.
      Green/red are verification semantics only, never decoration. */
@@ -238,9 +239,9 @@ console.log(`<title>LessTaxes — Stage 1: Tax Engine Verification</title>
   a:focus-visible, tr:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
 </style>
 <div class="wrap">
-<p class="eyebrow">LessTaxes &middot; Stage 1 of 10</p>
+<p class="eyebrow">Pack or Stay &middot; Stage 1 of 10</p>
 <h1>Tax Engine Verification</h1>
-<p class="sub">Tax year 2026 &middot; dataset <code>2026.1</code> &middot; federal, FICA and all 51 state jurisdictions</p>
+<p class="sub">Tax year 2026 &middot; dataset <code>${DATASET_VERSION}</code> &middot; federal, FICA and all 51 state jurisdictions</p>
 
 <div class="attest${allGoldenMatch ? '' : ' failed'}">
   <span class="tally">${goldenRows.filter((r) => r.match).length}&thinsp;/&thinsp;${goldenRows.length}</span>
@@ -262,7 +263,7 @@ in its own tables.</p>
 both that the brackets were transcribed correctly and that the bracket arithmetic is right.
 Source: IRS Rev. Proc. 2025-32, Tables 1&ndash;4.</p>
 <div class="scroll"><table>
-<thead><tr><th>Filing status</th><th>Taxable income</th><th>IRS published</th><th>LessTaxes</th><th>Match</th></tr></thead>
+<thead><tr><th>Filing status</th><th>Taxable income</th><th>IRS published</th><th>Pack or Stay</th><th>Match</th></tr></thead>
 <tbody>
 ${goldenRows
   .map(

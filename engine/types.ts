@@ -1,5 +1,5 @@
 /**
- * LessTaxes — domain model.
+ * Pack or Stay — domain model.
  *
  * This file has NO framework dependencies and must never gain any.
  * See engine/README.md for the rule and why it exists.

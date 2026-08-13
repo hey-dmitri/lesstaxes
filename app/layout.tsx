@@ -3,6 +3,7 @@ import Link from 'next/link';
 
 import './globals.css';
 import { ThemeToggle } from '@/components/theme-toggle';
+import { SITE_NAME, SITE_SLUG, TAGLINE } from '@/lib/site';
 
 /**
  * Absolute base for Open Graph URLs. Messaging apps fetch preview images from
@@ -19,13 +20,13 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: 'LessTaxes — will moving actually leave you better off?',
+  title: `${SITE_NAME} — ${TAGLINE.toLowerCase()}`,
   description:
     'Compare two US cities on what you would actually have left over: income tax, property tax, sales tax, housing, cars and cost of living. Free, no accounts, no tracking.',
   openGraph: {
     type: 'website',
-    siteName: 'LessTaxes',
-    title: 'Will moving actually leave you better off?',
+    siteName: SITE_NAME,
+    title: TAGLINE,
     description:
       'Income tax, property tax, sales tax, housing, cars and cost of living — for any two US cities.',
   },
@@ -49,7 +50,7 @@ export const viewport: Viewport = {
  */
 const THEME_SCRIPT = `
 try {
-  var t = localStorage.getItem('lesstaxes-theme');
+  var t = localStorage.getItem('${SITE_SLUG}-theme');
   if (t === 'dark' || t === 'light') document.documentElement.dataset.theme = t;
 } catch (e) {}
 `;
@@ -82,13 +83,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 className="text-[0.7rem] font-semibold uppercase tracking-[0.14em]"
                 style={{ color: 'var(--muted)' }}
               >
-                LessTaxes
+                {SITE_NAME}
               </span>
               <h1
                 className="font-serif text-base font-semibold tracking-tight sm:text-lg"
                 style={{ color: 'var(--ink)' }}
               >
-                Will moving actually leave you better off?
+                {TAGLINE}
               </h1>
             </div>
             <ThemeToggle />
