@@ -66,6 +66,9 @@ export interface HousingDefaults {
   /** Sizes the Census suppressed locally, filled from national ratios. */
   derivedBedrooms: number[];
   medianHomePrice: USD;
+  /** Whose households the local medians describe. Used to anchor the curves. */
+  medianOwnerIncome?: USD;
+  medianRenterIncome?: USD;
   medianPropertyTaxPaid: USD;
   /** Taxes actually paid divided by home value — already net of exemptions and caps. */
   effectivePropertyTaxRate: Rate;
@@ -131,23 +134,100 @@ export const INCOME_RENT_CURVE = incomeRentCurve() as IncomeRentCurve;
 export function rentFactorForIncome(income: USD, version?: string): number {
   const curve = incomeRentCurve(version);
   if (!curve) return 1; // a release with no curve priced rent income-blind
-  const points = curve.points;
-  const target = Math.max(1, income);
+  return factorFromCurve(income, curve.points, curve.elasticity);
+}
 
+/**
+ * Scale a local median for a household's income, relative to the households
+ * that median actually describes.
+ *
+ * A national multiplier looks right until you apply it somewhere expensive. San
+ * Francisco's median home is already owned by high earners, so multiplying it
+ * by "what a $150,000 earner buys nationally" put that household at $1.5m —
+ * a third ABOVE the local median, while earning BELOW the local median owner.
+ * Anchoring to the local median owner or renter income makes the factor exactly
+ * 1.0 for the household the median describes, which is the only value it can
+ * correctly have.
+ *
+ * The elasticity stays national: how sharply housing spend rises with income is
+ * a behavioural constant, and it is what the national curves are really
+ * measuring. The local PRICE is untouched, so differences between cities — the
+ * thing this site exists to measure — survive at full strength.
+ */
+function localIncomeFactor(income: USD, medianIncome: USD | undefined, elasticity: number): number | null {
+  if (!medianIncome || medianIncome <= 0) return null; // suppressed in a few small metros
+  return (Math.max(1, income) / medianIncome) ** elasticity;
+}
+
+export interface HomeValueCurve {
+  nationalMedianValue: USD;
+  points: Array<{ income: USD; medianValue: USD; factor: number }>;
+  elasticity: number;
+}
+
+/** Null for releases built before buying was scaled to income. */
+export function homeValueCurve(version?: string): HomeValueCurve | null {
+  return (datasetBundle(version).housing.homeValueCurve as HomeValueCurve | undefined) ?? null;
+}
+
+/**
+ * Interpolate a curve of income → multiplier on the log-log scale, flat below
+ * the first point and extrapolating on the measured elasticity above the last.
+ * Shared by rent and home value, which are the same shape of question.
+ */
+function factorFromCurve(
+  income: USD,
+  points: ReadonlyArray<{ income: USD; factor: number }>,
+  elasticity: number,
+): number {
+  const target = Math.max(1, income);
   if (target <= points[0].income) return points[0].factor;
 
   for (let i = 1; i < points.length; i++) {
     const low = points[i - 1];
     const high = points[i];
     if (target <= high.income) {
-      const t =
-        Math.log(target / low.income) / Math.log(high.income / low.income);
+      const t = Math.log(target / low.income) / Math.log(high.income / low.income);
       return low.factor * (high.factor / low.factor) ** t;
     }
   }
 
   const last = points[points.length - 1];
-  return last.factor * (target / last.income) ** curve.elasticity;
+  return last.factor * (target / last.income) ** elasticity;
+}
+
+/**
+ * How this household's home compares with the typical owner's.
+ *
+ * Buying carried the flaw renting lost in 2026.2: the metro median home value
+ * is what the MEDIAN owner owns, and the effective property tax rate is applied
+ * to it, so a high earner was quoted both a cheaper house and a smaller tax
+ * bill than they would really face.
+ */
+export function homeValueFactorForIncome(
+  income: USD,
+  metroId?: string,
+  version?: string,
+): number {
+  const curve = homeValueCurve(version);
+  if (!curve) return 1; // a release that priced homes income-blind
+
+  if (metroId) {
+    const local = localIncomeFactor(
+      income,
+      housingDefaults(metroId, version).medianOwnerIncome,
+      curve.elasticity,
+    );
+    if (local !== null) return local;
+  }
+  // No local income published: fall back to the national curve.
+  return factorFromCurve(income, curve.points, curve.elasticity);
+}
+
+/** The home-price prefill: the local median, scaled for what this income buys. */
+export function homePriceDefault(metroId: string, income: USD, version?: string): USD {
+  const base = housingDefaults(metroId, version).medianHomePrice;
+  return Math.round(base * homeValueFactorForIncome(income, metroId, version));
 }
 
 /**
@@ -165,7 +245,13 @@ export function rentDefault(
   // Releases before 2026.2 carry no rent-by-size table; they priced every
   // household at one metro-wide median, and their links must keep doing so.
   const base = defaults.rentByBedrooms?.[size] ?? defaults.medianRentMonthly;
-  return Math.round(base * rentFactorForIncome(income, version));
+
+  const curve = incomeRentCurve(version);
+  const local = curve
+    ? localIncomeFactor(income, defaults.medianRenterIncome, curve.elasticity)
+    : null;
+  const factor = local ?? rentFactorForIncome(income, version);
+  return Math.round(base * factor);
 }
 
 // ---------------------------------------------------------------------------

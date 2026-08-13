@@ -1,9 +1,11 @@
 import { describe, expect, it } from 'vitest';
 
 import { compare, defaultCityInputs, defaultRent } from './compare';
+import { CURRENT_DATASET_VERSION } from './datasets';
 import {
   ALL_METRO_IDS,
   bedroomsFor,
+  homePriceDefault,
   housingDefaults,
   INCOME_RENT_CURVE,
   rentDefault,
@@ -136,14 +138,14 @@ describe('break-even with income-dependent rent', () => {
     // few hundred dollars off zero.
     const household = single;
     const result = compare({
-      datasetVersion: '2026.2',
+      datasetVersion: CURRENT_DATASET_VERSION,
       household,
       origin: defaultCityInputs(CHICAGO, 150_000, household),
       destination: defaultCityInputs(AUSTIN, 150_000, household),
     });
 
     const check = compare({
-      datasetVersion: '2026.2',
+      datasetVersion: CURRENT_DATASET_VERSION,
       household,
       origin: defaultCityInputs(CHICAGO, 150_000, household),
       destination: defaultCityInputs(AUSTIN, result.breakEvenSalary, household),
@@ -160,15 +162,89 @@ describe('break-even with income-dependent rent', () => {
       housing: { tenure: 'rent' as const, monthlyRent: 3_500 },
     };
 
-    const result = compare({ datasetVersion: '2026.2', household, origin, destination: typed });
+    const result = compare({ datasetVersion: CURRENT_DATASET_VERSION, household, origin, destination: typed });
 
     // Re-running at the solved salary with the SAME typed rent must be level.
     const check = compare({
-      datasetVersion: '2026.2',
+      datasetVersion: CURRENT_DATASET_VERSION,
       household,
       origin,
       destination: { ...typed, grossSalary: result.breakEvenSalary },
     });
     expect(check.delta).toBeCloseTo(0, 0);
+  });
+});
+
+describe('home price prefill', () => {
+  it('no longer quotes every buyer the metro median', () => {
+    // Buying carried exactly the flaw renting lost: the median home is what the
+    // MEDIAN owner owns, and property tax is derived from it.
+    const modest = homePriceDefault(CHICAGO, 80_000);
+    const rich = homePriceDefault(CHICAGO, 300_000);
+    expect(rich).toBeGreaterThan(modest);
+    expect(modest).not.toBe(housingDefaults(CHICAGO).medianHomePrice);
+  });
+
+  it('returns the local median for the income that median describes', () => {
+    // The anchor property: at the local median owner income the factor must be
+    // exactly 1, or the curve is claiming the typical owner is atypical.
+    for (const id of [CHICAGO, AUSTIN]) {
+      const ownerIncome = housingDefaults(id).medianOwnerIncome!;
+      expect(homePriceDefault(id, ownerIncome)).toBe(housingDefaults(id).medianHomePrice);
+    }
+  });
+
+  it('does not put a $150k household above the local median in expensive metros', () => {
+    // A national multiplier quoted a $150,000 buyer in San Francisco $1.5m —
+    // a third ABOVE the local median, while earning BELOW the local median
+    // owner. Anchoring locally is what makes that impossible.
+    const SF = '41860';
+    expect(housingDefaults(SF).medianOwnerIncome!).toBeGreaterThan(150_000);
+    expect(homePriceDefault(SF, 150_000)).toBeLessThan(housingDefaults(SF).medianHomePrice);
+  });
+
+  it('rises sub-linearly with income, everywhere', () => {
+    for (const id of ALL_METRO_IDS) {
+      const low = homePriceDefault(id, 75_000);
+      const high = homePriceDefault(id, 300_000);
+      expect(high, id).toBeGreaterThan(low);
+      // Quadrupling income must not quadruple the house.
+      expect(high, id).toBeLessThan(low * 4);
+    }
+  });
+
+  it('keeps every location inside a defensible multiple of income', () => {
+    for (const id of ALL_METRO_IDS) {
+      const multiple = homePriceDefault(id, 150_000) / 150_000;
+      expect(multiple, `${id} home multiple`).toBeGreaterThan(0.5);
+      expect(multiple, `${id} home multiple`).toBeLessThan(12);
+    }
+  });
+
+  it('carries property tax with it', () => {
+    // Property tax is the effective rate applied to the price, so understating
+    // the price understated the tax bill too.
+    const household: Household = { filingStatus: 'marriedJointly', children: 2 };
+    const modest = compare({
+      datasetVersion: CURRENT_DATASET_VERSION,
+      household,
+      origin: defaultCityInputs(CHICAGO, 80_000, household, 'own'),
+      destination: defaultCityInputs(AUSTIN, 80_000, household, 'own'),
+    });
+    const rich = compare({
+      datasetVersion: CURRENT_DATASET_VERSION,
+      household,
+      origin: defaultCityInputs(CHICAGO, 300_000, household, 'own'),
+      destination: defaultCityInputs(AUSTIN, 300_000, household, 'own'),
+    });
+    expect(rich.origin.housing.propertyTax).toBeGreaterThan(modest.origin.housing.propertyTax);
+  });
+
+  it('leaves an older release pricing homes income-blind', () => {
+    for (const income of [50_000, 150_000, 400_000]) {
+      expect(homePriceDefault(CHICAGO, income, '2026.1')).toBe(
+        housingDefaults(CHICAGO, '2026.1').medianHomePrice,
+      );
+    }
   });
 });

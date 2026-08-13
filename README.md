@@ -14,7 +14,7 @@ Free, no accounts, no tracking, no database. All figures come from public federa
 
 ## Status
 
-**All ten stages built.** Feature-complete, not yet launched. Current dataset: **2026.2**.
+**All ten stages built.** Feature-complete, not yet launched. Current dataset: **2026.3**.
 
 | Component | State |
 |---|---|
@@ -22,7 +22,7 @@ Free, no accounts, no tracking, no database. All figures come from public federa
 | State income tax — all 50 states + DC | ✅ |
 | Local income tax — engine and rate data | ✅ |
 | 387 metros + 51 rural fallbacks, price parities | ✅ |
-| Rent by unit size and income, home prices, effective property tax | ✅ |
+| Rent and home price scaled to household and income, effective property tax | ✅ |
 | Vehicles per adult, per-vehicle cost | ✅ |
 | Household spending profiles, 9 income brackets | ✅ |
 | Sales tax rates + grocery treatment | ✅ |
@@ -41,16 +41,14 @@ Free, no accounts, no tracking, no database. All figures come from public federa
 | Name and domain chosen — **Pack or Stay**, `packorstay.com` | ✅ |
 | **Point `packorstay.com` at Vercel** | ⬜ |
 
-**630 tests**, including 24 golden values reproduced exactly from the IRS rate tables.
+**638 tests**, including 24 golden values reproduced exactly from the IRS rate tables.
 Total data cost: **$0**. No paid feeds, no runtime API calls.
 
 ### Known gaps, in priority order
 
-1. **Buying is still income-blind.** Rent is now sized to the household and
-   scaled to income; home price is still the metro median, and property tax is
-   computed from it. The ownership path has the flaw the rental path just lost.
-2. **Home and renters insurance are still missing entirely**, which understates
-   ownership everywhere and badly in Florida and Louisiana.
+1. **Home and renters insurance are still missing entirely**, which understates
+   ownership everywhere and badly in Florida and Louisiana, where premiums are a
+   multiple of the national average. This is now the largest known gap.
 
 ### Rebuilding the dataset
 

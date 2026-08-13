@@ -23,6 +23,7 @@
 import {
   bedroomsFor,
   defaultLocalJurisdictions,
+  homePriceDefault,
   housingDefaults,
   metro,
   rentDefault,
@@ -210,7 +211,7 @@ export function defaultCityInputs(
         ? { tenure: 'rent', monthlyRent: defaultRent(metroId, grossSalary, household, version) }
         : {
             tenure: 'own',
-            homePrice: h.medianHomePrice,
+            homePrice: homePriceDefault(metroId, grossSalary, version),
             downPayment: 0.2,
             mortgageRate,
             propertyTaxRate: h.effectivePropertyTaxRate,

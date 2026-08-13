@@ -84,6 +84,8 @@ const VARIABLES = [
   'B19013_001E', // median household income
   'B09021_001E', // population 18 years and over
   'B25044_001E', // occupied housing units (vehicle universe)
+  'B25119_002E', // median household income — OWNER occupied
+  'B25119_003E', // median household income — RENTER occupied
   ...BEDROOM_VARIABLES.map(([v]) => v),
   ...VEHICLE_BUCKETS.flatMap(([o, r]) => [`B25044_${o}E`, `B25044_${r}E`]),
 ];
@@ -210,6 +212,28 @@ const BURDEN_BUCKETS = [
   [0, 20], [20, 25], [25, 30], [30, 35], [35, 40], [40, 50], [50, 75],
 ];
 
+/**
+ * Home value by owner income (B25121), for the ownership equivalent of the
+ * rent curve. Buying carried exactly the flaw renting used to: the metro median
+ * home value is what the MEDIAN owner owns, and property tax is derived from
+ * it, so a high earner was quoted a house well below what they would buy and an
+ * understated tax bill on top of it.
+ *
+ * The top value bucket is open-ended at $500,000, which makes the median
+ * uncomputable for high earners in expensive metros — the same wall B25122 hit
+ * for rent. Nationally the distribution is wide enough that every band resolves,
+ * which is the other reason this curve is national rather than per-metro.
+ */
+const VALUE_BUCKETS = [
+  [0, 10_000], [10_000, 20_000], [20_000, 30_000], [30_000, 40_000],
+  [40_000, 50_000], [50_000, 60_000], [60_000, 70_000], [70_000, 80_000],
+  [80_000, 90_000], [90_000, 100_000], [100_000, 200_000], [200_000, 250_000],
+  [250_000, 500_000], [500_000, null],
+];
+
+/** First variable of each income band's 14 value buckets, with its midpoint. */
+const VALUE_BANDS = INCOME_BANDS.map(([, income], i) => [2 + i * 15 + 1, income]);
+
 async function loadNational() {
   const cachePath = resolve(SRC, `census-acs${ACS_YEAR}-national-rent.json`);
 
@@ -238,13 +262,21 @@ async function loadNational() {
     return res.json();
   };
 
-  console.log('  national: fetching rent burden by income band...');
-  const [burden, rent] = await Promise.all([
+  // 98 variables for the value cross-tab, so it goes in two halves — the API
+  // rejects a request for more than 50.
+  const valueVars = VALUE_BANDS.flatMap(([first]) =>
+    Array.from({ length: 14 }, (_, k) => `B25121_${String(first + k).padStart(3, '0')}E`),
+  );
+
+  console.log('  national: fetching rent burden and home value by income band...');
+  const [burden, rent, value1, value2] = await Promise.all([
     fetchOne(burdenVars),
-    fetchOne(['B25064_001E', ...BEDROOM_VARIABLES.map(([v]) => v)]),
+    fetchOne(['B25064_001E', ...BEDROOM_VARIABLES.map(([v]) => v), 'B25077_001E']),
+    fetchOne(valueVars.slice(0, 49)),
+    fetchOne(valueVars.slice(49)),
   ]);
 
-  const json = { burden, rent };
+  const json = { burden, rent, value: [value1, value2] };
   writeFileSync(cachePath, `${JSON.stringify(json)}\n`);
   console.log('  national: cached');
   return json;
@@ -300,6 +332,75 @@ function buildIncomeCurve(national) {
   return { nationalMedianRent, points, elasticity: Number(elasticity.toFixed(4)) };
 }
 
+/**
+ * The same idea for home value: what someone at this income actually owns,
+ * relative to what the median owner owns.
+ *
+ * One wrinkle rent does not have. The two lowest income bands are NOT monotonic
+ * — households reporting under $10,000 own more valuable homes than those
+ * reporting $10,000-$19,999 — because that band is full of retirees who are
+ * asset-rich and income-poor. Left alone it would mean a pay rise shrank your
+ * house. This site models wage income only (PROJECT.md §11.1), so those
+ * households are out of scope anyway; the curve is forced non-decreasing by
+ * capping each band at the one above it, which pulls the distorted bottom DOWN
+ * rather than inflating everything else up to meet it.
+ */
+function buildHomeValueCurve(national) {
+  const counts = [
+    ...national.value[0][1].slice(0, 49).map(Number),
+    ...national.value[1][1].slice(0, 49).map(Number),
+  ];
+  const nationalMedianValue = Number(national.rent[1][national.rent[0].length - 2]);
+  if (!nationalMedianValue) throw new Error('no national median home value');
+
+  const medians = VALUE_BANDS.map(([, income], bandIndex) => {
+    const band = counts.slice(bandIndex * 14, bandIndex * 14 + 14);
+    const total = band.reduce((a, b) => a + b, 0);
+    if (total <= 0) throw new Error(`empty value band at index ${bandIndex}`);
+
+    let cumulative = 0;
+    let index = 0;
+    for (let i = 0; i < 14; i++) {
+      cumulative += band[i];
+      if (cumulative >= total / 2) { index = i; break; }
+    }
+    const [lo, hi] = VALUE_BUCKETS[index];
+    if (hi === null) {
+      throw new Error(
+        `median home value for the $${income} band falls in the open $500,000+ bucket`,
+      );
+    }
+    const before = band.slice(0, index).reduce((a, b) => a + b, 0);
+    return { income, value: lo + ((total / 2 - before) / band[index]) * (hi - lo) };
+  });
+
+  // Backward pass: cap each band at the one above it.
+  for (let i = medians.length - 2; i >= 0; i--) {
+    medians[i].value = Math.min(medians[i].value, medians[i + 1].value);
+  }
+
+  const points = medians.map(({ income, value }) => ({
+    income,
+    medianValue: Math.round(value),
+    factor: Number((value / nationalMedianValue).toFixed(4)),
+  }));
+
+  for (let i = 1; i < points.length; i++) {
+    if (points[i].factor < points[i - 1].factor) {
+      throw new Error(`home value curve decreases at $${points[i].income}`);
+    }
+  }
+
+  const first = points[0];
+  const last = points[points.length - 1];
+  const elasticity = Math.log(last.factor / first.factor) / Math.log(last.income / first.income);
+  if (elasticity <= 0 || elasticity >= 1) {
+    throw new Error(`implausible income elasticity of home value: ${elasticity.toFixed(3)}`);
+  }
+
+  return { nationalMedianValue, points, elasticity: Number(elasticity.toFixed(4)) };
+}
+
 // --- derive ------------------------------------------------------------------
 
 const num = (v) => {
@@ -312,6 +413,8 @@ function derive(row, header, idColumn) {
   const r = Object.fromEntries(header.map((h, i) => [h, row[i]]));
 
   const medianRentMonthly = num(r.B25064_001E);
+  const medianOwnerIncome = num(r.B25119_002E);
+  const medianRenterIncome = num(r.B25119_003E);
   const medianHomePrice = num(r.B25077_001E);
   const medianPropertyTaxPaid = num(r.B25103_001E);
   const households = num(r.B25044_001E);
@@ -372,6 +475,14 @@ function derive(row, header, idColumn) {
       rentByBedrooms,
       derivedBedrooms,
       medianHomePrice,
+      // Who the local medians actually belong to. Scaling a local median by a
+      // NATIONAL income factor double-counts: an expensive metro's median home
+      // is already owned by high earners, so a $150,000 buyer in San Francisco
+      // came out at $1.5m — a third above the local median, while earning
+      // BELOW the local median owner. Anchoring to these makes the factor 1.0
+      // for the household the median actually describes.
+      medianOwnerIncome,
+      medianRenterIncome,
       medianPropertyTaxPaid,
       effectivePropertyTaxRate: round(effectivePropertyTaxRate, 5),
     },
@@ -434,6 +545,7 @@ function record(id, d) {
 
 const national = await loadNational();
 const incomeCurve = buildIncomeCurve(national);
+const homeValueCurve = buildHomeValueCurve(national);
 
 // National rent by bedroom count, as a ratio to the national all-units median.
 // Used only to fill metros where a size is suppressed.
@@ -471,6 +583,10 @@ console.log(
     `factor ${incomeCurve.points[0].factor} -> ${incomeCurve.points.at(-1).factor}`,
 );
 console.log(`  bedroom rents: ${filled} suppressed cells filled from national ratios`);
+console.log(
+  `  home value curve: elasticity ${homeValueCurve.elasticity}, ` +
+    `factor ${homeValueCurve.points[0].factor} -> ${homeValueCurve.points.at(-1).factor}`,
+);
 
 // --- sanity checks -----------------------------------------------------------
 
@@ -490,6 +606,12 @@ for (const id of ids) {
 
   if (!h.medianRentMonthly || h.medianRentMonthly < 300 || h.medianRentMonthly > 4000) {
     problems.push(`${id}: rent ${h.medianRentMonthly}`);
+  }
+  if (!h.medianOwnerIncome || h.medianOwnerIncome < 15_000 || h.medianOwnerIncome > 400_000) {
+    problems.push(`${id}: median owner income ${h.medianOwnerIncome}`);
+  }
+  if (!h.medianRenterIncome || h.medianRenterIncome < 8_000 || h.medianRenterIncome > 300_000) {
+    problems.push(`${id}: median renter income ${h.medianRenterIncome}`);
   }
   if (!h.medianHomePrice || h.medianHomePrice < 50_000 || h.medianHomePrice > 2_500_000) {
     problems.push(`${id}: home price ${h.medianHomePrice}`);
@@ -547,9 +669,12 @@ writeFileSync(
         'rentByBedrooms is the local median for each unit size (B25031). The engine picks a size from household composition, so a single person and a family of four are no longer quoted the same rent.',
         'incomeCurve scales that local median for income. B25064 alone is the median across the whole rental stock, paid by a household earning near the metro median — roughly a fifth below what a $150,000 earner pays, and by different margins in different metros.',
         'The curve is national on purpose: rent burden varies far less between metros than rent does, so anchoring each metro to its own burden would compress the very difference this site measures.',
+        'homeValueCurve does the same for buying (B25121). The metro median home value is what the MEDIAN owner owns, and property tax is derived from it, so a high earner was quoted both a cheaper house and a smaller tax bill than they would really face.',
+        'Its lowest two income bands are forced down to keep the curve non-decreasing: households reporting almost no income own unusually valuable homes because that group is mostly retirees, and this site models wage income only.',
         'Figures are metro-wide medians. A specific home may differ substantially, which is why every housing field is editable in the interface.',
       ],
       incomeCurve,
+      homeValueCurve,
       byMetro: housing,
     },
     null,

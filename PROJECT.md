@@ -516,17 +516,24 @@ Two related defects were found and fixed at the same time:
   `scripts/cut-dataset-version.mjs` first, so a refresh always lands in a new
   dated directory and the previous one stays readable forever.
 
-### OPEN-4 — Ownership defaults are still income-blind
+### ~~OPEN-4 — Ownership defaults are income-blind~~ — **RESOLVED 2026-08-13, dataset 2026.3**
 
-Added 2026-08-12. Rent is now sized to the household (ACS B25031, by bedroom
-count) and scaled to income (a national curve from ACS B25074). Home price is
-still the metro median, and property tax is derived from it, so a high earner is
-quoted a home well below what they would buy — the same error the rent path
-carried until today, and understated property tax on top of it.
+Home price now scales with income from ACS B25121, and property tax follows it.
 
-No decision needed on *whether*; the open question is which statistic to use.
-ACS has no home-value-by-income cross-tab as clean as B25074, so this needs
-thought rather than a straight repeat of the rent fix.
+The fix changed the rent model too. Both were scaling a LOCAL median by a
+NATIONAL multiplier, which double-counts wherever the local median already
+belongs to high earners: a $150,000 buyer in San Francisco came out at $1.5m,
+a third above the local median, while earning below the local median owner.
+
+Both curves are now anchored to the local median owner or renter income
+(ACS B25119), so the multiplier is exactly 1.0 for the household the median
+describes. Only the *elasticity* stays national — how sharply housing spend
+rises with income is behavioural, not local. The local price is untouched, so
+differences between cities survive at full strength.
+
+The independent check improved too: B25122 shows over half of $100k+ Chicago
+renters paying above $2,000/month. The national-multiplier model said $1,708;
+the locally anchored one says $2,122.
 
 ---
 

@@ -6,6 +6,7 @@ import {
   defaultCarCount,
   defaultRent,
   formatUSD,
+  homePriceDefault,
   housingDefaults,
   localTaxOptions,
   metro,
@@ -54,7 +55,7 @@ export function housingFor(
     ? { tenure: 'rent', monthlyRent: defaultRent(metroId, salary, household) }
     : {
         tenure: 'own',
-        homePrice: h.medianHomePrice,
+        homePrice: homePriceDefault(metroId, salary, undefined),
         downPayment: 0.2,
         mortgageRate: 0.068,
         propertyTaxRate: h.effectivePropertyTaxRate,

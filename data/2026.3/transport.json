@@ -1,0 +1,2219 @@
+{
+  "datasetVersion": "2026.3",
+  "vintage": {
+    "acs": 2024,
+    "estimates": "5-year"
+  },
+  "source": {
+    "name": "US Census Bureau, American Community Survey 2024 5-year estimates",
+    "url": "https://api.census.gov/data/2024/acs/acs5",
+    "licence": "US Government work — public domain",
+    "tables": {
+      "B25064": "Median gross rent",
+      "B25031": "Median gross rent by bedrooms",
+      "B25074": "Household income by gross rent as a percentage of household income",
+      "B25077": "Median value, owner-occupied units",
+      "B25103": "Median real estate taxes paid",
+      "B25044": "Tenure by vehicles available",
+      "B09021": "Population 18 years and over",
+      "B25010": "Average household size"
+    }
+  },
+  "notes": [
+    "vehiclesPerAdult = average vehicles per household / average adults per household. Cars follow drivers, so the denominator is adults (18+), not household size.",
+    "The engine multiplies this by the adults implied by filing status, then rounds — see PROJECT.md D17.",
+    "The \"5 or more vehicles\" bucket is counted as exactly 5, marginally understating a few rural metros."
+  ],
+  "byMetro": {
+    "10180": {
+      "vehiclesPerHousehold": 1.897,
+      "adultsPerHousehold": 1.899,
+      "vehiclesPerAdult": 0.999
+    },
+    "10420": {
+      "vehiclesPerHousehold": 1.758,
+      "adultsPerHousehold": 1.832,
+      "vehiclesPerAdult": 0.96
+    },
+    "10500": {
+      "vehiclesPerHousehold": 1.795,
+      "adultsPerHousehold": 1.824,
+      "vehiclesPerAdult": 0.984
+    },
+    "10540": {
+      "vehiclesPerHousehold": 2.116,
+      "adultsPerHousehold": 1.979,
+      "vehiclesPerAdult": 1.069
+    },
+    "10580": {
+      "vehiclesPerHousehold": 1.641,
+      "adultsPerHousehold": 1.82,
+      "vehiclesPerAdult": 0.902
+    },
+    "10740": {
+      "vehiclesPerHousehold": 1.883,
+      "adultsPerHousehold": 1.907,
+      "vehiclesPerAdult": 0.988
+    },
+    "10780": {
+      "vehiclesPerHousehold": 1.707,
+      "adultsPerHousehold": 1.886,
+      "vehiclesPerAdult": 0.905
+    },
+    "10900": {
+      "vehiclesPerHousehold": 1.856,
+      "adultsPerHousehold": 1.973,
+      "vehiclesPerAdult": 0.941
+    },
+    "11020": {
+      "vehiclesPerHousehold": 1.736,
+      "adultsPerHousehold": 1.835,
+      "vehiclesPerAdult": 0.946
+    },
+    "11100": {
+      "vehiclesPerHousehold": 1.884,
+      "adultsPerHousehold": 1.881,
+      "vehiclesPerAdult": 1.002
+    },
+    "11180": {
+      "vehiclesPerHousehold": 1.937,
+      "adultsPerHousehold": 1.848,
+      "vehiclesPerAdult": 1.048
+    },
+    "11200": {
+      "vehiclesPerHousehold": 1.746,
+      "adultsPerHousehold": 1.871,
+      "vehiclesPerAdult": 0.933
+    },
+    "11260": {
+      "vehiclesPerHousehold": 1.95,
+      "adultsPerHousehold": 1.987,
+      "vehiclesPerAdult": 0.981
+    },
+    "11460": {
+      "vehiclesPerHousehold": 1.704,
+      "adultsPerHousehold": 1.883,
+      "vehiclesPerAdult": 0.905
+    },
+    "11500": {
+      "vehiclesPerHousehold": 1.936,
+      "adultsPerHousehold": 1.934,
+      "vehiclesPerAdult": 1.001
+    },
+    "11540": {
+      "vehiclesPerHousehold": 1.956,
+      "adultsPerHousehold": 1.867,
+      "vehiclesPerAdult": 1.047
+    },
+    "11700": {
+      "vehiclesPerHousehold": 1.915,
+      "adultsPerHousehold": 2.048,
+      "vehiclesPerAdult": 0.935
+    },
+    "12020": {
+      "vehiclesPerHousehold": 1.969,
+      "adultsPerHousehold": 1.923,
+      "vehiclesPerAdult": 1.024
+    },
+    "12060": {
+      "vehiclesPerHousehold": 1.892,
+      "adultsPerHousehold": 2.032,
+      "vehiclesPerAdult": 0.931
+    },
+    "12100": {
+      "vehiclesPerHousehold": 1.71,
+      "adultsPerHousehold": 1.877,
+      "vehiclesPerAdult": 0.911
+    },
+    "12220": {
+      "vehiclesPerHousehold": 1.939,
+      "adultsPerHousehold": 1.944,
+      "vehiclesPerAdult": 0.997
+    },
+    "12260": {
+      "vehiclesPerHousehold": 1.91,
+      "adultsPerHousehold": 2.011,
+      "vehiclesPerAdult": 0.949
+    },
+    "12420": {
+      "vehiclesPerHousehold": 1.798,
+      "adultsPerHousehold": 1.872,
+      "vehiclesPerAdult": 0.961
+    },
+    "12540": {
+      "vehiclesPerHousehold": 1.967,
+      "adultsPerHousehold": 2.205,
+      "vehiclesPerAdult": 0.892
+    },
+    "12580": {
+      "vehiclesPerHousehold": 1.734,
+      "adultsPerHousehold": 1.928,
+      "vehiclesPerAdult": 0.9
+    },
+    "12620": {
+      "vehiclesPerHousehold": 1.802,
+      "adultsPerHousehold": 1.844,
+      "vehiclesPerAdult": 0.977
+    },
+    "12700": {
+      "vehiclesPerHousehold": 1.827,
+      "adultsPerHousehold": 1.854,
+      "vehiclesPerAdult": 0.986
+    },
+    "12940": {
+      "vehiclesPerHousehold": 1.755,
+      "adultsPerHousehold": 1.932,
+      "vehiclesPerAdult": 0.908
+    },
+    "12980": {
+      "vehiclesPerHousehold": 1.755,
+      "adultsPerHousehold": 1.87,
+      "vehiclesPerAdult": 0.939
+    },
+    "13020": {
+      "vehiclesPerHousehold": 1.803,
+      "adultsPerHousehold": 1.812,
+      "vehiclesPerAdult": 0.995
+    },
+    "13140": {
+      "vehiclesPerHousehold": 1.805,
+      "adultsPerHousehold": 1.887,
+      "vehiclesPerAdult": 0.957
+    },
+    "13220": {
+      "vehiclesPerHousehold": 1.758,
+      "adultsPerHousehold": 1.882,
+      "vehiclesPerAdult": 0.934
+    },
+    "13380": {
+      "vehiclesPerHousehold": 1.995,
+      "adultsPerHousehold": 1.945,
+      "vehiclesPerAdult": 1.026
+    },
+    "13460": {
+      "vehiclesPerHousehold": 2.129,
+      "adultsPerHousehold": 1.963,
+      "vehiclesPerAdult": 1.085
+    },
+    "13740": {
+      "vehiclesPerHousehold": 2.103,
+      "adultsPerHousehold": 1.825,
+      "vehiclesPerAdult": 1.152
+    },
+    "13780": {
+      "vehiclesPerHousehold": 1.605,
+      "adultsPerHousehold": 1.814,
+      "vehiclesPerAdult": 0.885
+    },
+    "13820": {
+      "vehiclesPerHousehold": 1.953,
+      "adultsPerHousehold": 1.902,
+      "vehiclesPerAdult": 1.027
+    },
+    "13900": {
+      "vehiclesPerHousehold": 2.077,
+      "adultsPerHousehold": 1.788,
+      "vehiclesPerAdult": 1.161
+    },
+    "13980": {
+      "vehiclesPerHousehold": 1.991,
+      "adultsPerHousehold": 1.951,
+      "vehiclesPerAdult": 1.02
+    },
+    "14010": {
+      "vehiclesPerHousehold": 1.758,
+      "adultsPerHousehold": 1.794,
+      "vehiclesPerAdult": 0.98
+    },
+    "14020": {
+      "vehiclesPerHousehold": 1.766,
+      "adultsPerHousehold": 1.792,
+      "vehiclesPerAdult": 0.986
+    },
+    "14260": {
+      "vehiclesPerHousehold": 2.121,
+      "adultsPerHousehold": 1.984,
+      "vehiclesPerAdult": 1.069
+    },
+    "14460": {
+      "vehiclesPerHousehold": 1.615,
+      "adultsPerHousehold": 1.976,
+      "vehiclesPerAdult": 0.817
+    },
+    "14500": {
+      "vehiclesPerHousehold": 1.86,
+      "adultsPerHousehold": 1.881,
+      "vehiclesPerAdult": 0.989
+    },
+    "14540": {
+      "vehiclesPerHousehold": 1.921,
+      "adultsPerHousehold": 1.878,
+      "vehiclesPerAdult": 1.023
+    },
+    "14580": {
+      "vehiclesPerHousehold": 2.17,
+      "adultsPerHousehold": 1.882,
+      "vehiclesPerAdult": 1.153
+    },
+    "14740": {
+      "vehiclesPerHousehold": 2.108,
+      "adultsPerHousehold": 1.99,
+      "vehiclesPerAdult": 1.059
+    },
+    "14860": {
+      "vehiclesPerHousehold": 1.822,
+      "adultsPerHousehold": 2.057,
+      "vehiclesPerAdult": 0.886
+    },
+    "15180": {
+      "vehiclesPerHousehold": 1.847,
+      "adultsPerHousehold": 2.175,
+      "vehiclesPerAdult": 0.849
+    },
+    "15260": {
+      "vehiclesPerHousehold": 1.84,
+      "adultsPerHousehold": 1.912,
+      "vehiclesPerAdult": 0.962
+    },
+    "15380": {
+      "vehiclesPerHousehold": 1.571,
+      "adultsPerHousehold": 1.79,
+      "vehiclesPerAdult": 0.878
+    },
+    "15500": {
+      "vehiclesPerHousehold": 1.991,
+      "adultsPerHousehold": 1.881,
+      "vehiclesPerAdult": 1.059
+    },
+    "15540": {
+      "vehiclesPerHousehold": 1.741,
+      "adultsPerHousehold": 1.854,
+      "vehiclesPerAdult": 0.939
+    },
+    "15940": {
+      "vehiclesPerHousehold": 1.854,
+      "adultsPerHousehold": 1.833,
+      "vehiclesPerAdult": 1.011
+    },
+    "15980": {
+      "vehiclesPerHousehold": 1.681,
+      "adultsPerHousehold": 2.027,
+      "vehiclesPerAdult": 0.829
+    },
+    "16020": {
+      "vehiclesPerHousehold": 1.95,
+      "adultsPerHousehold": 1.912,
+      "vehiclesPerAdult": 1.02
+    },
+    "16180": {
+      "vehiclesPerHousehold": 1.967,
+      "adultsPerHousehold": 1.849,
+      "vehiclesPerAdult": 1.064
+    },
+    "16220": {
+      "vehiclesPerHousehold": 2.055,
+      "adultsPerHousehold": 1.764,
+      "vehiclesPerAdult": 1.165
+    },
+    "16300": {
+      "vehiclesPerHousehold": 1.952,
+      "adultsPerHousehold": 1.828,
+      "vehiclesPerAdult": 1.068
+    },
+    "16540": {
+      "vehiclesPerHousehold": 2.073,
+      "adultsPerHousehold": 1.908,
+      "vehiclesPerAdult": 1.086
+    },
+    "16580": {
+      "vehiclesPerHousehold": 1.594,
+      "adultsPerHousehold": 1.8,
+      "vehiclesPerAdult": 0.886
+    },
+    "16620": {
+      "vehiclesPerHousehold": 1.633,
+      "adultsPerHousehold": 1.845,
+      "vehiclesPerAdult": 0.885
+    },
+    "16700": {
+      "vehiclesPerHousehold": 1.85,
+      "adultsPerHousehold": 1.899,
+      "vehiclesPerAdult": 0.974
+    },
+    "16740": {
+      "vehiclesPerHousehold": 1.92,
+      "adultsPerHousehold": 1.944,
+      "vehiclesPerAdult": 0.988
+    },
+    "16820": {
+      "vehiclesPerHousehold": 1.911,
+      "adultsPerHousehold": 1.87,
+      "vehiclesPerAdult": 1.022
+    },
+    "16860": {
+      "vehiclesPerHousehold": 1.959,
+      "adultsPerHousehold": 1.907,
+      "vehiclesPerAdult": 1.027
+    },
+    "16940": {
+      "vehiclesPerHousehold": 2.038,
+      "adultsPerHousehold": 1.779,
+      "vehiclesPerAdult": 1.145
+    },
+    "16980": {
+      "vehiclesPerHousehold": 1.627,
+      "adultsPerHousehold": 1.965,
+      "vehiclesPerAdult": 0.828
+    },
+    "17020": {
+      "vehiclesPerHousehold": 1.936,
+      "adultsPerHousehold": 1.911,
+      "vehiclesPerAdult": 1.013
+    },
+    "17140": {
+      "vehiclesPerHousehold": 1.878,
+      "adultsPerHousehold": 1.875,
+      "vehiclesPerAdult": 1.002
+    },
+    "17300": {
+      "vehiclesPerHousehold": 1.95,
+      "adultsPerHousehold": 1.891,
+      "vehiclesPerAdult": 1.032
+    },
+    "17410": {
+      "vehiclesPerHousehold": 1.67,
+      "adultsPerHousehold": 1.801,
+      "vehiclesPerAdult": 0.927
+    },
+    "17420": {
+      "vehiclesPerHousehold": 2.12,
+      "adultsPerHousehold": 1.966,
+      "vehiclesPerAdult": 1.078
+    },
+    "17660": {
+      "vehiclesPerHousehold": 2.179,
+      "adultsPerHousehold": 1.958,
+      "vehiclesPerAdult": 1.113
+    },
+    "17780": {
+      "vehiclesPerHousehold": 1.848,
+      "adultsPerHousehold": 1.916,
+      "vehiclesPerAdult": 0.964
+    },
+    "17820": {
+      "vehiclesPerHousehold": 2.012,
+      "adultsPerHousehold": 1.888,
+      "vehiclesPerAdult": 1.066
+    },
+    "17860": {
+      "vehiclesPerHousehold": 1.872,
+      "adultsPerHousehold": 1.844,
+      "vehiclesPerAdult": 1.015
+    },
+    "17900": {
+      "vehiclesPerHousehold": 1.893,
+      "adultsPerHousehold": 1.859,
+      "vehiclesPerAdult": 1.018
+    },
+    "17980": {
+      "vehiclesPerHousehold": 1.761,
+      "adultsPerHousehold": 1.851,
+      "vehiclesPerAdult": 0.951
+    },
+    "18020": {
+      "vehiclesPerHousehold": 2.007,
+      "adultsPerHousehold": 1.871,
+      "vehiclesPerAdult": 1.073
+    },
+    "18140": {
+      "vehiclesPerHousehold": 1.81,
+      "adultsPerHousehold": 1.874,
+      "vehiclesPerAdult": 0.966
+    },
+    "18580": {
+      "vehiclesPerHousehold": 1.762,
+      "adultsPerHousehold": 1.971,
+      "vehiclesPerAdult": 0.894
+    },
+    "18700": {
+      "vehiclesPerHousehold": 1.903,
+      "adultsPerHousehold": 1.931,
+      "vehiclesPerAdult": 0.985
+    },
+    "18880": {
+      "vehiclesPerHousehold": 1.907,
+      "adultsPerHousehold": 1.896,
+      "vehiclesPerAdult": 1.006
+    },
+    "19100": {
+      "vehiclesPerHousehold": 1.9,
+      "adultsPerHousehold": 2.038,
+      "vehiclesPerAdult": 0.932
+    },
+    "19140": {
+      "vehiclesPerHousehold": 2.065,
+      "adultsPerHousehold": 2.061,
+      "vehiclesPerAdult": 1.002
+    },
+    "19300": {
+      "vehiclesPerHousehold": 1.981,
+      "adultsPerHousehold": 1.945,
+      "vehiclesPerAdult": 1.019
+    },
+    "19340": {
+      "vehiclesPerHousehold": 1.809,
+      "adultsPerHousehold": 1.768,
+      "vehiclesPerAdult": 1.023
+    },
+    "19430": {
+      "vehiclesPerHousehold": 1.806,
+      "adultsPerHousehold": 1.779,
+      "vehiclesPerAdult": 1.016
+    },
+    "19460": {
+      "vehiclesPerHousehold": 2.118,
+      "adultsPerHousehold": 1.901,
+      "vehiclesPerAdult": 1.114
+    },
+    "19500": {
+      "vehiclesPerHousehold": 1.675,
+      "adultsPerHousehold": 1.743,
+      "vehiclesPerAdult": 0.961
+    },
+    "19660": {
+      "vehiclesPerHousehold": 1.75,
+      "adultsPerHousehold": 1.928,
+      "vehiclesPerAdult": 0.907
+    },
+    "19740": {
+      "vehiclesPerHousehold": 1.891,
+      "adultsPerHousehold": 1.913,
+      "vehiclesPerAdult": 0.988
+    },
+    "19780": {
+      "vehiclesPerHousehold": 1.914,
+      "adultsPerHousehold": 1.827,
+      "vehiclesPerAdult": 1.047
+    },
+    "19820": {
+      "vehiclesPerHousehold": 1.73,
+      "adultsPerHousehold": 1.914,
+      "vehiclesPerAdult": 0.904
+    },
+    "20020": {
+      "vehiclesPerHousehold": 1.869,
+      "adultsPerHousehold": 1.916,
+      "vehiclesPerAdult": 0.976
+    },
+    "20100": {
+      "vehiclesPerHousehold": 1.89,
+      "adultsPerHousehold": 1.969,
+      "vehiclesPerAdult": 0.96
+    },
+    "20220": {
+      "vehiclesPerHousehold": 1.892,
+      "adultsPerHousehold": 1.771,
+      "vehiclesPerAdult": 1.069
+    },
+    "20260": {
+      "vehiclesPerHousehold": 1.881,
+      "adultsPerHousehold": 1.79,
+      "vehiclesPerAdult": 1.051
+    },
+    "20500": {
+      "vehiclesPerHousehold": 1.833,
+      "adultsPerHousehold": 1.84,
+      "vehiclesPerAdult": 0.996
+    },
+    "20580": {
+      "vehiclesPerHousehold": 1.889,
+      "adultsPerHousehold": 2.197,
+      "vehiclesPerAdult": 0.86
+    },
+    "20740": {
+      "vehiclesPerHousehold": 1.93,
+      "adultsPerHousehold": 1.829,
+      "vehiclesPerAdult": 1.055
+    },
+    "20940": {
+      "vehiclesPerHousehold": 1.969,
+      "adultsPerHousehold": 2.458,
+      "vehiclesPerAdult": 0.801
+    },
+    "21060": {
+      "vehiclesPerHousehold": 1.924,
+      "adultsPerHousehold": 1.837,
+      "vehiclesPerAdult": 1.048
+    },
+    "21140": {
+      "vehiclesPerHousehold": 1.836,
+      "adultsPerHousehold": 2.044,
+      "vehiclesPerAdult": 0.898
+    },
+    "21300": {
+      "vehiclesPerHousehold": 1.614,
+      "adultsPerHousehold": 1.741,
+      "vehiclesPerAdult": 0.927
+    },
+    "21340": {
+      "vehiclesPerHousehold": 1.933,
+      "adultsPerHousehold": 2.105,
+      "vehiclesPerAdult": 0.918
+    },
+    "21420": {
+      "vehiclesPerHousehold": 1.901,
+      "adultsPerHousehold": 1.856,
+      "vehiclesPerAdult": 1.024
+    },
+    "21500": {
+      "vehiclesPerHousehold": 1.617,
+      "adultsPerHousehold": 1.81,
+      "vehiclesPerAdult": 0.893
+    },
+    "21660": {
+      "vehiclesPerHousehold": 1.848,
+      "adultsPerHousehold": 1.916,
+      "vehiclesPerAdult": 0.965
+    },
+    "21780": {
+      "vehiclesPerHousehold": 1.863,
+      "adultsPerHousehold": 1.787,
+      "vehiclesPerAdult": 1.042
+    },
+    "21820": {
+      "vehiclesPerHousehold": 1.917,
+      "adultsPerHousehold": 1.892,
+      "vehiclesPerAdult": 1.013
+    },
+    "22020": {
+      "vehiclesPerHousehold": 1.778,
+      "adultsPerHousehold": 1.729,
+      "vehiclesPerAdult": 1.028
+    },
+    "22140": {
+      "vehiclesPerHousehold": 1.992,
+      "adultsPerHousehold": 2.14,
+      "vehiclesPerAdult": 0.931
+    },
+    "22180": {
+      "vehiclesPerHousehold": 1.824,
+      "adultsPerHousehold": 1.848,
+      "vehiclesPerAdult": 0.987
+    },
+    "22220": {
+      "vehiclesPerHousehold": 1.978,
+      "adultsPerHousehold": 1.97,
+      "vehiclesPerAdult": 1.004
+    },
+    "22380": {
+      "vehiclesPerHousehold": 1.984,
+      "adultsPerHousehold": 1.873,
+      "vehiclesPerAdult": 1.059
+    },
+    "22420": {
+      "vehiclesPerHousehold": 1.76,
+      "adultsPerHousehold": 1.846,
+      "vehiclesPerAdult": 0.953
+    },
+    "22500": {
+      "vehiclesPerHousehold": 1.816,
+      "adultsPerHousehold": 1.901,
+      "vehiclesPerAdult": 0.955
+    },
+    "22520": {
+      "vehiclesPerHousehold": 2.008,
+      "adultsPerHousehold": 1.88,
+      "vehiclesPerAdult": 1.068
+    },
+    "22540": {
+      "vehiclesPerHousehold": 1.91,
+      "adultsPerHousehold": 1.818,
+      "vehiclesPerAdult": 1.051
+    },
+    "22660": {
+      "vehiclesPerHousehold": 2.026,
+      "adultsPerHousehold": 1.877,
+      "vehiclesPerAdult": 1.079
+    },
+    "22900": {
+      "vehiclesPerHousehold": 1.912,
+      "adultsPerHousehold": 1.893,
+      "vehiclesPerAdult": 1.01
+    },
+    "23060": {
+      "vehiclesPerHousehold": 1.861,
+      "adultsPerHousehold": 1.836,
+      "vehiclesPerAdult": 1.014
+    },
+    "23420": {
+      "vehiclesPerHousehold": 1.981,
+      "adultsPerHousehold": 2.233,
+      "vehiclesPerAdult": 0.887
+    },
+    "23460": {
+      "vehiclesPerHousehold": 2.07,
+      "adultsPerHousehold": 2.005,
+      "vehiclesPerAdult": 1.033
+    },
+    "23540": {
+      "vehiclesPerHousehold": 1.706,
+      "adultsPerHousehold": 1.869,
+      "vehiclesPerAdult": 0.913
+    },
+    "23580": {
+      "vehiclesPerHousehold": 2.07,
+      "adultsPerHousehold": 2.171,
+      "vehiclesPerAdult": 0.953
+    },
+    "23900": {
+      "vehiclesPerHousehold": 2.136,
+      "adultsPerHousehold": 1.987,
+      "vehiclesPerAdult": 1.075
+    },
+    "24020": {
+      "vehiclesPerHousehold": 1.744,
+      "adultsPerHousehold": 1.82,
+      "vehiclesPerAdult": 0.958
+    },
+    "24140": {
+      "vehiclesPerHousehold": 2.016,
+      "adultsPerHousehold": 1.849,
+      "vehiclesPerAdult": 1.09
+    },
+    "24220": {
+      "vehiclesPerHousehold": 1.834,
+      "adultsPerHousehold": 1.711,
+      "vehiclesPerAdult": 1.072
+    },
+    "24260": {
+      "vehiclesPerHousehold": 2.061,
+      "adultsPerHousehold": 1.823,
+      "vehiclesPerAdult": 1.131
+    },
+    "24300": {
+      "vehiclesPerHousehold": 2.005,
+      "adultsPerHousehold": 1.85,
+      "vehiclesPerAdult": 1.084
+    },
+    "24340": {
+      "vehiclesPerHousehold": 1.902,
+      "adultsPerHousehold": 1.969,
+      "vehiclesPerAdult": 0.966
+    },
+    "24420": {
+      "vehiclesPerHousehold": 2.133,
+      "adultsPerHousehold": 1.901,
+      "vehiclesPerAdult": 1.122
+    },
+    "24500": {
+      "vehiclesPerHousehold": 1.993,
+      "adultsPerHousehold": 1.768,
+      "vehiclesPerAdult": 1.127
+    },
+    "24540": {
+      "vehiclesPerHousehold": 2.233,
+      "adultsPerHousehold": 2.059,
+      "vehiclesPerAdult": 1.084
+    },
+    "24580": {
+      "vehiclesPerHousehold": 1.898,
+      "adultsPerHousehold": 1.83,
+      "vehiclesPerAdult": 1.037
+    },
+    "24660": {
+      "vehiclesPerHousehold": 1.927,
+      "adultsPerHousehold": 1.851,
+      "vehiclesPerAdult": 1.041
+    },
+    "24780": {
+      "vehiclesPerHousehold": 1.766,
+      "adultsPerHousehold": 1.798,
+      "vehiclesPerAdult": 0.982
+    },
+    "24860": {
+      "vehiclesPerHousehold": 1.943,
+      "adultsPerHousehold": 1.886,
+      "vehiclesPerAdult": 1.031
+    },
+    "25060": {
+      "vehiclesPerHousehold": 1.911,
+      "adultsPerHousehold": 1.898,
+      "vehiclesPerAdult": 1.007
+    },
+    "25180": {
+      "vehiclesPerHousehold": 1.984,
+      "adultsPerHousehold": 1.923,
+      "vehiclesPerAdult": 1.032
+    },
+    "25220": {
+      "vehiclesPerHousehold": 1.808,
+      "adultsPerHousehold": 1.907,
+      "vehiclesPerAdult": 0.948
+    },
+    "25260": {
+      "vehiclesPerHousehold": 1.991,
+      "adultsPerHousehold": 2.237,
+      "vehiclesPerAdult": 0.89
+    },
+    "25420": {
+      "vehiclesPerHousehold": 1.803,
+      "adultsPerHousehold": 1.847,
+      "vehiclesPerAdult": 0.976
+    },
+    "25500": {
+      "vehiclesPerHousehold": 2.141,
+      "adultsPerHousehold": 1.999,
+      "vehiclesPerAdult": 1.071
+    },
+    "25540": {
+      "vehiclesPerHousehold": 1.766,
+      "adultsPerHousehold": 1.904,
+      "vehiclesPerAdult": 0.928
+    },
+    "25620": {
+      "vehiclesPerHousehold": 1.892,
+      "adultsPerHousehold": 1.903,
+      "vehiclesPerAdult": 0.994
+    },
+    "25740": {
+      "vehiclesPerHousehold": 2.164,
+      "adultsPerHousehold": 1.856,
+      "vehiclesPerAdult": 1.166
+    },
+    "25860": {
+      "vehiclesPerHousehold": 2.105,
+      "adultsPerHousehold": 1.914,
+      "vehiclesPerAdult": 1.1
+    },
+    "25940": {
+      "vehiclesPerHousehold": 1.809,
+      "adultsPerHousehold": 1.877,
+      "vehiclesPerAdult": 0.963
+    },
+    "25980": {
+      "vehiclesPerHousehold": 1.887,
+      "adultsPerHousehold": 1.962,
+      "vehiclesPerAdult": 0.961
+    },
+    "26140": {
+      "vehiclesPerHousehold": 1.765,
+      "adultsPerHousehold": 1.906,
+      "vehiclesPerAdult": 0.926
+    },
+    "26300": {
+      "vehiclesPerHousehold": 1.836,
+      "adultsPerHousehold": 1.801,
+      "vehiclesPerAdult": 1.02
+    },
+    "26380": {
+      "vehiclesPerHousehold": 1.777,
+      "adultsPerHousehold": 1.881,
+      "vehiclesPerAdult": 0.945
+    },
+    "26420": {
+      "vehiclesPerHousehold": 1.859,
+      "adultsPerHousehold": 2.041,
+      "vehiclesPerAdult": 0.911
+    },
+    "26580": {
+      "vehiclesPerHousehold": 1.83,
+      "adultsPerHousehold": 1.866,
+      "vehiclesPerAdult": 0.981
+    },
+    "26620": {
+      "vehiclesPerHousehold": 1.985,
+      "adultsPerHousehold": 1.893,
+      "vehiclesPerAdult": 1.048
+    },
+    "26820": {
+      "vehiclesPerHousehold": 2.308,
+      "adultsPerHousehold": 2.049,
+      "vehiclesPerAdult": 1.126
+    },
+    "26900": {
+      "vehiclesPerHousehold": 1.851,
+      "adultsPerHousehold": 1.869,
+      "vehiclesPerAdult": 0.99
+    },
+    "26980": {
+      "vehiclesPerHousehold": 1.793,
+      "adultsPerHousehold": 1.866,
+      "vehiclesPerAdult": 0.961
+    },
+    "27060": {
+      "vehiclesPerHousehold": 1.543,
+      "adultsPerHousehold": 1.721,
+      "vehiclesPerAdult": 0.896
+    },
+    "27100": {
+      "vehiclesPerHousehold": 1.825,
+      "adultsPerHousehold": 1.877,
+      "vehiclesPerAdult": 0.972
+    },
+    "27140": {
+      "vehiclesPerHousehold": 1.883,
+      "adultsPerHousehold": 1.87,
+      "vehiclesPerAdult": 1.007
+    },
+    "27180": {
+      "vehiclesPerHousehold": 1.892,
+      "adultsPerHousehold": 1.845,
+      "vehiclesPerAdult": 1.025
+    },
+    "27260": {
+      "vehiclesPerHousehold": 1.769,
+      "adultsPerHousehold": 1.93,
+      "vehiclesPerAdult": 0.916
+    },
+    "27340": {
+      "vehiclesPerHousehold": 1.923,
+      "adultsPerHousehold": 1.792,
+      "vehiclesPerAdult": 1.073
+    },
+    "27500": {
+      "vehiclesPerHousehold": 1.916,
+      "adultsPerHousehold": 1.858,
+      "vehiclesPerAdult": 1.031
+    },
+    "27620": {
+      "vehiclesPerHousehold": 2.042,
+      "adultsPerHousehold": 1.848,
+      "vehiclesPerAdult": 1.105
+    },
+    "27740": {
+      "vehiclesPerHousehold": 1.995,
+      "adultsPerHousehold": 1.861,
+      "vehiclesPerAdult": 1.072
+    },
+    "27780": {
+      "vehiclesPerHousehold": 1.711,
+      "adultsPerHousehold": 1.783,
+      "vehiclesPerAdult": 0.96
+    },
+    "27860": {
+      "vehiclesPerHousehold": 1.792,
+      "adultsPerHousehold": 1.845,
+      "vehiclesPerAdult": 0.971
+    },
+    "27900": {
+      "vehiclesPerHousehold": 1.958,
+      "adultsPerHousehold": 1.895,
+      "vehiclesPerAdult": 1.034
+    },
+    "27980": {
+      "vehiclesPerHousehold": 2.057,
+      "adultsPerHousehold": 2.281,
+      "vehiclesPerAdult": 0.902
+    },
+    "28020": {
+      "vehiclesPerHousehold": 1.785,
+      "adultsPerHousehold": 1.856,
+      "vehiclesPerAdult": 0.962
+    },
+    "28100": {
+      "vehiclesPerHousehold": 1.87,
+      "adultsPerHousehold": 1.895,
+      "vehiclesPerAdult": 0.987
+    },
+    "28140": {
+      "vehiclesPerHousehold": 1.881,
+      "adultsPerHousehold": 1.857,
+      "vehiclesPerAdult": 1.013
+    },
+    "28420": {
+      "vehiclesPerHousehold": 2.147,
+      "adultsPerHousehold": 2.041,
+      "vehiclesPerAdult": 1.052
+    },
+    "28450": {
+      "vehiclesPerHousehold": 1.89,
+      "adultsPerHousehold": 1.857,
+      "vehiclesPerAdult": 1.018
+    },
+    "28660": {
+      "vehiclesPerHousehold": 1.868,
+      "adultsPerHousehold": 1.903,
+      "vehiclesPerAdult": 0.981
+    },
+    "28700": {
+      "vehiclesPerHousehold": 1.996,
+      "adultsPerHousehold": 1.888,
+      "vehiclesPerAdult": 1.057
+    },
+    "28740": {
+      "vehiclesPerHousehold": 1.752,
+      "adultsPerHousehold": 1.852,
+      "vehiclesPerAdult": 0.946
+    },
+    "28880": {
+      "vehiclesPerHousehold": 1.802,
+      "adultsPerHousehold": 2.025,
+      "vehiclesPerAdult": 0.89
+    },
+    "28940": {
+      "vehiclesPerHousehold": 2.016,
+      "adultsPerHousehold": 1.91,
+      "vehiclesPerAdult": 1.055
+    },
+    "29020": {
+      "vehiclesPerHousehold": 1.836,
+      "adultsPerHousehold": 1.784,
+      "vehiclesPerAdult": 1.029
+    },
+    "29100": {
+      "vehiclesPerHousehold": 1.84,
+      "adultsPerHousehold": 1.794,
+      "vehiclesPerAdult": 1.025
+    },
+    "29180": {
+      "vehiclesPerHousehold": 1.699,
+      "adultsPerHousehold": 1.869,
+      "vehiclesPerAdult": 0.909
+    },
+    "29200": {
+      "vehiclesPerHousehold": 1.822,
+      "adultsPerHousehold": 1.803,
+      "vehiclesPerAdult": 1.011
+    },
+    "29340": {
+      "vehiclesPerHousehold": 1.804,
+      "adultsPerHousehold": 1.956,
+      "vehiclesPerAdult": 0.922
+    },
+    "29420": {
+      "vehiclesPerHousehold": 1.961,
+      "adultsPerHousehold": 1.773,
+      "vehiclesPerAdult": 1.106
+    },
+    "29460": {
+      "vehiclesPerHousehold": 1.748,
+      "adultsPerHousehold": 2.077,
+      "vehiclesPerAdult": 0.842
+    },
+    "29540": {
+      "vehiclesPerHousehold": 1.845,
+      "adultsPerHousehold": 1.944,
+      "vehiclesPerAdult": 0.949
+    },
+    "29620": {
+      "vehiclesPerHousehold": 1.755,
+      "adultsPerHousehold": 1.841,
+      "vehiclesPerAdult": 0.954
+    },
+    "29700": {
+      "vehiclesPerHousehold": 1.937,
+      "adultsPerHousehold": 2.243,
+      "vehiclesPerAdult": 0.864
+    },
+    "29740": {
+      "vehiclesPerHousehold": 1.935,
+      "adultsPerHousehold": 1.968,
+      "vehiclesPerAdult": 0.984
+    },
+    "29820": {
+      "vehiclesPerHousehold": 1.754,
+      "adultsPerHousehold": 2.079,
+      "vehiclesPerAdult": 0.844
+    },
+    "29940": {
+      "vehiclesPerHousehold": 1.806,
+      "adultsPerHousehold": 1.797,
+      "vehiclesPerAdult": 1.005
+    },
+    "30020": {
+      "vehiclesPerHousehold": 1.786,
+      "adultsPerHousehold": 1.866,
+      "vehiclesPerAdult": 0.957
+    },
+    "30140": {
+      "vehiclesPerHousehold": 1.871,
+      "adultsPerHousehold": 1.903,
+      "vehiclesPerAdult": 0.983
+    },
+    "30300": {
+      "vehiclesPerHousehold": 2.144,
+      "adultsPerHousehold": 1.881,
+      "vehiclesPerAdult": 1.14
+    },
+    "30340": {
+      "vehiclesPerHousehold": 1.729,
+      "adultsPerHousehold": 1.828,
+      "vehiclesPerAdult": 0.946
+    },
+    "30460": {
+      "vehiclesPerHousehold": 1.778,
+      "adultsPerHousehold": 1.813,
+      "vehiclesPerAdult": 0.981
+    },
+    "30500": {
+      "vehiclesPerHousehold": 2.246,
+      "adultsPerHousehold": 2.067,
+      "vehiclesPerAdult": 1.086
+    },
+    "30620": {
+      "vehiclesPerHousehold": 1.894,
+      "adultsPerHousehold": 1.802,
+      "vehiclesPerAdult": 1.051
+    },
+    "30700": {
+      "vehiclesPerHousehold": 1.869,
+      "adultsPerHousehold": 1.791,
+      "vehiclesPerAdult": 1.043
+    },
+    "30780": {
+      "vehiclesPerHousehold": 1.83,
+      "adultsPerHousehold": 1.82,
+      "vehiclesPerAdult": 1.006
+    },
+    "30860": {
+      "vehiclesPerHousehold": 2.34,
+      "adultsPerHousehold": 2.13,
+      "vehiclesPerAdult": 1.098
+    },
+    "30980": {
+      "vehiclesPerHousehold": 1.925,
+      "adultsPerHousehold": 1.925,
+      "vehiclesPerAdult": 1
+    },
+    "31020": {
+      "vehiclesPerHousehold": 2.062,
+      "adultsPerHousehold": 1.957,
+      "vehiclesPerAdult": 1.053
+    },
+    "31080": {
+      "vehiclesPerHousehold": 1.865,
+      "adultsPerHousehold": 2.232,
+      "vehiclesPerAdult": 0.835
+    },
+    "31140": {
+      "vehiclesPerHousehold": 1.838,
+      "adultsPerHousehold": 1.865,
+      "vehiclesPerAdult": 0.985
+    },
+    "31180": {
+      "vehiclesPerHousehold": 1.806,
+      "adultsPerHousehold": 1.84,
+      "vehiclesPerAdult": 0.982
+    },
+    "31340": {
+      "vehiclesPerHousehold": 2.086,
+      "adultsPerHousehold": 1.924,
+      "vehiclesPerAdult": 1.084
+    },
+    "31420": {
+      "vehiclesPerHousehold": 1.864,
+      "adultsPerHousehold": 1.942,
+      "vehiclesPerAdult": 0.96
+    },
+    "31540": {
+      "vehiclesPerHousehold": 1.722,
+      "adultsPerHousehold": 1.777,
+      "vehiclesPerAdult": 0.969
+    },
+    "31700": {
+      "vehiclesPerHousehold": 1.888,
+      "adultsPerHousehold": 1.983,
+      "vehiclesPerAdult": 0.952
+    },
+    "31740": {
+      "vehiclesPerHousehold": 1.911,
+      "adultsPerHousehold": 1.788,
+      "vehiclesPerAdult": 1.069
+    },
+    "31860": {
+      "vehiclesPerHousehold": 1.938,
+      "adultsPerHousehold": 1.86,
+      "vehiclesPerAdult": 1.042
+    },
+    "31900": {
+      "vehiclesPerHousehold": 1.787,
+      "adultsPerHousehold": 1.82,
+      "vehiclesPerAdult": 0.982
+    },
+    "32580": {
+      "vehiclesPerHousehold": 1.905,
+      "adultsPerHousehold": 2.25,
+      "vehiclesPerAdult": 0.847
+    },
+    "32780": {
+      "vehiclesPerHousehold": 1.977,
+      "adultsPerHousehold": 1.883,
+      "vehiclesPerAdult": 1.05
+    },
+    "32820": {
+      "vehiclesPerHousehold": 1.814,
+      "adultsPerHousehold": 1.889,
+      "vehiclesPerAdult": 0.96
+    },
+    "32900": {
+      "vehiclesPerHousehold": 2.051,
+      "adultsPerHousehold": 2.353,
+      "vehiclesPerAdult": 0.872
+    },
+    "33100": {
+      "vehiclesPerHousehold": 1.663,
+      "adultsPerHousehold": 2.104,
+      "vehiclesPerAdult": 0.79
+    },
+    "33140": {
+      "vehiclesPerHousehold": 1.95,
+      "adultsPerHousehold": 1.864,
+      "vehiclesPerAdult": 1.046
+    },
+    "33220": {
+      "vehiclesPerHousehold": 1.905,
+      "adultsPerHousehold": 1.857,
+      "vehiclesPerAdult": 1.026
+    },
+    "33260": {
+      "vehiclesPerHousehold": 1.978,
+      "adultsPerHousehold": 1.804,
+      "vehiclesPerAdult": 1.097
+    },
+    "33340": {
+      "vehiclesPerHousehold": 1.661,
+      "adultsPerHousehold": 1.811,
+      "vehiclesPerAdult": 0.917
+    },
+    "33460": {
+      "vehiclesPerHousehold": 1.837,
+      "adultsPerHousehold": 1.887,
+      "vehiclesPerAdult": 0.974
+    },
+    "33500": {
+      "vehiclesPerHousehold": 2.002,
+      "adultsPerHousehold": 1.766,
+      "vehiclesPerAdult": 1.133
+    },
+    "33540": {
+      "vehiclesPerHousehold": 1.96,
+      "adultsPerHousehold": 1.815,
+      "vehiclesPerAdult": 1.08
+    },
+    "33660": {
+      "vehiclesPerHousehold": 1.869,
+      "adultsPerHousehold": 1.909,
+      "vehiclesPerAdult": 0.979
+    },
+    "33700": {
+      "vehiclesPerHousehold": 2.115,
+      "adultsPerHousehold": 2.252,
+      "vehiclesPerAdult": 0.939
+    },
+    "33740": {
+      "vehiclesPerHousehold": 1.698,
+      "adultsPerHousehold": 1.871,
+      "vehiclesPerAdult": 0.908
+    },
+    "33780": {
+      "vehiclesPerHousehold": 1.991,
+      "adultsPerHousehold": 1.93,
+      "vehiclesPerAdult": 1.032
+    },
+    "33860": {
+      "vehiclesPerHousehold": 1.881,
+      "adultsPerHousehold": 1.867,
+      "vehiclesPerAdult": 1.007
+    },
+    "34060": {
+      "vehiclesPerHousehold": 1.738,
+      "adultsPerHousehold": 1.878,
+      "vehiclesPerAdult": 0.926
+    },
+    "34100": {
+      "vehiclesPerHousehold": 2.095,
+      "adultsPerHousehold": 1.954,
+      "vehiclesPerAdult": 1.072
+    },
+    "34580": {
+      "vehiclesPerHousehold": 2.215,
+      "adultsPerHousehold": 1.951,
+      "vehiclesPerAdult": 1.135
+    },
+    "34620": {
+      "vehiclesPerHousehold": 1.804,
+      "adultsPerHousehold": 1.818,
+      "vehiclesPerAdult": 0.992
+    },
+    "34740": {
+      "vehiclesPerHousehold": 1.83,
+      "adultsPerHousehold": 1.931,
+      "vehiclesPerAdult": 0.948
+    },
+    "34820": {
+      "vehiclesPerHousehold": 1.786,
+      "adultsPerHousehold": 1.961,
+      "vehiclesPerAdult": 0.911
+    },
+    "34900": {
+      "vehiclesPerHousehold": 2.044,
+      "adultsPerHousehold": 2.103,
+      "vehiclesPerAdult": 0.972
+    },
+    "34940": {
+      "vehiclesPerHousehold": 1.686,
+      "adultsPerHousehold": 1.98,
+      "vehiclesPerAdult": 0.852
+    },
+    "34980": {
+      "vehiclesPerHousehold": 1.965,
+      "adultsPerHousehold": 1.89,
+      "vehiclesPerAdult": 1.04
+    },
+    "35300": {
+      "vehiclesPerHousehold": 1.66,
+      "adultsPerHousehold": 1.895,
+      "vehiclesPerAdult": 0.876
+    },
+    "35380": {
+      "vehiclesPerHousehold": 1.542,
+      "adultsPerHousehold": 1.879,
+      "vehiclesPerAdult": 0.821
+    },
+    "35620": {
+      "vehiclesPerHousehold": 1.224,
+      "adultsPerHousehold": 2.053,
+      "vehiclesPerAdult": 0.596
+    },
+    "35660": {
+      "vehiclesPerHousehold": 1.773,
+      "adultsPerHousehold": 1.837,
+      "vehiclesPerAdult": 0.966
+    },
+    "35840": {
+      "vehiclesPerHousehold": 1.696,
+      "adultsPerHousehold": 1.894,
+      "vehiclesPerAdult": 0.895
+    },
+    "35980": {
+      "vehiclesPerHousehold": 1.805,
+      "adultsPerHousehold": 1.851,
+      "vehiclesPerAdult": 0.975
+    },
+    "36100": {
+      "vehiclesPerHousehold": 1.747,
+      "adultsPerHousehold": 1.92,
+      "vehiclesPerAdult": 0.91
+    },
+    "36220": {
+      "vehiclesPerHousehold": 1.848,
+      "adultsPerHousehold": 1.744,
+      "vehiclesPerAdult": 1.06
+    },
+    "36260": {
+      "vehiclesPerHousehold": 2.259,
+      "adultsPerHousehold": 2.151,
+      "vehiclesPerAdult": 1.05
+    },
+    "36420": {
+      "vehiclesPerHousehold": 1.887,
+      "adultsPerHousehold": 1.885,
+      "vehiclesPerAdult": 1.001
+    },
+    "36500": {
+      "vehiclesPerHousehold": 2.026,
+      "adultsPerHousehold": 1.955,
+      "vehiclesPerAdult": 1.036
+    },
+    "36540": {
+      "vehiclesPerHousehold": 1.886,
+      "adultsPerHousehold": 1.844,
+      "vehiclesPerAdult": 1.022
+    },
+    "36740": {
+      "vehiclesPerHousehold": 1.799,
+      "adultsPerHousehold": 2.103,
+      "vehiclesPerAdult": 0.855
+    },
+    "36780": {
+      "vehiclesPerHousehold": 1.829,
+      "adultsPerHousehold": 1.793,
+      "vehiclesPerAdult": 1.02
+    },
+    "36980": {
+      "vehiclesPerHousehold": 1.928,
+      "adultsPerHousehold": 1.828,
+      "vehiclesPerAdult": 1.054
+    },
+    "37100": {
+      "vehiclesPerHousehold": 2.141,
+      "adultsPerHousehold": 2.289,
+      "vehiclesPerAdult": 0.935
+    },
+    "37140": {
+      "vehiclesPerHousehold": 1.902,
+      "adultsPerHousehold": 1.887,
+      "vehiclesPerAdult": 1.008
+    },
+    "37340": {
+      "vehiclesPerHousehold": 1.789,
+      "adultsPerHousehold": 1.98,
+      "vehiclesPerAdult": 0.904
+    },
+    "37460": {
+      "vehiclesPerHousehold": 1.864,
+      "adultsPerHousehold": 1.84,
+      "vehiclesPerAdult": 1.013
+    },
+    "37620": {
+      "vehiclesPerHousehold": 1.745,
+      "adultsPerHousehold": 1.821,
+      "vehiclesPerAdult": 0.959
+    },
+    "37860": {
+      "vehiclesPerHousehold": 1.845,
+      "adultsPerHousehold": 1.934,
+      "vehiclesPerAdult": 0.954
+    },
+    "37900": {
+      "vehiclesPerHousehold": 1.791,
+      "adultsPerHousehold": 1.765,
+      "vehiclesPerAdult": 1.015
+    },
+    "37980": {
+      "vehiclesPerHousehold": 1.631,
+      "adultsPerHousehold": 1.935,
+      "vehiclesPerAdult": 0.843
+    },
+    "38060": {
+      "vehiclesPerHousehold": 1.876,
+      "adultsPerHousehold": 2.017,
+      "vehiclesPerAdult": 0.93
+    },
+    "38240": {
+      "vehiclesPerHousehold": 2.002,
+      "adultsPerHousehold": 1.839,
+      "vehiclesPerAdult": 1.089
+    },
+    "38300": {
+      "vehiclesPerHousehold": 1.666,
+      "adultsPerHousehold": 1.805,
+      "vehiclesPerAdult": 0.923
+    },
+    "38340": {
+      "vehiclesPerHousehold": 1.603,
+      "adultsPerHousehold": 1.79,
+      "vehiclesPerAdult": 0.895
+    },
+    "38540": {
+      "vehiclesPerHousehold": 2.103,
+      "adultsPerHousehold": 1.915,
+      "vehiclesPerAdult": 1.098
+    },
+    "38860": {
+      "vehiclesPerHousehold": 1.818,
+      "adultsPerHousehold": 1.869,
+      "vehiclesPerAdult": 0.973
+    },
+    "38900": {
+      "vehiclesPerHousehold": 1.841,
+      "adultsPerHousehold": 1.944,
+      "vehiclesPerAdult": 0.947
+    },
+    "38940": {
+      "vehiclesPerHousehold": 1.774,
+      "adultsPerHousehold": 2.038,
+      "vehiclesPerAdult": 0.871
+    },
+    "39150": {
+      "vehiclesPerHousehold": 2.003,
+      "adultsPerHousehold": 1.83,
+      "vehiclesPerAdult": 1.095
+    },
+    "39300": {
+      "vehiclesPerHousehold": 1.722,
+      "adultsPerHousehold": 1.923,
+      "vehiclesPerAdult": 0.895
+    },
+    "39340": {
+      "vehiclesPerHousehold": 2.312,
+      "adultsPerHousehold": 2.296,
+      "vehiclesPerAdult": 1.007
+    },
+    "39380": {
+      "vehiclesPerHousehold": 1.937,
+      "adultsPerHousehold": 1.853,
+      "vehiclesPerAdult": 1.045
+    },
+    "39460": {
+      "vehiclesPerHousehold": 1.706,
+      "adultsPerHousehold": 1.91,
+      "vehiclesPerAdult": 0.893
+    },
+    "39540": {
+      "vehiclesPerHousehold": 1.848,
+      "adultsPerHousehold": 1.838,
+      "vehiclesPerAdult": 1.005
+    },
+    "39580": {
+      "vehiclesPerHousehold": 1.933,
+      "adultsPerHousehold": 1.945,
+      "vehiclesPerAdult": 0.994
+    },
+    "39660": {
+      "vehiclesPerHousehold": 2.105,
+      "adultsPerHousehold": 1.836,
+      "vehiclesPerAdult": 1.146
+    },
+    "39740": {
+      "vehiclesPerHousehold": 1.882,
+      "adultsPerHousehold": 1.988,
+      "vehiclesPerAdult": 0.947
+    },
+    "39820": {
+      "vehiclesPerHousehold": 1.99,
+      "adultsPerHousehold": 1.949,
+      "vehiclesPerAdult": 1.021
+    },
+    "39900": {
+      "vehiclesPerHousehold": 1.989,
+      "adultsPerHousehold": 1.956,
+      "vehiclesPerAdult": 1.017
+    },
+    "40060": {
+      "vehiclesPerHousehold": 1.95,
+      "adultsPerHousehold": 1.913,
+      "vehiclesPerAdult": 1.019
+    },
+    "40140": {
+      "vehiclesPerHousehold": 2.181,
+      "adultsPerHousehold": 2.374,
+      "vehiclesPerAdult": 0.919
+    },
+    "40220": {
+      "vehiclesPerHousehold": 1.934,
+      "adultsPerHousehold": 1.85,
+      "vehiclesPerAdult": 1.045
+    },
+    "40340": {
+      "vehiclesPerHousehold": 1.917,
+      "adultsPerHousehold": 1.83,
+      "vehiclesPerAdult": 1.048
+    },
+    "40380": {
+      "vehiclesPerHousehold": 1.644,
+      "adultsPerHousehold": 1.803,
+      "vehiclesPerAdult": 0.912
+    },
+    "40420": {
+      "vehiclesPerHousehold": 1.776,
+      "adultsPerHousehold": 1.867,
+      "vehiclesPerAdult": 0.951
+    },
+    "40580": {
+      "vehiclesPerHousehold": 1.985,
+      "adultsPerHousehold": 1.884,
+      "vehiclesPerAdult": 1.054
+    },
+    "40660": {
+      "vehiclesPerHousehold": 1.913,
+      "adultsPerHousehold": 1.979,
+      "vehiclesPerAdult": 0.966
+    },
+    "40900": {
+      "vehiclesPerHousehold": 1.957,
+      "adultsPerHousehold": 2.094,
+      "vehiclesPerAdult": 0.934
+    },
+    "40980": {
+      "vehiclesPerHousehold": 1.798,
+      "adultsPerHousehold": 1.824,
+      "vehiclesPerAdult": 0.985
+    },
+    "41060": {
+      "vehiclesPerHousehold": 1.97,
+      "adultsPerHousehold": 1.863,
+      "vehiclesPerAdult": 1.058
+    },
+    "41100": {
+      "vehiclesPerHousehold": 2.135,
+      "adultsPerHousehold": 2.092,
+      "vehiclesPerAdult": 1.021
+    },
+    "41140": {
+      "vehiclesPerHousehold": 1.892,
+      "adultsPerHousehold": 1.869,
+      "vehiclesPerAdult": 1.013
+    },
+    "41180": {
+      "vehiclesPerHousehold": 1.804,
+      "adultsPerHousehold": 1.846,
+      "vehiclesPerAdult": 0.977
+    },
+    "41420": {
+      "vehiclesPerHousehold": 1.963,
+      "adultsPerHousehold": 2.029,
+      "vehiclesPerAdult": 0.968
+    },
+    "41500": {
+      "vehiclesPerHousehold": 2.117,
+      "adultsPerHousehold": 2.313,
+      "vehiclesPerAdult": 0.915
+    },
+    "41540": {
+      "vehiclesPerHousehold": 1.956,
+      "adultsPerHousehold": 1.9,
+      "vehiclesPerAdult": 1.029
+    },
+    "41620": {
+      "vehiclesPerHousehold": 2.043,
+      "adultsPerHousehold": 2.072,
+      "vehiclesPerAdult": 0.986
+    },
+    "41660": {
+      "vehiclesPerHousehold": 1.811,
+      "adultsPerHousehold": 1.843,
+      "vehiclesPerAdult": 0.983
+    },
+    "41700": {
+      "vehiclesPerHousehold": 1.863,
+      "adultsPerHousehold": 2.037,
+      "vehiclesPerAdult": 0.914
+    },
+    "41740": {
+      "vehiclesPerHousehold": 1.95,
+      "adultsPerHousehold": 2.13,
+      "vehiclesPerAdult": 0.915
+    },
+    "41780": {
+      "vehiclesPerHousehold": 1.879,
+      "adultsPerHousehold": 1.767,
+      "vehiclesPerAdult": 1.064
+    },
+    "41860": {
+      "vehiclesPerHousehold": 1.711,
+      "adultsPerHousehold": 2.1,
+      "vehiclesPerAdult": 0.815
+    },
+    "41940": {
+      "vehiclesPerHousehold": 1.952,
+      "adultsPerHousehold": 2.239,
+      "vehiclesPerAdult": 0.872
+    },
+    "42020": {
+      "vehiclesPerHousehold": 2.1,
+      "adultsPerHousehold": 1.985,
+      "vehiclesPerAdult": 1.058
+    },
+    "42100": {
+      "vehiclesPerHousehold": 2.073,
+      "adultsPerHousehold": 2.08,
+      "vehiclesPerAdult": 0.997
+    },
+    "42140": {
+      "vehiclesPerHousehold": 1.915,
+      "adultsPerHousehold": 1.816,
+      "vehiclesPerAdult": 1.055
+    },
+    "42200": {
+      "vehiclesPerHousehold": 1.987,
+      "adultsPerHousehold": 2.151,
+      "vehiclesPerAdult": 0.923
+    },
+    "42220": {
+      "vehiclesPerHousehold": 2.021,
+      "adultsPerHousehold": 2.003,
+      "vehiclesPerAdult": 1.009
+    },
+    "42340": {
+      "vehiclesPerHousehold": 1.811,
+      "adultsPerHousehold": 1.932,
+      "vehiclesPerAdult": 0.938
+    },
+    "42540": {
+      "vehiclesPerHousehold": 1.678,
+      "adultsPerHousehold": 1.854,
+      "vehiclesPerAdult": 0.905
+    },
+    "42660": {
+      "vehiclesPerHousehold": 1.824,
+      "adultsPerHousehold": 1.954,
+      "vehiclesPerAdult": 0.933
+    },
+    "42680": {
+      "vehiclesPerHousehold": 1.694,
+      "adultsPerHousehold": 1.98,
+      "vehiclesPerAdult": 0.856
+    },
+    "42700": {
+      "vehiclesPerHousehold": 1.639,
+      "adultsPerHousehold": 1.843,
+      "vehiclesPerAdult": 0.889
+    },
+    "43100": {
+      "vehiclesPerHousehold": 1.828,
+      "adultsPerHousehold": 1.799,
+      "vehiclesPerAdult": 1.016
+    },
+    "43300": {
+      "vehiclesPerHousehold": 1.998,
+      "adultsPerHousehold": 1.924,
+      "vehiclesPerAdult": 1.039
+    },
+    "43340": {
+      "vehiclesPerHousehold": 1.694,
+      "adultsPerHousehold": 1.822,
+      "vehiclesPerAdult": 0.929
+    },
+    "43420": {
+      "vehiclesPerHousehold": 1.994,
+      "adultsPerHousehold": 1.843,
+      "vehiclesPerAdult": 1.082
+    },
+    "43580": {
+      "vehiclesPerHousehold": 2.005,
+      "adultsPerHousehold": 1.871,
+      "vehiclesPerAdult": 1.071
+    },
+    "43620": {
+      "vehiclesPerHousehold": 1.984,
+      "adultsPerHousehold": 1.757,
+      "vehiclesPerAdult": 1.129
+    },
+    "43640": {
+      "vehiclesPerHousehold": 1.903,
+      "adultsPerHousehold": 1.956,
+      "vehiclesPerAdult": 0.973
+    },
+    "43780": {
+      "vehiclesPerHousehold": 1.795,
+      "adultsPerHousehold": 1.858,
+      "vehiclesPerAdult": 0.966
+    },
+    "43900": {
+      "vehiclesPerHousehold": 1.98,
+      "adultsPerHousehold": 1.952,
+      "vehiclesPerAdult": 1.014
+    },
+    "44060": {
+      "vehiclesPerHousehold": 1.983,
+      "adultsPerHousehold": 1.907,
+      "vehiclesPerAdult": 1.04
+    },
+    "44100": {
+      "vehiclesPerHousehold": 1.732,
+      "adultsPerHousehold": 1.754,
+      "vehiclesPerAdult": 0.988
+    },
+    "44140": {
+      "vehiclesPerHousehold": 1.606,
+      "adultsPerHousehold": 1.914,
+      "vehiclesPerAdult": 0.839
+    },
+    "44180": {
+      "vehiclesPerHousehold": 1.878,
+      "adultsPerHousehold": 1.833,
+      "vehiclesPerAdult": 1.025
+    },
+    "44220": {
+      "vehiclesPerHousehold": 1.872,
+      "adultsPerHousehold": 1.824,
+      "vehiclesPerAdult": 1.026
+    },
+    "44300": {
+      "vehiclesPerHousehold": 1.696,
+      "adultsPerHousehold": 1.926,
+      "vehiclesPerAdult": 0.88
+    },
+    "44420": {
+      "vehiclesPerHousehold": 2.061,
+      "adultsPerHousehold": 1.871,
+      "vehiclesPerAdult": 1.102
+    },
+    "44700": {
+      "vehiclesPerHousehold": 2.145,
+      "adultsPerHousehold": 2.342,
+      "vehiclesPerAdult": 0.916
+    },
+    "44940": {
+      "vehiclesPerHousehold": 1.858,
+      "adultsPerHousehold": 1.876,
+      "vehiclesPerAdult": 0.991
+    },
+    "45060": {
+      "vehiclesPerHousehold": 1.616,
+      "adultsPerHousehold": 1.798,
+      "vehiclesPerAdult": 0.899
+    },
+    "45220": {
+      "vehiclesPerHousehold": 1.761,
+      "adultsPerHousehold": 1.842,
+      "vehiclesPerAdult": 0.956
+    },
+    "45300": {
+      "vehiclesPerHousehold": 1.682,
+      "adultsPerHousehold": 1.958,
+      "vehiclesPerAdult": 0.859
+    },
+    "45460": {
+      "vehiclesPerHousehold": 1.882,
+      "adultsPerHousehold": 1.836,
+      "vehiclesPerAdult": 1.025
+    },
+    "45500": {
+      "vehiclesPerHousehold": 1.799,
+      "adultsPerHousehold": 1.862,
+      "vehiclesPerAdult": 0.966
+    },
+    "45780": {
+      "vehiclesPerHousehold": 1.748,
+      "adultsPerHousehold": 1.784,
+      "vehiclesPerAdult": 0.98
+    },
+    "45820": {
+      "vehiclesPerHousehold": 1.954,
+      "adultsPerHousehold": 1.786,
+      "vehiclesPerAdult": 1.094
+    },
+    "45900": {
+      "vehiclesPerHousehold": 1.914,
+      "adultsPerHousehold": 1.894,
+      "vehiclesPerAdult": 1.011
+    },
+    "45940": {
+      "vehiclesPerHousehold": 1.673,
+      "adultsPerHousehold": 1.97,
+      "vehiclesPerAdult": 0.849
+    },
+    "46060": {
+      "vehiclesPerHousehold": 1.764,
+      "adultsPerHousehold": 1.882,
+      "vehiclesPerAdult": 0.938
+    },
+    "46140": {
+      "vehiclesPerHousehold": 1.902,
+      "adultsPerHousehold": 1.89,
+      "vehiclesPerAdult": 1.006
+    },
+    "46220": {
+      "vehiclesPerHousehold": 1.909,
+      "adultsPerHousehold": 1.936,
+      "vehiclesPerAdult": 0.986
+    },
+    "46300": {
+      "vehiclesPerHousehold": 2.208,
+      "adultsPerHousehold": 1.978,
+      "vehiclesPerAdult": 1.116
+    },
+    "46340": {
+      "vehiclesPerHousehold": 1.931,
+      "adultsPerHousehold": 2.128,
+      "vehiclesPerAdult": 0.907
+    },
+    "46520": {
+      "vehiclesPerHousehold": 1.803,
+      "adultsPerHousehold": 2.249,
+      "vehiclesPerAdult": 0.802
+    },
+    "46540": {
+      "vehiclesPerHousehold": 1.61,
+      "adultsPerHousehold": 1.771,
+      "vehiclesPerAdult": 0.909
+    },
+    "46660": {
+      "vehiclesPerHousehold": 1.863,
+      "adultsPerHousehold": 1.916,
+      "vehiclesPerAdult": 0.972
+    },
+    "46700": {
+      "vehiclesPerHousehold": 2.137,
+      "adultsPerHousehold": 2.176,
+      "vehiclesPerAdult": 0.982
+    },
+    "47020": {
+      "vehiclesPerHousehold": 1.892,
+      "adultsPerHousehold": 1.933,
+      "vehiclesPerAdult": 0.979
+    },
+    "47220": {
+      "vehiclesPerHousehold": 1.806,
+      "adultsPerHousehold": 1.987,
+      "vehiclesPerAdult": 0.909
+    },
+    "47260": {
+      "vehiclesPerHousehold": 1.874,
+      "adultsPerHousehold": 1.895,
+      "vehiclesPerAdult": 0.989
+    },
+    "47300": {
+      "vehiclesPerHousehold": 2.112,
+      "adultsPerHousehold": 2.308,
+      "vehiclesPerAdult": 0.915
+    },
+    "47380": {
+      "vehiclesPerHousehold": 1.892,
+      "adultsPerHousehold": 1.977,
+      "vehiclesPerAdult": 0.957
+    },
+    "47460": {
+      "vehiclesPerHousehold": 2.011,
+      "adultsPerHousehold": 1.892,
+      "vehiclesPerAdult": 1.063
+    },
+    "47580": {
+      "vehiclesPerHousehold": 2.025,
+      "adultsPerHousehold": 1.957,
+      "vehiclesPerAdult": 1.035
+    },
+    "47900": {
+      "vehiclesPerHousehold": 1.731,
+      "adultsPerHousehold": 2.016,
+      "vehiclesPerAdult": 0.858
+    },
+    "47930": {
+      "vehiclesPerHousehold": 1.771,
+      "adultsPerHousehold": 1.979,
+      "vehiclesPerAdult": 0.895
+    },
+    "47940": {
+      "vehiclesPerHousehold": 1.947,
+      "adultsPerHousehold": 1.8,
+      "vehiclesPerAdult": 1.082
+    },
+    "48060": {
+      "vehiclesPerHousehold": 1.615,
+      "adultsPerHousehold": 1.735,
+      "vehiclesPerAdult": 0.931
+    },
+    "48140": {
+      "vehiclesPerHousehold": 1.954,
+      "adultsPerHousehold": 1.825,
+      "vehiclesPerAdult": 1.07
+    },
+    "48260": {
+      "vehiclesPerHousehold": 1.743,
+      "adultsPerHousehold": 1.806,
+      "vehiclesPerAdult": 0.965
+    },
+    "48300": {
+      "vehiclesPerHousehold": 2.124,
+      "adultsPerHousehold": 1.962,
+      "vehiclesPerAdult": 1.083
+    },
+    "48540": {
+      "vehiclesPerHousehold": 1.749,
+      "adultsPerHousehold": 1.801,
+      "vehiclesPerAdult": 0.971
+    },
+    "48620": {
+      "vehiclesPerHousehold": 1.961,
+      "adultsPerHousehold": 1.874,
+      "vehiclesPerAdult": 1.047
+    },
+    "48660": {
+      "vehiclesPerHousehold": 1.834,
+      "adultsPerHousehold": 1.832,
+      "vehiclesPerAdult": 1.001
+    },
+    "48680": {
+      "vehiclesPerHousehold": 1.456,
+      "adultsPerHousehold": 1.782,
+      "vehiclesPerAdult": 0.817
+    },
+    "48700": {
+      "vehiclesPerHousehold": 1.784,
+      "adultsPerHousehold": 1.804,
+      "vehiclesPerAdult": 0.989
+    },
+    "48900": {
+      "vehiclesPerHousehold": 1.885,
+      "adultsPerHousehold": 1.843,
+      "vehiclesPerAdult": 1.023
+    },
+    "49020": {
+      "vehiclesPerHousehold": 2.08,
+      "adultsPerHousehold": 2.005,
+      "vehiclesPerAdult": 1.038
+    },
+    "49180": {
+      "vehiclesPerHousehold": 2.009,
+      "adultsPerHousehold": 1.865,
+      "vehiclesPerAdult": 1.078
+    },
+    "49340": {
+      "vehiclesPerHousehold": 1.788,
+      "adultsPerHousehold": 1.969,
+      "vehiclesPerAdult": 0.908
+    },
+    "49420": {
+      "vehiclesPerHousehold": 2.18,
+      "adultsPerHousehold": 2.039,
+      "vehiclesPerAdult": 1.069
+    },
+    "49620": {
+      "vehiclesPerHousehold": 1.972,
+      "adultsPerHousehold": 1.948,
+      "vehiclesPerAdult": 1.012
+    },
+    "49660": {
+      "vehiclesPerHousehold": 1.745,
+      "adultsPerHousehold": 1.788,
+      "vehiclesPerAdult": 0.976
+    },
+    "49700": {
+      "vehiclesPerHousehold": 2.098,
+      "adultsPerHousehold": 2.15,
+      "vehiclesPerAdult": 0.976
+    },
+    "49740": {
+      "vehiclesPerHousehold": 1.873,
+      "adultsPerHousehold": 1.916,
+      "vehiclesPerAdult": 0.978
+    },
+    "rest-of-AL": {
+      "vehiclesPerHousehold": 1.961,
+      "adultsPerHousehold": 1.912,
+      "vehiclesPerAdult": 1.025
+    },
+    "rest-of-AK": {
+      "vehiclesPerHousehold": 1.846,
+      "adultsPerHousehold": 1.953,
+      "vehiclesPerAdult": 0.945
+    },
+    "rest-of-AZ": {
+      "vehiclesPerHousehold": 1.875,
+      "adultsPerHousehold": 1.97,
+      "vehiclesPerAdult": 0.952
+    },
+    "rest-of-AR": {
+      "vehiclesPerHousehold": 1.881,
+      "adultsPerHousehold": 1.877,
+      "vehiclesPerAdult": 1.003
+    },
+    "rest-of-CA": {
+      "vehiclesPerHousehold": 1.94,
+      "adultsPerHousehold": 2.2,
+      "vehiclesPerAdult": 0.882
+    },
+    "rest-of-CO": {
+      "vehiclesPerHousehold": 1.961,
+      "adultsPerHousehold": 1.899,
+      "vehiclesPerAdult": 1.033
+    },
+    "rest-of-CT": {
+      "vehiclesPerHousehold": 1.779,
+      "adultsPerHousehold": 1.947,
+      "vehiclesPerAdult": 0.914
+    },
+    "rest-of-DE": {
+      "vehiclesPerHousehold": 1.839,
+      "adultsPerHousehold": 1.957,
+      "vehiclesPerAdult": 0.94
+    },
+    "rest-of-DC": {
+      "vehiclesPerHousehold": 0.86,
+      "adultsPerHousehold": 1.603,
+      "vehiclesPerAdult": 0.536
+    },
+    "rest-of-FL": {
+      "vehiclesPerHousehold": 1.722,
+      "adultsPerHousehold": 2.007,
+      "vehiclesPerAdult": 0.858
+    },
+    "rest-of-GA": {
+      "vehiclesPerHousehold": 1.9,
+      "adultsPerHousehold": 2.001,
+      "vehiclesPerAdult": 0.95
+    },
+    "rest-of-HI": {
+      "vehiclesPerHousehold": 1.881,
+      "adultsPerHousehold": 2.249,
+      "vehiclesPerAdult": 0.836
+    },
+    "rest-of-ID": {
+      "vehiclesPerHousehold": 2.189,
+      "adultsPerHousehold": 1.99,
+      "vehiclesPerAdult": 1.1
+    },
+    "rest-of-IL": {
+      "vehiclesPerHousehold": 1.677,
+      "adultsPerHousehold": 1.913,
+      "vehiclesPerAdult": 0.877
+    },
+    "rest-of-IN": {
+      "vehiclesPerHousehold": 1.897,
+      "adultsPerHousehold": 1.87,
+      "vehiclesPerAdult": 1.014
+    },
+    "rest-of-IA": {
+      "vehiclesPerHousehold": 1.973,
+      "adultsPerHousehold": 1.807,
+      "vehiclesPerAdult": 1.092
+    },
+    "rest-of-KS": {
+      "vehiclesPerHousehold": 1.993,
+      "adultsPerHousehold": 1.841,
+      "vehiclesPerAdult": 1.083
+    },
+    "rest-of-KY": {
+      "vehiclesPerHousehold": 1.883,
+      "adultsPerHousehold": 1.869,
+      "vehiclesPerAdult": 1.008
+    },
+    "rest-of-LA": {
+      "vehiclesPerHousehold": 1.702,
+      "adultsPerHousehold": 1.888,
+      "vehiclesPerAdult": 0.901
+    },
+    "rest-of-ME": {
+      "vehiclesPerHousehold": 1.803,
+      "adultsPerHousehold": 1.837,
+      "vehiclesPerAdult": 0.981
+    },
+    "rest-of-MD": {
+      "vehiclesPerHousehold": 1.804,
+      "adultsPerHousehold": 1.99,
+      "vehiclesPerAdult": 0.907
+    },
+    "rest-of-MA": {
+      "vehiclesPerHousehold": 1.636,
+      "adultsPerHousehold": 1.953,
+      "vehiclesPerAdult": 0.838
+    },
+    "rest-of-MI": {
+      "vehiclesPerHousehold": 1.793,
+      "adultsPerHousehold": 1.896,
+      "vehiclesPerAdult": 0.946
+    },
+    "rest-of-MN": {
+      "vehiclesPerHousehold": 1.889,
+      "adultsPerHousehold": 1.86,
+      "vehiclesPerAdult": 1.016
+    },
+    "rest-of-MS": {
+      "vehiclesPerHousehold": 1.92,
+      "adultsPerHousehold": 1.895,
+      "vehiclesPerAdult": 1.013
+    },
+    "rest-of-MO": {
+      "vehiclesPerHousehold": 1.862,
+      "adultsPerHousehold": 1.853,
+      "vehiclesPerAdult": 1.005
+    },
+    "rest-of-MT": {
+      "vehiclesPerHousehold": 2.122,
+      "adultsPerHousehold": 1.861,
+      "vehiclesPerAdult": 1.14
+    },
+    "rest-of-NE": {
+      "vehiclesPerHousehold": 1.988,
+      "adultsPerHousehold": 1.814,
+      "vehiclesPerAdult": 1.096
+    },
+    "rest-of-NV": {
+      "vehiclesPerHousehold": 1.833,
+      "adultsPerHousehold": 2.043,
+      "vehiclesPerAdult": 0.897
+    },
+    "rest-of-NH": {
+      "vehiclesPerHousehold": 1.932,
+      "adultsPerHousehold": 1.979,
+      "vehiclesPerAdult": 0.976
+    },
+    "rest-of-NJ": {
+      "vehiclesPerHousehold": 1.684,
+      "adultsPerHousehold": 2.035,
+      "vehiclesPerAdult": 0.827
+    },
+    "rest-of-NM": {
+      "vehiclesPerHousehold": 1.928,
+      "adultsPerHousehold": 1.931,
+      "vehiclesPerAdult": 0.999
+    },
+    "rest-of-NY": {
+      "vehiclesPerHousehold": 1.244,
+      "adultsPerHousehold": 1.966,
+      "vehiclesPerAdult": 0.633
+    },
+    "rest-of-NC": {
+      "vehiclesPerHousehold": 1.945,
+      "adultsPerHousehold": 1.896,
+      "vehiclesPerAdult": 1.026
+    },
+    "rest-of-ND": {
+      "vehiclesPerHousehold": 1.992,
+      "adultsPerHousehold": 1.728,
+      "vehiclesPerAdult": 1.153
+    },
+    "rest-of-OH": {
+      "vehiclesPerHousehold": 1.813,
+      "adultsPerHousehold": 1.835,
+      "vehiclesPerAdult": 0.988
+    },
+    "rest-of-OK": {
+      "vehiclesPerHousehold": 1.911,
+      "adultsPerHousehold": 1.887,
+      "vehiclesPerAdult": 1.013
+    },
+    "rest-of-OR": {
+      "vehiclesPerHousehold": 1.895,
+      "adultsPerHousehold": 1.925,
+      "vehiclesPerAdult": 0.984
+    },
+    "rest-of-PA": {
+      "vehiclesPerHousehold": 1.704,
+      "adultsPerHousehold": 1.883,
+      "vehiclesPerAdult": 0.905
+    },
+    "rest-of-RI": {
+      "vehiclesPerHousehold": 1.706,
+      "adultsPerHousehold": 1.926,
+      "vehiclesPerAdult": 0.886
+    },
+    "rest-of-SC": {
+      "vehiclesPerHousehold": 1.897,
+      "adultsPerHousehold": 1.9,
+      "vehiclesPerAdult": 0.998
+    },
+    "rest-of-SD": {
+      "vehiclesPerHousehold": 2.071,
+      "adultsPerHousehold": 1.796,
+      "vehiclesPerAdult": 1.153
+    },
+    "rest-of-TN": {
+      "vehiclesPerHousehold": 1.966,
+      "adultsPerHousehold": 1.896,
+      "vehiclesPerAdult": 1.037
+    },
+    "rest-of-TX": {
+      "vehiclesPerHousehold": 1.877,
+      "adultsPerHousehold": 2.005,
+      "vehiclesPerAdult": 0.936
+    },
+    "rest-of-UT": {
+      "vehiclesPerHousehold": 2.186,
+      "adultsPerHousehold": 2.131,
+      "vehiclesPerAdult": 1.025
+    },
+    "rest-of-VT": {
+      "vehiclesPerHousehold": 1.759,
+      "adultsPerHousehold": 1.853,
+      "vehiclesPerAdult": 0.949
+    },
+    "rest-of-VA": {
+      "vehiclesPerHousehold": 1.94,
+      "adultsPerHousehold": 1.955,
+      "vehiclesPerAdult": 0.992
+    },
+    "rest-of-WA": {
+      "vehiclesPerHousehold": 1.945,
+      "adultsPerHousehold": 1.955,
+      "vehiclesPerAdult": 0.995
+    },
+    "rest-of-WV": {
+      "vehiclesPerHousehold": 1.791,
+      "adultsPerHousehold": 1.882,
+      "vehiclesPerAdult": 0.952
+    },
+    "rest-of-WI": {
+      "vehiclesPerHousehold": 1.84,
+      "adultsPerHousehold": 1.819,
+      "vehiclesPerAdult": 1.012
+    },
+    "rest-of-WY": {
+      "vehiclesPerHousehold": 2.164,
+      "adultsPerHousehold": 1.799,
+      "vehiclesPerAdult": 1.203
+    }
+  }
+}

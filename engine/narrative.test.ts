@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import { defaultCityInputs, compare } from './compare';
+import { CURRENT_DATASET_VERSION } from './datasets';
 import {
   breakEvenNarrative,
   breakEvenSentence,
@@ -27,7 +28,7 @@ function run(
   tenure: 'rent' | 'own' = 'rent',
 ): ComparisonResult {
   return compare({
-    datasetVersion: '2026.1',
+    datasetVersion: CURRENT_DATASET_VERSION,
     household,
     origin: defaultCityInputs(from, salary, household, tenure),
     destination: defaultCityInputs(to, destinationSalary, household, tenure),
@@ -38,7 +39,7 @@ describe('why narrative', () => {
   it('reads the same salary case without inventing a pay effect', () => {
     const result = run(CHICAGO, AUSTIN, 150_000);
     expect(whySentence(result)).toBe(
-      'Austin, TX is $6,783 cheaper a year to live in at the same salary.',
+      'Austin, TX is $8,967 cheaper a year to live in at the same salary.',
     );
   });
 

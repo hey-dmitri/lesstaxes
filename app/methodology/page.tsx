@@ -123,11 +123,26 @@ answer          =  in your pocket THERE  −  in your pocket HERE`}</pre>
           </li>
         </ul>
         <p>
-          The curve is deliberately <em>national</em> rather than per-metro. Rent burden varies
-          much less between cities than rent does — 14.4% in Chicago against 15.5% in Austin, while
-          the rents themselves differ by a fifth — so anchoring each city to its own burden would
-          have quietly flattened the housing difference between them, which is the one thing this
-          page exists to measure. The local median sets the price; the national curve sets the level.
+          <strong>Buying works the same way.</strong> The metro median home value is what the
+          median <em>owner</em> owns, so a high earner was being quoted a cheaper house than they
+          would buy — and, because property tax is charged on the price, a smaller tax bill too.
+          The starting price now scales with income as well.
+        </p>
+        <p>
+          Both scalings are anchored to the local median <em>owner</em> or <em>renter</em> income,
+          and this detail matters more than it sounds. A single national multiplier looks right
+          until you apply it somewhere expensive: San Francisco&rsquo;s median home is already owned
+          by high earners, so scaling it by &ldquo;what a $150,000 buyer purchases
+          nationally&rdquo; put that household at $1.5m — a third <em>above</em> the local median,
+          while earning <em>below</em> the local median owner. Anchoring locally makes the
+          multiplier exactly 1.0 for the household the median actually describes, which is the only
+          value it can correctly have.
+        </p>
+        <p>
+          What stays national is the <em>elasticity</em> — how sharply housing spending rises with
+          income, which is a behavioural regularity rather than a local fact. The local price is
+          left completely untouched, so the difference between two cities, which is the one thing
+          this page exists to measure, survives at full strength.
         </p>
         <p>
           Mortgage <strong>principal counts as money out</strong>. It builds equity rather than
@@ -194,12 +209,6 @@ answer          =  in your pocket THERE  −  in your pocket HERE`}</pre>
         </p>
         <ul>
           <li>
-            <strong>Home and renters insurance are not included at all.</strong> No per-state
-            dataset is loaded yet, so ownership is understated everywhere — and badly in Florida and
-            Louisiana, where premiums are a multiple of the national average. This is the largest
-            known gap.
-          </li>
-          <li>
             <strong>Local income tax outside New York City uses state averages.</strong>{' '}
             Philadelphia, Columbus, Detroit, Louisville, Kansas City and Portland all levy more than
             their state average.
@@ -231,10 +240,9 @@ answer          =  in your pocket THERE  −  in your pocket HERE`}</pre>
             movers, closing costs and deposits are not counted.
           </li>
           <li>
-            <strong>Home prices are not adjusted for income the way rents are.</strong> If you buy,
-            the starting figure is still the metro&rsquo;s median home value, which understates
-            what a high earner buys — and property tax is computed from it, so that is understated
-            too. The rent path has been fixed and the ownership path has not.
+            <strong>Home and renters insurance are not included at all.</strong> No per-state
+            dataset is loaded yet, so ownership is understated everywhere — and badly in Florida
+            and Louisiana, where premiums are a multiple of the national average.
           </li>
           <li>
             <strong>The top income band is open-ended.</strong> The Census publishes rent burden

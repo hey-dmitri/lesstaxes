@@ -7,8 +7,8 @@
  * experience (PROJECT.md D26).
  */
 
-import salesTax from '@/data/2026.2/sales-tax.json';
-import states from '@/data/2026.2/states.json';
+import salesTax from '@/data/2026.3/sales-tax.json';
+import states from '@/data/2026.3/states.json';
 import { allMetros, housingDefaults, localTaxOptions, localJurisdiction, transportDefaults } from '@/engine';
 
 export interface DatasetRow {
@@ -23,6 +23,9 @@ export interface DatasetRow {
   rent1br: number;
   rent3br: number;
   homePrice: number;
+  /** Whose households the local medians describe — the anchor for both curves. */
+  ownerIncome: number;
+  renterIncome: number;
   propertyTaxRate: number;
   vehiclesPerAdult: number;
   parityAll: number;
@@ -60,6 +63,8 @@ export const DATASET_ROWS: DatasetRow[] = allMetros().map((m) => {
     rent1br: housing.rentByBedrooms[1],
     rent3br: housing.rentByBedrooms[3],
     homePrice: housing.medianHomePrice,
+    ownerIncome: housing.medianOwnerIncome ?? 0,
+    renterIncome: housing.medianRenterIncome ?? 0,
     propertyTaxRate: housing.effectivePropertyTaxRate,
     vehiclesPerAdult: transport.vehiclesPerAdult,
     parityAll: m.priceParity.allItems,
@@ -101,6 +106,16 @@ export const DATASET_SOURCES = [
   {
     what: 'How rent scales with income',
     source: 'Census ACS 2024 5-year estimates (B25074), national',
+    licence: 'Public domain',
+  },
+  {
+    what: 'How home price scales with income',
+    source: 'Census ACS 2024 5-year estimates (B25121), national',
+    licence: 'Public domain',
+  },
+  {
+    what: 'Median income of owners and renters',
+    source: 'Census ACS 2024 5-year estimates (B25119)',
     licence: 'Public domain',
   },
   {
