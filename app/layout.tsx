@@ -1,8 +1,28 @@
 import type { Metadata, Viewport } from 'next';
+import { Familjen_Grotesk, Space_Grotesk } from 'next/font/google';
 import Link from 'next/link';
 
 import './globals.css';
+
+/*
+ * Self-hosted at build time by next/font, not fetched from Google at runtime.
+ * The site makes no third-party requests (PROJECT.md §10) and a webfont CDN
+ * would be one, as well as a way to leak a visitor's IP to another party.
+ */
+const familjen = Familjen_Grotesk({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-familjen',
+  display: 'swap',
+});
+const space = Space_Grotesk({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-space',
+  display: 'swap',
+});
 import { ThemeToggle } from '@/components/theme-toggle';
+import { DATASET_VERSION } from '@/engine';
 import { SITE_NAME, SITE_SLUG, TAGLINE } from '@/lib/site';
 
 /**
@@ -35,8 +55,8 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#f7f8fa' },
-    { media: '(prefers-color-scheme: dark)', color: '#101319' },
+    { media: '(prefers-color-scheme: light)', color: '#F4F1EA' },
+    { media: '(prefers-color-scheme: dark)', color: '#0A0E16' },
   ],
 };
 
@@ -57,7 +77,7 @@ try {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" className={`${familjen.variable} ${space.variable}`} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
       </head>
@@ -77,22 +97,35 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           Skip to the calculator
         </a>
         <div className="mx-auto flex min-h-dvh w-full max-w-[112rem] flex-col px-4 py-3 sm:px-6">
-          <header className="flex shrink-0 items-center justify-between gap-4 pb-3">
+          {/*
+            Per the Turn 3 redesign: wordmark and tagline on the left, the two
+            credibility links and the dataset version on the right. The version
+            is deliberately visible — it is what a shared link is pinned to.
+          */}
+          <header className="flex shrink-0 flex-wrap items-baseline gap-x-5 gap-y-2 pb-4">
             <div className="flex items-baseline gap-3">
               <span
-                className="text-[0.76rem] font-semibold uppercase tracking-[0.14em]"
-                style={{ color: 'var(--muted)' }}
+                className="font-display text-[1.05rem] font-bold tracking-[-0.02em]"
+                style={{ color: 'var(--ink)' }}
               >
                 {SITE_NAME}
               </span>
-              <h1
-                className="font-serif text-base font-semibold tracking-tight sm:text-lg"
-                style={{ color: 'var(--ink)' }}
-              >
+              <h1 className="text-[0.9rem]" style={{ color: 'var(--ink-soft)' }}>
                 {TAGLINE}
               </h1>
             </div>
-            <ThemeToggle />
+            <nav className="ml-auto flex items-baseline gap-5 text-[0.82rem]" aria-label="About this site">
+              <Link href="/methodology" style={{ color: 'var(--accent)' }}>
+                How it works
+              </Link>
+              <Link href="/data" style={{ color: 'var(--accent)' }}>
+                The data
+              </Link>
+              <span className="tnum text-[0.72rem]" style={{ color: 'var(--muted)' }}>
+                Dataset {DATASET_VERSION}
+              </span>
+              <ThemeToggle />
+            </nav>
           </header>
 
           {children}
@@ -101,13 +134,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             className="flex shrink-0 flex-wrap items-center gap-x-4 gap-y-1 pt-2 text-[0.76rem] leading-snug"
             style={{ color: 'var(--muted)' }}
           >
-            <nav className="flex gap-4" aria-label="About this site">
-              <Link href="/methodology" className="underline underline-offset-2" style={{ color: 'var(--accent)' }}>
-                How it works
-              </Link>
-              <Link href="/data" className="underline underline-offset-2" style={{ color: 'var(--accent)' }}>
-                The data
-              </Link>
+            <nav className="flex gap-4" aria-label="More about this site">
               {/* Always reachable, on every page, for the reader who spots a wrong figure. */}
               <Link href="/data#report" className="underline underline-offset-2" style={{ color: 'var(--accent)' }}>
                 Report a problem

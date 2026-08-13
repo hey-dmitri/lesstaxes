@@ -127,6 +127,13 @@ export interface CityResult {
   living: LivingBreakdown;
   salesTax: USD;
   /** gross - tax - housing - living - salesTax. The headline quantity. */
+  /**
+   * Gross minus every mandatory tax, before a penny is spent.
+   *
+   * The number on a payslip, and the anchor the interface was missing: leftover
+   * is unfamiliar and unguessable, take-home is neither.
+   */
+  takeHome: USD;
   leftover: USD;
 }
 
@@ -142,9 +149,19 @@ export type CategoryKey =
   | 'living'
   | 'salesTax';
 
+/**
+ * Which half of the story a row belongs to.
+ *
+ * The redesign splits the breakdown in two, because "your pay changed" and
+ * "your costs changed" are different kinds of news and a reader sorting one
+ * list by size has to hold both in their head at once.
+ */
+export type CategoryGroup = 'payAndTax' | 'living';
+
 export interface CategoryDelta {
   key: CategoryKey;
   label: string;
+  group: CategoryGroup;
   /** Positive means better off in the destination. */
   delta: USD;
 }

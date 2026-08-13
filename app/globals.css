@@ -3,83 +3,105 @@
 /*
  * Pack or Stay design tokens.
  *
- * Cool carbon-paper neutrals with an ink-blue accent — the register of an
- * official document rather than a fintech dashboard, because the product's
- * whole claim is that its numbers are traceable to federal tables.
+ * From the Turn 3 redesign (Claude Design project "Lesstaxes design refresh").
+ * The design is specified DARK ONLY: a near-black ground, warm off-white ink,
+ * a single green for "you keep this" and a coral for "this is spent". Green
+ * and coral remain semantic — never decorative — and are never the sole
+ * carrier of meaning, so every figure stays signed as well as coloured.
  *
- * Green and red are reserved for SEMANTICS ONLY (better off / worse off) and
- * are never used decoratively. They are also never the sole carrier of
- * meaning: every gain or loss is signed as well as coloured.
+ * D15 requires a light/auto/dark toggle, which the design does not cover. The
+ * light palette below is therefore a TRANSLATION rather than a specified
+ * design: same hierarchy, same semantics, inverted ground. Flagged as needing
+ * review rather than silently presented as designed.
  */
 
 @theme {
-  --font-sans: ui-sans-serif, -apple-system, "Segoe UI", system-ui, sans-serif;
-  --font-serif: ui-serif, Georgia, "Iowan Old Style", "Times New Roman", serif;
-  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --font-sans: var(--font-familjen), system-ui, sans-serif;
+  --font-display: var(--font-space), system-ui, sans-serif;
+  --font-mono: var(--font-space), ui-monospace, SFMono-Regular, monospace;
 }
 
+/* Dark — as designed. */
 :root {
-  --ground: #f7f8fa;
-  --surface: #ffffff;
-  --surface-sunken: #f1f3f7;
-  --ink: #171a21;
-  --ink-soft: #3d4453;
-  --muted: #656d7e;
-  --rule: #e1e5ec;
-  --rule-strong: #c9d0dc;
-  --accent: #2c4c8c;
-  --accent-soft: #e8eefb;
-  --good: #0f7a4d;
-  --bad: #b4241c;
-  --focus: #2c4c8c;
+  --ground: #0A0E16;
+  --surface: #0F1420;
+  --surface-raised: #141B29;
+  --surface-sunken: #0C111B;
+  --ink: #F4F1EA;
+  --ink-soft: #98A3BA;
+  --muted: #6D7A93;
+  --muted-strong: #8B95AB;
+  --faint: #5C6880;
+  --rule: #1C2536;
+  --rule-strong: #2A3346;
+  --rule-input: #33405A;
+  --accent: #2FD196;
+  --accent-bright: #5FE3B2;
+  --accent-dim: #253A32;
+  --good: #2FD196;
+  --bad: #FF7A5C;
+  --focus: #2FD196;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --ground: #101319;
-    --surface: #171b23;
-    --surface-sunken: #12161d;
-    --ink: #e6e9ef;
-    --ink-soft: #c3c9d6;
-    --muted: #8e97a8;
-    --rule: #262c38;
-    --rule-strong: #39414f;
-    --accent: #7fa3e8;
-    --accent-soft: #1a2436;
-    --good: #4ade80;
-    --bad: #f87171;
-    --focus: #7fa3e8;
+/*
+ * Light — derived, not designed. Keeps the design's structure and semantics
+ * and inverts the ground. The green darkens to hold contrast on white; the
+ * coral deepens for the same reason.
+ */
+:root[data-theme="light"] {
+  --ground: #F4F1EA;
+  --surface: #FFFFFF;
+  --surface-raised: #FFFFFF;
+  --surface-sunken: #EFEBE2;
+  --ink: #0A0E16;
+  --ink-soft: #3D485E;
+  --muted: #5C6880;
+  --muted-strong: #4A5568;
+  --faint: #6D7A93;
+  --rule: #DCD7CB;
+  --rule-strong: #C4BEB0;
+  --rule-input: #B3AC9C;
+  --accent: #0B7A55;
+  --accent-bright: #096444;
+  --accent-dim: #DCF0E6;
+  --good: #0B7A55;
+  --bad: #C0432A;
+  --focus: #0B7A55;
+}
+
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --ground: #F4F1EA;
+    --surface: #FFFFFF;
+    --surface-raised: #FFFFFF;
+    --surface-sunken: #EFEBE2;
+    --ink: #0A0E16;
+    --ink-soft: #3D485E;
+    --muted: #5C6880;
+    --muted-strong: #4A5568;
+    --faint: #6D7A93;
+    --rule: #DCD7CB;
+    --rule-strong: #C4BEB0;
+    --rule-input: #B3AC9C;
+    --accent: #0B7A55;
+    --accent-bright: #096444;
+    --accent-dim: #DCF0E6;
+    --good: #0B7A55;
+    --bad: #C0432A;
+    --focus: #0B7A55;
   }
-}
-
-:root[data-theme="dark"] {
-  --ground: #101319;
-  --surface: #171b23;
-  --surface-sunken: #12161d;
-  --ink: #e6e9ef;
-  --ink-soft: #c3c9d6;
-  --muted: #8e97a8;
-  --rule: #262c38;
-  --rule-strong: #39414f;
-  --accent: #7fa3e8;
-  --accent-soft: #1a2436;
-  --good: #4ade80;
-  --bad: #f87171;
-  --focus: #7fa3e8;
 }
 
 * {
   box-sizing: border-box;
 }
 
-html {
-  color-scheme: light;
+html { color-scheme: dark; }
+@media (prefers-color-scheme: light) {
+  html:not([data-theme="dark"]) { color-scheme: light; }
 }
-@media (prefers-color-scheme: dark) {
-  html:not([data-theme="light"]) { color-scheme: dark; }
-}
-html[data-theme="dark"] { color-scheme: dark; }
 html[data-theme="light"] { color-scheme: light; }
+html[data-theme="dark"] { color-scheme: dark; }
 
 body {
   margin: 0;
@@ -87,7 +109,7 @@ body {
   color: var(--ink);
   font-family: var(--font-sans);
   font-size: 16px;
-  line-height: 1.6;
+  line-height: 1.5;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -97,10 +119,25 @@ body {
   font-variant-numeric: tabular-nums;
 }
 
+/* Section eyebrows: small, wide-tracked, uppercase. */
+.eyebrow {
+  font-size: 0.6875rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted-strong);
+}
+
 :where(a, button, input, select, textarea, [tabindex]):focus-visible {
   outline: 2px solid var(--focus);
   outline-offset: 2px;
-  border-radius: 2px;
+  border-radius: 3px;
+}
+
+@keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+@keyframes pop {
+  0% { opacity: 0; transform: translateY(24px) scale(0.94); }
+  60% { transform: translateY(0) scale(1.02); }
+  100% { opacity: 1; transform: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {

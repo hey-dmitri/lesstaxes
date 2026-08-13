@@ -145,7 +145,8 @@ export function computeCity(
 
   // 8. Leftover
   const taxTotal = federal.tax + state.tax + localTotal + fica.total;
-  const leftover = gross - taxTotal - housing.total - living.total - salesTax.tax;
+  const takeHome = gross - taxTotal;
+  const leftover = takeHome - housing.total - living.total - salesTax.tax;
 
   return {
     metroId: city.metroId,
@@ -162,6 +163,7 @@ export function computeCity(
     housing,
     living,
     salesTax: salesTax.tax,
+    takeHome,
     leftover,
   };
 }
@@ -223,6 +225,19 @@ export function defaultCityInputs(
 // Comparison
 // ---------------------------------------------------------------------------
 
+const CATEGORY_GROUPS: Record<CategoryKey, 'payAndTax' | 'living'> = {
+  salary: 'payAndTax',
+  federalTax: 'payAndTax',
+  stateTax: 'payAndTax',
+  localTax: 'payAndTax',
+  fica: 'payAndTax',
+  housing: 'living',
+  propertyTax: 'living',
+  transport: 'living',
+  living: 'living',
+  salesTax: 'living',
+};
+
 const CATEGORY_LABELS: Record<CategoryKey, string> = {
   salary: 'Salary',
   federalTax: 'Federal income tax',
@@ -262,7 +277,12 @@ function buildBreakdown(origin: CityResult, destination: CityResult): CategoryDe
   ];
 
   return raw
-    .map(([key, delta]) => ({ key, label: CATEGORY_LABELS[key], delta }))
+    .map(([key, delta]) => ({
+      key,
+      label: CATEGORY_LABELS[key],
+      group: CATEGORY_GROUPS[key],
+      delta,
+    }))
     .filter((row) => Math.abs(row.delta) >= 1)
     .sort((a, b) => Math.abs(b.delta) - Math.abs(a.delta));
 }

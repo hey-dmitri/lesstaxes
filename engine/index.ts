@@ -58,6 +58,7 @@ export { computeLiving, computeSalesTax, computeTransport, defaultCarCount } fro
 export { formatPercent, formatUSD, monthly, toDollars } from './money';
 
 export {
+  biggestReason,
   breakEvenNarrative,
   breakEvenReference,
   breakEvenSentence,

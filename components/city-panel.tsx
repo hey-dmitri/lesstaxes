@@ -1,9 +1,11 @@
 'use client';
 
+import { useState } from 'react';
+
 import {
   bedroomsFor,
-  adultsIn,
   defaultCarCount,
+  adultsIn,
   defaultRent,
   formatUSD,
   homePriceDefault,
@@ -15,9 +17,11 @@ import {
   type FilingStatus,
   type Household,
   type Housing,
+  type CityResult,
 } from '@/engine';
 import { CountField, MoneyField, PercentField, Segmented, Checkbox } from '@/components/fields';
 import { LocationPicker } from '@/components/location-picker';
+import { stateTaxBadge } from '@/lib/state-badge';
 
 export interface CityFormState extends CityInputs {
   /** Local jurisdictions the user has confirmed, e.g. living inside NYC. */
@@ -34,6 +38,10 @@ interface Props {
   onSalaryChange: (salary: number) => void;
   salaryLabel: string;
   salaryHint?: React.ReactNode;
+  /** Computed figures for this city. The column ends in them. */
+  result: CityResult | null;
+  /** Copy under take-home, naming the taxes actually paid here. */
+  takeHomeNote: React.ReactNode;
 }
 
 /**
@@ -89,11 +97,12 @@ export function CityPanel({
   onSalaryChange,
   salaryLabel,
   salaryHint,
+  result,
+  takeHomeNote,
 }: Props) {
   const m = metro(state.metroId);
   const defaults = housingDefaults(state.metroId);
   const transport = transportDefaults(state.metroId);
-  const suggestedCars = defaultCarCount(state.metroId, filingStatus);
   const allLocals = localTaxOptions(state.metroId);
   const optionalLocals = allLocals.filter((o) => o.optional && !o.group);
   // Grouped options are alternatives, so they render as one choice rather than
@@ -106,86 +115,99 @@ export function CityPanel({
   const bedrooms = bedroomsFor(adultsIn(filingStatus), childCount);
   const suggestedRent = defaultRent(state.metroId, state.grossSalary, household);
 
+  const [picking, setPicking] = useState(false);
+
   const set = (patch: Partial<CityFormState>) => onChange({ ...state, ...patch });
   const setHousing = (patch: Partial<Housing>) =>
     set({ housing: { ...state.housing, ...patch } as Housing });
 
+  const badge = stateTaxBadge(m.primaryState, filingStatus);
+  const livingTotal = result ? result.housing.total + result.living.total + result.salesTax : 0;
+
   return (
     <section
-      className="flex flex-col rounded-lg border lg:min-h-0"
+      className="flex flex-col rounded-xl border lg:min-h-0"
       style={{ borderColor: 'var(--rule-strong)', background: 'var(--surface)' }}
     >
-      <h2
-        className="shrink-0 border-b px-4 py-2.5 font-serif text-sm font-semibold"
-        style={{ borderColor: 'var(--rule)', color: 'var(--ink)' }}
-      >
-        {title}
-      </h2>
+      <div className="flex shrink-0 flex-col gap-3 px-5 pt-4">
+        <div className="flex items-baseline gap-2">
+          <span className="eyebrow">{title}</span>
+          <span
+            className="ml-auto rounded-full px-2.5 py-0.5 text-[0.7rem]"
+            style={{ background: 'var(--accent-dim)', color: 'var(--accent)' }}
+          >
+            {m.primaryState} &middot; {badge}
+          </span>
+        </div>
 
-      <div className="flex flex-col gap-3.5 px-4 py-3.5 lg:min-h-0 lg:flex-1 lg:overflow-y-auto">
-        <LocationPicker
-          id={`location-${title.replace(/\s+/g, '-').toLowerCase()}`}
-          label="City or area"
-          value={state.metroId}
-          onChange={(metroId) =>
-            onChange(
-              resetCityForLocation(
-                metroId,
-                state.grossSalary,
-                filingStatus,
-                state.housing.tenure,
-                childCount,
-              ),
-            )
-          }
-        />
+        {/*
+          The city is the loudest thing in the column, with the picker folded
+          away behind "change" — once you have chosen it, the name is what you
+          want to see, not a search field.
+        */}
+        <div
+          className="flex items-baseline gap-2 border-b pb-3"
+          style={{ borderColor: 'var(--rule)' }}
+        >
+          <h2
+            className="font-display text-[1.9rem] font-bold leading-none tracking-[-0.03em]"
+            style={{ color: 'var(--ink)' }}
+          >
+            {m.shortName.replace(/,.*$/, '')}
+          </h2>
+          <span className="text-sm" style={{ color: 'var(--muted)' }}>
+            {m.primaryState}
+          </span>
+          <button
+            type="button"
+            onClick={() => setPicking((v) => !v)}
+            aria-expanded={picking}
+            className="ml-auto border-b border-dashed text-[0.8rem]"
+            style={{ borderColor: 'var(--rule-input)', color: 'var(--muted)' }}
+          >
+            {picking ? 'done' : 'change'}
+          </button>
+        </div>
+      </div>
+
+      <div className="flex flex-col gap-3 px-5 py-3.5 lg:min-h-0 lg:flex-1 lg:overflow-y-auto">
+        {picking && (
+          <LocationPicker
+            id={`location-${title.replace(/\s+/g, '-').toLowerCase()}`}
+            label="City or area"
+            value={state.metroId}
+            onChange={(metroId) => {
+              onChange(
+                resetCityForLocation(
+                  metroId,
+                  state.grossSalary,
+                  filingStatus,
+                  state.housing.tenure,
+                  childCount,
+                ),
+              );
+              setPicking(false);
+            }}
+          />
+        )}
 
         <MoneyField
           label={salaryLabel}
           value={state.grossSalary}
           onChange={onSalaryChange}
           hint={salaryHint}
-        />
-
-        <Segmented
-          label="Housing"
-          value={state.housing.tenure}
-          onChange={(tenure) =>
-            set({ housing: housingFor(state.metroId, tenure, state.grossSalary, household) })
-          }
-          options={[
-            { value: 'rent', label: 'Rent' },
-            { value: 'own', label: 'Own' },
-          ]}
+          emphasis
         />
 
         {state.housing.tenure === 'rent' ? (
           <MoneyField
-            label="Monthly rent"
+            label="Rent a month"
             value={state.housing.monthlyRent}
             onChange={(monthlyRent) => setHousing({ monthlyRent })}
-            suffix="/mo"
-            /*
-              The old hint read "Median here is $1,430/mo", which sounded like
-              what someone at your income pays. It was the median across every
-              rented unit in the metro, regardless of size or who lives in it.
-              Saying what the figure is, and what share of the salary it comes
-              to, makes a wrong default visible instead of silent.
-            */
             hint={
-              <>
-                {state.housing.monthlyRent === suggestedRent
-                  ? `Typical for a ${bedrooms}-bedroom here at this salary`
-                  : `Typical here is ${formatUSD(suggestedRent)}/mo for ${bedrooms} bedrooms`}
-                {state.grossSalary > 0 && (
-                  <>
-                    {' '}
-                    &mdash;{' '}
-                    {((state.housing.monthlyRent * 12) / state.grossSalary * 100).toFixed(0)}% of
-                    this salary
-                  </>
-                )}
-              </>
+              state.housing.monthlyRent === suggestedRent
+                ? `${bedrooms}-bed, typical at this salary`
+                : `${formatUSD(suggestedRent)} typical for ${bedrooms} bed`
             }
           />
         ) : (
@@ -194,7 +216,7 @@ export function CityPanel({
               label="Home price"
               value={state.housing.homePrice}
               onChange={(homePrice) => setHousing({ homePrice })}
-              hint={`Median here is ${formatUSD(defaults.medianHomePrice)}`}
+              hint={`${formatUSD(homePriceDefault(state.metroId, state.grossSalary))} typical at this salary`}
             />
             <div className="grid grid-cols-2 gap-3">
               <PercentField
@@ -217,7 +239,7 @@ export function CityPanel({
               onChange={(propertyTaxRate) => setHousing({ propertyTaxRate })}
               max={10}
               step={0.01}
-              hint={`${(defaults.effectivePropertyTaxRate * 100).toFixed(2)}% effective here — what is actually paid, not the headline millage`}
+              hint={`${(defaults.effectivePropertyTaxRate * 100).toFixed(2)}% effective here`}
             />
           </>
         )}
@@ -226,17 +248,13 @@ export function CityPanel({
           label="Cars"
           value={state.cars}
           onChange={(cars) => set({ cars })}
-          hint={
-            suggestedCars === state.cars
-              ? `Typical here — ${transport.vehiclesPerAdult.toFixed(2)} per adult`
-              : `Typical here is ${suggestedCars}`
-          }
+          hint={`${transport.vehiclesPerAdult.toFixed(2)} per adult here`}
         />
 
         {localGroups.map(({ group, members }) => {
           const selected =
-            members.find((m) => state.localOptIns[m.jurisdictionId] === true) ??
-            members.find((m) => m.defaultApplies)!;
+            members.find((mem) => state.localOptIns[mem.jurisdictionId] === true) ??
+            members.find((mem) => mem.defaultApplies)!;
           return (
             <Segmented
               key={group}
@@ -247,14 +265,14 @@ export function CityPanel({
                   localOptIns: {
                     ...state.localOptIns,
                     ...Object.fromEntries(
-                      members.map((m) => [m.jurisdictionId, m.jurisdictionId === jurisdictionId]),
+                      members.map((mem) => [mem.jurisdictionId, mem.jurisdictionId === jurisdictionId]),
                     ),
                   },
                 })
               }
-              options={members.map((m) => ({
-                value: m.jurisdictionId,
-                label: m.label ?? m.jurisdictionId,
+              options={members.map((mem) => ({
+                value: mem.jurisdictionId,
+                label: mem.label ?? mem.jurisdictionId,
               }))}
             />
           );
@@ -262,15 +280,10 @@ export function CityPanel({
 
         {optionalLocals.length > 0 && (
           <div
-            className="flex flex-col gap-2 rounded border p-3"
+            className="flex flex-col gap-2 rounded-lg border p-3"
             style={{ borderColor: 'var(--rule)', background: 'var(--surface-sunken)' }}
           >
-            <p
-              className="text-[0.72rem] font-semibold uppercase tracking-[0.09em]"
-              style={{ color: 'var(--muted)' }}
-            >
-              Local income tax
-            </p>
+            <span className="eyebrow">Local income tax</span>
             {optionalLocals.map((option) => (
               <Checkbox
                 key={option.jurisdictionId}
@@ -281,16 +294,70 @@ export function CityPanel({
                 }
               />
             ))}
-            <p className="text-[0.76rem] leading-snug" style={{ color: 'var(--muted)' }}>
-              This metro spans several jurisdictions and only some levy it. It makes a real
-              difference, so we ask rather than guess.
-            </p>
           </div>
         )}
 
-        <p className="mt-auto pt-1 text-[0.76rem]" style={{ color: 'var(--muted)' }}>
-          {m.name}
-        </p>
+        {/*
+          The money summary, pinned to the bottom of the column. Take-home is
+          the anchor — a figure people recognise from a payslip — and living
+          costs are then visibly subtracted from it to reach what is left.
+        */}
+        {result && (
+          <div
+            className="mt-auto flex flex-col gap-2.5 border-t pt-3.5"
+            style={{ borderColor: 'var(--rule)' }}
+          >
+            <div className="flex flex-col gap-0.5">
+              <span className="eyebrow">Take-home after tax</span>
+              <div className="flex items-baseline gap-2">
+                <span
+                  className="tnum text-[1.6rem] font-semibold leading-none"
+                  style={{ color: 'var(--ink)' }}
+                >
+                  {formatUSD(result.takeHome)}
+                </span>
+                <span className="text-[0.82rem]" style={{ color: 'var(--muted)' }}>
+                  &middot; <span className="tnum">{formatUSD(result.takeHome / 12)}</span>/mo
+                </span>
+              </div>
+              <span className="text-[0.76rem] leading-snug" style={{ color: 'var(--faint)' }}>
+                {takeHomeNote}
+              </span>
+            </div>
+
+            <div className="flex items-baseline justify-between gap-2">
+              <span className="text-[0.82rem]" style={{ color: 'var(--muted-strong)' }}>
+                Living costs
+              </span>
+              <span
+                className="tnum text-[1rem] font-semibold"
+                style={{ color: 'var(--bad)' }}
+              >
+                &minus;{formatUSD(livingTotal)}
+              </span>
+            </div>
+
+            <div
+              className="flex flex-col gap-0.5 border-t pt-2.5"
+              style={{ borderColor: 'var(--rule-strong)' }}
+            >
+              <span className="eyebrow" style={{ color: 'var(--muted)' }}>
+                What&rsquo;s left over, a year
+              </span>
+              <div className="flex items-baseline gap-2">
+                <span
+                  className="tnum text-[2rem] font-bold leading-none"
+                  style={{ color: result.leftover >= 0 ? 'var(--accent)' : 'var(--bad)' }}
+                >
+                  {formatUSD(result.leftover)}
+                </span>
+                <span className="text-[0.87rem]" style={{ color: 'var(--muted)' }}>
+                  <span className="tnum">{formatUSD(result.leftover / 12)}</span>/mo
+                </span>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </section>
   );

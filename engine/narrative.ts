@@ -231,3 +231,68 @@ export function shortfalls(result: ComparisonResult): Shortfall[] {
   }
   return out;
 }
+
+// ---------------------------------------------------------------------------
+// The single line doing most of the work
+// ---------------------------------------------------------------------------
+
+/**
+ * Why the answer came out the way it did, in one clause.
+ *
+ * The redesign puts the largest breakdown row beside the verdict, which means
+ * the label alone has to carry a sentence. "Salary." does not; "The pay on
+ * offer is $40,000 higher." does. Written here rather than in the component so
+ * the card, the share text and any future surface agree.
+ */
+export function biggestReason(
+  result: ComparisonResult,
+): { delta: USD; sentence: string } | null {
+  const row = result.breakdown[0];
+  if (!row) return null;
+
+  const to = metro(result.destination.metroId);
+  const from = metro(result.origin.metroId);
+  const amount = formatUSD(Math.abs(row.delta));
+  const better = row.delta >= 0;
+
+  switch (row.key) {
+    case 'salary':
+      return {
+        delta: row.delta,
+        sentence: `The pay on offer is ${amount} ${better ? 'higher' : 'lower'}.`,
+      };
+    case 'stateTax':
+      return {
+        delta: row.delta,
+        sentence:
+          result.destination.tax.state === 0
+            ? `${from.primaryState} income tax, which ${to.primaryState} doesn’t charge.`
+            : `State income tax is ${amount} ${better ? 'lower' : 'higher'} in ${to.primaryState}.`,
+      };
+    case 'localTax':
+      return {
+        delta: row.delta,
+        sentence: `Local income tax is ${amount} ${better ? 'lower' : 'higher'} there.`,
+      };
+    case 'housing':
+      return {
+        delta: row.delta,
+        sentence: `Rent or mortgage is ${amount} ${better ? 'cheaper' : 'dearer'} a year.`,
+      };
+    case 'propertyTax':
+      return {
+        delta: row.delta,
+        sentence: `Property tax is ${amount} ${better ? 'lower' : 'higher'}.`,
+      };
+    case 'transport':
+      return {
+        delta: row.delta,
+        sentence: `Cars and transport cost ${amount} ${better ? 'less' : 'more'}.`,
+      };
+    default:
+      return {
+        delta: row.delta,
+        sentence: `${row.label} ${better ? 'costs' : 'costs'} ${amount} ${better ? 'less' : 'more'}.`,
+      };
+  }
+}

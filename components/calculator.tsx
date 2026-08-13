@@ -2,8 +2,8 @@
 
 import { useMemo, useRef, useState } from 'react';
 
-import { CityPanel, resetCityForLocation, type CityFormState } from '@/components/city-panel';
-import { CountField, SelectField } from '@/components/fields';
+import { CityPanel, housingFor, resetCityForLocation, type CityFormState } from '@/components/city-panel';
+import { InlineSelect } from '@/components/fields';
 import { Results } from '@/components/results';
 import { ShareBar } from '@/components/share-bar';
 import { encodeComparison, type SharedComparison } from '@/lib/share-link';
@@ -12,6 +12,8 @@ import { SUPPORTING } from '@/lib/site';
 import {
   compare,
   DATASET_VERSION,
+  metro,
+  type CityResult,
   defaultCarCount,
   defaultRent,
   formatUSD,
@@ -20,10 +22,24 @@ import {
 } from '@/engine';
 
 const FILING_OPTIONS: Array<{ value: FilingStatus; label: string }> = [
-  { value: 'single', label: 'Single' },
-  { value: 'marriedJointly', label: 'Married filing jointly' },
-  { value: 'marriedSeparately', label: 'Married filing separately' },
-  { value: 'headOfHousehold', label: 'Head of household' },
+  { value: 'single', label: 'single' },
+  { value: 'marriedJointly', label: 'married, jointly' },
+  { value: 'marriedSeparately', label: 'married, separately' },
+  { value: 'headOfHousehold', label: 'head of household' },
+];
+
+const CHILD_OPTIONS = [
+  { value: '0', label: 'no children' },
+  { value: '1', label: '1 child' },
+  { value: '2', label: '2 children' },
+  { value: '3', label: '3 children' },
+  { value: '4', label: '4 children' },
+  { value: '5', label: '5 children' },
+];
+
+const TENURE_OPTIONS = [
+  { value: 'rent', label: 'rent' },
+  { value: 'own', label: 'buy' },
 ];
 
 const DEFAULT_ORIGIN = '16980'; // Chicago
@@ -33,6 +49,24 @@ const DEFAULT_SALARY = 150_000;
 export interface CalculatorProps {
   /** Present when arriving via a share link, so the result opens revealed. */
   initial?: SharedComparison;
+}
+
+/**
+ * The line under take-home, naming the taxes that were actually deducted.
+ *
+ * "Nothing spent yet" is the important half: it marks take-home as the point
+ * before living costs, which is what makes the column's next two lines legible
+ * as a subtraction rather than as three unrelated figures.
+ */
+function takeHomeNote(metroId: string, result: CityResult | null) {
+  if (!result) return null;
+  const state = metro(metroId).primaryState;
+  const parts = ['Federal income tax', 'FICA'];
+  if (result.tax.state > 0) parts.push(`${state} tax`);
+  if (result.tax.local > 0) parts.push('local tax');
+  const list =
+    parts.length > 1 ? `${parts.slice(0, -1).join(', ')} and ${parts.at(-1)}` : parts[0];
+  return `${list} paid. Nothing spent yet.`;
 }
 
 export function Calculator({ initial }: CalculatorProps) {
@@ -112,6 +146,20 @@ export function Calculator({ initial }: CalculatorProps) {
     }
   }
 
+  /** The sentence says "in both", so tenure changes both columns together. */
+  function applyTenure(tenure: 'rent' | 'own') {
+    const household = { filingStatus, children };
+    for (const [state, setState] of [
+      [origin, setOrigin],
+      [destination, setDestination],
+    ] as const) {
+      setState({
+        ...state,
+        housing: housingFor(state.metroId, tenure, state.grossSalary, household),
+      });
+    }
+  }
+
   /** Same idea for salary: an untouched rent should track what was entered. */
   function changeSalary(state: CityFormState, setState: (s: CityFormState) => void) {
     return (grossSalary: number) => {
@@ -172,52 +220,69 @@ export function Calculator({ initial }: CalculatorProps) {
 
   return (
     <main id="main" className="flex flex-1 flex-col gap-3 lg:h-0 lg:min-h-0 lg:overflow-hidden">
-      {/* Household — one compact bar, since it is two fields that apply to both cities. */}
+      {/*
+        "About you" as a sentence rather than a row of labelled fields. Filing
+        status and children are the only inputs shared by both cities, and
+        reading them as prose makes the shape of the household obvious at a
+        glance — the redesign's Turn 3 form.
+      */}
       <section
-        className="flex shrink-0 flex-wrap items-end gap-x-5 gap-y-3 rounded-lg border px-4 py-3"
+        className="flex shrink-0 flex-col gap-1.5 rounded-xl border px-5 py-3.5"
         style={{ borderColor: 'var(--rule-strong)', background: 'var(--surface)' }}
       >
-        <div className="min-w-56 flex-1 sm:max-w-72">
-          <SelectField
+        <span className="eyebrow">About you</span>
+        <p className="flex flex-wrap items-baseline gap-x-1.5 gap-y-2 text-[1.05rem]" style={{ color: 'var(--ink)' }}>
+          I file as{' '}
+          <InlineSelect
             label="Filing status"
             value={filingStatus}
-            onChange={(next) => applyHousehold(next, children)}
+            onChange={(next) => applyHousehold(next as FilingStatus, children)}
             options={FILING_OPTIONS}
-          />
-        </div>
-        <div className="w-32">
-          <CountField
+          />{' '}
+          with{' '}
+          <InlineSelect
             label="Children"
-            value={children}
-            onChange={(next) => applyHousehold(filingStatus, next)}
-            max={10}
+            value={String(children)}
+            onChange={(next: string) => applyHousehold(filingStatus, Number(next))}
+            options={CHILD_OPTIONS}
           />
-        </div>
-        <p className="flex-1 text-[0.76rem] leading-snug" style={{ color: 'var(--muted)' }}>
-          These apply to both cities. Filing status alone can swing the answer by thousands, so it
-          is not optional.
+          , and I&rsquo;d{' '}
+          <InlineSelect
+            label="Housing"
+            value={origin.housing.tenure}
+            onChange={(tenure: string) => applyTenure(tenure as 'rent' | 'own')}
+            options={TENURE_OPTIONS}
+          />{' '}
+          in both.
         </p>
+        <span className="text-[0.8rem]" style={{ color: 'var(--muted)' }}>
+          Salary and housing go in each city below. Everything is prefilled with real local figures.
+        </span>
       </section>
 
       <div className="grid min-h-0 flex-1 gap-3 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1.35fr)]">
         <CityPanel
-          title="Where you live now"
+          title="Living now"
           state={origin}
           filingStatus={filingStatus}
           childCount={children}
           onChange={setOrigin}
           onSalaryChange={changeSalary(origin, setOrigin)}
-          salaryLabel="Current household salary"
-          salaryHint="Total household wages before tax"
+          salaryLabel="Salary here"
+          salaryHint="a year, gross"
+          result={result?.origin ?? null}
+          takeHomeNote={takeHomeNote(origin.metroId, result?.origin ?? null)}
         />
         <CityPanel
-          title="Where you'd move"
+          title="The offer"
           state={destination}
           filingStatus={filingStatus}
           childCount={children}
           onChange={setDestination}
           onSalaryChange={changeSalary(destination, setDestination)}
-          salaryLabel="Salary there"
+          result={result?.destination ?? null}
+          takeHomeNote={takeHomeNote(destination.metroId, result?.destination ?? null)}
+          salaryLabel="Salary offered"
           salaryHint={
             destination.grossSalary !== origin.grossSalary
               ? `${formatUSD(destination.grossSalary - origin.grossSalary, { signed: true })} versus now`

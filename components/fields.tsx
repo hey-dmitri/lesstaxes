@@ -29,9 +29,20 @@ interface MoneyFieldProps {
   suffix?: string;
   min?: number;
   max?: number;
+  /** The salary is the field the whole column turns on, so it renders larger. */
+  emphasis?: boolean;
 }
 
-export function MoneyField({ label, value, onChange, hint, suffix, min = 0, max = 100_000_000 }: MoneyFieldProps) {
+export function MoneyField({
+  label,
+  value,
+  onChange,
+  hint,
+  suffix,
+  min = 0,
+  max = 100_000_000,
+  emphasis = false,
+}: MoneyFieldProps) {
   const id = useId();
   return (
     <div>
@@ -50,8 +61,8 @@ export function MoneyField({ label, value, onChange, hint, suffix, min = 0, max 
           id={id}
           type="text"
           inputMode="numeric"
-          className={`${inputClass} pl-6 ${suffix ? 'pr-12' : ''}`}
-          style={inputStyle}
+          className={`${inputClass} pl-6 ${suffix ? 'pr-12' : ''} ${emphasis ? 'py-2.5 text-xl font-semibold' : ''}`}
+          style={emphasis ? { ...inputStyle, borderColor: 'var(--rule-input)' } : inputStyle}
           value={value === 0 ? '' : value.toLocaleString('en-US')}
           onChange={(e) => {
             const digits = e.target.value.replace(/[^0-9]/g, '');
@@ -334,5 +345,50 @@ export function Checkbox({
         {hint && <PrefillNote>{hint}</PrefillNote>}
       </div>
     </div>
+  );
+}
+
+interface InlineSelectProps {
+  label: string;
+  value: string;
+  onChange: (value: string) => void;
+  options: Array<{ value: string; label: string }>;
+}
+
+/**
+ * A select that reads as a word inside a sentence.
+ *
+ * The redesign states the household as prose — "I file as single with no
+ * children" — so the control has to sit in the text baseline rather than in a
+ * labelled box. It stays a real <select>: the accessible name comes from
+ * aria-label, the keyboard and screen-reader behaviour are the platform's, and
+ * only the painting changes.
+ */
+export function InlineSelect({ label, value, onChange, options }: InlineSelectProps) {
+  const selected = options.find((o) => o.value === value);
+
+  return (
+    <span className="relative inline-flex items-baseline">
+      <span
+        aria-hidden="true"
+        className="border-b border-dashed pb-0.5 font-medium"
+        style={{ borderColor: 'var(--accent)', color: 'var(--accent)' }}
+      >
+        {selected?.label ?? value}
+        <span className="pl-1 text-[0.7em]">&#9662;</span>
+      </span>
+      <select
+        aria-label={label}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className="absolute inset-0 cursor-pointer opacity-0"
+      >
+        {options.map((option) => (
+          <option key={option.value} value={option.value}>
+            {option.label}
+          </option>
+        ))}
+      </select>
+    </span>
   );
 }
