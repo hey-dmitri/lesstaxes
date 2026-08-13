@@ -516,6 +516,33 @@ Two related defects were found and fixed at the same time:
   `scripts/cut-dataset-version.mjs` first, so a refresh always lands in a new
   dated directory and the previous one stays readable forever.
 
+### OPEN-5 — Home and renters insurance have no usable free source
+
+Added 2026-08-13, after looking for one. PROJECT.md §6.1 requires state-level
+insurance, and §7 lists it as folded into housing. Neither is true: it is not
+modelled at all, which understates ownership everywhere and badly in Florida and
+Louisiana. This is now the largest known modelling gap.
+
+What was checked and rejected:
+
+- **ACS has no insurance table.** Premiums are not a Census subject.
+- **Treasury's Federal Insurance Office** published a homeowners data call, but
+  no machine-readable file is served at a stable URL.
+- **NAIC's annual Homeowners Insurance Report** exists and is authoritative, but
+  is published as a PDF, and NAIC is a private standards body — the
+  public-domain assumption behind every other source here does not apply, and
+  its terms would need checking before use.
+
+Deliberately NOT done: hardcoding remembered premium figures. §6 forbids exactly
+that ("Do not hardcode remembered figures"), and it is the one category of error
+the tests cannot catch. A wrong number that looks authoritative is worse than a
+documented absence.
+
+Options, in order of preference: parse the NAIC PDF once by hand into a
+committed CSV with the vintage recorded, treating it like the other MANUAL
+sources in `scripts/refresh-sources.mjs`; or wait for FIO to publish a stable
+data file.
+
 ### ~~OPEN-4 — Ownership defaults are income-blind~~ — **RESOLVED 2026-08-13, dataset 2026.3**
 
 Home price now scales with income from ACS B25121, and property tax follows it.
