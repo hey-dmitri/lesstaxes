@@ -375,6 +375,17 @@ export interface LocalTaxOption {
   optional: boolean;
   defaultApplies: boolean;
   prompt?: string;
+  /**
+   * Options sharing a group are MUTUALLY EXCLUSIVE — exactly one applies.
+   *
+   * A metro is much larger than its principal city: only Philadelphia
+   * residents pay Philadelphia's wage tax, and someone elsewhere in that metro
+   * pays their own township's rate, for which the state average stands in.
+   * Applying both would invent a tax nobody pays.
+   */
+  group?: string;
+  /** Shown instead of the prompt when the option is one of a group. */
+  label?: string;
 }
 
 /** Local income tax options for a metro. Empty for most of the country. */
@@ -396,4 +407,44 @@ export function defaultLocalJurisdictions(metroId: string, version?: string): Lo
   return localTaxOptions(metroId, version)
     .filter((o) => o.defaultApplies)
     .map((o) => localJurisdiction(o.jurisdictionId, version));
+}
+
+/**
+ * Resolve a metro's options against the user's choices into the jurisdictions
+ * that actually apply.
+ *
+ * Grouped options are collapsed to exactly one: whichever the user selected,
+ * falling back to the group's default if their selection is missing or stale.
+ * Ungrouped options apply independently, which is how NYC and Yonkers work —
+ * a Yonkers resident is not a New York City resident, but the two are separate
+ * questions rather than alternatives.
+ */
+export function resolveLocalJurisdictions(
+  metroId: string,
+  optIns: Record<string, boolean>,
+  version?: string,
+): LocalTaxRules[] {
+  const options = localTaxOptions(metroId, version);
+  const chosen: string[] = [];
+  const seenGroups = new Set<string>();
+
+  for (const option of options) {
+    if (!option.group) {
+      const applies = option.optional
+        ? (optIns[option.jurisdictionId] ?? option.defaultApplies)
+        : option.defaultApplies;
+      if (applies) chosen.push(option.jurisdictionId);
+      continue;
+    }
+    if (seenGroups.has(option.group)) continue;
+
+    const members = options.filter((o) => o.group === option.group);
+    const selected =
+      members.find((m) => optIns[m.jurisdictionId] === true) ??
+      members.find((m) => m.defaultApplies);
+    if (selected) chosen.push(selected.jurisdictionId);
+    seenGroups.add(option.group);
+  }
+
+  return chosen.map((id) => localJurisdiction(id, version));
 }

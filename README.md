@@ -14,13 +14,13 @@ Free, no accounts, no tracking, no database. All figures come from public federa
 
 ## Status
 
-**All ten stages built.** Feature-complete, not yet launched. Current dataset: **2026.3**.
+**All ten stages built.** Feature-complete, not yet launched. Current dataset: **2026.4**.
 
 | Component | State |
 |---|---|
 | Bracket arithmetic, FICA, federal income tax | ✅ |
 | State income tax — all 50 states + DC | ✅ |
-| Local income tax — engine and rate data | ✅ |
+| Local income tax — NYC, Yonkers, Philadelphia, Detroit, Columbus, Cincinnati | ✅ |
 | 387 metros + 51 rural fallbacks, price parities | ✅ |
 | Rent and home price scaled to household and income, effective property tax | ✅ |
 | Vehicles per adult, per-vehicle cost | ✅ |
@@ -41,14 +41,22 @@ Free, no accounts, no tracking, no database. All figures come from public federa
 | Name and domain chosen — **Pack or Stay**, `packorstay.com` | ✅ |
 | **Point `packorstay.com` at Vercel** | ⬜ |
 
-**638 tests**, including 24 golden values reproduced exactly from the IRS rate tables.
+**649 tests**, including 24 golden values reproduced exactly from the IRS rate tables.
 Total data cost: **$0**. No paid feeds, no runtime API calls.
 
 ### Known gaps, in priority order
 
 1. **Home and renters insurance are still missing entirely**, which understates
    ownership everywhere and badly in Florida and Louisiana, where premiums are a
-   multiple of the national average. This is now the largest known gap.
+   multiple of the national average. This is now the largest known gap — see
+   OPEN-5 for the sources that were checked and rejected.
+2. **Seven more cities still sit on their state's local-tax average**, which
+   understates all of them: Cleveland, Pittsburgh, Louisville, Kansas City,
+   St. Louis, Baltimore and Portland. The mechanism is built and each is now a
+   data-only addition; they need a rate from the levying authority first.
+3. **Sales tax uses state-average local rates.** Chicago's real 10.25% against
+   Austin's 8.25% is a 2.00pp gap; the model sees 0.76pp. PROJECT.md §15 lists
+   this as a gotcha the engine must get right.
 
 ### Rebuilding the dataset
 

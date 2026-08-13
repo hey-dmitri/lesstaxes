@@ -42,6 +42,7 @@ export {
   taxableShares,
   localJurisdiction,
   localTaxOptions,
+  resolveLocalJurisdictions,
   metro,
   salesTaxRules,
   spendingProfile,

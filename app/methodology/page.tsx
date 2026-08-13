@@ -209,9 +209,12 @@ answer          =  in your pocket THERE  −  in your pocket HERE`}</pre>
         </p>
         <ul>
           <li>
-            <strong>Local income tax outside New York City uses state averages.</strong>{' '}
-            Philadelphia, Columbus, Detroit, Louisville, Kansas City and Portland all levy more than
-            their state average.
+            <strong>Some local income taxes still use state averages.</strong> New York City,
+            Yonkers, Philadelphia, Detroit, Columbus and Cincinnati carry their own published
+            rates, and you are asked whether you live inside the city, because a metro is much
+            larger than the city at its centre. Cleveland, Pittsburgh, Louisville, Kansas City,
+            St. Louis, Baltimore and Portland do not yet, and sit on their state&rsquo;s average —
+            which understates all of them.
           </li>
           <li>
             <strong>Social Security is capped once per household, not per worker.</strong> For a

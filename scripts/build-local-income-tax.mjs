@@ -10,18 +10,21 @@
  *
  * COVERAGE, STATED PLAINLY
  *
- *   Explicit, city-specific:  New York City, Yonkers
+ *   Explicit, city-specific:  New York City, Yonkers, Philadelphia, Detroit,
+ *                             Columbus, Cincinnati
  *   State-average fallback:   AL, IN, IA, KY, MD, MI, MO, OH, OR, PA
  *
  * The fallback uses Tax Foundation's average effective local rate as a share
  * of AGI for that state. That is accurate where local rates are uniform
  * (Maryland's counties all sit between 2.25% and 3.20% against a 2.4%
- * average) and understates concentrated high-rate cities (Philadelphia and
- * Columbus both levy far more than their state averages).
+ * average) and badly wrong for concentrated high-rate cities — Philadelphia
+ * levies 3.74% against a Pennsylvania average of 0.99%.
  *
- * This is a deliberate floor, not an oversight: a documented average is honest,
- * whereas inventing a city rate from memory is not. Listed under `limitations`
- * and surfaced on the methodology page.
+ * Every city rate here is transcribed from that city's own revenue department
+ * and carries its source URL. A remembered rate is worse than an average,
+ * because it looks sourced; where a rate could not be verified against a
+ * primary source it is deliberately still on the average, and listed under
+ * `limitations`.
  *
  * THE NEW YORK CITY PROBLEM
  *
@@ -49,6 +52,69 @@ const OUT = resolve(DATA_DIR, 'local-income-tax.json');
  * access, so this carries a lower confidence rating than the state tables and
  * should be re-verified against Form IT-201 instructions before launch.
  */
+/**
+ * City income taxes, each transcribed from the levying authority.
+ *
+ * MUTUALLY EXCLUSIVE WITH THE STATE AVERAGE. A metro is far larger than its
+ * principal city: only Philadelphia residents pay Philadelphia's wage tax, and
+ * someone elsewhere in that metro pays their own township's rate, for which the
+ * state average is the honest stand-in. So these are emitted as a GROUP — the
+ * user picks one, and exactly one applies. Summing them would invent a tax
+ * nobody pays.
+ */
+const CITY_TAXES = [
+  {
+    id: 'philadelphia',
+    kind: 'flatRate',
+    name: 'Philadelphia',
+    stateCode: 'PA',
+    metroId: '37980',
+    // Philadelphia's rate changes every 1 July on a legislated reduction
+    // schedule, so tax year 2026 spans two rates: 3.74% to 30 June and 3.735%
+    // from 1 July. This is the calendar-2026 blend, matching TAX_YEAR.
+    rate: 0.037375,
+    prompt: 'Do you live inside the City of Philadelphia?',
+    source:
+      'City of Philadelphia Department of Revenue, Tax Rate History — https://www.phila.gov/departments/department-of-revenue/forms-documents/regulations-rulings/tax-rate-history/',
+    note: 'Resident Wage/Earnings Tax. Calendar-2026 blend of 3.74% (to 30 Jun) and 3.735% (from 1 Jul).',
+  },
+  {
+    id: 'detroit',
+    kind: 'flatRate',
+    name: 'Detroit',
+    stateCode: 'MI',
+    metroId: '19820',
+    rate: 0.024,
+    prompt: 'Do you live inside the City of Detroit?',
+    source:
+      'City of Detroit Office of the Treasury, Income Tax Information — https://detroitmi.gov/departments/office-chief-financial-officer/ocfo-divisions/office-treasury/income-tax/income-tax-information',
+    note: 'Resident rate 2.4%; non-residents pay 1.2%, which this model does not use.',
+  },
+  {
+    id: 'columbus',
+    kind: 'flatRate',
+    name: 'Columbus',
+    stateCode: 'OH',
+    metroId: '18140',
+    rate: 0.025,
+    prompt: 'Do you live inside the City of Columbus?',
+    source:
+      'City of Columbus Income Tax Division — https://www.columbus.gov/Government/City-Auditor/Income-Tax-Division',
+    note: 'Municipal income tax, 2.5%.',
+  },
+  {
+    id: 'cincinnati',
+    kind: 'flatRate',
+    name: 'Cincinnati',
+    stateCode: 'OH',
+    metroId: '17140',
+    rate: 0.018,
+    prompt: 'Do you live inside the City of Cincinnati?',
+    source: 'City of Cincinnati Income Taxes — https://www.cincinnati-oh.gov/finance/income-taxes/',
+    note: 'Municipal income tax, 1.8%.',
+  },
+];
+
 const NYC = {
   id: 'nyc',
   kind: 'bracketed',
@@ -165,6 +231,21 @@ for (const [code, rate] of Object.entries(STATE_AVERAGE_LOCAL)) {
  * `optional: true` means the interface must ask; the user genuinely may or may
  * not live inside the taxing boundary.
  */
+for (const city of CITY_TAXES) {
+  jurisdictions[city.id] = {
+    id: city.id,
+    kind: city.kind,
+    name: city.name,
+    stateCode: city.stateCode,
+    rate: city.rate,
+    isStateAverage: false,
+    source: city.source,
+    note: city.note,
+  };
+}
+
+const CITY_BY_METRO = Object.fromEntries(CITY_TAXES.map((c) => [c.metroId, c]));
+
 const byMetro = {};
 const NEW_YORK_METRO = '35620';
 
@@ -190,6 +271,27 @@ for (const metro of Object.values(metrosMeta.metros)) {
   } else if (state === 'NY') {
     // No New York locality outside NYC and Yonkers levies an income tax.
     // Deliberately empty.
+  } else if (CITY_BY_METRO[metro.id]) {
+    // The principal city and "somewhere else in this metro" are alternatives,
+    // not additions. Exactly one applies, so they share a group.
+    const city = CITY_BY_METRO[metro.id];
+    entries.push(
+      {
+        jurisdictionId: city.id,
+        optional: true,
+        defaultApplies: true,
+        group: 'locality',
+        label: `Inside ${city.name}`,
+        prompt: city.prompt,
+      },
+      {
+        jurisdictionId: `avg-${state}`,
+        optional: true,
+        defaultApplies: false,
+        group: 'locality',
+        label: `Elsewhere in the metro (${state} average)`,
+      },
+    );
   } else if (STATEWIDE_LOCAL_TAX.has(state)) {
     entries.push({ jurisdictionId: `avg-${state}`, optional: false, defaultApplies: true });
   } else if (CITY_SPECIFIC_METROS[state]?.includes(metro.id)) {
@@ -200,6 +302,29 @@ for (const metro of Object.values(metrosMeta.metros)) {
 }
 
 // --- sanity checks ----------------------------------------------------------
+
+for (const [metroId, entries] of Object.entries(byMetro)) {
+  const groups = {};
+  for (const e of entries) {
+    if (!e.group) continue;
+    groups[e.group] ??= [];
+    groups[e.group].push(e);
+  }
+  for (const [name, members] of Object.entries(groups)) {
+    const defaults = members.filter((m) => m.defaultApplies).length;
+    if (defaults !== 1) {
+      throw new Error(
+        `${metroId} group "${name}" has ${defaults} defaults — exactly one must apply, ` +
+          `or the metro either double-counts a local tax or drops it`,
+      );
+    }
+  }
+}
+for (const city of CITY_TAXES) {
+  if (!byMetro[city.metroId]?.some((e) => e.jurisdictionId === city.id)) {
+    throw new Error(`${city.name} was never attached to metro ${city.metroId}`);
+  }
+}
 
 if (!byMetro[NEW_YORK_METRO]) throw new Error('New York metro has no local jurisdictions');
 if (byMetro[NEW_YORK_METRO].length !== 2) throw new Error('expected NYC and Yonkers for the NY metro');

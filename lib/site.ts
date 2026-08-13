@@ -34,6 +34,13 @@ export const TAGLINE = 'Will moving actually leave you with more money?';
  */
 export const SUPPORTING = 'Do the move math';
 
+/**
+ * Not registered yet — see PROJECT.md D24. Kept here so that pointing the site
+ * at it later is one edit, which is what D24 claims and what the name itself
+ * was not until the rename.
+ */
+export const SITE_DOMAIN = 'packorstay.com';
+
 export const CONTACT_EMAIL = 'dmitri.erchov@gmail.com';
 
 export const REPO_URL = 'https://github.com/hey-dmitri/packorstay';

@@ -94,7 +94,13 @@ export function CityPanel({
   const defaults = housingDefaults(state.metroId);
   const transport = transportDefaults(state.metroId);
   const suggestedCars = defaultCarCount(state.metroId, filingStatus);
-  const optionalLocals = localTaxOptions(state.metroId).filter((o) => o.optional);
+  const allLocals = localTaxOptions(state.metroId);
+  const optionalLocals = allLocals.filter((o) => o.optional && !o.group);
+  // Grouped options are alternatives, so they render as one choice rather than
+  // as independent checkboxes that could both be ticked or both left clear.
+  const localGroups = [...new Set(allLocals.filter((o) => o.group).map((o) => o.group!))].map(
+    (group) => ({ group, members: allLocals.filter((o) => o.group === group) }),
+  );
 
   const household: Household = { filingStatus, children: childCount };
   const bedrooms = bedroomsFor(adultsIn(filingStatus), childCount);
@@ -226,6 +232,33 @@ export function CityPanel({
               : `Typical here is ${suggestedCars}`
           }
         />
+
+        {localGroups.map(({ group, members }) => {
+          const selected =
+            members.find((m) => state.localOptIns[m.jurisdictionId] === true) ??
+            members.find((m) => m.defaultApplies)!;
+          return (
+            <Segmented
+              key={group}
+              label="Where in this metro"
+              value={selected.jurisdictionId}
+              onChange={(jurisdictionId) =>
+                set({
+                  localOptIns: {
+                    ...state.localOptIns,
+                    ...Object.fromEntries(
+                      members.map((m) => [m.jurisdictionId, m.jurisdictionId === jurisdictionId]),
+                    ),
+                  },
+                })
+              }
+              options={members.map((m) => ({
+                value: m.jurisdictionId,
+                label: m.label ?? m.jurisdictionId,
+              }))}
+            />
+          );
+        })}
 
         {optionalLocals.length > 0 && (
           <div

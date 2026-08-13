@@ -43,7 +43,7 @@ export function LocationPicker({ id, label, value, onChange, placeholder }: Prop
     }
     document.addEventListener('mousedown', onPointerDown);
     return () => document.removeEventListener('mousedown', onPointerDown);
-  });
+  }, [open]);
 
   // Keep the active option scrolled into view without moving focus.
   useEffect(() => {

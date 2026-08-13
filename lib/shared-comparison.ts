@@ -11,21 +11,16 @@ import {
   compare,
   formatPercent,
   formatUSD,
-  localJurisdiction,
-  localTaxOptions,
   metro,
+  resolveLocalJurisdictions,
   percentIsMeaningful,
   type ComparisonResult,
 } from '@/engine';
 import type { SharedCity, SharedComparison } from '@/lib/share-link';
 
 /** The local jurisdictions a city's opt-in choices resolve to. */
-export function jurisdictionsFor(city: SharedCity) {
-  return localTaxOptions(city.metroId)
-    .filter((option) =>
-      option.optional ? (city.localOptIns[option.jurisdictionId] ?? false) : option.defaultApplies,
-    )
-    .map((option) => localJurisdiction(option.jurisdictionId));
+export function jurisdictionsFor(city: SharedCity, version?: string) {
+  return resolveLocalJurisdictions(city.metroId, city.localOptIns, version);
 }
 
 export function comparisonFromShared(input: SharedComparison): ComparisonResult {
@@ -37,8 +32,10 @@ export function comparisonFromShared(input: SharedComparison): ComparisonResult 
       destination: input.destination,
     },
     {
-      origin: { localJurisdictions: jurisdictionsFor(input.origin) },
-      destination: { localJurisdictions: jurisdictionsFor(input.destination) },
+      origin: { localJurisdictions: jurisdictionsFor(input.origin, input.datasetVersion) },
+      destination: {
+        localJurisdictions: jurisdictionsFor(input.destination, input.datasetVersion),
+      },
     },
   );
 }

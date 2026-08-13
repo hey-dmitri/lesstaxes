@@ -516,6 +516,17 @@ Two related defects were found and fixed at the same time:
   `scripts/cut-dataset-version.mjs` first, so a refresh always lands in a new
   dated directory and the previous one stays readable forever.
 
+### OPEN-6 — Sales tax uses state-average local rates
+
+Added 2026-08-13. §15 lists "local sales tax dominates (Chicago 10.25% vs Austin
+8.25% on identical 6.25% state bases)" as a gotcha the engine must get right,
+and it does not: it applies each state's AVERAGE local rate, so the Chicago to
+Austin gap is modelled at 0.76pp where the real one is 2.00pp.
+
+Small in dollars — sales tax is a few hundred a year — but it is a documented
+promise the code does not keep, and Tax Foundation publishes city-level rates
+under the CC BY-NC terms §7 already accepts.
+
 ### OPEN-5 — Home and renters insurance have no usable free source
 
 Added 2026-08-13, after looking for one. PROJECT.md §6.1 requires state-level

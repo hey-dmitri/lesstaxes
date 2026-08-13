@@ -54,10 +54,12 @@ export default function DataPage() {
         <h2>What this data cannot tell you</h2>
         <ul>
           <li>
-            <strong>Local income tax outside New York City uses state averages.</strong>{' '}
-            Philadelphia, Columbus, Detroit, Louisville, Kansas City and Portland all levy more than
-            their state average, so those cities are understated. A documented average is honest; a
-            remembered city rate would not be.
+            <strong>Six cities carry their own local income tax rate; the rest use state
+            averages.</strong> New York City, Yonkers, Philadelphia, Detroit, Columbus and
+            Cincinnati are transcribed from the levying city&rsquo;s own revenue department, with
+            the source recorded. Cleveland, Pittsburgh, Louisville, Kansas City, St. Louis,
+            Baltimore and Portland are still on their state&rsquo;s average, which understates all
+            of them. A documented average is honest; a remembered city rate would not be.
           </li>
           <li>
             <strong>Buffalo, Rochester, Syracuse and Albany carry no local income tax</strong>{' '}
