@@ -5,6 +5,7 @@ import Link from 'next/link';
 import {
   biggestReason,
   breakEvenNarrative,
+  federalMovedReason,
   breakEvenReference,
   formatPercent,
   formatUSD,
@@ -218,6 +219,9 @@ function Disclosure({
  * headline at the bottom.
  */
 function Gap({ result }: { result: ComparisonResult }) {
+  // Federal tax differing between two cities looks like a bug unless the page
+  // says why, and the page says everywhere else that federal rules are the same.
+  const federalNote = federalMovedReason(result);
   const groups = [
     { key: 'payAndTax' as const, label: 'Pay and tax' },
     { key: 'living' as const, label: 'Living costs' },
@@ -269,6 +273,14 @@ function Gap({ result }: { result: ComparisonResult }) {
                 </span>
               </div>
             ))}
+            {key === 'payAndTax' && federalNote && (
+              <p
+                className="mt-1 pl-3 text-[0.74rem] leading-snug"
+                style={{ color: 'var(--muted)' }}
+              >
+                {federalNote}
+              </p>
+            )}
           </div>
         );
       })}

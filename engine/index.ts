@@ -62,6 +62,7 @@ export {
   breakEvenNarrative,
   breakEvenReference,
   breakEvenSentence,
+  federalMovedReason,
   percentIsMeaningful,
   shortfalls,
   whyClause,

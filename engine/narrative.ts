@@ -296,3 +296,39 @@ export function biggestReason(
       };
   }
 }
+
+/**
+ * Why federal tax moved between two cities, when it did.
+ *
+ * Federal rules are identical in every state, and this site says so — which is
+ * exactly why a federal line that differs reads as a bug. There are only two
+ * ways it can legitimately move: the salary changed, or the filer itemises and
+ * one state hands them a larger deduction through SALT and mortgage interest.
+ *
+ * Returns null when federal tax did not move, so the caller can stay quiet.
+ */
+export function federalMovedReason(result: ComparisonResult): string | null {
+  const moved = result.origin.tax.federal - result.destination.tax.federal;
+  if (Math.abs(moved) < 1) return null;
+
+  const salaryChanged = result.destination.grossSalary !== result.origin.grossSalary;
+  // The middle column is the destination at the ORIGIN salary, so a difference
+  // that survives it cannot be the salary's doing.
+  const cityMoved =
+    Math.abs(result.origin.tax.federal - result.destinationAtOriginSalary.tax.federal) >= 1;
+
+  if (!cityMoved && salaryChanged) {
+    return 'Federal rules are identical in both cities — this moves only because the pay does.';
+  }
+
+  const from = metro(result.origin.metroId).shortName;
+  const to = metro(result.destination.metroId).shortName;
+  const bigger = result.origin.tax.deductionTaken >= result.destination.tax.deductionTaken;
+  const gap = Math.abs(result.origin.tax.deductionTaken - result.destination.tax.deductionTaken);
+
+  return (
+    `Federal rates are the same in both, but you itemise: state and property tax and ` +
+    `mortgage interest are deductible, and ${bigger ? from : to} gives you ` +
+    `${formatUSD(gap)} more deduction${salaryChanged ? '. The pay change moves it too.' : '.'}`
+  );
+}

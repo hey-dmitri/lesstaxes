@@ -4,6 +4,7 @@ import { defaultCityInputs, compare } from './compare';
 import { CURRENT_DATASET_VERSION } from './datasets';
 import {
   breakEvenNarrative,
+  federalMovedReason,
   breakEvenSentence,
   percentIsMeaningful,
   shortfalls,
@@ -222,5 +223,45 @@ describe('shortfall reporting', () => {
   it('reports the amount as a positive number', () => {
     const [first] = shortfalls(run(CHICAGO, AUSTIN, 60_000, 60_000, family));
     expect(first.shortBy).toBeCloseTo(-run(CHICAGO, AUSTIN, 60_000, 60_000, family).origin.leftover, 6);
+  });
+});
+
+describe('federal tax movement is explained, not left bare', () => {
+  const owner: Household = { filingStatus: 'marriedJointly', children: 2 };
+  const BOSTON = '14460';
+
+  it('says nothing when federal tax did not move', () => {
+    // Renters at the same salary take the standard deduction in both cities,
+    // so federal tax is identical and there is nothing to explain.
+    const result = run(CHICAGO, AUSTIN, 150_000, 150_000, single, 'rent');
+    expect(Math.abs(result.origin.tax.federal - result.destination.tax.federal)).toBeLessThan(1);
+    expect(federalMovedReason(result)).toBeNull();
+  });
+
+  it('blames the salary when only the salary changed', () => {
+    const result = run(CHICAGO, AUSTIN, 150_000, 190_000, single, 'rent');
+    expect(federalMovedReason(result)).toContain('only because the pay does');
+  });
+
+  it('blames itemising when the cities differ at the same salary', () => {
+    // Massachusetts income tax and a pricier house are both deductible, so an
+    // owner pays LESS federal tax in Boston than in Texas on identical pay.
+    const result = run(BOSTON, AUSTIN, 150_000, 150_000, owner, 'own');
+    expect(result.origin.tax.deductionTaken).toBeGreaterThan(
+      result.destination.tax.deductionTaken,
+    );
+    const reason = federalMovedReason(result);
+    expect(reason).toContain('you itemise');
+    expect(reason).toContain('more deduction');
+  });
+
+  it('is the deduction gap that drives it, not the rates', () => {
+    const result = run(BOSTON, AUSTIN, 150_000, 150_000, owner, 'own');
+    const taxGap = result.destination.tax.federal - result.origin.tax.federal;
+    const deductionGap = result.origin.tax.deductionTaken - result.destination.tax.deductionTaken;
+    // The federal difference must be a plausible marginal-rate slice of the
+    // deduction difference — never larger than it.
+    expect(taxGap).toBeGreaterThan(0);
+    expect(taxGap).toBeLessThan(deductionGap);
   });
 });
