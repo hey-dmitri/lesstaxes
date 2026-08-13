@@ -98,7 +98,7 @@ export function LocationPicker({ id, label, value, onChange, placeholder }: Prop
     <div ref={rootRef} className="relative">
       <label
         htmlFor={id}
-        className="mb-1 block text-[0.65rem] font-semibold uppercase tracking-[0.09em]"
+        className="mb-1 block text-[0.72rem] font-semibold uppercase tracking-[0.09em]"
         style={{ color: 'var(--muted)' }}
       >
         {label}

@@ -1,8 +1,8 @@
 'use client';
 
-import { useId } from 'react';
+import { useId, useRef } from 'react';
 
-const labelClass = 'mb-1 block text-[0.65rem] font-semibold uppercase tracking-[0.09em]';
+const labelClass = 'mb-1 block text-[0.72rem] font-semibold uppercase tracking-[0.09em]';
 const labelStyle = { color: 'var(--muted)' } as const;
 
 const inputClass = 'w-full rounded border px-2.5 py-1.5 text-sm tnum';
@@ -15,7 +15,7 @@ const inputStyle = {
 /** Text shown under a field when its value came from the dataset, not the user. */
 export function PrefillNote({ children }: { children: React.ReactNode }) {
   return (
-    <p className="mt-0.5 text-[0.68rem] leading-snug" style={{ color: 'var(--muted)' }}>
+    <p className="mt-0.5 text-[0.76rem] leading-snug" style={{ color: 'var(--muted)' }}>
       {children}
     </p>
   );
@@ -213,16 +213,68 @@ interface SegmentedProps<T extends string> {
   options: Array<{ value: T; label: string }>;
 }
 
-/** Two or three mutually exclusive choices, as a radio group. */
+/**
+ * Two or three mutually exclusive choices, as a radio group.
+ *
+ * Declaring role="radiogroup" is a promise about behaviour, not just a label.
+ * A screen-reader user told "radio group, 1 of 2" reaches for the arrow keys,
+ * and this previously did nothing with them while putting every option in the
+ * tab order — so it announced as a radio group and behaved like a row of
+ * buttons. Arrow keys now move and select, Home and End jump to the ends, and
+ * only the selected option is tabbable, which is the roving tabindex the
+ * pattern requires.
+ */
 export function Segmented<T extends string>({ label, value, onChange, options }: SegmentedProps<T>) {
+  const groupRef = useRef<HTMLDivElement>(null);
+
+  function move(delta: number) {
+    const index = options.findIndex((o) => o.value === value);
+    const next = (index + delta + options.length) % options.length;
+    onChange(options[next].value);
+    // Selection follows focus in this pattern, so focus has to follow with it.
+    const buttons = groupRef.current?.querySelectorAll('button');
+    (buttons?.[next] as HTMLButtonElement | undefined)?.focus();
+  }
+
+  function select(index: number) {
+    onChange(options[index].value);
+    const buttons = groupRef.current?.querySelectorAll('button');
+    (buttons?.[index] as HTMLButtonElement | undefined)?.focus();
+  }
+
+  function onKeyDown(event: React.KeyboardEvent) {
+    switch (event.key) {
+      case 'ArrowRight':
+      case 'ArrowDown':
+        event.preventDefault();
+        move(1);
+        break;
+      case 'ArrowLeft':
+      case 'ArrowUp':
+        event.preventDefault();
+        move(-1);
+        break;
+      case 'Home':
+        event.preventDefault();
+        select(0);
+        break;
+      case 'End':
+        event.preventDefault();
+        select(options.length - 1);
+        break;
+    }
+  }
+
   return (
     <div>
       <span className={labelClass} style={labelStyle}>
         {label}
       </span>
       <div
+        ref={groupRef}
         role="radiogroup"
         aria-label={label}
+        onKeyDown={onKeyDown}
         className="flex rounded border p-0.5"
         style={{ borderColor: 'var(--rule-strong)', background: 'var(--surface-sunken)' }}
       >
@@ -234,6 +286,8 @@ export function Segmented<T extends string>({ label, value, onChange, options }:
               type="button"
               role="radio"
               aria-checked={selected}
+              // Roving tabindex: one stop for the whole group, not one each.
+              tabIndex={selected ? 0 : -1}
               onClick={() => onChange(option.value)}
               className="flex-1 rounded px-3 py-1.5 text-sm font-medium transition-colors"
               style={{

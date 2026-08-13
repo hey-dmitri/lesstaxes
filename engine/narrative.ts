@@ -98,8 +98,13 @@ export interface BreakEvenNarrative {
   salary: USD;
   /** Distance from the destination salary on the table. Negative = headroom. */
   gap: USD;
-  kind: 'needs-more' | 'has-headroom' | 'level';
-  /** The salary the gap is measured against. */
+  /**
+   * `wins-at-any-salary` is the case where no break-even salary exists because
+   * the destination is ahead even on nothing — the single best piece of news
+   * this calculation can produce, and it used to render as no line at all.
+   */
+  kind: 'needs-more' | 'has-headroom' | 'level' | 'wins-at-any-salary';
+  /** The salary the gap is measured against. Zero when no salary is needed. */
   against: USD;
   /** True when that is simply what they earn today, because pay is unchanged. */
   againstIsCurrentPay: boolean;
@@ -125,6 +130,19 @@ export interface BreakEvenNarrative {
  */
 export function breakEvenNarrative(result: ComparisonResult): BreakEvenNarrative | null {
   const salary = result.breakEvenSalary;
+
+  // Zero means the destination is ahead at any salary, including none. Saying
+  // nothing there threw away the strongest result the tool can return.
+  if (salary === 0 && result.delta > 0) {
+    return {
+      salary: 0,
+      gap: -result.destination.grossSalary,
+      kind: 'wins-at-any-salary',
+      against: result.destination.grossSalary,
+      againstIsCurrentPay:
+        result.destination.grossSalary === result.origin.grossSalary,
+    };
+  }
   if (salary <= 0) return null;
 
   const against = result.destination.grossSalary;
@@ -154,6 +172,9 @@ export function breakEvenSentence(result: ComparisonResult): string | null {
   const to = metro(result.destination.metroId).shortName;
   const reference = breakEvenReference(be);
 
+  if (be.kind === 'wins-at-any-salary') {
+    return `There is no salary you'd need in ${to} — it comes out ahead even on no income at all.`;
+  }
   if (be.kind === 'level') return `You'd break even in ${to} at about ${reference}.`;
 
   const gap = formatUSD(Math.abs(be.gap));

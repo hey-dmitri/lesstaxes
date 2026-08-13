@@ -159,11 +159,23 @@ describe('break-even narrative', () => {
     }
   });
 
-  it('returns nothing when there is no break-even salary to quote', () => {
-    const result = run(CHICAGO, AUSTIN, 150_000);
-    const noBreakEven = { ...result, breakEvenSalary: 0 };
-    expect(breakEvenNarrative(noBreakEven)).toBeNull();
-    expect(breakEvenSentence(noBreakEven)).toBeNull();
+  it('says so when the destination wins at any salary at all', () => {
+    // breakEvenSalary of 0 used to render as no line whatsoever, collapsing the
+    // best possible result — "ahead even on nothing" — into silence.
+    const result = { ...run(CHICAGO, AUSTIN, 150_000), breakEvenSalary: 0 };
+    expect(result.delta).toBeGreaterThan(0);
+    const be = breakEvenNarrative(result);
+    expect(be?.kind).toBe('wins-at-any-salary');
+    expect(breakEvenSentence(result)).toContain('no salary you');
+    expect(breakEvenSentence(result)).toContain('even on no income');
+  });
+
+  it('still returns nothing when break-even is genuinely unreachable', () => {
+    // The other zero: the move loses, and no salary in a sane range fixes it.
+    const losing = { ...run(AUSTIN, CHICAGO, 150_000), breakEvenSalary: 0 };
+    expect(losing.delta).toBeLessThan(0);
+    expect(breakEvenNarrative(losing)).toBeNull();
+    expect(breakEvenSentence(losing)).toBeNull();
   });
 });
 

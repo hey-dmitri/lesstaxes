@@ -232,7 +232,7 @@ export function CityPanel({
             style={{ borderColor: 'var(--rule)', background: 'var(--surface-sunken)' }}
           >
             <p
-              className="text-[0.65rem] font-semibold uppercase tracking-[0.09em]"
+              className="text-[0.72rem] font-semibold uppercase tracking-[0.09em]"
               style={{ color: 'var(--muted)' }}
             >
               Local income tax
@@ -247,14 +247,14 @@ export function CityPanel({
                 }
               />
             ))}
-            <p className="text-[0.68rem] leading-snug" style={{ color: 'var(--muted)' }}>
+            <p className="text-[0.76rem] leading-snug" style={{ color: 'var(--muted)' }}>
               This metro spans several jurisdictions and only some levy it. It makes a real
               difference, so we ask rather than guess.
             </p>
           </div>
         )}
 
-        <p className="mt-auto pt-1 text-[0.68rem]" style={{ color: 'var(--muted)' }}>
+        <p className="mt-auto pt-1 text-[0.76rem]" style={{ color: 'var(--muted)' }}>
           {m.name}
         </p>
       </div>

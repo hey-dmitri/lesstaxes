@@ -80,7 +80,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <header className="flex shrink-0 items-center justify-between gap-4 pb-3">
             <div className="flex items-baseline gap-3">
               <span
-                className="text-[0.7rem] font-semibold uppercase tracking-[0.14em]"
+                className="text-[0.76rem] font-semibold uppercase tracking-[0.14em]"
                 style={{ color: 'var(--muted)' }}
               >
                 {SITE_NAME}
@@ -98,7 +98,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           {children}
 
           <footer
-            className="flex shrink-0 flex-wrap items-center gap-x-4 gap-y-1 pt-2 text-[0.68rem] leading-snug"
+            className="flex shrink-0 flex-wrap items-center gap-x-4 gap-y-1 pt-2 text-[0.76rem] leading-snug"
             style={{ color: 'var(--muted)' }}
           >
             <nav className="flex gap-4" aria-label="About this site">

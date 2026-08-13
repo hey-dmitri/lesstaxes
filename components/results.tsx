@@ -42,8 +42,17 @@ function Headline({ result, animate }: { result: ComparisonResult; animate: bool
 
   return (
     <div>
+      {/*
+        The reveal is the thing people screenshot and share, and it never said
+        which way round the move was. The panel heading is generic and the city
+        names only appeared inside the reasoning, so the headline figure stood
+        alone with no subject. PROJECT.md §8 specified this line first.
+      */}
+      <p className="mb-1 text-[0.78rem] font-medium" style={{ color: 'var(--ink-soft)' }}>
+        {from} <span style={{ color: 'var(--muted)' }}>&rarr;</span> {to}
+      </p>
       <h3
-        className="mb-1.5 text-[0.65rem] font-semibold uppercase tracking-[0.12em]"
+        className="mb-1.5 text-[0.72rem] font-semibold uppercase tracking-[0.12em]"
         style={{ color: 'var(--muted)' }}
       >
         In your pocket, a year
@@ -171,7 +180,7 @@ function Shortfall({ result }: { result: ComparisonResult }) {
       className="rounded border px-3 py-2"
       style={{ borderColor: 'var(--rule-strong)', background: 'var(--surface-sunken)' }}
     >
-      <p className="text-[0.72rem] leading-snug" style={{ color: 'var(--ink-soft)' }}>
+      <p className="text-[0.78rem] leading-snug" style={{ color: 'var(--ink-soft)' }}>
         <strong>
           {short.length === 2
             ? 'Both cities come out short.'
@@ -181,7 +190,7 @@ function Shortfall({ result }: { result: ComparisonResult }) {
         &mdash; by {named.join(' and ')}. The comparison above is still like for like, but there is
         no spare cash left to take a percentage of.
       </p>
-      <p className="mt-1 text-[0.72rem] leading-snug" style={{ color: 'var(--muted)' }}>
+      <p className="mt-1 text-[0.78rem] leading-snug" style={{ color: 'var(--muted)' }}>
         This uses the local median rent and what US households at your income actually spend. If
         your rent, cars or salary are different, change them &mdash; every field is editable.
       </p>
@@ -214,6 +223,12 @@ function Why({ result }: { result: ComparisonResult }) {
       </p>
       {breakEven && (
         <p className="text-[0.8rem] leading-snug" style={{ color: 'var(--ink-soft)' }}>
+          {breakEven.kind === 'wins-at-any-salary' && (
+            <>
+              There is <strong style={{ color: 'var(--good)' }}>no salary you&rsquo;d need</strong>{' '}
+              in {to} &mdash; it comes out ahead even on no income at all.
+            </>
+          )}
           {breakEven.kind === 'level' && (
             <>
               You&rsquo;d break even in {to} at{' '}
@@ -321,8 +336,8 @@ function DetailTable({ result }: { result: ComparisonResult }) {
     { key: 'salesTax', label: 'Sales tax', a: -result.origin.salesTax, b: -mid.salesTax, c: -result.destination.salesTax },
   ].filter((r) => r.a !== 0 || r.b !== 0 || r.c !== 0);
 
-  const th = 'px-2 py-1.5 text-right text-[0.6rem] font-semibold uppercase tracking-[0.06em]';
-  const td = 'px-2 py-1 text-right tnum text-[0.75rem]';
+  const th = 'px-2 py-1.5 text-right text-[0.7rem] font-semibold uppercase tracking-[0.06em]';
+  const td = 'px-2 py-1 text-right tnum text-[0.8rem]';
 
   return (
     <div className="overflow-x-auto rounded border" style={{ borderColor: 'var(--rule)' }}>
@@ -347,11 +362,11 @@ function DetailTable({ result }: { result: ComparisonResult }) {
             const cityMoved = Math.abs(r.b - r.a) >= 1;
             return (
               <tr key={r.key} style={{ borderBottom: '1px solid var(--rule)' }}>
-                <td className="px-2 py-1 text-left text-[0.75rem]" style={{ color: 'var(--ink-soft)' }}>
+                <td className="px-2 py-1 text-left text-[0.8rem]" style={{ color: 'var(--ink-soft)' }}>
                   {r.label}
                   {FEDERAL_ROWS.has(r.key) && !cityMoved && (
                     <span
-                      className="ml-1.5 rounded border px-1 text-[0.55rem] uppercase tracking-wider"
+                      className="ml-1.5 rounded border px-1 text-[0.68rem] uppercase tracking-wider"
                       style={{ borderColor: 'var(--rule-strong)', color: 'var(--muted)' }}
                       title="Federal rules are identical in every state. This moves only because the salary moves."
                     >
@@ -373,7 +388,7 @@ function DetailTable({ result }: { result: ComparisonResult }) {
             );
           })}
           <tr style={{ borderTop: '2px solid var(--rule-strong)' }}>
-            <td className="px-2 py-1.5 text-left text-[0.75rem] font-bold" style={{ color: 'var(--ink)' }}>
+            <td className="px-2 py-1.5 text-left text-[0.8rem] font-bold" style={{ color: 'var(--ink)' }}>
               In your pocket
             </td>
             <td className={`${td} font-bold`} style={{ color: 'var(--ink)' }}>{formatUSD(result.origin.leftover)}</td>
@@ -388,7 +403,7 @@ function DetailTable({ result }: { result: ComparisonResult }) {
         </tbody>
       </table>
       {salaryChanged && (
-        <p className="px-2 py-1.5 text-[0.68rem] leading-snug" style={{ color: 'var(--muted)' }}>
+        <p className="px-2 py-1.5 text-[0.76rem] leading-snug" style={{ color: 'var(--muted)' }}>
           The middle column is {to} <em>at your current salary</em> — so column one to two is what
           the city did, and two to three is what the pay change did.
         </p>
@@ -447,7 +462,7 @@ export function Results({
               <BreakdownRow key={row.key} row={row} max={max} animate={animate} index={i} />
             ))}
           </ul>
-          <p className="mt-1.5 text-[0.68rem] leading-snug" style={{ color: 'var(--muted)' }}>
+          <p className="mt-1.5 text-[0.76rem] leading-snug" style={{ color: 'var(--muted)' }}>
             Biggest effects first. Green means better off in {to}. Anything identical in both
             cities is left out.
           </p>

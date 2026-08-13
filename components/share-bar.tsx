@@ -76,7 +76,7 @@ export function ShareBar({ path, payload, slug, error }: Props) {
 
   if (error) {
     return (
-      <p className="text-[0.7rem]" style={{ color: 'var(--muted)' }}>
+      <p className="text-[0.76rem]" style={{ color: 'var(--muted)' }}>
         This comparison can&rsquo;t be turned into a link: {error}
       </p>
     );
@@ -137,7 +137,7 @@ export function ShareBar({ path, payload, slug, error }: Props) {
           {saveLabel}
         </button>
       </div>
-      <span aria-live="polite" className="text-[0.68rem] leading-snug" style={{ color: 'var(--muted)' }}>
+      <span aria-live="polite" className="text-[0.76rem] leading-snug" style={{ color: 'var(--muted)' }}>
         {copyStatus === 'copied'
           ? 'Whoever opens it sees exactly these numbers — and the result shows up in the message itself.'
           : saveStatus === 'saved'

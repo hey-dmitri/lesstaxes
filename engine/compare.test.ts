@@ -152,11 +152,14 @@ describe('breakEvenSalary', () => {
     expect(r.breakEvenSalary).toBeGreaterThan(150_000);
   });
 
-  it('returns null when the move wins even at zero salary', () => {
+  it('returns zero when the move wins even at zero salary', () => {
     const inputs = inputsFor(SAN_FRANCISCO, DALLAS, 1_000);
     const originLeftover = computeCity(inputs.origin, inputs.household).leftover;
-    // Origin leftover is deeply negative here, so any destination salary beats it.
-    expect(breakEvenSalary(inputs, originLeftover)).toBeNull();
+    // Origin leftover is deeply negative here, so any destination salary beats
+    // it. Zero and null used to be the same answer, which meant the interface
+    // could not tell "you need nothing" from "no salary would do it" and said
+    // nothing at all in both cases.
+    expect(breakEvenSalary(inputs, originLeftover)).toBe(0);
   });
 });
 

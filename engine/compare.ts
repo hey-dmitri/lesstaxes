@@ -228,7 +228,7 @@ const CATEGORY_LABELS: Record<CategoryKey, string> = {
   stateTax: 'State income tax',
   localTax: 'Local income tax',
   fica: 'Social Security & Medicare',
-  housing: 'Housing',
+  housing: 'Rent or mortgage',
   propertyTax: 'Property tax',
   transport: 'Cars & transport',
   living: 'Food, utilities, healthcare, other',
@@ -274,8 +274,10 @@ function buildBreakdown(origin: CityResult, destination: CityResult): CategoryDe
  * spending-profile steps all introduce kinks. Sixty iterations converge to
  * well under a dollar and cost nothing.
  *
- * Returns null when no salary in a sane range breaks even, which happens when
- * the destination is so much cheaper that the move wins even at zero salary.
+ * Returns 0 when the destination is already ahead at zero salary — there is no
+ * salary you need, which is a real answer and a good one. Returns null only
+ * when no salary in a sane range would close the gap. Collapsing those two into
+ * one value left the interface unable to say either.
  */
 export function breakEvenSalary(
   inputs: ComparisonInputs,
@@ -327,7 +329,10 @@ export function breakEvenSalary(
   let low = 0;
   let high = Math.max(inputs.origin.grossSalary, inputs.destination.grossSalary) * 4 + 250_000;
 
-  if (leftoverAt(low) >= originLeftover) return null; // already ahead at zero salary
+  // These two nulls mean opposite things and used to be flattened into the
+  // same silent 0 by the caller. Zero is returned for "ahead even on nothing",
+  // which is real news; null stays for genuinely unreachable.
+  if (leftoverAt(low) >= originLeftover) return 0; // ahead at any salary at all
   if (leftoverAt(high) < originLeftover) return null; // unreachable in any sane range
 
   for (let i = 0; i < 60; i++) {

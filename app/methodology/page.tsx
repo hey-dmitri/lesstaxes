@@ -33,7 +33,7 @@ export default function MethodologyPage() {
         </p>
 
         <pre
-          className="overflow-x-auto rounded border p-3 text-[0.75rem] leading-relaxed"
+          className="overflow-x-auto rounded border p-3 text-[0.8rem] leading-relaxed"
           style={{ borderColor: 'var(--rule)', background: 'var(--surface)', fontFamily: 'var(--font-mono)' }}
         >{`in your pocket  =  gross salary
                  −  federal income tax

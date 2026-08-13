@@ -193,7 +193,7 @@ export function Calculator({ initial }: CalculatorProps) {
             max={10}
           />
         </div>
-        <p className="flex-1 text-[0.68rem] leading-snug" style={{ color: 'var(--muted)' }}>
+        <p className="flex-1 text-[0.76rem] leading-snug" style={{ color: 'var(--muted)' }}>
           These apply to both cities. Filing status alone can swing the answer by thousands, so it
           is not optional.
         </p>
@@ -269,7 +269,7 @@ export function Calculator({ initial }: CalculatorProps) {
                   >
                     {SUPPORTING}
                   </button>
-                  <p className="text-[0.68rem]" style={{ color: 'var(--muted)' }}>
+                  <p className="text-[0.76rem]" style={{ color: 'var(--muted)' }}>
                     Nothing is sent anywhere. It all runs in your browser.
                   </p>
                 </>

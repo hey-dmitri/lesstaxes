@@ -27,9 +27,9 @@ export default function DataPage() {
           <table className="w-full border-collapse text-sm">
             <thead>
               <tr style={{ borderBottom: '1px solid var(--rule-strong)' }}>
-                <th scope="col" className="px-3 py-2 text-left text-[0.65rem] font-semibold uppercase tracking-wider" style={{ color: 'var(--muted)' }}>Data</th>
-                <th scope="col" className="px-3 py-2 text-left text-[0.65rem] font-semibold uppercase tracking-wider" style={{ color: 'var(--muted)' }}>Source</th>
-                <th scope="col" className="px-3 py-2 text-left text-[0.65rem] font-semibold uppercase tracking-wider" style={{ color: 'var(--muted)' }}>Licence</th>
+                <th scope="col" className="px-3 py-2 text-left text-[0.72rem] font-semibold uppercase tracking-wider" style={{ color: 'var(--muted)' }}>Data</th>
+                <th scope="col" className="px-3 py-2 text-left text-[0.72rem] font-semibold uppercase tracking-wider" style={{ color: 'var(--muted)' }}>Source</th>
+                <th scope="col" className="px-3 py-2 text-left text-[0.72rem] font-semibold uppercase tracking-wider" style={{ color: 'var(--muted)' }}>Licence</th>
               </tr>
             </thead>
             <tbody>

@@ -40,7 +40,7 @@ export function ReportProblem({
   const style = { color: 'var(--accent)' } as const;
 
   return (
-    <p className={`text-[0.68rem] leading-snug ${className}`} style={{ color: 'var(--muted)' }}>
+    <p className={`text-[0.76rem] leading-snug ${className}`} style={{ color: 'var(--muted)' }}>
       {prompt}{' '}
       <a href={reportByEmail(context)} className={link} style={style}>
         Email me

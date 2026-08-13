@@ -15,7 +15,7 @@ export function PageShell({
       <div>
         <Link
           href="/"
-          className="text-[0.75rem] underline underline-offset-4"
+          className="text-[0.8rem] underline underline-offset-4"
           style={{ color: 'var(--accent)' }}
         >
           ← Back to the calculator

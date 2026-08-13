@@ -18,7 +18,7 @@ function Row({ row }: { row: DatasetRow }) {
       >
         {row.label}
         {row.isRural && (
-          <span className="ml-1.5 text-[0.65rem]" style={{ color: 'var(--muted)' }}>
+          <span className="ml-1.5 text-[0.72rem]" style={{ color: 'var(--muted)' }}>
             rural
           </span>
         )}
@@ -43,7 +43,7 @@ function Row({ row }: { row: DatasetRow }) {
       >
         {row.groceryTreatment}
       </td>
-      <td className="px-2.5 py-1.5 text-right text-[0.72rem]" style={{ color: 'var(--muted)' }}>
+      <td className="px-2.5 py-1.5 text-right text-[0.78rem]" style={{ color: 'var(--muted)' }}>
         {row.localTax ?? '—'}
       </td>
     </tr>
@@ -62,7 +62,7 @@ export function DatasetBrowser() {
   }, [deferred]);
 
   const th =
-    'sticky top-0 z-10 px-2.5 py-2 text-right text-[0.63rem] font-semibold uppercase tracking-[0.07em]';
+    'sticky top-0 z-10 px-2.5 py-2 text-right text-[0.72rem] font-semibold uppercase tracking-[0.07em]';
 
   return (
     <div className="flex flex-col gap-2">
