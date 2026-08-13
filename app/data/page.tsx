@@ -5,9 +5,10 @@ import { ReportProblem } from '@/components/report-problem';
 import { DATASET_SOURCES } from '@/lib/dataset-rows';
 import { PageShell, Prose } from '@/components/page-shell';
 import { DATASET_VERSION } from '@/engine';
+import { SITE_NAME } from '@/lib/site';
 
 export const metadata: Metadata = {
-  title: 'The data — LessTaxes',
+  title: `The data — ${SITE_NAME}`,
   description:
     'Every figure the calculator uses, for all 438 US locations, with the federal source and vintage of each.',
 };

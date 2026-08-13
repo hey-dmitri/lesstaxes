@@ -4,9 +4,10 @@ import Link from 'next/link';
 import { PageShell, Prose } from '@/components/page-shell';
 import { ReportProblem } from '@/components/report-problem';
 import { DATASET_VERSION } from '@/engine';
+import { SITE_NAME } from '@/lib/site';
 
 export const metadata: Metadata = {
-  title: 'How it works — LessTaxes',
+  title: `How it works — ${SITE_NAME}`,
   description:
     'The formula, the order of operations, every assumption, and everything this calculator gets wrong.',
 };

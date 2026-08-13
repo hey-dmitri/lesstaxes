@@ -5,6 +5,7 @@ import { Calculator } from '@/components/calculator';
 import { cardPath } from '@/lib/share-card';
 import { comparisonFromShared, describeComparison } from '@/lib/shared-comparison';
 import { decodeComparison, type SharedComparison } from '@/lib/share-link';
+import { SITE_NAME } from '@/lib/site';
 
 /**
  * Per-link preview.
@@ -22,11 +23,11 @@ export async function generateMetadata({
   try {
     const summary = describeComparison(comparisonFromShared(decodeComparison(payload)));
     return {
-      title: `${summary.title} — LessTaxes`,
+      title: `${summary.title} — ${SITE_NAME}`,
       description: summary.description,
       openGraph: {
         type: 'website',
-        siteName: 'LessTaxes',
+        siteName: SITE_NAME,
         title: summary.title,
         description: summary.description,
         images: [{ url: cardPath(payload), width: 1200, height: 630, alt: summary.title }],
@@ -40,7 +41,7 @@ export async function generateMetadata({
     };
   } catch {
     return {
-      title: 'That link didn\u2019t work — LessTaxes',
+      title: `That link didn\u2019t work — ${SITE_NAME}`,
       description: 'This share link could not be read.',
     };
   }

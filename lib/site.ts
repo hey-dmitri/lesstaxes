@@ -2,7 +2,11 @@
  * Site-level constants and the routes for getting in touch.
  *
  * PROJECT.md D24 says the name lives in one config value and is trivial to
- * change; it was in fact scattered across eight files. It lives here now.
+ * change. That was aspirational until the 2026-08-13 rename from "LessTaxes"
+ * to "Pack or Stay": SITE_NAME lived here, but every user-visible occurrence —
+ * titles, the header wordmark, both share cards, the theme key, the download
+ * filename — was a hand-typed literal in a dozen files. They import from here
+ * now, so D24's claim is finally true. Keep it that way.
  *
  * The contact routes exist because every figure on this site is a local median
  * from a federal table, and the person best placed to notice that one of them
@@ -11,11 +15,28 @@
  * prefilled GitHub issue, whichever the reader prefers.
  */
 
-export const SITE_NAME = 'LessTaxes';
+export const SITE_NAME = 'Pack or Stay';
+
+/**
+ * Lowercase, no spaces — for anything machine-facing rather than read: the
+ * theme storage key and the downloaded share-card filename. Kept separate from
+ * SITE_NAME so neither has to be re-derived by hand at the call site.
+ */
+export const SITE_SLUG = 'packorstay';
+
+/** The question the site exists to answer. Headline copy, and the share card. */
+export const TAGLINE = 'Will moving actually leave you with more money?';
+
+/**
+ * Recurring supporting copy. The brand name is deliberately about the decision
+ * rather than the arithmetic; this is where the arithmetic gets its due. It
+ * accompanies TAGLINE, never replaces it.
+ */
+export const SUPPORTING = 'Do the move math';
 
 export const CONTACT_EMAIL = 'dmitri.erchov@gmail.com';
 
-export const REPO_URL = 'https://github.com/hey-dmitri/lesstaxes';
+export const REPO_URL = 'https://github.com/hey-dmitri/packorstay';
 
 /**
  * A report is only useful if it says WHICH number, WHERE, and from WHICH

@@ -1,4 +1,4 @@
-# LessTaxes — Build Plan
+# Pack or Stay — Build Plan
 
 Companion to `PROJECT.md`. Ten stages, each ending in something the project owner can **look at**
 and approve before the next begins. Nothing is built ahead of approval.
@@ -82,7 +82,7 @@ thing actually is.
 ## Stage 4 — Deployment, then the input form
 
 **Build:**
-1. Public GitHub repo `lesstaxes`, Vercel connected, first deploy — done at the top of this stage.
+1. Public GitHub repo `packorstay`, Vercel connected, first deploy — done at the top of this stage.
 2. City pickers with search, salary fields, filing status, children, per-city housing with
    metro-derived defaults, per-city car counts. Desktop-first at 1440px, light/dark with toggle.
 
@@ -159,7 +159,7 @@ site attached, so you know exactly what a future data update will look like.
 | When | What | Who |
 |---|---|---|
 | Now | Nothing — Stage 0 needs no accounts or credentials | — |
-| Stage 4 | Create public GitHub repo `lesstaxes` | Claude, via `gh` |
+| Stage 4 | Create public GitHub repo `packorstay` | Claude, via `gh` |
 | Stage 4 | Authorise the Vercel connector (one click) | Owner |
 | Stage 4 | `npm i -g vercel` so build logs are readable directly | Owner |
 | After Stage 3 | Choose and register a domain | Owner |

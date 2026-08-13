@@ -2,9 +2,12 @@
 
 import { useSyncExternalStore } from 'react';
 
+import { SITE_SLUG } from '@/lib/site';
+
 type Theme = 'light' | 'auto' | 'dark';
 
-const STORAGE_KEY = 'lesstaxes-theme';
+/** Must match the pre-paint script in app/layout.tsx, which builds the same key. */
+const STORAGE_KEY = `${SITE_SLUG}-theme`;
 
 const OPTIONS: Array<{ value: Theme; label: string; glyph: string }> = [
   { value: 'light', label: 'Light theme', glyph: '☀' },
