@@ -52,17 +52,39 @@ describe('verdict', () => {
 
   it('refuses to call a difference smaller than the data can resolve', () => {
     // Every cost here is a local median that real households scatter around.
-    // A hundred dollars a month is inside that scatter, so declaring a winner
-    // would be inventing precision the tables do not have.
-    for (const delta of [0, 400, -400, 1_199, -1_199]) {
-      const result = { ...run(CHICAGO, AUSTIN, 150_000), delta };
-      expect(verdict(result).kind).toBe('too-close');
+    // A difference inside that scatter is not a win, and declaring one would
+    // be inventing precision the tables do not have.
+    const base = run(CHICAGO, AUSTIN, 150_000);
+    const t = verdict(base).threshold;
+    for (const delta of [0, t * 0.5, -t * 0.5, t - 1, -(t - 1)]) {
+      expect(verdict({ ...base, delta }).kind).toBe('too-close');
     }
   });
 
   it('calls it the moment the difference clears that threshold', () => {
-    expect(verdict({ ...run(CHICAGO, AUSTIN, 150_000), delta: 1_201 }).kind).toBe('pack');
-    expect(verdict({ ...run(CHICAGO, AUSTIN, 150_000), delta: -1_201 }).kind).toBe('stay');
+    const base = run(CHICAGO, AUSTIN, 150_000);
+    const t = verdict(base).threshold;
+    expect(verdict({ ...base, delta: t + 1 }).kind).toBe('pack');
+    expect(verdict({ ...base, delta: -(t + 1) }).kind).toBe('stay');
+  });
+
+  it('is 1.5% of take-home, so the margin grows with the money involved', () => {
+    const modest = run(CHICAGO, AUSTIN, 60_000);
+    const large = run(CHICAGO, AUSTIN, 400_000);
+
+    expect(verdict(modest).threshold).toBeCloseTo(modest.origin.takeHome * 0.015, 6);
+    expect(verdict(large).threshold).toBeCloseTo(large.origin.takeHome * 0.015, 6);
+    expect(verdict(large).threshold).toBeGreaterThan(verdict(modest).threshold);
+  });
+
+  it('has a usable threshold even when neither city leaves anything over', () => {
+    // The obvious base — leftover money — is negative here, which is why the
+    // threshold is a share of take-home instead. A share of a negative number
+    // would have made this case nonsense rather than merely tight.
+    const broke = run(CHICAGO, AUSTIN, 60_000, 60_000, family);
+    expect(broke.origin.leftover).toBeLessThan(0);
+    expect(verdict(broke).threshold).toBeGreaterThan(0);
+    expect(['pack', 'stay', 'too-close']).toContain(verdict(broke).kind);
   });
 
   it('never states the verdict without saying it is money only', () => {

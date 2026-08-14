@@ -69,6 +69,7 @@ export {
   whyNarrative,
   whySentence,
   verdict,
+  TOO_CLOSE_SHARE,
   type BreakEvenNarrative,
   type Shortfall,
   type Verdict,

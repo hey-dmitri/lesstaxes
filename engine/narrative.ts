@@ -20,22 +20,37 @@ import type { ComparisonResult, USD } from './types';
 // ---------------------------------------------------------------------------
 
 /**
- * Below this, the two cities are not distinguishable and the site should not
- * pretend otherwise.
+ * Below this share, the two cities are not distinguishable and the site should
+ * not pretend otherwise.
  *
  * Every figure here is a local median — rent, spending, car ownership — and
- * real households scatter widely around each one. A hundred dollars a month
- * between two cities is comfortably inside that scatter, so calling it a win
- * would be reading precision into an estimate that does not have any. It is a
- * flat amount rather than a percentage because the uncertainty comes from the
- * cost tables, which do not shrink just because the salary is large.
+ * real households scatter widely around each one. A difference smaller than
+ * this is comfortably inside that scatter, so calling a winner would be
+ * reading precision into an estimate that does not have any.
  */
-const TOO_CLOSE_A_YEAR = 1_200;
+export const TOO_CLOSE_SHARE = 0.015;
+
+/**
+ * What the threshold is a share OF: take-home pay in the city you live in now.
+ *
+ * Not leftover money, which is the obvious choice and the wrong one. Leftover
+ * is at or below zero for a large share of real households, so a percentage of
+ * it is undefined exactly where the answer matters most — and where it is
+ * merely small, say $2,000, 1.5% comes to $30 a year, which would make the
+ * verdict flip on noise. Take-home is always positive, always meaningful, and
+ * scales the threshold to the size of the household's finances the way a
+ * reader would expect: bigger money, bigger margin of error.
+ */
+function tooCloseScale(result: ComparisonResult): USD {
+  return Math.max(1, result.origin.takeHome);
+}
 
 export interface Verdict {
   kind: 'pack' | 'stay' | 'too-close';
   /** What follows the word, so it can never be read as advice. */
   qualifier: string;
+  /** The dollar figure the difference had to clear, for the reader to check. */
+  threshold: USD;
 }
 
 /**
@@ -47,17 +62,21 @@ export interface Verdict {
  * nothing about the job, the people, or the weather.
  */
 export function verdict(result: ComparisonResult): Verdict {
-  if (Math.abs(result.delta) < TOO_CLOSE_A_YEAR) {
+  const threshold = tooCloseScale(result) * TOO_CLOSE_SHARE;
+
+  if (Math.abs(result.delta) < threshold) {
     return {
       kind: 'too-close',
+      threshold,
       qualifier:
-        `Under ${formatUSD(TOO_CLOSE_A_YEAR / 12)} a month apart — closer than figures built ` +
-        `on local medians can really tell apart.`,
+        `The gap is under ${(TOO_CLOSE_SHARE * 100).toFixed(1)}% of your take-home pay ` +
+        `(${formatUSD(threshold)} a year) — closer than figures built on local medians can ` +
+        `really tell apart.`,
     };
   }
   return result.delta > 0
-    ? { kind: 'pack', qualifier: 'On money alone, the move comes out ahead.' }
-    : { kind: 'stay', qualifier: 'On money alone, staying comes out ahead.' };
+    ? { kind: 'pack', threshold, qualifier: 'On money alone, the move comes out ahead.' }
+    : { kind: 'stay', threshold, qualifier: 'On money alone, staying comes out ahead.' };
 }
 
 // ---------------------------------------------------------------------------

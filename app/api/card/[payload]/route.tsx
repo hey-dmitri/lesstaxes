@@ -67,8 +67,8 @@ export async function GET(_request: Request, { params }: { params: Promise<{ pay
     household: string;
     origin: CardCity;
     destination: CardCity;
-    /** 'Pack', 'Stay' or 'Too close to call' — the same call the page makes. */
-    verdict: string;
+    /** The same call the page makes, in the same words. */
+    verdict: { word: string; tooClose: boolean };
     delta: number;
     pct: number | null;
     monthly: number;
@@ -131,7 +131,10 @@ export async function GET(_request: Request, { params }: { params: Promise<{ pay
 
     card = {
       household: describeHousehold(shared),
-      verdict: v.kind === 'pack' ? 'Pack' : v.kind === 'stay' ? 'Stay' : 'Too close to call',
+      verdict: {
+        word: v.kind === 'pack' ? 'Pack' : v.kind === 'stay' ? 'Stay' : 'Too close to call',
+        tooClose: v.kind === 'too-close',
+      },
       breakEven,
       origin: city('origin'),
       destination: city('destination'),
@@ -262,10 +265,19 @@ export async function GET(_request: Request, { params }: { params: Promise<{ pay
                   baseline with the eyebrow because the card is a fixed height
                   and the city blocks below it are not negotiable. */}
               <div style={{ display: 'flex', alignItems: 'baseline', gap: 12 }}>
-                <div style={{ display: 'flex', fontSize: 38, fontWeight: 800, color: INK }}>
-                  {card.verdict}
+                <div
+                  style={{
+                    display: 'flex', fontSize: card.verdict.tooClose ? 30 : 38,
+                    fontWeight: 800, color: INK,
+                  }}
+                >
+                  {card.verdict.word}
                 </div>
-                <div style={eyebrow}>{better ? 'More in your pocket' : 'Less in your pocket'}</div>
+                {/* "Too close to call" already fills the line; pairing it with
+                    "more in your pocket" would also read as a contradiction. */}
+                {!card.verdict.tooClose && (
+                  <div style={eyebrow}>{better ? 'More in your pocket' : 'Less in your pocket'}</div>
+                )}
               </div>
               <div
                 style={{

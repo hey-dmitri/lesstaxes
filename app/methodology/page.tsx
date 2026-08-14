@@ -195,6 +195,27 @@ answer          =  in your pocket THERE  −  in your pocket HERE`}</pre>
           food. Expect this line to be small: a few hundred dollars a year, not thousands.
         </p>
 
+        <h2>Pack, stay, or too close to call</h2>
+        <p>
+          The one-word verdict is the sign of that final difference, and nothing more. It is about
+          money only &mdash; this calculator knows nothing about the job, the people, or whether you
+          want to live there.
+        </p>
+        <p>
+          There is a third answer, and it is the honest one more often than you would think. Every
+          cost here is a <em>median</em> for the local area, and real households scatter widely
+          around every one of them. So when the difference is smaller than{' '}
+          <strong>1.5% of your take-home pay in the city you live in now</strong>, neither word
+          lights up: the page says <em>too close to call</em> and shows you the figure anyway.
+        </p>
+        <p>
+          That threshold is a share rather than a fixed amount because the uncertainty scales with
+          the household &mdash; a $300 gap means something different on $50,000 than on $400,000.
+          It is measured against take-home rather than against leftover money for a duller reason:
+          leftover is at or below zero for a great many real households, and a percentage of zero is
+          not a threshold at all.
+        </p>
+
         <h2>Share links</h2>
         <p>
           A link carries every input <em>and the version of the data it was made with</em>. When the
