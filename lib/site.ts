@@ -34,9 +34,11 @@ export const TAGLINE = 'Will moving actually leave you with more money?';
 export const ACTION = 'Run the numbers';
 
 /**
- * Not registered yet — see PROJECT.md D24. Kept here so that pointing the site
- * at it later is one edit, which is what D24 claims and what the name itself
- * was not until the rename.
+ * The live domain — see PROJECT.md D24.
+ *
+ * Read by app/layout.tsx as the production fallback for link-preview image
+ * URLs, so a deployment that is not on Vercel still produces absolute URLs a
+ * messaging app can fetch.
  */
 export const SITE_DOMAIN = 'packorstay.com';
 

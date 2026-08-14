@@ -23,20 +23,31 @@ const space = Space_Grotesk({
 });
 import { ThemeToggle } from '@/components/theme-toggle';
 import { DATASET_VERSION } from '@/engine';
-import { SITE_NAME, SITE_SLUG, TAGLINE } from '@/lib/site';
+import { SITE_DOMAIN, SITE_NAME, SITE_SLUG, TAGLINE } from '@/lib/site';
 
 /**
  * Absolute base for Open Graph URLs. Messaging apps fetch preview images from
- * their own servers, so a relative path is useless to them.
- * Vercel injects VERCEL_URL per deployment, including previews.
+ * their own servers, so a relative path is useless to them — a wrong base here
+ * means every shared link renders as a broken thumbnail.
+ *
+ * In order of preference:
+ *  1. An explicit override, for a host that knows better than any guess here.
+ *  2. On a Vercel PREVIEW, that deployment's own URL — a preview must show its
+ *     own card, not production's, or it stops being a preview of anything.
+ *  3. Vercel production, which becomes packorstay.com once the domain is
+ *     attached and is the working .vercel.app address before that.
+ *  4. Any other production host: the real domain.
+ *  5. Local development.
  */
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL
-  ? process.env.NEXT_PUBLIC_SITE_URL
-  : process.env.VERCEL_PROJECT_PRODUCTION_URL
-    ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
-    : process.env.VERCEL_URL
-      ? `https://${process.env.VERCEL_URL}`
-      : 'http://localhost:3000';
+const SITE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL ||
+  (process.env.VERCEL_ENV === 'preview' && process.env.VERCEL_URL
+    ? `https://${process.env.VERCEL_URL}`
+    : process.env.VERCEL_PROJECT_PRODUCTION_URL
+      ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+      : process.env.NODE_ENV === 'production'
+        ? `https://${SITE_DOMAIN}`
+        : 'http://localhost:3000');
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
