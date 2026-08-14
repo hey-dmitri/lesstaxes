@@ -1,6 +1,6 @@
 # Pack or Stay
 
-**Will moving actually leave you with more money?**
+**[packorstay.com](https://packorstay.com) — will moving actually leave you with more money?**
 
 Will you actually have more money in your pocket if you move to another city?
 
@@ -14,7 +14,7 @@ Free, no accounts, no tracking, no database. All figures come from public federa
 
 ## Status
 
-**All ten stages built.** Feature-complete, not yet launched. Current dataset: **2026.4**.
+**Live** at [packorstay.com](https://packorstay.com). Current dataset: **2026.4**.
 
 | Component | State |
 |---|---|
@@ -37,11 +37,12 @@ Free, no accounts, no tracking, no database. All figures come from public federa
 | Quarterly refresh workflow — opens a PR, never auto-merges | ✅ |
 | Contact route for wrong figures — email and GitHub, prefilled | ✅ |
 | Share links pinned to their dataset version | ✅ |
-| **Home prices scaled to income, as rents now are** | ⬜ |
-| Name and domain chosen — **Pack or Stay**, `packorstay.com` | ✅ |
-| **Point `packorstay.com` at Vercel** | ⬜ |
+| Home prices scaled to income, as rents are | ✅ |
+| One-word verdict — pack, stay, or too close to call | ✅ |
+| Name and domain — **Pack or Stay**, `packorstay.com` | ✅ |
+| **Live at [packorstay.com](https://packorstay.com)** | ✅ |
 
-**649 tests**, including 24 golden values reproduced exactly from the IRS rate tables.
+**666 tests**, including 24 golden values reproduced exactly from the IRS rate tables.
 Total data cost: **$0**. No paid feeds, no runtime API calls.
 
 ### Known gaps, in priority order
