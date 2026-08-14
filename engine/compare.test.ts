@@ -10,10 +10,16 @@ import {
   housingIsPrefill,
   quickCompare,
 } from './compare';
-import { homePriceDefault } from './dataset';
-import { ALL_METRO_IDS, DATASET_VERSION, housingDefaults, metro, spendingProfile } from './dataset';
+import {
+  ALL_METRO_IDS,
+  DATASET_VERSION,
+  homePriceDefault,
+  housingDefaults,
+  metro,
+  spendingProfile,
+} from './dataset';
 import { defaultCarCount, equivalenceFactor } from './living';
-import type { ComparisonInputs, Household } from './types';
+import type { ComparisonInputs, Household, Housing } from './types';
 
 const SINGLE: Household = { filingStatus: 'single', children: 0 };
 const FAMILY: Household = { filingStatus: 'marriedJointly', children: 2 };
@@ -209,10 +215,16 @@ describe('prefilled housing follows the salary; typed housing does not', () => {
   const OWN = (metroId: string, salary: number) =>
     defaultCityInputs(metroId, salary, SINGLE, 'own').housing;
 
+  /** A prefilled Austin home with the price overridden. */
+  const typedHome = (homePrice: number): Housing => {
+    const prefill = OWN(AUSTIN, 110_000);
+    if (prefill.tenure !== 'own') throw new Error('unreachable');
+    return { ...prefill, homePrice };
+  };
+
   it('recognises a prefill and a typed figure apart', () => {
     expect(housingIsPrefill(AUSTIN, OWN(AUSTIN, 110_000), 110_000, SINGLE)).toBe(true);
-    const typed = { ...OWN(AUSTIN, 110_000), homePrice: 300_000 } as const;
-    expect(housingIsPrefill(AUSTIN, typed, 110_000, SINGLE)).toBe(false);
+    expect(housingIsPrefill(AUSTIN, typedHome(300_000), 110_000, SINGLE)).toBe(false);
   });
 
   it('moves a prefilled home price when the salary moves', () => {
@@ -227,17 +239,19 @@ describe('prefilled housing follows the salary; typed housing does not', () => {
   });
 
   it('leaves the rest of an owned home alone', () => {
-    const before = { ...OWN(AUSTIN, 110_000), mortgageRate: 0.055, downPayment: 0.35 } as const;
+    const prefill = OWN(AUSTIN, 110_000);
+    if (prefill.tenure !== 'own') throw new Error('unreachable');
+    const before: Housing = { ...prefill, mortgageRate: 0.055, downPayment: 0.35 };
+
     const after = housingAtSalary(AUSTIN, before, 110_000, 200_000, SINGLE);
     if (after.tenure !== 'own') throw new Error('unreachable');
     expect(after.mortgageRate).toBe(0.055);
     expect(after.downPayment).toBe(0.35);
-    expect(after.propertyTaxRate).toBe(before.propertyTaxRate);
+    expect(after.propertyTaxRate).toBe(prefill.propertyTaxRate);
   });
 
   it('holds a typed figure fixed at any salary', () => {
-    const typed = { ...OWN(AUSTIN, 110_000), homePrice: 300_000 } as const;
-    const after = housingAtSalary(AUSTIN, typed, 110_000, 200_000, SINGLE);
+    const after = housingAtSalary(AUSTIN, typedHome(300_000), 110_000, 200_000, SINGLE);
     if (after.tenure !== 'own') throw new Error('unreachable');
     expect(after.homePrice).toBe(300_000);
   });
