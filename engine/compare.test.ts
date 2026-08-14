@@ -1,6 +1,16 @@
 import { describe, expect, it } from 'vitest';
 
-import { breakEvenSalary, compare, computeCity, defaultCityInputs, quickCompare } from './compare';
+import {
+  breakEvenSalary,
+  compare,
+  computeCity,
+  defaultCityInputs,
+  defaultRent,
+  housingAtSalary,
+  housingIsPrefill,
+  quickCompare,
+} from './compare';
+import { homePriceDefault } from './dataset';
 import { ALL_METRO_IDS, DATASET_VERSION, housingDefaults, metro, spendingProfile } from './dataset';
 import { defaultCarCount, equivalenceFactor } from './living';
 import type { ComparisonInputs, Household } from './types';
@@ -152,6 +162,34 @@ describe('breakEvenSalary', () => {
     expect(r.breakEvenSalary).toBeGreaterThan(150_000);
   });
 
+  it('is self-consistent for a buyer, not just a renter', () => {
+    // The solver moved a prefilled rent as it searched but not a prefilled
+    // home price, so a buyer who was quoted a break-even salary and typed it
+    // in did not land on zero — the house grew underneath them.
+    const household: Household = { filingStatus: 'marriedJointly', children: 2 };
+    const origin = defaultCityInputs(NEW_YORK, 200_000, household, 'own');
+    const destination = defaultCityInputs(AUSTIN, 150_000, household, 'own');
+    const result = compare({ datasetVersion: DATASET_VERSION, household, origin, destination });
+
+    const entered = compare({
+      datasetVersion: DATASET_VERSION,
+      household,
+      origin,
+      destination: {
+        ...destination,
+        grossSalary: result.breakEvenSalary,
+        housing: housingAtSalary(
+          destination.metroId,
+          destination.housing,
+          destination.grossSalary,
+          result.breakEvenSalary,
+          household,
+        ),
+      },
+    });
+    expect(entered.delta).toBeCloseTo(0, 0);
+  });
+
   it('returns zero when the move wins even at zero salary', () => {
     const inputs = inputsFor(SAN_FRANCISCO, DALLAS, 1_000);
     const originLeftover = computeCity(inputs.origin, inputs.household).leftover;
@@ -166,6 +204,98 @@ describe('breakEvenSalary', () => {
 // ---------------------------------------------------------------------------
 // Behaviour the product depends on
 // ---------------------------------------------------------------------------
+
+describe('prefilled housing follows the salary; typed housing does not', () => {
+  const OWN = (metroId: string, salary: number) =>
+    defaultCityInputs(metroId, salary, SINGLE, 'own').housing;
+
+  it('recognises a prefill and a typed figure apart', () => {
+    expect(housingIsPrefill(AUSTIN, OWN(AUSTIN, 110_000), 110_000, SINGLE)).toBe(true);
+    const typed = { ...OWN(AUSTIN, 110_000), homePrice: 300_000 } as const;
+    expect(housingIsPrefill(AUSTIN, typed, 110_000, SINGLE)).toBe(false);
+  });
+
+  it('moves a prefilled home price when the salary moves', () => {
+    // The bug: only rent followed. A prefilled home price went stale the
+    // moment the salary changed, and took the mortgage, the property tax and
+    // the itemised deduction with it.
+    const moved = housingAtSalary(AUSTIN, OWN(AUSTIN, 110_000), 110_000, 200_000, SINGLE);
+    expect(moved.tenure).toBe('own');
+    if (moved.tenure !== 'own') throw new Error('unreachable');
+    expect(moved.homePrice).toBe(homePriceDefault(AUSTIN, 200_000));
+    expect(moved.homePrice).toBeGreaterThan(439_000);
+  });
+
+  it('leaves the rest of an owned home alone', () => {
+    const before = { ...OWN(AUSTIN, 110_000), mortgageRate: 0.055, downPayment: 0.35 } as const;
+    const after = housingAtSalary(AUSTIN, before, 110_000, 200_000, SINGLE);
+    if (after.tenure !== 'own') throw new Error('unreachable');
+    expect(after.mortgageRate).toBe(0.055);
+    expect(after.downPayment).toBe(0.35);
+    expect(after.propertyTaxRate).toBe(before.propertyTaxRate);
+  });
+
+  it('holds a typed figure fixed at any salary', () => {
+    const typed = { ...OWN(AUSTIN, 110_000), homePrice: 300_000 } as const;
+    const after = housingAtSalary(AUSTIN, typed, 110_000, 200_000, SINGLE);
+    if (after.tenure !== 'own') throw new Error('unreachable');
+    expect(after.homePrice).toBe(300_000);
+  });
+
+  it('moves a prefilled rent, as it always did', () => {
+    const rent = defaultCityInputs(AUSTIN, 110_000, SINGLE, 'rent').housing;
+    const after = housingAtSalary(AUSTIN, rent, 110_000, 150_000, SINGLE);
+    if (after.tenure !== 'rent') throw new Error('unreachable');
+    expect(after.monthlyRent).toBe(defaultRent(AUSTIN, 150_000, SINGLE));
+  });
+});
+
+describe('the city/salary split does not blame the city for a salary choice', () => {
+  it('prices the middle column at the salary it claims to be at', () => {
+    // New York to Austin, $150,000 now against a $110,000 offer. Austin's
+    // prefilled rent is $1,936 because the OFFER is $110,000; at $150,000 the
+    // site's own default is $2,288. The middle column is labelled "Austin at
+    // your current pay", so pricing it with the $110,000 rent handed the city
+    // credit for $4,224 of saving the pay cut had caused.
+    const result = compare({
+      datasetVersion: DATASET_VERSION,
+      household: SINGLE,
+      origin: defaultCityInputs(NEW_YORK, 150_000, SINGLE, 'rent'),
+      destination: defaultCityInputs(AUSTIN, 110_000, SINGLE, 'rent'),
+    });
+
+    const midRent = result.destinationAtOriginSalary.housing.shelter / 12;
+    expect(midRent).toBe(defaultRent(AUSTIN, 150_000, SINGLE));
+    expect(Math.round(result.cityEffect)).toBe(24_319);
+  });
+
+  it('keeps the split adding up to the headline', () => {
+    for (const [from, to, now, offered] of [
+      [NEW_YORK, AUSTIN, 150_000, 110_000],
+      [CHICAGO, AUSTIN, 150_000, 190_000],
+      [AUSTIN, SAN_FRANCISCO, 90_000, 90_000],
+    ] as Array<[string, string, number, number]>) {
+      const result = compare({
+        datasetVersion: DATASET_VERSION,
+        household: SINGLE,
+        origin: defaultCityInputs(from, now, SINGLE, 'rent'),
+        destination: defaultCityInputs(to, offered, SINGLE, 'rent'),
+      });
+      expect(result.cityEffect + result.salaryEffect).toBeCloseTo(result.delta, 6);
+    }
+  });
+
+  it('leaves the split alone when the salary does not change', () => {
+    const result = compare({
+      datasetVersion: DATASET_VERSION,
+      household: SINGLE,
+      origin: defaultCityInputs(NEW_YORK, 150_000, SINGLE, 'rent'),
+      destination: defaultCityInputs(AUSTIN, 150_000, SINGLE, 'rent'),
+    });
+    expect(result.salaryEffect).toBeCloseTo(0, 6);
+    expect(result.cityEffect).toBeCloseTo(result.delta, 6);
+  });
+});
 
 describe('federal tax and FICA are federal', () => {
   // Federal rules are identical in every state. At the same salary, the only

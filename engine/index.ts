@@ -12,6 +12,8 @@ export {
   computeCity,
   defaultCityInputs,
   defaultRent,
+  housingAtSalary,
+  housingIsPrefill,
   breakEvenSalary,
   quickCompare,
 } from './compare';

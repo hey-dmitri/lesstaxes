@@ -47,6 +47,7 @@ import type {
   ComparisonInputs,
   ComparisonResult,
   Household,
+  Housing,
   USD,
 } from './types';
 
@@ -191,6 +192,60 @@ export function defaultRent(
 }
 
 /**
+ * Is this housing figure still the one the site filled in, or did the user
+ * type it?
+ *
+ * Rent and home price both depend on income, so any calculation that moves the
+ * salary has to decide what happens to them. A prefill still sitting at its
+ * default should move, because that is what a household on the new salary
+ * would actually rent or buy. A figure the user typed is theirs and is held.
+ *
+ * Inferred by comparing against the default rather than stored as a flag. A
+ * flag would have to travel in the share link, which means a wire-format
+ * change, and the one case inference gets wrong — typing a number that happens
+ * to equal the prefill exactly — produces the behaviour you would want anyway.
+ */
+export function housingIsPrefill(
+  metroId: string,
+  housing: Housing,
+  grossSalary: USD,
+  household: Household,
+  version?: string,
+): boolean {
+  return housing.tenure === 'rent'
+    ? housing.monthlyRent === defaultRent(metroId, grossSalary, household, version)
+    : housing.homePrice === homePriceDefault(metroId, grossSalary, version);
+}
+
+/**
+ * The same housing re-derived for a different salary — but only if it is still
+ * a prefill. Everything else about an owned home (deposit, mortgage rate,
+ * property tax rate) is a separate choice and is carried through untouched.
+ *
+ * Three callers need this and all three used to disagree. The break-even
+ * solver moved rent but not home price. The middle "city at your current pay"
+ * column moved neither, so a rent chosen for the OFFER salary was priced as if
+ * the city had caused it: New York to Austin at $150k against a $110k offer
+ * reported a $28,543 city effect when $24,319 was the city's doing and $4,224
+ * was the salary's. And the form moved rent but left home price stale while
+ * the hint underneath said what it should have been.
+ */
+export function housingAtSalary(
+  metroId: string,
+  housing: Housing,
+  fromSalary: USD,
+  toSalary: USD,
+  household: Household,
+  version?: string,
+): Housing {
+  if (!housingIsPrefill(metroId, housing, fromSalary, household, version)) return housing;
+
+  return housing.tenure === 'rent'
+    ? { tenure: 'rent', monthlyRent: defaultRent(metroId, toSalary, household, version) }
+    : { ...housing, homePrice: homePriceDefault(metroId, toSalary, version) };
+}
+
+/**
  * A sensible starting point for a city, so the form produces a useful answer
  * with zero typing (PROJECT.md D4). Every value is editable.
  */
@@ -307,42 +362,26 @@ export function breakEvenSalary(
 ): USD | null {
   const destination = inputs.destination;
 
-  /**
-   * Rent depends on income now, so a salary the solver is testing implies a
-   * different rent than the one on screen. Whether it should follow depends on
-   * where the current figure came from: a prefill still sitting at its default
-   * should move with the salary, because that is what the household would
-   * actually rent; a figure the user typed is their own and is held fixed.
+  /*
+   * A salary the solver is testing implies different housing than the one on
+   * screen, whenever the figure on screen is still a prefill. Without this,
+   * quoting a break-even salary and then entering it produced an answer a few
+   * hundred dollars off zero, because the housing shifted underneath.
    *
-   * Without this, quoting a break-even salary and then entering it produced an
-   * answer a few hundred dollars off zero, because the rent shifted underneath.
+   * This used to handle rent only, so the same drift survived for buyers.
    */
-  const rentTracksSalary =
-    destination.housing.tenure === 'rent' &&
-    destination.housing.monthlyRent ===
-      defaultRent(
-        destination.metroId,
-        destination.grossSalary,
-        inputs.household,
-        options.datasetVersion,
-      );
-
-  const cityAt = (salary: USD): CityInputs =>
-    rentTracksSalary && destination.housing.tenure === 'rent'
-      ? {
-          ...destination,
-          grossSalary: salary,
-          housing: {
-            tenure: 'rent',
-            monthlyRent: defaultRent(
-              destination.metroId,
-              salary,
-              inputs.household,
-              options.datasetVersion,
-            ),
-          },
-        }
-      : { ...destination, grossSalary: salary };
+  const cityAt = (salary: USD): CityInputs => ({
+    ...destination,
+    grossSalary: salary,
+    housing: housingAtSalary(
+      destination.metroId,
+      destination.housing,
+      destination.grossSalary,
+      salary,
+      inputs.household,
+      options.datasetVersion,
+    ),
+  });
 
   const leftoverAt = (salary: USD) =>
     computeCity(cityAt(salary), inputs.household, options).leftover;
@@ -388,9 +427,25 @@ export function compare(
    * changed", by re-running the destination at the ORIGIN salary. Without this
    * the headline conflates two very different things — exactly the trap in a
    * move that pairs a cheaper city with a pay cut.
+   *
+   * Prefilled housing has to move with the salary here too, or the split is
+   * wrong in a way that is invisible: a rent the site chose because the OFFER
+   * was $110,000 was being priced into a column labelled "at your current pay",
+   * so the city got credit for a saving the pay cut had caused.
    */
   const destinationAtOriginSalary = computeCity(
-    { ...inputs.destination, grossSalary: inputs.origin.grossSalary },
+    {
+      ...inputs.destination,
+      grossSalary: inputs.origin.grossSalary,
+      housing: housingAtSalary(
+        inputs.destination.metroId,
+        inputs.destination.housing,
+        inputs.destination.grossSalary,
+        inputs.origin.grossSalary,
+        inputs.household,
+        datasetVersion,
+      ),
+    },
     inputs.household,
     destinationOpts,
   );

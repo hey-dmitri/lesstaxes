@@ -17,6 +17,7 @@ import {
   defaultCarCount,
   defaultRent,
   formatUSD,
+  housingAtSalary,
   type FilingStatus,
   type Household,
 } from '@/engine';
@@ -213,25 +214,32 @@ export function Calculator({ initial }: CalculatorProps) {
     }
   }
 
-  /** Same idea for salary: an untouched rent should track what was entered. */
+  /**
+   * Same idea for salary: untouched housing should track what was entered.
+   *
+   * Rent used to be the only field that followed. A home price left at its
+   * prefill went stale the moment the salary moved — the hint underneath would
+   * read "$528,186 typical at this salary" while the box still held $439,464
+   * and the answer still priced the cheaper house, along with its mortgage,
+   * its property tax and its deduction.
+   */
   function changeSalary(state: CityFormState, setState: (s: CityFormState) => void) {
     return (grossSalary: number) => {
-      const household = { filingStatus, children };
-      const patch: Partial<CityFormState> = { grossSalary };
       if (state.metroId === '') {
-        setState({ ...state, ...patch });
+        setState({ ...state, grossSalary });
         return;
       }
-      if (
-        state.housing.tenure === 'rent' &&
-        state.housing.monthlyRent === defaultRent(state.metroId, state.grossSalary, household)
-      ) {
-        patch.housing = {
-          tenure: 'rent',
-          monthlyRent: defaultRent(state.metroId, grossSalary, household),
-        };
-      }
-      setState({ ...state, ...patch });
+      setState({
+        ...state,
+        grossSalary,
+        housing: housingAtSalary(
+          state.metroId,
+          state.housing,
+          state.grossSalary,
+          grossSalary,
+          { filingStatus, children },
+        ),
+      });
     };
   }
 
