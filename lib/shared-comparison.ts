@@ -40,6 +40,40 @@ export function comparisonFromShared(input: SharedComparison): ComparisonResult 
   );
 }
 
+const FILING_WORDS: Record<SharedComparison['filingStatus'], string> = {
+  single: 'Single',
+  marriedJointly: 'Married, jointly',
+  marriedSeparately: 'Married, separately',
+  headOfHousehold: 'Head of household',
+};
+
+/**
+ * The assumptions a result rests on, in one line: "Single · no children · renting".
+ *
+ * A figure like "+$8,967 a year" is meaningless without them — it is an answer
+ * for a particular household at a particular salary, and a card or a preview
+ * that shows only the answer invites the reader to apply it to themselves. This
+ * lives beside describeComparison so the picture and the words cannot disagree.
+ */
+export function describeHousehold(input: SharedComparison): string {
+  const children =
+    input.children === 0
+      ? 'no children'
+      : input.children === 1
+        ? '1 child'
+        : `${input.children} children`;
+
+  // The form moves both cities together, but the link format stores a tenure
+  // per city, so a hand-built link can legitimately differ. Say so rather than
+  // reporting whichever one happens to be first.
+  const from = input.origin.housing.tenure;
+  const to = input.destination.housing.tenure;
+  const word = (t: 'rent' | 'own') => (t === 'rent' ? 'renting' : 'buying');
+  const tenure = from === to ? word(from) : `${word(from)} → ${word(to)}`;
+
+  return `${FILING_WORDS[input.filingStatus]} · ${children} · ${tenure}`;
+}
+
 export interface ComparisonSummary {
   title: string;
   description: string;

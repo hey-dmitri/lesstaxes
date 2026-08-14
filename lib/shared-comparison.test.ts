@@ -2,7 +2,12 @@ import { describe, expect, it } from 'vitest';
 
 import { cardFilename, cardPath } from './share-card';
 import { decodeComparison, encodeComparison, type SharedComparison } from './share-link';
-import { comparisonFromShared, describeComparison, jurisdictionsFor } from './shared-comparison';
+import {
+  comparisonFromShared,
+  describeComparison,
+  describeHousehold,
+  jurisdictionsFor,
+} from './shared-comparison';
 
 const CHICAGO_TO_AUSTIN: SharedComparison = {
   datasetVersion: '2026.1',
@@ -37,6 +42,66 @@ describe('comparisonFromShared', () => {
     const viaLink = comparisonFromShared(decodeComparison(encodeComparison(CHICAGO_TO_AUSTIN)));
     expect(viaLink.delta).toBeCloseTo(direct.delta, 6);
     expect(viaLink.breakEvenSalary).toBeCloseTo(direct.breakEvenSalary, 6);
+  });
+});
+
+describe('describeHousehold', () => {
+  it('names the filing status, the children and the tenure', () => {
+    expect(describeHousehold(CHICAGO_TO_AUSTIN)).toBe('Single · no children · renting');
+  });
+
+  it('counts one child in the singular', () => {
+    expect(describeHousehold({ ...CHICAGO_TO_AUSTIN, children: 1 })).toContain('1 child ');
+    expect(describeHousehold({ ...CHICAGO_TO_AUSTIN, children: 2 })).toContain('2 children');
+  });
+
+  it('says buying when the housing is owned', () => {
+    const owning: SharedComparison = {
+      ...CHICAGO_TO_AUSTIN,
+      filingStatus: 'marriedJointly',
+      children: 2,
+      origin: {
+        ...CHICAGO_TO_AUSTIN.origin,
+        housing: {
+          tenure: 'own',
+          homePrice: 400_000,
+          downPayment: 0.2,
+          mortgageRate: 0.068,
+          propertyTaxRate: 0.019,
+        },
+      },
+      destination: {
+        ...CHICAGO_TO_AUSTIN.destination,
+        housing: {
+          tenure: 'own',
+          homePrice: 500_000,
+          downPayment: 0.2,
+          mortgageRate: 0.068,
+          propertyTaxRate: 0.017,
+        },
+      },
+    };
+    expect(describeHousehold(owning)).toBe('Married, jointly · 2 children · buying');
+  });
+
+  it('reports both when a link renders in one city and owns in the other', () => {
+    // The form moves the two together, but the wire format stores one tenure
+    // per city — so a hand-built link can differ, and saying only the first
+    // would misdescribe half the calculation.
+    const mixed: SharedComparison = {
+      ...CHICAGO_TO_AUSTIN,
+      destination: {
+        ...CHICAGO_TO_AUSTIN.destination,
+        housing: {
+          tenure: 'own',
+          homePrice: 500_000,
+          downPayment: 0.2,
+          mortgageRate: 0.068,
+          propertyTaxRate: 0.017,
+        },
+      },
+    };
+    expect(describeHousehold(mixed)).toContain('renting → buying');
   });
 });
 

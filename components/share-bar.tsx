@@ -18,7 +18,66 @@ interface Props {
 type CopyStatus = 'idle' | 'copied' | 'manual';
 type SaveStatus = 'idle' | 'saving' | 'saved' | 'failed';
 
-const buttonClass = 'rounded border px-3 py-1.5 text-[0.8rem] font-medium';
+const buttonClass =
+  'inline-flex items-center gap-2 rounded border px-3 py-1.5 text-[0.8rem] font-medium';
+
+/*
+ * Inline SVG rather than an icon font or a package: the site makes no
+ * third-party requests, and two glyphs are not worth a dependency. They are
+ * aria-hidden because the label beside each one already names the action —
+ * an icon that repeats the text is decoration, and announcing it twice is
+ * noise to a screen reader.
+ */
+const iconProps = {
+  width: 15,
+  height: 15,
+  viewBox: '0 0 24 24',
+  fill: 'none',
+  stroke: 'currentColor',
+  strokeWidth: 2,
+  strokeLinecap: 'round' as const,
+  strokeLinejoin: 'round' as const,
+  'aria-hidden': true,
+  className: 'shrink-0',
+};
+
+function LinkIcon() {
+  return (
+    <svg {...iconProps}>
+      <path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7" />
+      <path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7" />
+    </svg>
+  );
+}
+
+function ImageIcon() {
+  return (
+    <svg {...iconProps}>
+      <rect x="3" y="4" width="18" height="13" rx="2" />
+      <circle cx="8.5" cy="9" r="1.5" />
+      <path d="m21 14-4.5-4.5L7 19" />
+      <path d="M12 21h6" />
+    </svg>
+  );
+}
+
+function CheckIcon() {
+  return (
+    <svg {...iconProps}>
+      <path d="m4 12.5 5.5 5.5L20 6" />
+    </svg>
+  );
+}
+
+function AlertIcon() {
+  return (
+    <svg {...iconProps}>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M12 7.5v5.5" />
+      <path d="M12 16.5h.01" />
+    </svg>
+  );
+}
 
 export function ShareBar({ path, payload, slug, error }: Props) {
   const [copyStatus, setCopyStatus] = useState<CopyStatus>('idle');
@@ -84,19 +143,24 @@ export function ShareBar({ path, payload, slug, error }: Props) {
 
   const copyLabel =
     copyStatus === 'copied'
-      ? '✓ Link copied'
+      ? 'Link copied'
       : copyStatus === 'manual'
         ? 'Link is in the address bar'
         : 'Copy share link';
+
+  const copyIcon = copyStatus === 'copied' ? <CheckIcon /> : <LinkIcon />;
 
   const saveLabel =
     saveStatus === 'saving'
       ? 'Preparing…'
       : saveStatus === 'saved'
-        ? '✓ Saved to Downloads'
+        ? 'Saved to Downloads'
         : saveStatus === 'failed'
           ? 'Couldn’t save'
           : 'Save image';
+
+  const saveIcon =
+    saveStatus === 'saved' ? <CheckIcon /> : saveStatus === 'failed' ? <AlertIcon /> : <ImageIcon />;
 
   return (
     <div className="flex flex-col gap-1.5">
@@ -111,6 +175,7 @@ export function ShareBar({ path, payload, slug, error }: Props) {
             background: 'var(--surface)',
           }}
         >
+          {copyIcon}
           {copyLabel}
         </button>
         <button
@@ -134,6 +199,7 @@ export function ShareBar({ path, payload, slug, error }: Props) {
             background: 'var(--surface)',
           }}
         >
+          {saveIcon}
           {saveLabel}
         </button>
       </div>
@@ -141,8 +207,8 @@ export function ShareBar({ path, payload, slug, error }: Props) {
         {copyStatus === 'copied'
           ? 'Whoever opens it sees exactly these numbers — and the result shows up in the message itself.'
           : saveStatus === 'saved'
-            ? 'A picture of this result, ready to send.'
-            : 'The link carries every input and the data version. Nothing is stored.'}
+            ? 'The whole calculation as a picture: both salaries, both bottom lines and every line of the gap.'
+            : 'Link and image both carry the entire calculation and the data version. Nothing is stored.'}
       </span>
     </div>
   );
