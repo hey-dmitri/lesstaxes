@@ -240,11 +240,9 @@ export function Calculator({ initial }: CalculatorProps) {
           >
             {TAGLINE}
           </h1>
-          <p className="max-w-[64ch] text-[1rem] leading-snug" style={{ color: 'var(--ink-soft)' }}>
-            Put in the city you live in, the city you&rsquo;re considering and the salary on offer.
-            You get one number: what you&rsquo;d actually have left over each year, after income
-            tax, housing, property tax, cars and everyday costs &mdash; worked out the same way in
-            both places, then compared.
+          <p className="max-w-[52ch] text-[1.05rem] leading-snug" style={{ color: 'var(--ink-soft)' }}>
+            Pick two cities and a salary. See what you&rsquo;d have left over each year, after tax,
+            housing, cars and everyday costs.
           </p>
         </div>
 
