@@ -447,7 +447,7 @@ export function Calculator({ initial }: CalculatorProps) {
             style={{ borderColor: 'var(--rule)', color: 'var(--ink)' }}
           >
             <StepBadge n={4} done={revealed && Boolean(result)} />
-            {revealed && result ? 'Pack or stay' : 'Your answer'}
+            {revealed && result ? 'The verdict' : 'Your answer'}
           </h2>
 
           {revealed && result ? (
@@ -490,7 +490,7 @@ export function Calculator({ initial }: CalculatorProps) {
                       Where you&rsquo;re thinking of going
                     </Waiting>
                     <Waiting done={false} n={4}>
-                      Pack or stay
+                      The verdict
                     </Waiting>
                   </ul>
                 </>

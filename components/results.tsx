@@ -24,59 +24,26 @@ import { useCountUp } from '@/lib/use-count-up';
 const FEDERAL_ROWS = new Set(['federalTax', 'fica']);
 
 /**
- * The answer, shown as the subtraction it actually is.
+ * The answer in a word.
  *
- * Leading with the difference alone meant the reader met "$21,077" and
- * "45.8% more spare cash" before anything had told them what was being
- * measured — and "spare cash" is not a phrase anyone can price. Showing both
- * bottom lines first makes the term define itself: two numbers, and the gap
- * between them. Everything that explains or decomposes it is one click away
- * rather than competing with it.
- */
-/**
- * The verdict.
- *
- * The two city columns already end in their own leftover figures, so this panel
- * no longer repeats them — it states the difference, then immediately answers
- * the two questions that follow it: what salary would make this a wash, and
- * what single line is doing most of the work.
- */
-/**
- * The answer in a word, using the site's own two words.
- *
- * Both are always shown and the winning one is lit, so the reader sees the
- * question and its answer in the same glance rather than a lone word they have
- * to place. When the two cities are too close to separate, neither lights up —
- * that is a real answer as well, and dressing it as a narrow win would be
- * claiming a precision these figures do not have.
+ * This showed both words with the winner lit — "Pack or Stay", one green, one
+ * grey — on the theory that seeing the question beside its answer would help.
+ * It did the opposite: the reader met the site's name again where they were
+ * expecting a result, and had to work out which of the two was being said.
+ * The panel is already headed "The verdict". A verdict is one word.
  */
 function VerdictLine({ result }: { result: ComparisonResult }) {
   const v = verdict(result);
-  const word = 'font-display text-[2.1rem] font-bold leading-none tracking-[-0.03em]';
-  const lit = { color: 'var(--accent)' };
-  const dim = { color: 'var(--muted)' };
+  const tooClose = v.kind === 'too-close';
 
   return (
     <div className="flex flex-col gap-1.5">
-      <div className="flex items-baseline gap-2.5">
-        <span className={word} style={v.kind === 'pack' ? lit : dim}>
-          Pack
-        </span>
-        <span className="text-[0.95rem]" style={{ color: 'var(--muted)' }}>
-          or
-        </span>
-        <span className={word} style={v.kind === 'stay' ? lit : dim}>
-          Stay
-        </span>
-        {v.kind === 'too-close' && (
-          <span
-            className="rounded-full px-2.5 py-0.5 text-[0.75rem] font-semibold"
-            style={{ background: 'var(--surface-sunken)', color: 'var(--ink-soft)' }}
-          >
-            too close to call
-          </span>
-        )}
-      </div>
+      <span
+        className="font-display text-[2.4rem] font-bold leading-none tracking-[-0.035em]"
+        style={{ color: tooClose ? 'var(--ink-soft)' : 'var(--accent)' }}
+      >
+        {tooClose ? 'Too close to call' : v.kind === 'pack' ? 'Pack' : 'Stay'}
+      </span>
       <p className="text-[0.86rem] leading-snug" style={{ color: 'var(--ink-soft)' }}>
         {v.qualifier}
       </p>
@@ -84,6 +51,14 @@ function VerdictLine({ result }: { result: ComparisonResult }) {
   );
 }
 
+/**
+ * The evidence behind the verdict.
+ *
+ * The two city columns already end in their own leftover figures, so this does
+ * not repeat them — it states the difference, then answers the two questions
+ * that follow it: what salary would make this a wash, and which single line is
+ * doing most of the work.
+ */
 function Headline({ result, animate }: { result: ComparisonResult; animate: boolean }) {
   const better = result.delta >= 0;
   const rolled = useCountUp(result.delta, animate);
