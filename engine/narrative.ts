@@ -31,18 +31,22 @@ import type { ComparisonResult, USD } from './types';
 export const TOO_CLOSE_SHARE = 0.015;
 
 /**
- * What the threshold is a share OF: take-home pay in the city you live in now.
+ * What the threshold is a share OF: the salary you are paid today.
  *
- * Not leftover money, which is the obvious choice and the wrong one. Leftover
- * is at or below zero for a large share of real households, so a percentage of
- * it is undefined exactly where the answer matters most — and where it is
- * merely small, say $2,000, 1.5% comes to $30 a year, which would make the
- * verdict flip on noise. Take-home is always positive, always meaningful, and
- * scales the threshold to the size of the household's finances the way a
- * reader would expect: bigger money, bigger margin of error.
+ * Gross, not leftover and not take-home. Leftover is the obvious choice and
+ * the wrong one — it is at or below zero for a large share of real households,
+ * so a percentage of it is undefined exactly where the answer matters most.
+ * Take-home is always positive but it is a computed figure that moves with
+ * filing status and state, so the same salary would carry a different
+ * threshold in different cities and the rule would stop being one number the
+ * reader can check. Gross salary is the figure they typed in.
+ *
+ * The ORIGIN salary, because it is the fixed point everything else on the page
+ * is measured against — using the offer would make the threshold move every
+ * time they changed the number they are negotiating.
  */
 function tooCloseScale(result: ComparisonResult): USD {
-  return Math.max(1, result.origin.takeHome);
+  return Math.max(1, result.origin.grossSalary);
 }
 
 export interface Verdict {
@@ -69,7 +73,7 @@ export function verdict(result: ComparisonResult): Verdict {
       kind: 'too-close',
       threshold,
       qualifier:
-        `The gap is under ${(TOO_CLOSE_SHARE * 100).toFixed(1)}% of your take-home pay ` +
+        `The gap is under ${(TOO_CLOSE_SHARE * 100).toFixed(1)}% of your salary ` +
         `(${formatUSD(threshold)} a year) — closer than figures built on local medians can ` +
         `really tell apart.`,
     };

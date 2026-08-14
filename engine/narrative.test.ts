@@ -68,22 +68,27 @@ describe('verdict', () => {
     expect(verdict({ ...base, delta: -(t + 1) }).kind).toBe('stay');
   });
 
-  it('is 1.5% of take-home, so the margin grows with the money involved', () => {
-    const modest = run(CHICAGO, AUSTIN, 60_000);
-    const large = run(CHICAGO, AUSTIN, 400_000);
+  it('is 1.5% of gross salary, so the margin grows with the money involved', () => {
+    expect(verdict(run(CHICAGO, AUSTIN, 60_000)).threshold).toBeCloseTo(900, 6);
+    expect(verdict(run(CHICAGO, AUSTIN, 150_000)).threshold).toBeCloseTo(2_250, 6);
+    expect(verdict(run(CHICAGO, AUSTIN, 400_000)).threshold).toBeCloseTo(6_000, 6);
+  });
 
-    expect(verdict(modest).threshold).toBeCloseTo(modest.origin.takeHome * 0.015, 6);
-    expect(verdict(large).threshold).toBeCloseTo(large.origin.takeHome * 0.015, 6);
-    expect(verdict(large).threshold).toBeGreaterThan(verdict(modest).threshold);
+  it('measures against the salary you have now, not the one on offer', () => {
+    // Otherwise the bar would move every time the reader edited the number
+    // they are negotiating, which is the one input they are there to play with.
+    const same = verdict(run(CHICAGO, AUSTIN, 150_000, 150_000)).threshold;
+    expect(verdict(run(CHICAGO, AUSTIN, 150_000, 90_000)).threshold).toBeCloseTo(same, 6);
+    expect(verdict(run(CHICAGO, AUSTIN, 150_000, 260_000)).threshold).toBeCloseTo(same, 6);
   });
 
   it('has a usable threshold even when neither city leaves anything over', () => {
     // The obvious base — leftover money — is negative here, which is why the
-    // threshold is a share of take-home instead. A share of a negative number
+    // threshold is a share of gross instead. A share of a negative number
     // would have made this case nonsense rather than merely tight.
     const broke = run(CHICAGO, AUSTIN, 60_000, 60_000, family);
     expect(broke.origin.leftover).toBeLessThan(0);
-    expect(verdict(broke).threshold).toBeGreaterThan(0);
+    expect(verdict(broke).threshold).toBeCloseTo(900, 6);
     expect(['pack', 'stay', 'too-close']).toContain(verdict(broke).kind);
   });
 

@@ -205,15 +205,17 @@ answer          =  in your pocket THERE  −  in your pocket HERE`}</pre>
           There is a third answer, and it is the honest one more often than you would think. Every
           cost here is a <em>median</em> for the local area, and real households scatter widely
           around every one of them. So when the difference is smaller than{' '}
-          <strong>1.5% of your take-home pay in the city you live in now</strong>, neither word
-          lights up: the page says <em>too close to call</em> and shows you the figure anyway.
+          <strong>1.5% of the salary you are paid today</strong> &mdash; $2,250 a year on $150,000
+          &mdash; neither word lights up: the page says <em>too close to call</em> and shows you the
+          figure anyway.
         </p>
         <p>
-          That threshold is a share rather than a fixed amount because the uncertainty scales with
-          the household &mdash; a $300 gap means something different on $50,000 than on $400,000.
-          It is measured against take-home rather than against leftover money for a duller reason:
-          leftover is at or below zero for a great many real households, and a percentage of zero is
-          not a threshold at all.
+          A share rather than a fixed amount, because the uncertainty scales with the household: a
+          $300 gap means something different on $50,000 than on $400,000. A share of{' '}
+          <em>gross salary</em> rather than of leftover money, because leftover is at or below zero
+          for a great many real households and a percentage of zero is not a threshold at all. And
+          the salary you have now rather than the one on offer, so the bar does not move every time
+          you try a different number in the box you came here to experiment with.
         </p>
 
         <h2>Share links</h2>
