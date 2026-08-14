@@ -28,7 +28,9 @@
 import type { FilingStatus, Housing } from '@/engine';
 
 /**
- * 2 adds a state code per city, for the 43 metros that straddle a state line.
+ * 2 adds a state code per city, for the 43 metros that straddle a state line,
+ * and an earner count, because the Social Security wage base is a per-worker
+ * cap and the model had been applying it once per household.
  *
  * Version 1 links are still read: they simply carry no state, which decodes to
  * the metro's primary state — exactly what they computed with when they were
@@ -84,6 +86,8 @@ export interface SharedComparison {
   datasetVersion: string;
   filingStatus: FilingStatus;
   children: number;
+  /** How many people are earning. Absent on version 1 links, meaning one. */
+  earners?: number;
   origin: SharedCity;
   destination: SharedCity;
 }
@@ -293,6 +297,7 @@ export function encodeComparison(input: SharedComparison): string {
   w.uint(minor);
   w.uint(filing);
   w.uint(input.children);
+  w.uint(Math.max(1, Math.floor(input.earners ?? 1)));
   writeCity(w, input.origin);
   writeCity(w, input.destination);
 
@@ -330,6 +335,8 @@ export function decodeComparison(payload: string): SharedComparison {
   if (!filingStatus) throw new Error('share link names an unknown filing status');
 
   const children = r.uint();
+  // Version 1 has no earner count; one is what those links computed with.
+  const earners = format >= 2 ? Math.max(1, r.uint()) : 1;
   const origin = readCity(r, format);
   const destination = readCity(r, format);
 
@@ -339,6 +346,7 @@ export function decodeComparison(payload: string): SharedComparison {
     datasetVersion: `${year}.${minor}`,
     filingStatus,
     children,
+    earners,
     origin,
     destination,
   };

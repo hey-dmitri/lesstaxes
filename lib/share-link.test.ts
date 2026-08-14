@@ -21,8 +21,10 @@ const RENTING: SharedComparison = {
   datasetVersion: '2026.1',
   filingStatus: 'single',
   children: 0,
+  earners: 1,
   origin: {
     metroId: '16980',
+    stateCode: undefined,
     grossSalary: 150_000,
     cars: 1,
     localOptIns: NO_OPT_INS,
@@ -30,6 +32,7 @@ const RENTING: SharedComparison = {
   },
   destination: {
     metroId: '12420',
+    stateCode: undefined,
     grossSalary: 125_000,
     cars: 1,
     localOptIns: NO_OPT_INS,
@@ -41,8 +44,10 @@ const OWNING: SharedComparison = {
   datasetVersion: '2026.1',
   filingStatus: 'marriedJointly',
   children: 3,
+  earners: 2,
   origin: {
     metroId: '35620',
+    stateCode: 'NY',
     grossSalary: 240_000,
     cars: 0,
     localOptIns: { nyc: true, yonkers: false },
@@ -50,6 +55,7 @@ const OWNING: SharedComparison = {
   },
   destination: {
     metroId: 'rest-of-MT',
+    stateCode: undefined,
     grossSalary: 180_000,
     cars: 3,
     localOptIns: NO_OPT_INS,

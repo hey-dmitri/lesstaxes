@@ -65,7 +65,22 @@ export interface CityInputs {
 /** Everything that is the same in both cities. */
 export interface Household {
   filingStatus: FilingStatus;
+  /**
+   * Children under 17 who live with you.
+   *
+   * Under 17 is the Child Tax Credit's own test. The EITC counts a slightly
+   * wider group (under 19, or under 24 in full-time education), so using this
+   * one number for both is deliberately the conservative reading: a household
+   * with an 18-year-old is credited less than it is owed, never more.
+   */
   children: number;
+  /**
+   * How many people in the household are earning.
+   *
+   * Only affects Social Security, whose wage base is a per-worker cap. Absent
+   * means one, which is what every link made before this existed carries.
+   */
+  earners?: number;
 }
 
 export interface ComparisonInputs {

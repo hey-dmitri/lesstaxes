@@ -195,6 +195,38 @@ answer          =  in your pocket THERE  −  in your pocket HERE`}</pre>
           food. Expect this line to be small: a few hundred dollars a year, not thousands.
         </p>
 
+        <h2>Credits, and who counts as an earner</h2>
+        <p>
+          Two federal credits are applied. The <strong>Child Tax Credit</strong> is $2,200 per
+          child under 17, partly refundable, phasing out above $200,000 (or $400,000 filing
+          jointly). The <strong>Earned Income Tax Credit</strong> is fully refundable and worth up
+          to $8,231 &mdash; for a low-income family with children it is the largest single figure
+          in the whole federal calculation. It was missing entirely until August 2026, which
+          understated what a household on around $18,000 with two children actually has by
+          $7,316 a year.
+        </p>
+        <p>
+          The children question asks for children <em>under 17</em> because that is the Child Tax
+          Credit&rsquo;s own test. The EITC counts a slightly wider group &mdash; under 19, or
+          under 24 in full-time education &mdash; so a household with an older teenager is
+          credited less here than it is owed, never more. Living costs use the same number, so
+          that household&rsquo;s grocery bill is understated too.
+        </p>
+        <p>
+          Married couples are asked <strong>how many of them earn</strong>. Social Security is
+          capped at the first $184,500 of each <em>person&rsquo;s</em> wages, so a household on
+          $300,000 owes $18,600 when two people earn it and $11,439 when one does. The engine used
+          to apply that cap once to the household total, understating two-earner couples by
+          $7,161. Where two earn, the split is assumed to be even; a lopsided split owes less.
+        </p>
+        <p>
+          What is still not asked: your age, whether each child meets the residency and
+          relationship tests, and whether you have investment income. The childless EITC therefore
+          assumes you are 25 to 64 (it is worth at most $664), children are assumed to qualify,
+          and the $12,200 investment-income disqualification never bites. State EITCs are not
+          modelled at all, and around thirty states have one.
+        </p>
+
         <h2>Metro areas that cross a state line</h2>
         <p>
           43 of the 438 locations here straddle at least one state border. &ldquo;New
@@ -264,9 +296,19 @@ answer          =  in your pocket THERE  −  in your pocket HERE`}</pre>
             which understates all of them.
           </li>
           <li>
-            <strong>Social Security is capped once per household, not per worker.</strong> For a
-            couple who each earn well, this understates what they pay. It is federal, so it mostly
-            cancels out of the comparison.
+            <strong>Where two people earn, the split is assumed to be even.</strong> A lopsided
+            split puts more of the total under one person&rsquo;s Social Security cap and owes
+            less. Two equal earners is the case this gets exactly right.
+          </li>
+          <li>
+            <strong>No state Earned Income Credits.</strong> Around thirty states, and New York
+            City, add their own on top of the federal one, usually as a percentage of it. None are
+            modelled, so low-income households in those states are understated further.
+          </li>
+          <li>
+            <strong>Children are assumed to qualify.</strong> The form asks how many are under 17
+            and takes the answer at face value; it never asks about residency, relationship or a
+            Social Security number, all of which the credits actually require.
           </li>
           <li>
             <strong>Alabama, Missouri and Oregon let you deduct federal tax</strong> from state

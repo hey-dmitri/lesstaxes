@@ -35,7 +35,11 @@ export function comparisonFromShared(input: SharedComparison): ComparisonResult 
   return compare(
     {
       datasetVersion: input.datasetVersion,
-      household: { filingStatus: input.filingStatus, children: input.children },
+      household: {
+        filingStatus: input.filingStatus,
+        children: input.children,
+        earners: input.earners,
+      },
       origin: input.origin,
       destination: input.destination,
     },

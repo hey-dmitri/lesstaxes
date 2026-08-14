@@ -27,6 +27,11 @@
       "citation": "SSA Contribution and Benefit Base 2026; Medicare rates and Additional Medicare Tax thresholds are statutory under IRC 3101 and are NOT inflation-indexed",
       "url": "https://www.ssa.gov/oact/cola/cbb.html",
       "confidence": "primary"
+    },
+    "earnedIncomeCredit": {
+      "citation": "IRS Rev. Proc. 2025-32, Section 2.06, page 15 (Earned Income Credit table); credit and phase-out percentages are statutory under IRC 32(b)(1) and are not inflation-indexed. Every published amount in the table is reproduced exactly by those percentages, which is how the transcription was verified.",
+      "url": "https://www.irs.gov/pub/irs-drop/rp-25-32.pdf",
+      "confidence": "primary"
     }
   },
   "brackets": {
@@ -168,6 +173,72 @@
     },
     "phaseOutPerThousand": 50,
     "_note": "Credit reduces by $50 for each $1,000 (or fraction) of MAGI above the threshold."
+  },
+  "earnedIncomeCredit": {
+    "_note": "Earned Income Tax Credit. Phases IN at creditRate on earned income up to earnedIncomeAmount, sits at maxCredit, then phases OUT at phaseOutRate on income above thresholdPhaseOut. The published maxCredit and completedPhaseOut figures are reproduced exactly by these rates, which is how the transcription was checked: earnedIncomeAmount * creditRate = maxCredit, and thresholdPhaseOut + maxCredit / phaseOutRate = completedPhaseOut, for all eight combinations.",
+    "investmentIncomeLimit": 12200,
+    "byChildren": [
+      {
+        "children": 0,
+        "earnedIncomeAmount": 8680,
+        "maxCredit": 664,
+        "creditRate": 0.0765,
+        "phaseOutRate": 0.0765,
+        "thresholdPhaseOut": {
+          "marriedJointly": 18140,
+          "other": 10860
+        },
+        "completedPhaseOut": {
+          "marriedJointly": 26820,
+          "other": 19540
+        }
+      },
+      {
+        "children": 1,
+        "earnedIncomeAmount": 13020,
+        "maxCredit": 4427,
+        "creditRate": 0.34,
+        "phaseOutRate": 0.1598,
+        "thresholdPhaseOut": {
+          "marriedJointly": 31160,
+          "other": 23890
+        },
+        "completedPhaseOut": {
+          "marriedJointly": 58863,
+          "other": 51593
+        }
+      },
+      {
+        "children": 2,
+        "earnedIncomeAmount": 18290,
+        "maxCredit": 7316,
+        "creditRate": 0.4,
+        "phaseOutRate": 0.2106,
+        "thresholdPhaseOut": {
+          "marriedJointly": 31160,
+          "other": 23890
+        },
+        "completedPhaseOut": {
+          "marriedJointly": 65899,
+          "other": 58629
+        }
+      },
+      {
+        "children": 3,
+        "earnedIncomeAmount": 18290,
+        "maxCredit": 8231,
+        "creditRate": 0.45,
+        "phaseOutRate": 0.2106,
+        "thresholdPhaseOut": {
+          "marriedJointly": 31160,
+          "other": 23890
+        },
+        "completedPhaseOut": {
+          "marriedJointly": 70244,
+          "other": 62974
+        }
+      }
+    ]
   },
   "saltCap": {
     "cap": {

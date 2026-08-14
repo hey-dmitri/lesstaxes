@@ -28,14 +28,35 @@ const FILING_OPTIONS: Array<{ value: FilingStatus; label: string }> = [
   { value: 'headOfHousehold', label: 'head of household' },
 ];
 
+/*
+ * "Under 17" is the Child Tax Credit's own test, and saying so is the point:
+ * the form used to ask for "children" and then hand every one of them a full
+ * credit, including the 19-year-old at university. The Earned Income Credit
+ * counts a slightly wider group, so one number for both is the conservative
+ * reading — a household with an older teenager is credited less than it is
+ * owed, never more.
+ */
 const CHILD_OPTIONS = [
-  { value: '0', label: 'no children' },
-  { value: '1', label: '1 child' },
-  { value: '2', label: '2 children' },
-  { value: '3', label: '3 children' },
-  { value: '4', label: '4 children' },
-  { value: '5', label: '5 children' },
+  { value: '0', label: 'no children under 17' },
+  { value: '1', label: '1 child under 17' },
+  { value: '2', label: '2 children under 17' },
+  { value: '3', label: '3 children under 17' },
+  { value: '4', label: '4 children under 17' },
+  { value: '5', label: '5 children under 17' },
 ];
+
+/*
+ * Only asked of couples. The Social Security wage base is a per-worker cap, so
+ * a household on $300,000 owes $7,161 more when two people earn it than when
+ * one does — and that gap does not cancel out of a comparison where the salary
+ * changes, which is most of them.
+ */
+const EARNER_OPTIONS = [
+  { value: '1', label: 'one of us earns' },
+  { value: '2', label: 'we both earn' },
+];
+
+const MARRIED: FilingStatus[] = ['marriedJointly', 'marriedSeparately'];
 
 const TENURE_OPTIONS = [
   { value: 'rent', label: 'rent' },
@@ -112,6 +133,7 @@ export function Calculator({ initial }: CalculatorProps) {
     initial?.filingStatus ?? 'single',
   );
   const [children, setChildren] = useState(initial?.children ?? 0);
+  const [earners, setEarners] = useState(initial?.earners ?? 1);
 
   /*
    * Renting or buying is a household fact, not a city fact — the sentence says
@@ -150,6 +172,7 @@ export function Calculator({ initial }: CalculatorProps) {
         datasetVersion: DATASET_VERSION,
         filingStatus,
         children,
+        earners,
         origin,
         destination,
       });
@@ -157,7 +180,7 @@ export function Calculator({ initial }: CalculatorProps) {
     } catch (e) {
       return { payload: '', path: '', error: e instanceof Error ? e.message : 'unknown problem' };
     }
-  }, [filingStatus, children, origin, destination, bothChosen]);
+  }, [filingStatus, children, earners, origin, destination, bothChosen]);
 
   /**
    * Re-derive the fields that depend on the household, but only where the user
@@ -169,6 +192,9 @@ export function Calculator({ initial }: CalculatorProps) {
   function applyHousehold(nextStatus: FilingStatus, nextChildren: number) {
     setFilingStatus(nextStatus);
     setChildren(nextChildren);
+    // One person cannot be two earners. Leaving a stale 2 behind would keep
+    // charging the household two Social Security caps after they said single.
+    if (!MARRIED.includes(nextStatus)) setEarners(1);
 
     for (const [state, setState] of [
       [origin, setOrigin],
@@ -245,7 +271,7 @@ export function Calculator({ initial }: CalculatorProps) {
     };
   }
 
-  const household: Household = { filingStatus, children };
+  const household: Household = { filingStatus, children, earners };
   const sameCity = bothChosen && origin.metroId === destination.metroId;
 
   // The result exists the moment the inputs do — there is nothing to wait for.
@@ -274,7 +300,7 @@ export function Calculator({ initial }: CalculatorProps) {
       },
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [origin, destination, filingStatus, children, sameCity, bothChosen]);
+  }, [origin, destination, filingStatus, children, earners, sameCity, bothChosen]);
 
   function onCompare() {
     setRevealed(true);
@@ -342,7 +368,19 @@ export function Calculator({ initial }: CalculatorProps) {
               onChange={(next: string) => applyHousehold(filingStatus, Number(next))}
               options={CHILD_OPTIONS}
             />
-            , and I&rsquo;d{' '}
+            ,{' '}
+            {MARRIED.includes(filingStatus) && (
+              <>
+                <InlineSelect
+                  label="How many of you earn"
+                  value={String(earners)}
+                  onChange={(next: string) => setEarners(Number(next))}
+                  options={EARNER_OPTIONS}
+                />
+                ,{' '}
+              </>
+            )}
+            and I&rsquo;d{' '}
             <InlineSelect
               label="Housing"
               value={tenure}

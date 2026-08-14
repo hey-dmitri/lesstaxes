@@ -13,7 +13,7 @@
 import { datasetBundle } from '../datasets';
 import type { FilingStatus, USD } from '../types';
 import type { Bracket } from './brackets';
-import type { FederalRules } from './federal';
+import type { EitcRules, FederalRules } from './federal';
 import type { FicaRules } from './fica';
 import type { StateTaxRules } from './state';
 
@@ -24,6 +24,10 @@ export function federalRules(version?: string): FederalRules {
     standardDeduction: federal.standardDeduction,
     saltCap: federal.saltCap,
     childTaxCredit: federal.childTaxCredit,
+    // Absent on releases cut before the EITC was modelled, and the engine
+    // treats that as "no credit" so those links keep reproducing exactly what
+    // they showed when they were shared.
+    earnedIncomeCredit: (federal as { earnedIncomeCredit?: EitcRules }).earnedIncomeCredit,
   };
 }
 

@@ -84,7 +84,7 @@ export function computeCity(
   const gross = Math.max(0, city.grossSalary);
 
   // 1. FICA
-  const fica = computeFica(gross, household.filingStatus, ficaRules(version));
+  const fica = computeFica(gross, household.filingStatus, ficaRules(version), household.earners);
 
   // 2. Housing — produces the tax inputs the federal step needs
   const housing = computeHousing({

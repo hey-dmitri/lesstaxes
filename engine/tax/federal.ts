@@ -24,11 +24,31 @@ export interface ChildTaxCreditRules {
   phaseOutPerThousand: USD;
 }
 
+/** One row of the published EITC table, for a given number of children. */
+export interface EitcBand {
+  children: number;
+  /** Earned income at which the credit reaches its maximum. */
+  earnedIncomeAmount: USD;
+  maxCredit: USD;
+  creditRate: Rate;
+  phaseOutRate: Rate;
+  thresholdPhaseOut: { marriedJointly: USD; other: USD };
+  completedPhaseOut: { marriedJointly: USD; other: USD };
+}
+
+export interface EitcRules {
+  investmentIncomeLimit: USD;
+  /** Indexed 0..3, where 3 means "three or more". */
+  byChildren: EitcBand[];
+}
+
 export interface FederalRules {
   brackets: Record<FilingStatus, Bracket[]>;
   standardDeduction: Record<FilingStatus, USD>;
   saltCap: SaltRules;
   childTaxCredit: ChildTaxCreditRules;
+  /** Absent on releases cut before the EITC was modelled. */
+  earnedIncomeCredit?: EitcRules;
 }
 
 export interface FederalInputs {
@@ -56,6 +76,8 @@ export interface FederalResult {
   taxableIncome: USD;
   taxBeforeCredits: USD;
   childTaxCredit: USD;
+  /** Earned Income Tax Credit. Fully refundable. */
+  earnedIncomeCredit: USD;
   /** Negative means a net refund. */
   tax: USD;
 }
@@ -100,6 +122,67 @@ export function childTaxCreditFor(
   const reduction = thousandsOver * rules.phaseOutPerThousand;
 
   return Math.max(0, full - reduction);
+}
+
+/**
+ * The Earned Income Tax Credit.
+ *
+ * Fully refundable, and for a low-income family with children it is the single
+ * largest number in the whole federal calculation — up to $8,231 in 2026. The
+ * engine did not model it at all, so a head of household on $18,290 with two
+ * children was shown a $2,369 refund when the real figure is that plus $7,316.
+ * Leaving out a credit that large does not merely make the estimate imprecise,
+ * it inverts what "money left over" means for the households least able to
+ * absorb a wrong answer.
+ *
+ * A trapezoid: it phases IN at creditRate on every dollar earned, sits flat at
+ * maxCredit, then phases OUT at phaseOutRate above the threshold. The plateau
+ * and the phase-out start at different incomes, which is why both have to be
+ * tracked separately rather than derived from one another.
+ *
+ * ASSUMPTIONS, all of which the methodology page states:
+ *   - Wage income only, so earned income and AGI are the same figure. That is
+ *     already true of the rest of this engine.
+ *   - No investment income, so the $12,200 disqualification never bites.
+ *   - The childless credit assumes the filer is 25 to 64, which §32(c)(1)(A)
+ *     requires and this site never asks. It is worth at most $664.
+ *   - Married filing separately generally cannot claim it, and does not here.
+ */
+export function earnedIncomeCreditFor(
+  earnedIncome: USD,
+  filingStatus: FilingStatus,
+  children: number,
+  rules: EitcRules | undefined,
+): USD {
+  if (!rules) return 0; // release predates the credit being modelled
+
+  // Separate filers are barred by §32(d) outside narrow circumstances this
+  // site cannot ask about, so claiming it for them would be the wrong default.
+  if (filingStatus === 'marriedSeparately') return 0;
+
+  const income = Math.max(0, earnedIncome);
+  const band = rules.byChildren[Math.min(3, Math.max(0, Math.floor(children)))];
+  if (!band) return 0;
+
+  const key = filingStatus === 'marriedJointly' ? 'marriedJointly' : 'other';
+  const threshold = band.thresholdPhaseOut[key];
+
+  /*
+   * On the plateau, use the PUBLISHED maximum rather than recomputing it.
+   * Three or more children is 18,290 x 45% = 8,230.50, which the IRS rounds up
+   * to the 8,231 printed in the table and paid by the Form 1040 tables. Half a
+   * dollar is nothing; reproducing the published figure exactly is not, because
+   * it is the only way a reader can check this against the source.
+   */
+  const credit =
+    income >= band.earnedIncomeAmount
+      ? band.maxCredit
+      : Math.min(income * band.creditRate, band.maxCredit);
+
+  if (income <= threshold) return credit;
+
+  const reduction = (income - threshold) * band.phaseOutRate;
+  return Math.max(0, Math.min(credit, band.maxCredit - reduction));
 }
 
 export function computeFederal(
@@ -155,6 +238,16 @@ export function computeFederal(
 
   const childTaxCredit = nonRefundableUsed + refundable;
 
+  // --- Earned Income Tax Credit --------------------------------------------
+  // Fully refundable, so it comes off the liability whether or not there is
+  // any tax left to offset. Wage income only, so earned income is the salary.
+  const earnedIncomeCredit = earnedIncomeCreditFor(
+    magi,
+    filingStatus,
+    children,
+    rules.earnedIncomeCredit,
+  );
+
   return {
     saltCapApplied,
     saltDeducted,
@@ -165,6 +258,7 @@ export function computeFederal(
     taxableIncome,
     taxBeforeCredits,
     childTaxCredit,
-    tax: taxBeforeCredits - childTaxCredit,
+    earnedIncomeCredit,
+    tax: taxBeforeCredits - childTaxCredit - earnedIncomeCredit,
   };
 }

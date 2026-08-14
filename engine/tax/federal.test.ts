@@ -212,10 +212,16 @@ describe('child tax credit in the full computation', () => {
       RULES,
     );
     // Refundable portion is capped at 15% of earned income over $2,500.
+    // Stated against the child credit itself rather than against final tax,
+    // because the EITC also reduces tax and would otherwise be attributed to
+    // the ACTC by a test that only looks at the bottom line.
     const actcLimit = 0.15 * (30_000 - 2_500);
-    expect(result.tax).toBeGreaterThanOrEqual(result.taxBeforeCredits - result.childTaxCredit - 0.01);
     expect(result.childTaxCredit).toBeLessThanOrEqual(
       result.taxBeforeCredits + actcLimit + 0.01,
+    );
+    expect(result.tax).toBeCloseTo(
+      result.taxBeforeCredits - result.childTaxCredit - result.earnedIncomeCredit,
+      6,
     );
   });
 });
@@ -232,12 +238,31 @@ describe('sanity properties', () => {
     expect(joint.tax).toBeLessThan(single.tax);
   });
 
-  it('tax rises monotonically with salary', () => {
+  it('tax rises monotonically with salary above the EITC range', () => {
+    // Deliberately starts above the credit. Federal tax is genuinely NOT
+    // monotonic below it: while the EITC phases in, each extra dollar earned
+    // brings up to 45 cents of credit with it, so net tax falls as income
+    // rises. That is the real law, not a modelling artefact.
     let previous = -Infinity;
-    for (let salary = 0; salary <= 900_000; salary += 10_000) {
+    for (let salary = 80_000; salary <= 900_000; salary += 10_000) {
       const { tax } = computeFederal(renter({ grossSalary: salary }), RULES);
       expect(tax).toBeGreaterThanOrEqual(previous);
       previous = tax;
+    }
+  });
+
+  it('take-home still rises with salary throughout the EITC range', () => {
+    // The property that actually has to hold: earning another dollar must
+    // never leave you with less. The break-even solver binary-searches on it.
+    let previous = -Infinity;
+    for (let salary = 0; salary <= 80_000; salary += 250) {
+      const { tax } = computeFederal(
+        renter({ grossSalary: salary, filingStatus: 'headOfHousehold', children: 3 }),
+        RULES,
+      );
+      const afterTax = salary - tax;
+      expect(afterTax).toBeGreaterThanOrEqual(previous);
+      previous = afterTax;
     }
   });
 

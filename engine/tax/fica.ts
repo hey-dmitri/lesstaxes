@@ -25,36 +25,45 @@ export interface FicaResult {
 /**
  * Compute the employee share of FICA on wage income.
  *
- * KNOWN LIMITATION — single-earner assumption:
- * The Social Security wage base is a PER-WORKER cap, but this app collects a
- * single household salary figure (PROJECT.md D3) and therefore applies the cap
- * once, as though one person earned it all.
+ * THE SOCIAL SECURITY CAP IS PER WORKER, NOT PER HOUSEHOLD.
  *
- * For a married couple earning $250,000 split evenly, each spouse is below the
- * base, so real Social Security tax is 6.2% of the full $250,000. Treating it
- * as one earner caps it at the wage base and understates the tax by roughly
- * $4,000.
+ * This engine takes one household salary figure (PROJECT.md D3), and it used
+ * to apply the wage-base cap to that figure once, as though a single person
+ * had earned all of it. For a couple on $300,000 split between two jobs that
+ * understated Social Security tax by $7,161 a year: the model charged $11,439
+ * where two earners each below the base owe 6.2% of the whole $300,000, or
+ * $18,600.
  *
- * This is accepted because:
- *   - the common case for this tool is one person weighing one job offer;
- *   - FICA is federal, so the error is nearly identical in both cities and
- *     very largely cancels out of the headline comparison.
+ * The defence used to be that FICA is federal so the error cancels out of the
+ * comparison. That only holds when the salary is the same on both sides, and
+ * changing the salary is the central thing this tool is for.
  *
- * It is disclosed on the methodology page.
+ * So the household now says how many people are earning, and the wage base is
+ * applied to each of them. The split is assumed EVEN, which is the strongest
+ * assumption here: an uneven split pushes more of the total under one person's
+ * cap and owes less. Two equal earners is the case the assumption is exactly
+ * right for and the one people mean when they say "we both work".
+ *
+ * Medicare is unaffected — it has no cap — and the Additional Medicare Tax
+ * threshold is a per-RETURN figure, so it stays on the household total.
  */
 export function computeFica(
   wages: USD,
   filingStatus: FilingStatus,
   rules: FicaRules,
+  earners = 1,
 ): FicaResult {
   const taxableWages = Math.max(0, wages);
+  const workers = Math.max(1, Math.floor(earners));
 
+  const perWorker = taxableWages / workers;
   const socialSecurity =
-    Math.min(taxableWages, rules.socialSecurityWageBase) * rules.socialSecurityRate;
+    Math.min(perWorker, rules.socialSecurityWageBase) * rules.socialSecurityRate * workers;
 
   // Medicare has no wage cap.
   const medicare = taxableWages * rules.medicareRate;
 
+  // Per RETURN, not per worker — a joint return has one threshold.
   const threshold = rules.additionalMedicareThreshold[filingStatus];
   const additionalMedicare =
     Math.max(0, taxableWages - threshold) * rules.additionalMedicareRate;
