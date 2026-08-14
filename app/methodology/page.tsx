@@ -195,6 +195,30 @@ answer          =  in your pocket THERE  −  in your pocket HERE`}</pre>
           food. Expect this line to be small: a few hundred dollars a year, not thousands.
         </p>
 
+        <h2>Metro areas that cross a state line</h2>
+        <p>
+          43 of the 438 locations here straddle at least one state border. &ldquo;New
+          York&ndash;Newark&ndash;Jersey City&rdquo; is New York and New Jersey. Philadelphia is
+          Pennsylvania, New Jersey, Delaware and Maryland. Washington is DC, Virginia, Maryland and
+          West Virginia. Portland is Oregon and Washington &mdash; one of those has an income tax
+          and no sales tax, the other the reverse.
+        </p>
+        <p>
+          For those metros the calculator asks <strong>which state you live in</strong>, and that
+          answer drives the state income tax, the sales tax rate, and which city income taxes can
+          reach you. Until August 2026 it did not ask: each metro was reduced to one state, so
+          someone in Newark was quoted New York&rsquo;s income tax <em>and</em> New York
+          City&rsquo;s resident tax &mdash; about $6,100 a year too much at $150,000, enough to
+          reverse the verdict.
+        </p>
+        <p>
+          What the state choice does <em>not</em> change is housing and living costs. The Census
+          publishes rent, home values and vehicle ownership for the metro as a whole and not for
+          each state&rsquo;s slice of it, so a Newark household is still quoted the whole New York
+          metro&rsquo;s rent. That is a real limitation and it is not fixable from public data at
+          this geography. Rent is editable; if you know your number, use it.
+        </p>
+
         <h2>Pack, stay, or too close to call</h2>
         <p>
           The one-word verdict is the sign of that final difference, and nothing more. It is about

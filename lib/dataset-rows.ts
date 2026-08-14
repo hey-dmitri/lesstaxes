@@ -30,6 +30,8 @@ export interface DatasetRow {
   label: string;
   detail: string;
   state: string;
+  /** Every state the metro touches. More than one for 43 of them. */
+  states: string[];
   isRural: boolean;
   /** Metro-wide median across all unit sizes — the raw published figure. */
   rent: number;
@@ -64,8 +66,14 @@ export const DATASET_ROWS: DatasetRow[] = allMetros().map((m) => {
   return {
     id: m.id,
     label: m.shortName,
-    detail: m.type === 'restOfState' ? 'Rural fallback — statewide figures' : m.name,
+    detail:
+      m.type === 'restOfState'
+        ? 'Rural fallback — statewide figures'
+        : m.states.length > 1
+          ? `${m.name} — crosses a state line, so the calculator asks which of ${m.states.join(', ')} you live in`
+          : m.name,
     state: m.primaryState,
+    states: m.states,
     isRural: m.type === 'restOfState',
     rent: housing.medianRentMonthly,
     rent1br: housing.rentByBedrooms[1],
@@ -86,7 +94,7 @@ export const DATASET_ROWS: DatasetRow[] = allMetros().map((m) => {
     localTax: locals.length
       ? locals.map((l) => localJurisdiction(l.jurisdictionId).name).join(' / ')
       : null,
-    search: `${m.shortName} ${m.name} ${m.primaryState}`.toLowerCase(),
+    search: `${m.shortName} ${m.name} ${m.states.join(' ')}`.toLowerCase(),
   };
 });
 

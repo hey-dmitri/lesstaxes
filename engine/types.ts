@@ -48,6 +48,14 @@ export type Housing = RentHousing | OwnHousing;
 export interface CityInputs {
   /** CBSA code, or a synthetic id for a "rest of <state>" region. */
   metroId: string;
+  /**
+   * Which state within the metro you actually live in.
+   *
+   * Only meaningful for the 43 locations that straddle a state line. Absent
+   * means the metro's primary state, which is what every link made before this
+   * existed carries.
+   */
+  stateCode?: string;
   grossSalary: USD;
   housing: Housing;
   /** Defaults to metro vehicles-per-adult x adults; user-adjustable. */
@@ -121,6 +129,8 @@ export interface LivingBreakdown {
 /** The full picture for one city. */
 export interface CityResult {
   metroId: string;
+  /** The state actually used for income tax and sales tax. */
+  stateCode: string;
   grossSalary: USD;
   tax: TaxBreakdown;
   housing: HousingBreakdown;

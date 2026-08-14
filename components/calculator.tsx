@@ -12,7 +12,6 @@ import { ACTION, TAGLINE } from '@/lib/site';
 import {
   compare,
   DATASET_VERSION,
-  metro,
   type CityResult,
   defaultCarCount,
   defaultRent,
@@ -57,6 +56,7 @@ const DEFAULT_SALARY = 150_000;
 function emptyCity(): CityFormState {
   return {
     metroId: '',
+    stateCode: undefined,
     grossSalary: DEFAULT_SALARY,
     cars: 0,
     housing: { tenure: 'rent', monthlyRent: 0 },
@@ -76,9 +76,11 @@ export interface CalculatorProps {
  * before living costs, which is what makes the column's next two lines legible
  * as a subtraction rather than as three unrelated figures.
  */
-function takeHomeNote(metroId: string, result: CityResult | null) {
+function takeHomeNote(result: CityResult | null) {
   if (!result) return null;
-  const state = metro(metroId).primaryState;
+  // The state they actually live in, which for a metro that crosses a state
+  // line is not necessarily the one in the metro's name.
+  const state = result.stateCode;
   const parts = ['Federal income tax', 'FICA'];
   if (result.tax.state > 0) parts.push(`${state} tax`);
   if (result.tax.local > 0) parts.push('local tax');
@@ -381,7 +383,7 @@ export function Calculator({ initial }: CalculatorProps) {
             salaryLabel="Salary here"
             salaryHint="a year, gross"
             result={result?.origin ?? null}
-            takeHomeNote={takeHomeNote(origin.metroId, result?.origin ?? null)}
+            takeHomeNote={takeHomeNote(result?.origin ?? null)}
           />
           <CityPanel
             title="The offer"
@@ -394,7 +396,7 @@ export function Calculator({ initial }: CalculatorProps) {
             onChange={setDestination}
             onSalaryChange={changeSalary(destination, setDestination)}
             result={result?.destination ?? null}
-            takeHomeNote={takeHomeNote(destination.metroId, result?.destination ?? null)}
+            takeHomeNote={takeHomeNote(result?.destination ?? null)}
             salaryLabel="Salary offered"
             salaryHint={
               destination.grossSalary !== origin.grossSalary

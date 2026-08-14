@@ -319,8 +319,11 @@ export function biggestReason(
   const row = result.breakdown[0];
   if (!row) return null;
 
-  const to = metro(result.destination.metroId);
-  const from = metro(result.origin.metroId);
+  // The states actually used, not the metros' primary states — for a metro
+  // that crosses a state line those can differ, and naming the wrong one in a
+  // sentence about state income tax is the whole bug this guards against.
+  const toState = result.destination.stateCode;
+  const fromState = result.origin.stateCode;
   const amount = formatUSD(Math.abs(row.delta));
   const better = row.delta >= 0;
 
@@ -335,8 +338,8 @@ export function biggestReason(
         delta: row.delta,
         sentence:
           result.destination.tax.state === 0
-            ? `${from.primaryState} income tax, which ${to.primaryState} doesn’t charge.`
-            : `State income tax is ${amount} ${better ? 'lower' : 'higher'} in ${to.primaryState}.`,
+            ? `${fromState} income tax, which ${toState} doesn’t charge.`
+            : `State income tax is ${amount} ${better ? 'lower' : 'higher'} in ${toState}.`,
       };
     case 'localTax':
       return {

@@ -13,6 +13,7 @@ import {
   formatUSD,
   metro,
   resolveLocalJurisdictions,
+  resolveStateCode,
   percentIsMeaningful,
   type ComparisonResult,
 } from '@/engine';
@@ -20,7 +21,14 @@ import type { SharedCity, SharedComparison } from '@/lib/share-link';
 
 /** The local jurisdictions a city's opt-in choices resolve to. */
 export function jurisdictionsFor(city: SharedCity, version?: string) {
-  return resolveLocalJurisdictions(city.metroId, city.localOptIns, version);
+  return resolveLocalJurisdictions(
+    city.metroId,
+    city.localOptIns,
+    version,
+    // Narrowed to the state they actually live in: New York City's resident
+    // tax must not reach the New Jersey half of the New York metro.
+    resolveStateCode(city.metroId, city.stateCode, version),
+  );
 }
 
 export function comparisonFromShared(input: SharedComparison): ComparisonResult {

@@ -27,7 +27,19 @@
 
 import type { FilingStatus, Housing } from '@/engine';
 
-export const SHARE_FORMAT_VERSION = 1;
+/**
+ * 2 adds a state code per city, for the 43 metros that straddle a state line.
+ *
+ * Version 1 links are still read: they simply carry no state, which decodes to
+ * the metro's primary state — exactly what they computed with when they were
+ * made. Bumping the version without keeping the old reader would have broken
+ * every link already shared, which is the one thing PROJECT.md §9.2 promises
+ * cannot happen.
+ */
+export const SHARE_FORMAT_VERSION = 2;
+
+/** Every format this page can still read. */
+const READABLE_FORMATS = new Set([1, 2]);
 
 /**
  * Anything beyond this is not a version we ever shipped, so a payload claiming
@@ -60,6 +72,8 @@ const OPT_IN_ORDER = ['nyc', 'yonkers'] as const;
 
 export interface SharedCity {
   metroId: string;
+  /** Which state inside the metro. Absent on version 1 links. */
+  stateCode?: string;
   grossSalary: number;
   housing: Housing;
   cars: number;
@@ -174,6 +188,29 @@ function readMetro(r: Reader): string {
   throw new Error('share link uses an unknown location format');
 }
 
+/**
+ * The state, as an index into STATE_ORDER, offset by one so that zero can mean
+ * "not specified" — which is how a single-state metro travels, and keeps those
+ * links one byte shorter than they would otherwise be.
+ */
+function writeState(w: Writer, stateCode: string | undefined): void {
+  if (!stateCode) {
+    w.uint(0);
+    return;
+  }
+  const index = STATE_ORDER.indexOf(stateCode as (typeof STATE_ORDER)[number]);
+  if (index < 0) throw new Error(`cannot encode state: ${stateCode}`);
+  w.uint(index + 1);
+}
+
+function readState(r: Reader): string | undefined {
+  const value = r.uint();
+  if (value === 0) return undefined;
+  const state = STATE_ORDER[value - 1];
+  if (!state) throw new Error('share link names an unknown state');
+  return state;
+}
+
 function writeOptIns(w: Writer, optIns: Record<string, boolean>): void {
   let mask = 0;
   OPT_IN_ORDER.forEach((id, i) => {
@@ -189,6 +226,7 @@ function readOptIns(r: Reader): Record<string, boolean> {
 
 function writeCity(w: Writer, city: SharedCity): void {
   writeMetro(w, city.metroId);
+  writeState(w, city.stateCode);
   w.uint(city.grossSalary);
   w.uint(city.cars);
   writeOptIns(w, city.localOptIns);
@@ -205,8 +243,11 @@ function writeCity(w: Writer, city: SharedCity): void {
   }
 }
 
-function readCity(r: Reader): SharedCity {
+function readCity(r: Reader, format: number): SharedCity {
   const metroId = readMetro(r);
+  // Version 1 has no state field. Leaving it undefined resolves to the metro's
+  // primary state, which is what that link was computed with.
+  const stateCode = format >= 2 ? readState(r) : undefined;
   const grossSalary = r.uint();
   const cars = r.uint();
   const localOptIns = readOptIns(r);
@@ -227,7 +268,7 @@ function readCity(r: Reader): SharedCity {
     throw new Error('share link uses an unknown housing type');
   }
 
-  return { metroId, grossSalary, cars, localOptIns, housing };
+  return { metroId, stateCode, grossSalary, cars, localOptIns, housing };
 }
 
 // ---------------------------------------------------------------------------
@@ -277,7 +318,7 @@ export function decodeComparison(payload: string): SharedComparison {
   if (format < 1 || format > MAX_PLAUSIBLE_FORMAT) {
     throw new Error('share link is not valid');
   }
-  if (format !== SHARE_FORMAT_VERSION) {
+  if (!READABLE_FORMATS.has(format)) {
     throw new Error(
       `share link was made by version ${format} of this site, which this page cannot read`,
     );
@@ -289,8 +330,8 @@ export function decodeComparison(payload: string): SharedComparison {
   if (!filingStatus) throw new Error('share link names an unknown filing status');
 
   const children = r.uint();
-  const origin = readCity(r);
-  const destination = readCity(r);
+  const origin = readCity(r, format);
+  const destination = readCity(r, format);
 
   if (!r.done) throw new Error('share link has unexpected trailing data');
 

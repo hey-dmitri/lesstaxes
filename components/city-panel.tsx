@@ -12,6 +12,7 @@ import {
   housingDefaults,
   localTaxOptions,
   metro,
+  resolveStateCode,
   transportDefaults,
   type CityInputs,
   type FilingStatus,
@@ -97,10 +98,16 @@ export function resetCityForLocation(
   filingStatus: FilingStatus,
   tenure: 'rent' | 'own',
   children = 0,
+  stateCode?: string,
 ): CityFormState {
-  const options = localTaxOptions(metroId);
+  // Defaults to the metro's primary state. For the 43 that straddle a state
+  // line the panel then asks, because that choice decides the whole state and
+  // local tax system and the sales tax rate.
+  const state = resolveStateCode(metroId, stateCode);
+  const options = localTaxOptions(metroId, undefined, state);
   return {
     metroId,
+    stateCode: state,
     grossSalary: salary,
     cars: defaultCarCount(metroId, filingStatus),
     housing: housingFor(metroId, tenure, salary, { filingStatus, children }),
@@ -179,7 +186,8 @@ export function CityPanel({
   const m = metro(state.metroId);
   const defaults = housingDefaults(state.metroId);
   const transport = transportDefaults(state.metroId);
-  const allLocals = localTaxOptions(state.metroId);
+  const stateCode = resolveStateCode(state.metroId, state.stateCode);
+  const allLocals = localTaxOptions(state.metroId, undefined, stateCode);
   const optionalLocals = allLocals.filter((o) => o.optional && !o.group);
   // Grouped options are alternatives, so they render as one choice rather than
   // as independent checkboxes that could both be ticked or both left clear.
@@ -195,7 +203,7 @@ export function CityPanel({
   const setHousing = (patch: Partial<Housing>) =>
     set({ housing: { ...state.housing, ...patch } as Housing });
 
-  const badge = stateTaxBadge(m.primaryState, filingStatus);
+  const badge = stateTaxBadge(stateCode, filingStatus);
   const livingTotal = result ? result.housing.total + result.living.total + result.salesTax : 0;
 
   return (
@@ -211,7 +219,7 @@ export function CityPanel({
             className="ml-auto rounded-full px-2.5 py-0.5 text-[0.7rem]"
             style={{ background: 'var(--accent-dim)', color: 'var(--accent)' }}
           >
-            {m.primaryState} &middot; {badge}
+            {stateCode} &middot; {badge}
           </span>
         </div>
 
@@ -231,7 +239,7 @@ export function CityPanel({
             {m.shortName.replace(/,.*$/, '')}
           </h2>
           <span className="text-sm" style={{ color: 'var(--muted)' }}>
-            {m.primaryState}
+            {stateCode}
           </span>
           <button
             type="button"
@@ -247,6 +255,43 @@ export function CityPanel({
 
       <div className="flex flex-col gap-3 px-5 py-3.5 lg:flex-1">
         {picking && picker}
+
+        {/*
+          The state question, for the 43 locations that straddle a state line.
+          It comes first because it decides more than anything else below it:
+          the whole state income tax system, which local city taxes can reach
+          you, and the sales tax rate. Newark and Manhattan are one metro here
+          and two completely different tax bills.
+        */}
+        {m.states.length > 1 && (
+          <div
+            className="flex flex-col gap-2 rounded-lg border p-3"
+            style={{ borderColor: 'var(--accent)', background: 'var(--surface-sunken)' }}
+          >
+            <Segmented
+              label="Which state do you live in?"
+              value={stateCode}
+              onChange={(next) =>
+                onChange(
+                  resetCityForLocation(
+                    state.metroId,
+                    state.grossSalary,
+                    filingStatus,
+                    state.housing.tenure,
+                    childCount,
+                    next,
+                  ),
+                )
+              }
+              options={m.states.map((s) => ({ value: s, label: s }))}
+            />
+            <span className="text-[0.76rem] leading-snug" style={{ color: 'var(--muted)' }}>
+              This metro crosses a state line. Your state sets the income tax, the sales tax and
+              which city taxes can apply. Rent and living costs stay metro-wide &mdash; the Census
+              does not publish them by state slice.
+            </span>
+          </div>
+        )}
 
         <MoneyField
           label={salaryLabel}

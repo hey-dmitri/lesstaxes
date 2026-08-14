@@ -7,6 +7,7 @@ import {
   SHARE_FORMAT_VERSION,
   type SharedComparison,
 } from './share-link';
+import { comparisonFromShared } from './shared-comparison';
 
 /**
  * Decoding always yields an explicit true/false for every known opt-in
@@ -198,7 +199,81 @@ describe('encoding guards', () => {
   });
 
   it('declares its format version', () => {
-    expect(SHARE_FORMAT_VERSION).toBe(1);
+    expect(SHARE_FORMAT_VERSION).toBe(2);
+  });
+});
+
+describe('the state travels in the link', () => {
+  it('round-trips a state inside a multi-state metro', () => {
+    const newark: SharedComparison = {
+      ...RENTING,
+      origin: { ...RENTING.origin, metroId: '35620', stateCode: 'NJ' },
+    };
+    const back = decodeComparison(encodeComparison(newark));
+    expect(back.origin.stateCode).toBe('NJ');
+    expect(back.destination.stateCode).toBe(RENTING.destination.stateCode);
+  });
+
+  it('carries the answer, not just the input', () => {
+    const base = { ...RENTING.origin, metroId: '35620' };
+    const ny = comparisonFromShared(
+      decodeComparison(
+        encodeComparison({ ...RENTING, origin: { ...base, stateCode: 'NY' } }),
+      ),
+    );
+    const nj = comparisonFromShared(
+      decodeComparison(
+        encodeComparison({ ...RENTING, origin: { ...base, stateCode: 'NJ' } }),
+      ),
+    );
+    expect(ny.origin.stateCode).toBe('NY');
+    expect(nj.origin.stateCode).toBe('NJ');
+    expect(ny.origin.leftover).not.toBeCloseTo(nj.origin.leftover, 0);
+  });
+
+  it('omits it for a single-state metro, so those links stay short', () => {
+    const withState = encodeComparison({
+      ...RENTING,
+      origin: { ...RENTING.origin, stateCode: 'IL' },
+    });
+    const without = encodeComparison({
+      ...RENTING,
+      origin: { ...RENTING.origin, stateCode: undefined },
+    });
+    // Both decode to Illinois either way; the shorter one is the default.
+    expect(without.length).toBeLessThanOrEqual(withState.length);
+  });
+});
+
+describe('version 1 links keep working', () => {
+  // A real payload produced by format 1: Chicago to Austin, single, no
+  // children, $150,000 each, renting. Hard-coded on purpose — if a future
+  // change stops this decoding, every link shared before the state field
+  // existed has quietly died, which PROJECT.md section 9.2 forbids.
+  const V1 = 'AeoPAwAAANSEAfCTCQEAAMoQAIRh8JMJAQAA8BE';
+
+  it('decodes without a state and falls back to the metro primary', () => {
+    const decoded = decodeComparison(V1);
+    expect(decoded.origin.metroId).toBe('16980');
+    expect(decoded.destination.metroId).toBe('12420');
+    expect(decoded.origin.stateCode).toBeUndefined();
+    expect(decoded.destination.stateCode).toBeUndefined();
+    expect(decoded.origin.grossSalary).toBe(150_000);
+  });
+
+  it('computes the same answer it always did', () => {
+    const decoded = decodeComparison(V1);
+    const result = comparisonFromShared(decoded);
+    // Absent state resolves to the primary, so nothing about the answer moves.
+    expect(result.origin.stateCode).toBe('IL');
+    expect(result.destination.stateCode).toBe('TX');
+    expect(result.destination.tax.state).toBe(0);
+  });
+
+  it('still refuses a format it has never heard of', () => {
+    // Byte 0 is the format. 12 is plausible enough to be a real link from a
+    // future build, so the message names it rather than calling it garbage.
+    expect(() => decodeComparison('DAAA')).toThrow(/version 12/);
   });
 });
 

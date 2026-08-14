@@ -27,6 +27,7 @@ import {
   housingDefaults,
   metro,
   rentDefault,
+  resolveStateCode,
   salesTaxRules,
   taxableShares,
   transportDefaults,
@@ -91,15 +92,16 @@ export function computeCity(
     annualInsurance: options.annualInsurance,
   });
 
-  // 3. State income tax
+  // 3. State income tax — the state the person lives in, not the metro's first
+  const stateCode = resolveStateCode(city.metroId, city.stateCode, version);
   const state = computeStateTax(
     { grossSalary: gross, filingStatus: household.filingStatus, children: household.children },
-    stateRules(m.primaryState, version),
+    stateRules(stateCode, version),
   );
 
   // 4. Local income tax — may be a surcharge on the state liability
   const jurisdictions =
-    options.localJurisdictions ?? defaultLocalJurisdictions(city.metroId, version);
+    options.localJurisdictions ?? defaultLocalJurisdictions(city.metroId, version, stateCode);
   let localTotal = 0;
   for (const j of jurisdictions) {
     localTotal += computeLocalTax(
@@ -140,7 +142,7 @@ export function computeCity(
   // 7. Sales tax
   const salesTax = computeSalesTax({
     scaledCategories: living.scaledCategories,
-    rules: salesTaxRules(m.primaryState, version),
+    rules: salesTaxRules(stateCode, version),
     shares: taxableShares(version),
   });
 
@@ -151,6 +153,7 @@ export function computeCity(
 
   return {
     metroId: city.metroId,
+    stateCode,
     grossSalary: gross,
     tax: {
       federal: federal.tax,
@@ -261,6 +264,7 @@ export function defaultCityInputs(
 
   return {
     metroId,
+    stateCode: metro(metroId, version).primaryState,
     grossSalary,
     cars: defaultCarCount(metroId, household.filingStatus, version),
     housing:

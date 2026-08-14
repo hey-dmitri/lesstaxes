@@ -55,6 +55,34 @@ export function allMetros(version?: string): Metro[] {
   return Object.values(metros(version)).sort((a, b) => a.shortName.localeCompare(b.shortName));
 }
 
+/**
+ * Which state's tax system applies to someone living in this metro.
+ *
+ * 43 of the 438 locations straddle a state line, some of them three or four
+ * ways: "New York–Newark–Jersey City" is NY and NJ, Philadelphia is PA, NJ, DE
+ * and MD, Washington is DC, VA, MD and WV. Every one of them was reduced to a
+ * single primaryState which then drove BOTH state income tax and sales tax, so
+ * a Newark resident was quoted New York's tax system — and, because the local
+ * option list was not filtered either, New York City's resident tax on top.
+ *
+ * The chosen state is validated against the metro's own list rather than
+ * trusted, because it arrives from a share link and a stale or hand-edited one
+ * must not silently apply Texas rates to somebody in New Jersey.
+ */
+export function resolveStateCode(
+  metroId: string,
+  stateCode: string | undefined,
+  version?: string,
+): string {
+  const m = metro(metroId, version);
+  return stateCode && m.states.includes(stateCode) ? stateCode : m.primaryState;
+}
+
+/** True when this location genuinely offers a choice of state tax systems. */
+export function isMultiState(metroId: string, version?: string): boolean {
+  return metro(metroId, version).states.length > 1;
+}
+
 // ---------------------------------------------------------------------------
 // Housing
 // ---------------------------------------------------------------------------
@@ -389,8 +417,28 @@ export interface LocalTaxOption {
 }
 
 /** Local income tax options for a metro. Empty for most of the country. */
-export function localTaxOptions(metroId: string, version?: string): LocalTaxOption[] {
-  return (datasetBundle(version).localTax.byMetro[metroId] as LocalTaxOption[] | undefined) ?? [];
+/**
+ * The local income tax choices for a metro, narrowed to the state the person
+ * actually lives in.
+ *
+ * Local taxes are levied by a city inside one state, but they were attached to
+ * the whole metro. New York City's resident tax was therefore offered — and
+ * ticked by default — to everyone in the New York–Newark–Jersey City metro,
+ * including the New Jersey half. Passing the state filters the list to
+ * jurisdictions that could actually reach them.
+ *
+ * Omitting the state returns everything, which is what the /data browser wants
+ * when it lists what a metro carries.
+ */
+export function localTaxOptions(
+  metroId: string,
+  version?: string,
+  stateCode?: string,
+): LocalTaxOption[] {
+  const all =
+    (datasetBundle(version).localTax.byMetro[metroId] as LocalTaxOption[] | undefined) ?? [];
+  if (!stateCode) return all;
+  return all.filter((o) => localJurisdiction(o.jurisdictionId, version).stateCode === stateCode);
 }
 
 export function localJurisdiction(id: string, version?: string): LocalTaxRules {
@@ -403,8 +451,12 @@ export function localJurisdiction(id: string, version?: string): LocalTaxRules {
  * The jurisdictions that apply by default for a metro. The interface may let
  * the user override any marked optional.
  */
-export function defaultLocalJurisdictions(metroId: string, version?: string): LocalTaxRules[] {
-  return localTaxOptions(metroId, version)
+export function defaultLocalJurisdictions(
+  metroId: string,
+  version?: string,
+  stateCode?: string,
+): LocalTaxRules[] {
+  return localTaxOptions(metroId, version, stateCode)
     .filter((o) => o.defaultApplies)
     .map((o) => localJurisdiction(o.jurisdictionId, version));
 }
@@ -423,8 +475,9 @@ export function resolveLocalJurisdictions(
   metroId: string,
   optIns: Record<string, boolean>,
   version?: string,
+  stateCode?: string,
 ): LocalTaxRules[] {
-  const options = localTaxOptions(metroId, version);
+  const options = localTaxOptions(metroId, version, stateCode);
   const chosen: string[] = [];
   const seenGroups = new Set<string>();
 
