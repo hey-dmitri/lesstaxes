@@ -55,8 +55,8 @@ export function ReportProblem({
       >
         open an issue
       </a>
-      . Every figure is a local median, and the people who live somewhere spot a
-      wrong one first.
+      . Every figure here is a median or an average for a whole area, and the people who live
+      there spot a wrong one first.
     </p>
   );
 }

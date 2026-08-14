@@ -8,9 +8,9 @@
  * filename — was a hand-typed literal in a dozen files. They import from here
  * now, so D24's claim is finally true. Keep it that way.
  *
- * The contact routes exist because every figure on this site is a local median
- * from a federal table, and the person best placed to notice that one of them
- * is wrong is someone who lives there. There is no backend and never will be
+ * The contact routes exist because every figure on this site is a median or an
+ * average for a whole area, and the person best placed to notice that one of
+ * them is wrong is someone who lives there. There is no backend and never will be
  * (PROJECT.md section 10), so a report is a link — a prefilled email or a
  * prefilled GitHub issue, whichever the reader prefers.
  */

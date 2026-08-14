@@ -281,8 +281,16 @@ answer          =  in your pocket THERE  −  in your pocket HERE`}</pre>
             is yours to change.
           </li>
           <li>
-            <strong>Averages are not you.</strong> Every figure is a local median. Your rent, your
-            car, your grocery bill will differ. That is why almost every field is editable.
+            <strong>Averages are not you.</strong> And they are not all the same kind of number
+            either. Housing figures are <em>medians</em> for the local area. Spending and car
+            ownership are <em>averages</em>, which sit higher than the median wherever a few large
+            spenders pull them up. Price levels are <em>index numbers</em>, not dollars. Sales tax
+            is a <em>statewide average</em> of local rates. The{' '}
+            <Link href="/data" className="underline underline-offset-4" style={{ color: 'var(--accent)' }}>
+              data page
+            </Link>{' '}
+            labels every one. Your rent, your car and your grocery bill will differ from all of
+            them, which is why almost every field is editable.
           </li>
         </ul>
 

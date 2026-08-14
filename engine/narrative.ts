@@ -23,10 +23,11 @@ import type { ComparisonResult, USD } from './types';
  * Below this share, the two cities are not distinguishable and the site should
  * not pretend otherwise.
  *
- * Every figure here is a local median — rent, spending, car ownership — and
- * real households scatter widely around each one. A difference smaller than
- * this is comfortably inside that scatter, so calling a winner would be
- * reading precision into an estimate that does not have any.
+ * Every figure here describes a whole area rather than a household — a median
+ * rent, an average grocery bill, an average number of cars — and real
+ * households scatter widely around each one. A difference smaller than this is
+ * comfortably inside that scatter, so calling a winner would be reading
+ * precision into an estimate that does not have any.
  */
 export const TOO_CLOSE_SHARE = 0.015;
 
@@ -74,7 +75,7 @@ export function verdict(result: ComparisonResult): Verdict {
       threshold,
       qualifier:
         `The gap is under ${(TOO_CLOSE_SHARE * 100).toFixed(1)}% of your salary ` +
-        `(${formatUSD(threshold)} a year) — closer than figures built on local medians can ` +
+        `(${formatUSD(threshold)} a year) — closer than area medians and averages can ` +
         `really tell apart.`,
     };
   }

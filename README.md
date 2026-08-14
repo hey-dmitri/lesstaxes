@@ -8,7 +8,11 @@ Pick two US metro areas, enter your salary, filing status and housing situation,
 honest number — net of income tax, property tax, sales tax, housing, cars and cost of living.
 The answer can be negative, and often is.
 
-Free, no accounts, no tracking, no database. All figures come from public federal data.
+Free, no accounts, no tracking, no database. Almost every figure comes from public federal
+data — Census, BEA, BLS, IRS and SSA. State income tax and sales tax rates are compiled by
+the Tax Foundation from state statutes, and a handful of city income tax rates come from the
+levying city. Every figure is labelled with what kind of number it is — median, average,
+index, statutory rate or state average — on the [data page](https://packorstay.com/data).
 
 ---
 
@@ -39,8 +43,7 @@ Free, no accounts, no tracking, no database. All figures come from public federa
 | Share links pinned to their dataset version | ✅ |
 | Home prices scaled to income, as rents are | ✅ |
 | One-word verdict — pack, stay, or too close to call | ✅ |
-| Name and domain — **Pack or Stay**, `packorstay.com` | ✅ |
-| **Live at [packorstay.com](https://packorstay.com)** | ✅ |
+| Name and domain — **Pack or Stay**, live at `packorstay.com` | ✅ |
 
 **666 tests**, including 24 golden values reproduced exactly from the IRS rate tables.
 Total data cost: **$0**. No paid feeds, no runtime API calls.
@@ -123,10 +126,15 @@ npm run build      # production build
 
 ## Data
 
-Every number comes from a free, public source: BEA Regional Price Parities, Census ACS, HUD Fair
-Market Rents, BLS Consumer Expenditure Survey, IRS, and state revenue departments. Nothing is
-licensed, nothing is paid for, and there are no runtime API calls — datasets are committed to
-this repo and bundled at build time.
+Every number comes from a free, public source: BEA Regional Price Parities, Census ACS, BLS
+Consumer Expenditure Survey, IRS, SSA, the Tax Foundation, and individual city revenue
+departments. HUD Fair Market Rents were specified originally and rejected — HUD publishes on
+its own areas, which do not map cleanly onto the metros used here. Nothing is paid for, and
+there are no runtime API calls: datasets are committed to this repo and bundled at build time.
+
+The Tax Foundation compilations are CC BY-NC 4.0; everything else is public domain. The
+[data page](https://packorstay.com/data) lists the source, the licence, and what kind of number
+each figure is.
 
 This project is permanently non-commercial: no ads, no paywall, no affiliate links.
 

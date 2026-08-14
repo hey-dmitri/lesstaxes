@@ -28,6 +28,7 @@ export default function DataPage() {
             <thead>
               <tr style={{ borderBottom: '1px solid var(--rule-strong)' }}>
                 <th scope="col" className="px-3 py-2 text-left text-[0.72rem] font-semibold uppercase tracking-wider" style={{ color: 'var(--muted)' }}>Data</th>
+                <th scope="col" className="px-3 py-2 text-left text-[0.72rem] font-semibold uppercase tracking-wider" style={{ color: 'var(--muted)' }}>What kind of number</th>
                 <th scope="col" className="px-3 py-2 text-left text-[0.72rem] font-semibold uppercase tracking-wider" style={{ color: 'var(--muted)' }}>Source</th>
                 <th scope="col" className="px-3 py-2 text-left text-[0.72rem] font-semibold uppercase tracking-wider" style={{ color: 'var(--muted)' }}>Licence</th>
               </tr>
@@ -36,6 +37,7 @@ export default function DataPage() {
               {DATASET_SOURCES.map((s) => (
                 <tr key={s.what} style={{ borderBottom: '1px solid var(--rule)' }}>
                   <td className="px-3 py-1.5">{s.what}</td>
+                  <td className="px-3 py-1.5 whitespace-nowrap">{s.kind}</td>
                   <td className="px-3 py-1.5">{s.source}</td>
                   <td className="px-3 py-1.5" style={{ color: 'var(--muted)' }}>{s.licence}</td>
                 </tr>
