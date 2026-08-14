@@ -92,13 +92,37 @@ interface PercentFieldProps {
   hint?: React.ReactNode;
   max?: number;
   step?: number;
+  /**
+   * Narrow variant for rates that belong side by side.
+   *
+   * Down payment, mortgage rate and property tax are one decision about one
+   * purchase, so they read as a row rather than a stack. Three uppercase,
+   * wide-tracked labels do not survive a third of a column, so the label drops
+   * to sentence case and the input sheds its horizontal padding. Nothing else
+   * changes: same control, same value, same keyboard behaviour.
+   */
+  compact?: boolean;
 }
 
-export function PercentField({ label, value, onChange, hint, max = 100, step = 0.01 }: PercentFieldProps) {
+export function PercentField({
+  label,
+  value,
+  onChange,
+  hint,
+  max = 100,
+  step = 0.01,
+  compact = false,
+}: PercentFieldProps) {
   const id = useId();
   return (
     <div>
-      <label htmlFor={id} className={labelClass} style={labelStyle}>
+      <label
+        htmlFor={id}
+        className={
+          compact ? 'mb-1 block text-[0.74rem] font-medium leading-tight' : labelClass
+        }
+        style={labelStyle}
+      >
         {label}
       </label>
       <div className="relative">
@@ -109,7 +133,11 @@ export function PercentField({ label, value, onChange, hint, max = 100, step = 0
           step={step}
           min={0}
           max={max}
-          className={`${inputClass} pr-7`}
+          className={
+            compact
+              ? 'tnum w-full rounded border px-1.5 py-1.5 pr-5 text-[0.85rem]'
+              : `${inputClass} pr-7`
+          }
           style={inputStyle}
           value={Number((value * 100).toFixed(3))}
           onChange={(e) => {
@@ -118,7 +146,7 @@ export function PercentField({ label, value, onChange, hint, max = 100, step = 0
           }}
         />
         <span
-          className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-sm"
+          className={`pointer-events-none absolute top-1/2 -translate-y-1/2 ${compact ? 'right-1.5 text-xs' : 'right-2.5 text-sm'}`}
           style={{ color: 'var(--muted)' }}
           aria-hidden="true"
         >

@@ -20,9 +20,10 @@ export function PageShell({
         >
           ← Back to the calculator
         </Link>
-        <h2 className="mt-3 font-serif text-2xl font-semibold tracking-tight" style={{ color: 'var(--ink)' }}>
+        {/* The page's own h1 — the layout no longer supplies one for it. */}
+        <h1 className="mt-3 font-display text-2xl font-bold tracking-[-0.02em]" style={{ color: 'var(--ink)' }}>
           {title}
-        </h2>
+        </h1>
         <p className="mt-1.5 max-w-[68ch] text-sm" style={{ color: 'var(--muted)' }}>
           {standfirst}
         </p>
@@ -36,7 +37,7 @@ export function PageShell({
 export function Prose({ children }: { children: React.ReactNode }) {
   return (
     <div
-      className="flex max-w-[72ch] flex-col gap-3 text-sm [&_h2]:mt-5 [&_h2]:font-serif [&_h2]:text-lg [&_h2]:font-semibold [&_h3]:mt-3 [&_h3]:font-semibold [&_li]:my-1.5 [&_ul]:list-disc [&_ul]:pl-5"
+      className="flex max-w-[72ch] flex-col gap-3 text-sm [&_h2]:mt-5 [&_h2]:font-display [&_h2]:text-lg [&_h2]:font-semibold [&_h3]:mt-3 [&_h3]:font-semibold [&_li]:my-1.5 [&_ul]:list-disc [&_ul]:pl-5"
       style={{ color: 'var(--ink-soft)' }}
     >
       {children}

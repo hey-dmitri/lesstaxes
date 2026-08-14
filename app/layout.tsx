@@ -82,10 +82,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
       </head>
       {/*
-        The whole tool is designed to fit one viewport on a desktop screen, so
-        the page itself never scrolls. Panels scroll internally instead — a
-        safety valve for short windows, rather than pushing the answer below
-        the fold where it stops being an answer.
+        The tool used to be pinned to a single viewport, with the panels
+        scrolling internally to hold that promise. It cost more than it bought:
+        cramped rows, a breakdown you had to scroll inside a box to read, and no
+        room for the explanation each figure needs. The page scrolls normally
+        now, and layout is free to serve the numbers rather than the fold.
       */}
       <body>
         {/* Keyboard users land here first and can jump past the header. */}
@@ -98,22 +99,23 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </a>
         <div className="mx-auto flex min-h-dvh w-full max-w-[112rem] flex-col px-4 py-3 sm:px-6">
           {/*
-            Per the Turn 3 redesign: wordmark and tagline on the left, the two
-            credibility links and the dataset version on the right. The version
-            is deliberately visible — it is what a shared link is pinned to.
+            The wordmark on the left, the two credibility links and the dataset
+            version on the right. The version is deliberately visible — it is
+            what a shared link is pinned to.
+
+            The name is the loudest thing here and carries no h1: the tagline
+            used to be the layout's h1, which made every page's heading the same
+            sentence. Each page states its own subject instead, and the home
+            page's h1 is the question this site answers.
           */}
-          <header className="flex shrink-0 flex-wrap items-baseline gap-x-5 gap-y-2 pb-4">
-            <div className="flex items-baseline gap-3">
-              <span
-                className="font-display text-[1.05rem] font-bold tracking-[-0.02em]"
-                style={{ color: 'var(--ink)' }}
-              >
-                {SITE_NAME}
-              </span>
-              <h1 className="text-[0.9rem]" style={{ color: 'var(--ink-soft)' }}>
-                {TAGLINE}
-              </h1>
-            </div>
+          <header className="flex shrink-0 flex-wrap items-baseline gap-x-6 gap-y-2 pb-5">
+            <Link
+              href="/"
+              className="font-display text-[1.5rem] font-bold leading-none tracking-[-0.035em]"
+              style={{ color: 'var(--ink)' }}
+            >
+              {SITE_NAME}
+            </Link>
             <nav className="ml-auto flex items-baseline gap-5 text-[0.82rem]" aria-label="About this site">
               <Link href="/methodology" style={{ color: 'var(--accent)' }}>
                 How it works

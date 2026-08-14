@@ -82,9 +82,9 @@ export default async function SharedResult({
         className="max-w-md rounded-lg border p-6 text-center"
         style={{ borderColor: 'var(--rule-strong)', background: 'var(--surface)' }}
       >
-        <h2 className="font-serif text-lg font-semibold" style={{ color: 'var(--ink)' }}>
+        <h1 className="font-display text-lg font-semibold" style={{ color: 'var(--ink)' }}>
           That link didn&rsquo;t work
-        </h2>
+        </h1>
         <p className="mt-2 text-sm" style={{ color: 'var(--muted)' }}>
           {reason}. It may have been cut short when it was copied — long links sometimes wrap in
           email.

@@ -526,7 +526,7 @@ export function Results({
   share?: React.ReactNode;
 }) {
   return (
-    <div className="flex flex-col gap-4 px-5 py-4 lg:min-h-0 lg:flex-1 lg:overflow-y-auto">
+    <div className="flex flex-col gap-4 px-5 py-4 lg:flex-1">
       {/* Scoped to the figures; wrapping the panel re-read everything on every keystroke. */}
       <div aria-live="polite">
         <Headline result={result} animate={animate} />

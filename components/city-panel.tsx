@@ -19,7 +19,14 @@ import {
   type Housing,
   type CityResult,
 } from '@/engine';
-import { CountField, MoneyField, PercentField, Segmented, Checkbox } from '@/components/fields';
+import {
+  CountField,
+  MoneyField,
+  PercentField,
+  PrefillNote,
+  Segmented,
+  Checkbox,
+} from '@/components/fields';
 import { LocationPicker } from '@/components/location-picker';
 import { stateTaxBadge } from '@/lib/state-badge';
 
@@ -126,7 +133,7 @@ export function CityPanel({
 
   return (
     <section
-      className="flex flex-col rounded-xl border lg:min-h-0"
+      className="flex flex-col rounded-xl border"
       style={{ borderColor: 'var(--rule-strong)', background: 'var(--surface)' }}
     >
       <div className="flex shrink-0 flex-col gap-3 px-5 pt-4">
@@ -170,7 +177,7 @@ export function CityPanel({
         </div>
       </div>
 
-      <div className="flex flex-col gap-3 px-5 py-3.5 lg:min-h-0 lg:flex-1 lg:overflow-y-auto">
+      <div className="flex flex-col gap-3 px-5 py-3.5 lg:flex-1">
         {picking && (
           <LocationPicker
             id={`location-${title.replace(/\s+/g, '-').toLowerCase()}`}
@@ -218,29 +225,42 @@ export function CityPanel({
               onChange={(homePrice) => setHousing({ homePrice })}
               hint={`${formatUSD(homePriceDefault(state.metroId, state.grossSalary))} typical at this salary`}
             />
-            <div className="grid grid-cols-2 gap-3">
-              <PercentField
-                label="Down payment"
-                value={state.housing.downPayment}
-                onChange={(downPayment) => setHousing({ downPayment })}
-                step={1}
-              />
-              <PercentField
-                label="Mortgage rate"
-                value={state.housing.mortgageRate}
-                onChange={(mortgageRate) => setHousing({ mortgageRate })}
-                max={25}
-                step={0.05}
-              />
+            {/*
+              The three terms of the same purchase, on one line. They were a
+              2-up grid with property tax orphaned underneath, which read as two
+              unrelated decisions; the shared note now sits under all three.
+            */}
+            <div>
+              <div className="grid grid-cols-3 items-end gap-2">
+                <PercentField
+                  label="Down payment"
+                  value={state.housing.downPayment}
+                  onChange={(downPayment) => setHousing({ downPayment })}
+                  step={1}
+                  compact
+                />
+                <PercentField
+                  label="Mortgage rate"
+                  value={state.housing.mortgageRate}
+                  onChange={(mortgageRate) => setHousing({ mortgageRate })}
+                  max={25}
+                  step={0.05}
+                  compact
+                />
+                <PercentField
+                  label="Property tax"
+                  value={state.housing.propertyTaxRate}
+                  onChange={(propertyTaxRate) => setHousing({ propertyTaxRate })}
+                  max={10}
+                  step={0.01}
+                  compact
+                />
+              </div>
+              <PrefillNote>
+                {(defaults.effectivePropertyTaxRate * 100).toFixed(2)}% property tax is the
+                effective rate here.
+              </PrefillNote>
             </div>
-            <PercentField
-              label="Property tax rate"
-              value={state.housing.propertyTaxRate}
-              onChange={(propertyTaxRate) => setHousing({ propertyTaxRate })}
-              max={10}
-              step={0.01}
-              hint={`${(defaults.effectivePropertyTaxRate * 100).toFixed(2)}% effective here`}
-            />
           </>
         )}
 

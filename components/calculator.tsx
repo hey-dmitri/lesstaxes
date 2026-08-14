@@ -8,7 +8,7 @@ import { Results } from '@/components/results';
 import { ShareBar } from '@/components/share-bar';
 import { encodeComparison, type SharedComparison } from '@/lib/share-link';
 import { describeComparison, jurisdictionsFor } from '@/lib/shared-comparison';
-import { SUPPORTING } from '@/lib/site';
+import { SUPPORTING, TAGLINE } from '@/lib/site';
 import {
   compare,
   DATASET_VERSION,
@@ -219,7 +219,28 @@ export function Calculator({ initial }: CalculatorProps) {
   }
 
   return (
-    <main id="main" className="flex flex-1 flex-col gap-3 lg:h-0 lg:min-h-0 lg:overflow-hidden">
+    <main id="main" className="flex flex-1 flex-col gap-4">
+      {/*
+        What the site is, before anything is asked of the reader. The h1 is the
+        question rather than the brand, because the question is the thing a
+        stranger can act on; the sentence under it says what they will get and
+        what it accounts for, so nobody has to infer the product from a form.
+      */}
+      <div className="flex shrink-0 flex-col gap-2">
+        <h1
+          className="font-display text-[2rem] font-bold leading-[1.08] tracking-[-0.035em] xl:text-[2.4rem]"
+          style={{ color: 'var(--ink)' }}
+        >
+          {TAGLINE}
+        </h1>
+        <p className="max-w-[70ch] text-[1.02rem] leading-snug" style={{ color: 'var(--ink-soft)' }}>
+          Put in the city you live in, the city you&rsquo;re considering and the salary on offer.
+          You get one number: what you&rsquo;d actually have left over each year, after income tax,
+          rent or mortgage, property tax, cars, food and everyday costs &mdash; worked out the same
+          way in both places, then compared.
+        </p>
+      </div>
+
       {/*
         "About you" as a sentence rather than a row of labelled fields. Filing
         status and children are the only inputs shared by both cities, and
@@ -260,7 +281,7 @@ export function Calculator({ initial }: CalculatorProps) {
         </span>
       </section>
 
-      <div className="grid min-h-0 flex-1 gap-3 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1.35fr)]">
+      <div className="grid flex-1 gap-3 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1.35fr)]">
         <CityPanel
           title="Living now"
           state={origin}
@@ -291,11 +312,11 @@ export function Calculator({ initial }: CalculatorProps) {
         />
 
         <section
-          className="flex flex-col rounded-lg border lg:min-h-0"
+          className="flex flex-col rounded-xl border"
           style={{ borderColor: 'var(--rule-strong)', background: 'var(--surface)' }}
         >
           <h2
-            className="shrink-0 border-b px-4 py-2.5 font-serif text-sm font-semibold"
+            className="shrink-0 border-b px-4 py-2.5 font-display text-sm font-semibold"
             style={{ borderColor: 'var(--rule)', color: 'var(--ink)' }}
           >
             {revealed && result ? 'What it means for you' : 'Your answer'}
@@ -315,7 +336,7 @@ export function Calculator({ initial }: CalculatorProps) {
               }
             />
           ) : (
-            <div className="flex flex-col items-center justify-center gap-3 px-6 py-8 text-center lg:min-h-0 lg:flex-1">
+            <div className="flex flex-col items-center justify-center gap-3 px-6 py-8 text-center lg:flex-1">
               {sameCity ? (
                 <p className="text-sm" style={{ color: 'var(--bad)' }}>
                   Both cities are the same. Pick a different destination.
