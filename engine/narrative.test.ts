@@ -118,9 +118,13 @@ describe('verdict', () => {
 
 describe('why narrative', () => {
   it('reads the same salary case without inventing a pay effect', () => {
+    // The amount moved with dataset 2026.5: the Chicago metro is now priced
+    // from its ILLINOIS part rather than metro-wide, which is $1,453 rent
+    // against $1,430 — the Indiana side of that metro is much cheaper and was
+    // dragging the average down for people who do not live in it.
     const result = run(CHICAGO, AUSTIN, 150_000);
     expect(whySentence(result)).toBe(
-      'Austin, TX is $8,967 cheaper a year to live in at the same salary.',
+      'Austin, TX is $9,099 cheaper a year to live in at the same salary.',
     );
   });
 

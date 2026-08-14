@@ -244,19 +244,26 @@ answer          =  in your pocket THERE  −  in your pocket HERE`}</pre>
           reverse the verdict.
         </p>
         <p>
-          What the state choice does <em>not yet</em> change is housing and living costs. A Newark
-          household is still quoted the whole New York metro&rsquo;s rent and home value, and the
-          gap is large: the New Jersey part of that metro has a median home value around $485,000
-          against $660,000 on the New York side, either side of the $614,000 metro-wide figure
-          used here.
+          Housing follows the state as well. The Census publishes every table used here at summary
+          level 311 &mdash; &ldquo;metropolitan statistical area &rsaquo; state (or part)&rdquo;
+          &mdash; so a Newark household is quoted New Jersey&rsquo;s figures rather than the whole
+          metro&rsquo;s. The difference is not small: median home value is $512,300 on the New
+          Jersey side against $684,700 on the New York side, either side of the $614,200 metro
+          figure that used to be quoted to both. The Indiana part of the Chicago metro is $1,142
+          rent against $1,453 in Illinois.
         </p>
         <p>
-          This page previously said that was not fixable from public data. That was wrong, and
-          worth correcting plainly: the ACS publishes these tables at summary level 311,
-          &ldquo;metropolitan statistical area &rsaquo; state (or part)&rdquo;, and the state-part
-          rows exist for rent by bedroom, home value, property tax and vehicle ownership. It is
-          not implemented, which is a different and more fixable thing than not available. Until
-          it is, rent and home price are editable &mdash; if you know your number, use it.
+          Cars move too, and that one surprises people. The New York part of that metro averages
+          0.486 vehicles per adult against 0.596 across the whole metro, because the five boroughs
+          outweigh the suburbs &mdash; so a New York-side household is now started at no car rather
+          than one. Change it if you have one.
+        </p>
+        <p>
+          A state part is a smaller sample than its metro, so the Census suppresses individual
+          figures in it more often. Where that happens the whole metro&rsquo;s number is used for
+          that <em>one figure</em>, rather than throwing away the state&rsquo;s good figures
+          alongside the missing one. Price levels stay metro-wide throughout: BEA publishes those
+          only for whole metros.
         </p>
 
         <h2>Pack, stay, or too close to call</h2>

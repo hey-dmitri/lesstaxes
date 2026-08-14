@@ -110,6 +110,28 @@ const GEOGRAPHIES = [
   },
 ];
 
+/**
+ * The third geography: a metro's slice of ONE state.
+ *
+ * 43 of the metros here cross a state line, some of them four ways. Housing was
+ * metro-wide for all of them, so a household in Newark was quoted the whole New
+ * York metro's rent and home value — $614,200 against the $484,600 that the New
+ * Jersey side actually shows. The documentation used to claim this was not
+ * available from public data. It plainly is: ACS summary level 311,
+ * "metropolitan statistical area / micropolitan statistical area (or part)",
+ * carries every table already used here, sliced by state.
+ *
+ * The wildcard is only allowed on the metro, not on the state, so this is one
+ * request per state rather than one for the country. Only the states that
+ * actually appear in a multi-state metro are fetched.
+ */
+const METRO_STATE_GEOGRAPHY = {
+  key: 'metro-state',
+  cacheFile: `census-acs${ACS_YEAR}-metro-state.json`,
+  forClause: 'metropolitan statistical area/micropolitan statistical area (or part):*',
+  idColumn: 'metropolitan statistical area/micropolitan statistical area (or part)',
+};
+
 // FIPS state code -> postal code, for the rest-of-state entries.
 const STATE_FIPS = {
   '01': 'AL', '02': 'AK', '04': 'AZ', '05': 'AR', '06': 'CA', '08': 'CO',
@@ -124,6 +146,50 @@ const STATE_FIPS = {
 };
 
 // --- fetch or load from cache ----------------------------------------------
+
+/**
+ * Load every state part, one request per state, merged into a single cached
+ * table with the same shape the other geographies produce.
+ */
+async function loadMetroStateParts(stateFips) {
+  const cachePath = resolve(SRC, METRO_STATE_GEOGRAPHY.cacheFile);
+
+  if (!REFRESH && (OFFLINE || existsSync(cachePath))) {
+    if (!existsSync(cachePath)) {
+      throw new Error(`--offline given but cache missing: ${cachePath}`);
+    }
+    console.log(`  metro-state: using cached ${METRO_STATE_GEOGRAPHY.cacheFile}`);
+    return JSON.parse(readFileSync(cachePath, 'utf8'));
+  }
+
+  const key = process.env.CENSUS_API_KEY;
+  if (!key) throw new Error('CENSUS_API_KEY is not set and no metro-state cache exists.');
+
+  let header = null;
+  const rows = [];
+  for (const fips of stateFips) {
+    const url =
+      `https://api.census.gov/data/${ACS_YEAR}/${ACS_DATASET}` +
+      `?get=NAME,${VARIABLES.join(',')}` +
+      `&for=${encodeURIComponent(METRO_STATE_GEOGRAPHY.forClause)}` +
+      `&in=state:${fips}` +
+      `&key=${key}`;
+
+    const res = await fetch(url);
+    if (!res.ok) {
+      throw new Error(`Census API ${res.status} for state ${fips}: ${await res.text()}`);
+    }
+    const json = await res.json();
+    if (!Array.isArray(json) || json.length < 2) continue;
+    if (!header) header = json[0];
+    rows.push(...json.slice(1));
+  }
+
+  const table = [header, ...rows];
+  writeFileSync(cachePath, `${JSON.stringify(table)}\n`);
+  console.log(`  metro-state: cached ${rows.length} rows -> ${METRO_STATE_GEOGRAPHY.cacheFile}`);
+  return table;
+}
 
 async function loadGeography(geo) {
   const cachePath = resolve(SRC, geo.cacheFile);
@@ -502,18 +568,43 @@ const metroJson = await loadGeography(GEOGRAPHIES[0]);
 const stateJson = await loadGeography(GEOGRAPHIES[1]);
 
 const metrosMeta = JSON.parse(readFileSync(resolve(DATA_DIR, 'metros.json'), 'utf8'));
+
+/* Only the states that appear in a metro spanning more than one of them. */
+const POSTAL_TO_FIPS = Object.fromEntries(
+  Object.entries(STATE_FIPS).map(([fips, postal]) => [postal, fips]),
+);
+const SPLIT_STATE_FIPS = [
+  ...new Set(
+    Object.values(metrosMeta.metros)
+      .filter((m) => m.type === 'metro' && m.states.length > 1)
+      .flatMap((m) => m.states)
+      .map((postal) => POSTAL_TO_FIPS[postal])
+      .filter(Boolean),
+  ),
+].sort();
+const metroStateJson = await loadMetroStateParts(SPLIT_STATE_FIPS);
 const wanted = new Set(
   Object.values(metrosMeta.metros).filter((m) => m.type === 'metro').map((m) => m.id),
 );
 
 const housing = {};
 const transport = {};
+/** Keyed "<metroId>:<state>" — only for metros that cross a state line. */
+const housingByState = {};
+const transportByState = {};
 const missing = [];
 
 function record(id, d) {
   housing[id] = d.housing;
   transport[id] = d.transport;
 }
+
+/** Which states each multi-state metro spans, from metros.json. */
+const SPLIT_METROS = new Map(
+  Object.values(metrosMeta.metros)
+    .filter((m) => m.type === 'metro' && m.states.length > 1)
+    .map((m) => [m.id, m.states]),
+);
 
 // Metros
 {
@@ -528,6 +619,24 @@ function record(id, d) {
     record(d.id, d);
   }
   for (const id of wanted) if (!seen.has(id)) missing.push(id);
+}
+
+// State parts of the metros that cross a state line
+{
+  const [header, ...rows] = metroStateJson;
+  const idIndex = header.indexOf(METRO_STATE_GEOGRAPHY.idColumn);
+  const stateIndex = header.indexOf('state');
+
+  for (const row of rows) {
+    const metroId = row[idIndex];
+    const postal = STATE_FIPS[row[stateIndex]];
+    if (!postal || !SPLIT_METROS.has(metroId)) continue;
+    if (!SPLIT_METROS.get(metroId).includes(postal)) continue;
+
+    const d = derive(row, header, METRO_STATE_GEOGRAPHY.idColumn);
+    housingByState[`${metroId}:${postal}`] = d.housing;
+    transportByState[`${metroId}:${postal}`] = d.transport;
+  }
 }
 
 // Rest-of-state
@@ -559,22 +668,31 @@ for (const [, bedrooms] of BEDROOM_VARIABLES) {
 }
 
 let filled = 0;
-for (const id of Object.keys(housing)) {
-  const h = housing[id];
+/*
+ * State parts get the same treatment as whole metros: a suppressed unit size
+ * is filled from the national ratio, and rent is forced not to fall as
+ * bedrooms are added. A state part is a smaller sample than its metro, so more
+ * of its cells are suppressed — which is exactly why the per-field fallback to
+ * the whole metro exists downstream.
+ */
+for (const h of [...Object.values(housing), ...Object.values(housingByState)]) {
   for (const bedrooms of Object.keys(h.rentByBedrooms)) {
     if (h.rentByBedrooms[bedrooms] === null) {
-      h.rentByBedrooms[bedrooms] = Math.round(
-        h.medianRentMonthly * nationalBedroomRatio[bedrooms],
-      );
-      filled++;
+      // A state part with no all-units median of its own cannot be filled and
+      // is left null, so the engine falls back to the whole metro's figure.
+      h.rentByBedrooms[bedrooms] =
+        h.medianRentMonthly === null
+          ? null
+          : Math.round(h.medianRentMonthly * nationalBedroomRatio[bedrooms]);
+      if (h.rentByBedrooms[bedrooms] !== null) filled++;
     }
   }
   // Rent must not fall as bedrooms are added, or a child would cut the bill.
   let previous = 0;
   for (const bedrooms of [0, 1, 2, 3, 4, 5]) {
     const value = h.rentByBedrooms[bedrooms];
-    if (value < previous) h.rentByBedrooms[bedrooms] = previous;
-    previous = h.rentByBedrooms[bedrooms];
+    if (value !== null && value < previous) h.rentByBedrooms[bedrooms] = previous;
+    if (h.rentByBedrooms[bedrooms] !== null) previous = h.rentByBedrooms[bedrooms];
   }
 }
 console.log(
@@ -672,10 +790,12 @@ writeFileSync(
         'homeValueCurve does the same for buying (B25121). The metro median home value is what the MEDIAN owner owns, and property tax is derived from it, so a high earner was quoted both a cheaper house and a smaller tax bill than they would really face.',
         'Its lowest two income bands are forced down to keep the curve non-decreasing: households reporting almost no income own unusually valuable homes because that group is mostly retirees, and this site models wage income only.',
         'Figures are metro-wide medians. A specific home may differ substantially, which is why every housing field is editable in the interface.',
+        'byMetroState carries the same figures for one state\'s slice of a metro that crosses a state line (ACS summary level 311). A state part is a smaller sample than its metro, so individual cells are suppressed more often; the engine falls back to the whole metro FIELD BY FIELD rather than discarding the whole entry.',
       ],
       incomeCurve,
       homeValueCurve,
       byMetro: housing,
+      byMetroState: housingByState,
     },
     null,
     2,
@@ -693,6 +813,7 @@ writeFileSync(
         'The "5 or more vehicles" bucket is counted as exactly 5, marginally understating a few rural metros.',
       ],
       byMetro: transport,
+      byMetroState: transportByState,
     },
     null,
     2,

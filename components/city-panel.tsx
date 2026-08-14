@@ -78,13 +78,14 @@ export function housingFor(
   tenure: 'rent' | 'own',
   salary: number,
   household: Household,
+  stateCode?: string,
 ): Housing {
-  const h = housingDefaults(metroId);
+  const h = housingDefaults(metroId, undefined, stateCode);
   return tenure === 'rent'
-    ? { tenure: 'rent', monthlyRent: defaultRent(metroId, salary, household) }
+    ? { tenure: 'rent', monthlyRent: defaultRent(metroId, salary, household, undefined, stateCode) }
     : {
         tenure: 'own',
-        homePrice: homePriceDefault(metroId, salary, undefined),
+        homePrice: homePriceDefault(metroId, salary, undefined, stateCode),
         downPayment: 0.2,
         mortgageRate: 0.068,
         propertyTaxRate: h.effectivePropertyTaxRate,
@@ -109,8 +110,8 @@ export function resetCityForLocation(
     metroId,
     stateCode: state,
     grossSalary: salary,
-    cars: defaultCarCount(metroId, filingStatus),
-    housing: housingFor(metroId, tenure, salary, { filingStatus, children }),
+    cars: defaultCarCount(metroId, filingStatus, undefined, state),
+    housing: housingFor(metroId, tenure, salary, { filingStatus, children }, state),
     localOptIns: Object.fromEntries(options.map((o) => [o.jurisdictionId, o.defaultApplies])),
   };
 }
@@ -184,9 +185,9 @@ export function CityPanel({
   }
 
   const m = metro(state.metroId);
-  const defaults = housingDefaults(state.metroId);
-  const transport = transportDefaults(state.metroId);
   const stateCode = resolveStateCode(state.metroId, state.stateCode);
+  const defaults = housingDefaults(state.metroId, undefined, stateCode);
+  const transport = transportDefaults(state.metroId, undefined, stateCode);
   const allLocals = localTaxOptions(state.metroId, undefined, stateCode);
   const optionalLocals = allLocals.filter((o) => o.optional && !o.group);
   // Grouped options are alternatives, so they render as one choice rather than
@@ -197,7 +198,7 @@ export function CityPanel({
 
   const household: Household = { filingStatus, children: childCount };
   const bedrooms = bedroomsFor(adultsIn(filingStatus), childCount);
-  const suggestedRent = defaultRent(state.metroId, state.grossSalary, household);
+  const suggestedRent = defaultRent(state.metroId, state.grossSalary, household, undefined, stateCode);
 
   const set = (patch: Partial<CityFormState>) => onChange({ ...state, ...patch });
   const setHousing = (patch: Partial<Housing>) =>
@@ -318,7 +319,7 @@ export function CityPanel({
               label="Home price"
               value={state.housing.homePrice}
               onChange={(homePrice) => setHousing({ homePrice })}
-              hint={`${formatUSD(homePriceDefault(state.metroId, state.grossSalary))} typical at this salary`}
+              hint={`${formatUSD(homePriceDefault(state.metroId, state.grossSalary, undefined, stateCode))} typical at this salary`}
             />
             {/*
               The three terms of the same purchase, on one line. They were a

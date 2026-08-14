@@ -131,6 +131,7 @@ export function computeCity(
   // 6. Living costs
   const living = computeLiving({
     metroId: city.metroId,
+    stateCode,
     basketIncome: options.basketIncome ?? gross,
     filingStatus: household.filingStatus,
     householdSize: adultsIn(household.filingStatus) + Math.max(0, household.children),
@@ -189,9 +190,10 @@ export function defaultRent(
   grossSalary: USD,
   household: Household,
   version?: string,
+  stateCode?: string,
 ): USD {
   const bedrooms = bedroomsFor(adultsIn(household.filingStatus), household.children);
-  return rentDefault(metroId, grossSalary, bedrooms, version);
+  return rentDefault(metroId, grossSalary, bedrooms, version, stateCode);
 }
 
 /**
@@ -214,10 +216,11 @@ export function housingIsPrefill(
   grossSalary: USD,
   household: Household,
   version?: string,
+  stateCode?: string,
 ): boolean {
   return housing.tenure === 'rent'
-    ? housing.monthlyRent === defaultRent(metroId, grossSalary, household, version)
-    : housing.homePrice === homePriceDefault(metroId, grossSalary, version);
+    ? housing.monthlyRent === defaultRent(metroId, grossSalary, household, version, stateCode)
+    : housing.homePrice === homePriceDefault(metroId, grossSalary, version, stateCode);
 }
 
 /**
@@ -240,12 +243,18 @@ export function housingAtSalary(
   toSalary: USD,
   household: Household,
   version?: string,
+  stateCode?: string,
 ): Housing {
-  if (!housingIsPrefill(metroId, housing, fromSalary, household, version)) return housing;
+  if (!housingIsPrefill(metroId, housing, fromSalary, household, version, stateCode)) {
+    return housing;
+  }
 
   return housing.tenure === 'rent'
-    ? { tenure: 'rent', monthlyRent: defaultRent(metroId, toSalary, household, version) }
-    : { ...housing, homePrice: homePriceDefault(metroId, toSalary, version) };
+    ? {
+        tenure: 'rent',
+        monthlyRent: defaultRent(metroId, toSalary, household, version, stateCode),
+      }
+    : { ...housing, homePrice: homePriceDefault(metroId, toSalary, version, stateCode) };
 }
 
 /**
@@ -260,19 +269,23 @@ export function defaultCityInputs(
   mortgageRate = 0.068,
   version?: string,
 ): CityInputs {
-  const h = housingDefaults(metroId, version);
+  const stateCode = metro(metroId, version).primaryState;
+  const h = housingDefaults(metroId, version, stateCode);
 
   return {
     metroId,
-    stateCode: metro(metroId, version).primaryState,
+    stateCode,
     grossSalary,
-    cars: defaultCarCount(metroId, household.filingStatus, version),
+    cars: defaultCarCount(metroId, household.filingStatus, version, stateCode),
     housing:
       tenure === 'rent'
-        ? { tenure: 'rent', monthlyRent: defaultRent(metroId, grossSalary, household, version) }
+        ? {
+            tenure: 'rent',
+            monthlyRent: defaultRent(metroId, grossSalary, household, version, stateCode),
+          }
         : {
             tenure: 'own',
-            homePrice: homePriceDefault(metroId, grossSalary, version),
+            homePrice: homePriceDefault(metroId, grossSalary, version, stateCode),
             downPayment: 0.2,
             mortgageRate,
             propertyTaxRate: h.effectivePropertyTaxRate,
@@ -384,6 +397,7 @@ export function breakEvenSalary(
       salary,
       inputs.household,
       options.datasetVersion,
+      destination.stateCode,
     ),
   });
 
@@ -448,6 +462,7 @@ export function compare(
         inputs.origin.grossSalary,
         inputs.household,
         datasetVersion,
+        inputs.destination.stateCode,
       ),
     },
     inputs.household,

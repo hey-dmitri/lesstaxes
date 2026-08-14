@@ -28,8 +28,9 @@ export function defaultCarCount(
   metroId: string,
   filingStatus: FilingStatus,
   version?: string,
+  stateCode?: string,
 ): number {
-  const { vehiclesPerAdult } = transportDefaults(metroId, version);
+  const { vehiclesPerAdult } = transportDefaults(metroId, version, stateCode);
   return Math.round(vehiclesPerAdult * adultsIn(filingStatus));
 }
 
@@ -57,6 +58,8 @@ export function computeTransport(inputs: TransportInputs): USD {
 
 export interface LivingInputs {
   metroId: string;
+  /** Narrows vehicle ownership to one state's part of a split metro. */
+  stateCode?: string;
   /**
    * The income whose spending profile defines the household's BASKET.
    *

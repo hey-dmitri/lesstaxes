@@ -208,16 +208,17 @@ export function Calculator({ initial }: CalculatorProps) {
       const after = { filingStatus: nextStatus, children: nextChildren };
       const patch: Partial<CityFormState> = {};
 
-      if (state.cars === defaultCarCount(state.metroId, filingStatus)) {
-        patch.cars = defaultCarCount(state.metroId, nextStatus);
+      if (state.cars === defaultCarCount(state.metroId, filingStatus, undefined, state.stateCode)) {
+        patch.cars = defaultCarCount(state.metroId, nextStatus, undefined, state.stateCode);
       }
       if (
         state.housing.tenure === 'rent' &&
-        state.housing.monthlyRent === defaultRent(state.metroId, state.grossSalary, before)
+        state.housing.monthlyRent ===
+          defaultRent(state.metroId, state.grossSalary, before, undefined, state.stateCode)
       ) {
         patch.housing = {
           tenure: 'rent',
-          monthlyRent: defaultRent(state.metroId, state.grossSalary, after),
+          monthlyRent: defaultRent(state.metroId, state.grossSalary, after, undefined, state.stateCode),
         };
       }
       if (Object.keys(patch).length > 0) setState({ ...state, ...patch });
@@ -237,7 +238,7 @@ export function Calculator({ initial }: CalculatorProps) {
       if (!state.metroId) continue;
       setState({
         ...state,
-        housing: housingFor(state.metroId, next, state.grossSalary, household),
+        housing: housingFor(state.metroId, next, state.grossSalary, household, state.stateCode),
       });
     }
   }
@@ -266,6 +267,8 @@ export function Calculator({ initial }: CalculatorProps) {
           state.grossSalary,
           grossSalary,
           { filingStatus, children },
+          undefined,
+          state.stateCode,
         ),
       });
     };

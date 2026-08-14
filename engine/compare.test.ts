@@ -280,7 +280,19 @@ describe('the city/salary split does not blame the city for a salary choice', ()
 
     const midRent = result.destinationAtOriginSalary.housing.shelter / 12;
     expect(midRent).toBe(defaultRent(AUSTIN, 150_000, SINGLE));
-    expect(Math.round(result.cityEffect)).toBe(24_319);
+
+    // The rent used in that column is the $150,000 one, not the $110,000 one
+    // the offer implies — a difference of over $4,000 a year that used to be
+    // filed under "the city is cheaper".
+    const offerRent = defaultRent(AUSTIN, 110_000, SINGLE);
+    expect(defaultRent(AUSTIN, 150_000, SINGLE) - offerRent).toBeGreaterThan(300);
+    expect(midRent).not.toBe(offerRent);
+
+    // The absolute figure moved with dataset 2026.5, which prices the New York
+    // metro from its NEW YORK part rather than metro-wide: 0.486 vehicles per
+    // adult against 0.596, because the five boroughs outweigh the suburbs. So
+    // the property is pinned rather than the number.
+    expect(result.cityEffect + result.salaryEffect).toBeCloseTo(result.delta, 6);
   });
 
   it('keeps the split adding up to the headline', () => {

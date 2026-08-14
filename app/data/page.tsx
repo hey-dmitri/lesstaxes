@@ -69,10 +69,10 @@ export default function DataPage() {
             Yonkers, and applying it upstate would invent a tax that does not exist.
           </li>
           <li>
-            <strong>Split metros share one set of housing figures.</strong> A metro that crosses a
-            state line appears once per state and the tax columns differ, but rent, home value,
-            property tax and vehicles are the whole metro&rsquo;s and repeat. The ACS does publish
-            these by state part; it is not wired up yet.
+            <strong>Split metros keep metro-wide price levels.</strong> Rent, home value, property
+            tax and vehicles are now the state part&rsquo;s own figures, but BEA publishes price
+            parities for whole metros only, so those repeat across a metro&rsquo;s rows. Where the
+            Census suppresses a state-part figure, that one figure falls back to the whole metro.
           </li>
           <li>
             <strong>Rural entries use statewide price levels.</strong> No federal agency publishes a

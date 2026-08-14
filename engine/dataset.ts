@@ -102,10 +102,52 @@ export interface HousingDefaults {
   effectivePropertyTaxRate: Rate;
 }
 
-export function housingDefaults(metroId: string, version?: string): HousingDefaults {
-  const h = datasetBundle(version).housing.byMetro[metroId] as HousingDefaults | undefined;
-  if (!h) throw new Error(`no housing data for ${metroId}`);
-  return h;
+/**
+ * Housing figures for a place, narrowed to one state where that is possible.
+ *
+ * 43 of these metros cross a state line, and the halves are not alike: the New
+ * Jersey side of the New York metro has a median home value near $512,000
+ * against $685,000 on the New York side, either side of the $614,000 metro
+ * figure that used to be quoted to both. The ACS publishes every table used
+ * here at summary level 311 — metro by state part — so the state the user has
+ * already chosen for tax purposes now picks the housing too.
+ *
+ * FIELD BY FIELD, not entry by entry. A state part is a smaller sample than its
+ * metro, so the Census suppresses individual cells in it more often. Falling
+ * back wholesale would throw away good figures to avoid a missing one; falling
+ * back per field keeps the state's own number wherever it exists.
+ */
+export function housingDefaults(
+  metroId: string,
+  version?: string,
+  stateCode?: string,
+): HousingDefaults {
+  const bundle = datasetBundle(version).housing;
+  const metroWide = bundle.byMetro[metroId] as HousingDefaults | undefined;
+  if (!metroWide) throw new Error(`no housing data for ${metroId}`);
+  if (!stateCode) return metroWide;
+
+  const part = (bundle.byMetroState as Record<string, HousingDefaults> | undefined)?.[
+    `${metroId}:${stateCode}`
+  ];
+  if (!part) return metroWide;
+
+  return {
+    medianRentMonthly: part.medianRentMonthly ?? metroWide.medianRentMonthly,
+    rentByBedrooms: Object.fromEntries(
+      Object.keys(metroWide.rentByBedrooms).map((size) => [
+        size,
+        part.rentByBedrooms?.[Number(size)] ?? metroWide.rentByBedrooms[Number(size)],
+      ]),
+    ),
+    derivedBedrooms: part.derivedBedrooms ?? metroWide.derivedBedrooms,
+    medianHomePrice: part.medianHomePrice ?? metroWide.medianHomePrice,
+    medianOwnerIncome: part.medianOwnerIncome ?? metroWide.medianOwnerIncome,
+    medianRenterIncome: part.medianRenterIncome ?? metroWide.medianRenterIncome,
+    medianPropertyTaxPaid: part.medianPropertyTaxPaid ?? metroWide.medianPropertyTaxPaid,
+    effectivePropertyTaxRate:
+      part.effectivePropertyTaxRate ?? metroWide.effectivePropertyTaxRate,
+  };
 }
 
 // ---------------------------------------------------------------------------
@@ -236,6 +278,7 @@ export function homeValueFactorForIncome(
   income: USD,
   metroId?: string,
   version?: string,
+  stateCode?: string,
 ): number {
   const curve = homeValueCurve(version);
   if (!curve) return 1; // a release that priced homes income-blind
@@ -243,7 +286,7 @@ export function homeValueFactorForIncome(
   if (metroId) {
     const local = localIncomeFactor(
       income,
-      housingDefaults(metroId, version).medianOwnerIncome,
+      housingDefaults(metroId, version, stateCode).medianOwnerIncome,
       curve.elasticity,
     );
     if (local !== null) return local;
@@ -253,9 +296,14 @@ export function homeValueFactorForIncome(
 }
 
 /** The home-price prefill: the local median, scaled for what this income buys. */
-export function homePriceDefault(metroId: string, income: USD, version?: string): USD {
-  const base = housingDefaults(metroId, version).medianHomePrice;
-  return Math.round(base * homeValueFactorForIncome(income, metroId, version));
+export function homePriceDefault(
+  metroId: string,
+  income: USD,
+  version?: string,
+  stateCode?: string,
+): USD {
+  const base = housingDefaults(metroId, version, stateCode).medianHomePrice;
+  return Math.round(base * homeValueFactorForIncome(income, metroId, version, stateCode));
 }
 
 /**
@@ -267,8 +315,9 @@ export function rentDefault(
   income: USD,
   bedrooms: number,
   version?: string,
+  stateCode?: string,
 ): USD {
-  const defaults = housingDefaults(metroId, version);
+  const defaults = housingDefaults(metroId, version, stateCode);
   const size = Math.min(MAX_BEDROOMS, Math.max(0, Math.round(bedrooms)));
   // Releases before 2026.2 carry no rent-by-size table; they priced every
   // household at one metro-wide median, and their links must keep doing so.
@@ -293,10 +342,22 @@ export interface TransportDefaults {
   vehiclesPerAdult: number;
 }
 
-export function transportDefaults(metroId: string, version?: string): TransportDefaults {
-  const t = datasetBundle(version).transport.byMetro[metroId] as TransportDefaults | undefined;
-  if (!t) throw new Error(`no transport data for ${metroId}`);
-  return t;
+/** Vehicles per adult, narrowed to a state part where one exists. */
+export function transportDefaults(
+  metroId: string,
+  version?: string,
+  stateCode?: string,
+): TransportDefaults {
+  const bundle = datasetBundle(version).transport;
+  const metroWide = bundle.byMetro[metroId] as TransportDefaults | undefined;
+  if (!metroWide) throw new Error(`no transport data for ${metroId}`);
+  if (!stateCode) return metroWide;
+
+  const part = (bundle.byMetroState as Record<string, TransportDefaults> | undefined)?.[
+    `${metroId}:${stateCode}`
+  ];
+  if (part?.vehiclesPerAdult == null) return metroWide;
+  return { ...metroWide, ...part };
 }
 
 // ---------------------------------------------------------------------------

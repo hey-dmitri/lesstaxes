@@ -113,7 +113,137 @@ const CITY_TAXES = [
     source: 'City of Cincinnati Income Taxes — https://www.cincinnati-oh.gov/finance/income-taxes/',
     note: 'Municipal income tax, 1.8%.',
   },
+  {
+    id: 'cleveland',
+    kind: 'flatRate',
+    name: 'Cleveland',
+    stateCode: 'OH',
+    metroId: '17410',
+    rate: 0.025,
+    prompt: 'Do you live inside the City of Cleveland?',
+    source:
+      'Central Collection Agency (City of Cleveland Division of Taxation), Tax Rates — https://ccatax.ci.cleveland.oh.us/?p=taxrates',
+    note: 'Municipal income tax, 2.5%. Ohio grants a credit for tax paid to a work city; this models a resident who also works locally.',
+  },
+  {
+    id: 'pittsburgh',
+    kind: 'flatRate',
+    name: 'Pittsburgh',
+    stateCode: 'PA',
+    metroId: '38300',
+    rate: 0.03,
+    prompt: 'Do you live inside the City of Pittsburgh?',
+    source:
+      'City of Pittsburgh, Taxes — https://www.pittsburghpa.gov/City-Government/Finance-Budget/Taxes',
+    note: 'Resident Earned Income Tax: 1% city plus 2% school district, 3% total.',
+  },
+  {
+    id: 'louisville',
+    kind: 'flatRate',
+    name: 'Louisville Metro',
+    stateCode: 'KY',
+    metroId: '31140',
+    rate: 0.022,
+    prompt: 'Do you live in Louisville Metro (Jefferson County)?',
+    source:
+      'Louisville Metro Revenue Commission, Form W-1 instructions — https://louisvilleky.gov/sites/default/files/2024-12/w-1_instructions_2025.pdf',
+    note: 'Occupational licence fee, resident rate 2.2%: Louisville Metro 1.25%, TARC 0.2%, school boards 0.75%. Applies to the whole of Jefferson County, not just the city.',
+  },
+  {
+    id: 'kansas-city',
+    kind: 'flatRate',
+    name: 'Kansas City',
+    stateCode: 'MO',
+    metroId: '28140',
+    rate: 0.01,
+    prompt: 'Do you live inside Kansas City, Missouri?',
+    source:
+      'City of Kansas City, Missouri, Earnings Tax — https://www.kcmo.gov/city-hall/departments/finance/earnings-tax',
+    note: 'Earnings tax, 1% of earned income. Paid by all KCMO residents wherever they work.',
+  },
+  {
+    id: 'st-louis',
+    kind: 'flatRate',
+    name: 'St. Louis',
+    stateCode: 'MO',
+    metroId: '41180',
+    rate: 0.01,
+    prompt: 'Do you live inside the City of St. Louis?',
+    source:
+      'City of St. Louis Collector of Revenue, Earnings Tax — https://www.stlouis-mo.gov/government/departments/collector/earnings-tax/',
+    note: 'Earnings tax, 1%. Paid by City of St. Louis residents regardless of where their employer is.',
+  },
+  {
+    id: 'baltimore-city',
+    kind: 'flatRate',
+    name: 'Baltimore City',
+    stateCode: 'MD',
+    metroId: '12580',
+    rate: 0.032,
+    prompt: 'Do you live inside Baltimore City?',
+    source:
+      'Comptroller of Maryland, Withholding Tax Facts January 2026 - December 2026 — https://www.marylandcomptroller.gov/content/dam/mdcomp/tax/legal-publications/facts/withholding-tax-facts-2026.pdf',
+    note:
+      'Baltimore City local income tax, 3.20% for 2026. Maryland levies this on Maryland TAXABLE income rather than on gross, so applying it to gross overstates it by roughly the deduction times the rate — about $190 a year at $150,000. That is far smaller than the error it replaces: the Maryland state average is 2.40%, understating a Baltimore City resident by about $1,200 a year.',
+  },
 ];
+
+/**
+ * Portland is the awkward one, and it is worth spelling out why.
+ *
+ * Two separate taxes overlap. Metro's Supportive Housing Services tax covers
+ * the whole Metro district — parts of Multnomah, Washington and Clackamas
+ * counties. Multnomah County's Preschool for All tax covers Multnomah County
+ * only. A Portland resident pays BOTH; someone in Beaverton pays only the
+ * first; someone outside the district pays neither.
+ *
+ * Both are bracketed rather than flat, and the brackets are the important part:
+ * below $125,000 single or $200,000 joint, neither is owed at all. Modelling
+ * Portland on Oregon's 0.18% state average charged everyone in the metro a
+ * little and the people who actually owe these taxes far too little.
+ *
+ * Two caveats, both stated on the data page. The thresholds are inflation
+ * adjusted from tax year 2026 and the adjusted figures were not published in
+ * a form that could be sourced here, so these are the legislated base amounts.
+ * And both taxes are levied on Oregon TAXABLE income while this applies them
+ * to gross, which pulls a household just above a threshold in slightly early.
+ */
+const PORTLAND_MULTNOMAH = {
+  id: 'portland-multnomah',
+  kind: 'bracketed',
+  name: 'Portland (Multnomah County)',
+  stateCode: 'OR',
+  brackets: {
+    single: [
+      { from: 0, rate: 0 },
+      { from: 125_000, rate: 0.025 },
+      { from: 250_000, rate: 0.04 },
+    ],
+    marriedJointly: [
+      { from: 0, rate: 0 },
+      { from: 200_000, rate: 0.025 },
+      { from: 400_000, rate: 0.04 },
+    ],
+  },
+};
+
+const PORTLAND_METRO = {
+  id: 'portland-metro',
+  kind: 'bracketed',
+  name: 'Greater Portland (Metro district)',
+  stateCode: 'OR',
+  brackets: {
+    single: [
+      { from: 0, rate: 0 },
+      { from: 125_000, rate: 0.01 },
+    ],
+    marriedJointly: [
+      { from: 0, rate: 0 },
+      { from: 200_000, rate: 0.01 },
+    ],
+  },
+};
+
 
 const NYC = {
   id: 'nyc',
@@ -209,7 +339,12 @@ const KNOWN_UNDERSTATED = {
 
 const metrosMeta = JSON.parse(readFileSync(resolve(DATA_DIR, 'metros.json'), 'utf8'));
 
-const jurisdictions = { [NYC.id]: NYC, [YONKERS.id]: YONKERS };
+const jurisdictions = {
+  [NYC.id]: NYC,
+  [YONKERS.id]: YONKERS,
+  [PORTLAND_MULTNOMAH.id]: PORTLAND_MULTNOMAH,
+  [PORTLAND_METRO.id]: PORTLAND_METRO,
+};
 
 for (const [code, rate] of Object.entries(STATE_AVERAGE_LOCAL)) {
   const id = `avg-${code}`;
@@ -245,6 +380,7 @@ for (const city of CITY_TAXES) {
 }
 
 const CITY_BY_METRO = Object.fromEntries(CITY_TAXES.map((c) => [c.metroId, c]));
+const PORTLAND_METRO_ID = '38900';
 
 const byMetro = {};
 const NEW_YORK_METRO = '35620';
@@ -271,6 +407,36 @@ for (const metro of Object.values(metrosMeta.metros)) {
   } else if (state === 'NY') {
     // No New York locality outside NYC and Yonkers levies an income tax.
     // Deliberately empty.
+  } else if (metro.id === PORTLAND_METRO_ID) {
+    // Three genuine possibilities, exactly one of which applies: inside
+    // Multnomah County (both taxes), elsewhere in the Metro district (the
+    // housing tax only), or outside it (neither, so the state average).
+    entries.push(
+      {
+        jurisdictionId: PORTLAND_MULTNOMAH.id,
+        optional: true,
+        defaultApplies: true,
+        group: 'locality',
+        label: 'Multnomah County',
+        prompt: 'Do you live in Multnomah County, which includes most of Portland?',
+      },
+      {
+        jurisdictionId: PORTLAND_METRO.id,
+        optional: true,
+        defaultApplies: false,
+        group: 'locality',
+        label: 'Rest of Metro',
+        prompt: 'Do you live elsewhere inside the Metro district — Washington or Clackamas County?',
+      },
+      {
+        jurisdictionId: 'avg-OR',
+        optional: true,
+        defaultApplies: false,
+        group: 'locality',
+        label: 'Outside Metro',
+        prompt: 'Do you live outside the Metro district?',
+      },
+    );
   } else if (CITY_BY_METRO[metro.id]) {
     // The principal city and "somewhere else in this metro" are alternatives,
     // not additions. Exactly one applies, so they share a group.
