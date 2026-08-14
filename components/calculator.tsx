@@ -322,31 +322,19 @@ export function Calculator({ initial }: CalculatorProps) {
   return (
     <main id="main" className="flex flex-1 flex-col gap-4">
       {/*
-        What the site is, beside what it needs to know about you. Stacked, the
-        two cost enough height to push the leftover figures under the fold on a
-        laptop; side by side they read as one masthead and the work starts
-        higher up the page.
-      */}
-      <div className="grid shrink-0 gap-3 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] lg:items-start">
-        {/*
-          The h1 is the question rather than the brand, because the question is
-          the thing a stranger can act on; the sentence under it says what they
-          get and what it accounts for, so nobody has to infer the product from
-          a form.
-        */}
-        <div className="flex flex-col gap-2">
-          <h1
-            className="font-display text-[1.9rem] font-bold leading-[1.08] tracking-[-0.035em] xl:text-[2.3rem]"
-            style={{ color: 'var(--ink)' }}
-          >
-            {TAGLINE}
-          </h1>
-          <p className="max-w-[52ch] text-[1.05rem] leading-snug" style={{ color: 'var(--ink-soft)' }}>
-            Pick two cities and a salary. See what you&rsquo;d have left over each year, after tax,
-            housing, cars and everyday costs.
-          </p>
-        </div>
+        What the site needs to know about you, beside what the site is.
+        Stacked, the two cost enough height to push the leftover figures under
+        the fold on a laptop; side by side they read as one masthead and the
+        work starts higher up the page.
 
+        Step 1 sits on the LEFT because the steps have to read in order. With
+        the headline there instead, "1 About you" was in the top-right corner
+        and "2 Living now" directly below the headline — so the eye went right,
+        then all the way back left, to follow 1 into 2. Numbering a form and
+        then laying it out against its own numbering is worse than not
+        numbering it.
+      */}
+      <div className="grid shrink-0 gap-3 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] lg:items-start">
         {/*
           "About you" as a sentence rather than a row of labelled fields. Filing
           status and children are the only inputs shared by both cities, and
@@ -401,6 +389,24 @@ export function Calculator({ initial }: CalculatorProps) {
             Tap any green word to change it. Then pick your two cities below.
           </span>
         </section>
+        {/*
+          The h1 is the question rather than the brand, because the question is
+          the thing a stranger can act on; the sentence under it says what they
+          get and what it accounts for, so nobody has to infer the product from
+          a form.
+        */}
+        <div className="flex flex-col gap-2">
+          <h1
+            className="font-display text-[1.9rem] font-bold leading-[1.08] tracking-[-0.035em] xl:text-[2.3rem]"
+            style={{ color: 'var(--ink)' }}
+          >
+            {TAGLINE}
+          </h1>
+          <p className="max-w-[52ch] text-[1.05rem] leading-snug" style={{ color: 'var(--ink-soft)' }}>
+            Pick two cities and a salary. See what you&rsquo;d have left over each year, after tax,
+            housing, cars and everyday costs.
+          </p>
+        </div>
       </div>
 
       {/*
