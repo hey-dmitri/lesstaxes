@@ -400,11 +400,17 @@ export function Calculator({ initial }: CalculatorProps) {
           className="flex flex-col rounded-xl border"
           style={{ borderColor: 'var(--rule-strong)', background: 'var(--surface)' }}
         >
+          {/*
+            Step 4 completes the sequence: the three inputs, then the thing
+            they are for. Its marker only goes quiet once the verdict is
+            actually on screen.
+          */}
           <h2
-            className="shrink-0 border-b px-4 py-2.5 font-display text-sm font-semibold"
+            className="flex shrink-0 items-center gap-2 border-b px-4 py-2.5 font-display text-sm font-semibold"
             style={{ borderColor: 'var(--rule)', color: 'var(--ink)' }}
           >
-            {revealed && result ? 'What it means for you' : 'Your answer'}
+            <StepBadge n={4} done={revealed && Boolean(result)} />
+            {revealed && result ? 'Pack or stay' : 'Your answer'}
           </h2>
 
           {revealed && result ? (
@@ -445,6 +451,9 @@ export function Calculator({ initial }: CalculatorProps) {
                     </Waiting>
                     <Waiting done={destination.metroId !== ''} n={3}>
                       Where you&rsquo;re thinking of going
+                    </Waiting>
+                    <Waiting done={false} n={4}>
+                      Pack or stay
                     </Waiting>
                   </ul>
                 </>

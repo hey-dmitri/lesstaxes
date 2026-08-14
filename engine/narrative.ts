@@ -16,6 +16,51 @@ import { formatUSD } from './money';
 import type { ComparisonResult, USD } from './types';
 
 // ---------------------------------------------------------------------------
+// The verdict
+// ---------------------------------------------------------------------------
+
+/**
+ * Below this, the two cities are not distinguishable and the site should not
+ * pretend otherwise.
+ *
+ * Every figure here is a local median — rent, spending, car ownership — and
+ * real households scatter widely around each one. A hundred dollars a month
+ * between two cities is comfortably inside that scatter, so calling it a win
+ * would be reading precision into an estimate that does not have any. It is a
+ * flat amount rather than a percentage because the uncertainty comes from the
+ * cost tables, which do not shrink just because the salary is large.
+ */
+const TOO_CLOSE_A_YEAR = 1_200;
+
+export interface Verdict {
+  kind: 'pack' | 'stay' | 'too-close';
+  /** What follows the word, so it can never be read as advice. */
+  qualifier: string;
+}
+
+/**
+ * Pack or stay — the question the site is named after, answered in a word.
+ *
+ * The panel led with a signed dollar amount, which is the evidence rather than
+ * the conclusion, and left the reader to work out which way it pointed. The
+ * word is money-only by construction and says so: this calculation knows
+ * nothing about the job, the people, or the weather.
+ */
+export function verdict(result: ComparisonResult): Verdict {
+  if (Math.abs(result.delta) < TOO_CLOSE_A_YEAR) {
+    return {
+      kind: 'too-close',
+      qualifier:
+        `Under ${formatUSD(TOO_CLOSE_A_YEAR / 12)} a month apart — closer than figures built ` +
+        `on local medians can really tell apart.`,
+    };
+  }
+  return result.delta > 0
+    ? { kind: 'pack', qualifier: 'On money alone, the move comes out ahead.' }
+    : { kind: 'stay', qualifier: 'On money alone, staying comes out ahead.' };
+}
+
+// ---------------------------------------------------------------------------
 // Why the answer came out the way it did
 // ---------------------------------------------------------------------------
 

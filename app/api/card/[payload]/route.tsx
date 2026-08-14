@@ -1,6 +1,13 @@
 import { ImageResponse } from 'next/og';
 
-import { breakEvenNarrative, formatUSD, formatPercent, metro, percentIsMeaningful } from '@/engine';
+import {
+  breakEvenNarrative,
+  formatUSD,
+  formatPercent,
+  metro,
+  percentIsMeaningful,
+  verdict,
+} from '@/engine';
 import { decodeComparison } from '@/lib/share-link';
 import { comparisonFromShared, describeHousehold } from '@/lib/shared-comparison';
 import { SITE_NAME, TAGLINE } from '@/lib/site';
@@ -60,6 +67,8 @@ export async function GET(_request: Request, { params }: { params: Promise<{ pay
     household: string;
     origin: CardCity;
     destination: CardCity;
+    /** 'Pack', 'Stay' or 'Too close to call' — the same call the page makes. */
+    verdict: string;
     delta: number;
     pct: number | null;
     monthly: number;
@@ -118,8 +127,11 @@ export async function GET(_request: Request, { params }: { params: Promise<{ pay
                   : `${formatUSD(Math.abs(be.gap))} more than the offer.`,
             };
 
+    const v = verdict(result);
+
     card = {
       household: describeHousehold(shared),
+      verdict: v.kind === 'pack' ? 'Pack' : v.kind === 'stay' ? 'Stay' : 'Too close to call',
       breakEven,
       origin: city('origin'),
       destination: city('destination'),
@@ -245,23 +257,30 @@ export async function GET(_request: Request, { params }: { params: Promise<{ pay
             {/* Absorbs the slack, so the two city blocks sit on the bottom
                 edge alongside the total on the right. */}
             <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
-              <div style={eyebrow}>{better ? 'More in your pocket' : 'Less in your pocket'}</div>
+              {/* The verdict leads, as it does on the page. Whoever sees this
+                  in a chat gets the answer before the arithmetic. It shares a
+                  baseline with the eyebrow because the card is a fixed height
+                  and the city blocks below it are not negotiable. */}
+              <div style={{ display: 'flex', alignItems: 'baseline', gap: 12 }}>
+                <div style={{ display: 'flex', fontSize: 38, fontWeight: 800, color: INK }}>
+                  {card.verdict}
+                </div>
+                <div style={eyebrow}>{better ? 'More in your pocket' : 'Less in your pocket'}</div>
+              </div>
               <div
                 style={{
-                  display: 'flex', fontSize: 82, fontWeight: 800, color: accent,
-                  lineHeight: 1, marginTop: 4,
+                  display: 'flex', fontSize: 72, fontWeight: 800, color: accent,
+                  lineHeight: 1, marginTop: 6,
                 }}
               >
                 {formatUSD(Math.abs(card.delta))}
               </div>
               <div style={{ display: 'flex', fontSize: 21, color: INK, marginTop: 8 }}>
-                {`a year ${better ? 'better off' : 'worse off'} · ${formatUSD(Math.abs(card.monthly))} a month`}
+                {`a year ${better ? 'better off' : 'worse off'} · ${formatUSD(Math.abs(card.monthly))} a month` +
+                  (card.pct === null
+                    ? ''
+                    : ` · ${formatPercent(Math.abs(card.pct))} ${better ? 'more' : 'less'}`)}
               </div>
-              {card.pct !== null && (
-                <div style={{ display: 'flex', fontSize: 19, color: MUTED, marginTop: 3 }}>
-                  {`${formatPercent(Math.abs(card.pct))} ${better ? 'more' : 'less'} than what is left over now`}
-                </div>
-              )}
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>

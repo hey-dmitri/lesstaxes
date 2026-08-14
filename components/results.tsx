@@ -12,6 +12,7 @@ import {
   metro,
   percentIsMeaningful,
   shortfalls,
+  verdict,
   whyClause,
   whyNarrative,
   type ComparisonResult,
@@ -40,6 +41,49 @@ const FEDERAL_ROWS = new Set(['federalTax', 'fica']);
  * the two questions that follow it: what salary would make this a wash, and
  * what single line is doing most of the work.
  */
+/**
+ * The answer in a word, using the site's own two words.
+ *
+ * Both are always shown and the winning one is lit, so the reader sees the
+ * question and its answer in the same glance rather than a lone word they have
+ * to place. When the two cities are too close to separate, neither lights up —
+ * that is a real answer as well, and dressing it as a narrow win would be
+ * claiming a precision these figures do not have.
+ */
+function VerdictLine({ result }: { result: ComparisonResult }) {
+  const v = verdict(result);
+  const word = 'font-display text-[2.1rem] font-bold leading-none tracking-[-0.03em]';
+  const lit = { color: 'var(--accent)' };
+  const dim = { color: 'var(--muted)' };
+
+  return (
+    <div className="flex flex-col gap-1.5">
+      <div className="flex items-baseline gap-2.5">
+        <span className={word} style={v.kind === 'pack' ? lit : dim}>
+          Pack
+        </span>
+        <span className="text-[0.95rem]" style={{ color: 'var(--muted)' }}>
+          or
+        </span>
+        <span className={word} style={v.kind === 'stay' ? lit : dim}>
+          Stay
+        </span>
+        {v.kind === 'too-close' && (
+          <span
+            className="rounded-full px-2.5 py-0.5 text-[0.75rem] font-semibold"
+            style={{ background: 'var(--surface-sunken)', color: 'var(--ink-soft)' }}
+          >
+            too close to call
+          </span>
+        )}
+      </div>
+      <p className="text-[0.86rem] leading-snug" style={{ color: 'var(--ink-soft)' }}>
+        {v.qualifier}
+      </p>
+    </div>
+  );
+}
+
 function Headline({ result, animate }: { result: ComparisonResult; animate: boolean }) {
   const better = result.delta >= 0;
   const rolled = useCountUp(result.delta, animate);
@@ -54,34 +98,42 @@ function Headline({ result, animate }: { result: ComparisonResult; animate: bool
   return (
     <div className="flex flex-col gap-3.5">
       <div
-        className="flex flex-col gap-0.5"
+        className="flex flex-col gap-3"
         style={{ animation: animate ? 'pop 700ms ease-out both' : undefined }}
       >
-        <span
-          className="font-display text-[0.7rem] font-medium uppercase tracking-[0.2em]"
-          style={{ color: 'var(--muted)' }}
+        <VerdictLine result={result} />
+
+        {/* The evidence for the word above: how much, and over what. */}
+        <div
+          className="flex flex-col gap-0.5 border-t pt-3"
+          style={{ borderColor: 'var(--rule)' }}
         >
-          What&rsquo;s left over, {to} vs {from}
-        </span>
-        <span
-          className="tnum text-[3.2rem] font-bold leading-[1.04] tracking-[-0.04em] xl:text-[3.6rem]"
-          style={{ color: colour }}
-        >
-          {formatUSD(rolled, { signed: true })}
-        </span>
-        <span className="text-[1.05rem] font-medium" style={{ color: 'var(--ink)' }}>
-          a year {better ? 'more to spend or save' : 'less to spend or save'}{' '}
-          <span style={{ color: 'var(--muted)' }}>
-            &middot; <span className="tnum">{formatUSD(Math.abs(result.deltaMonthly))}</span> a
-            month
-            {salaryChanged && (
-              <>
-                , on <span className="tnum">{formatUSD(Math.abs(payGap))}</span>{' '}
-                {payGap < 0 ? 'less' : 'more'} pay
-              </>
-            )}
+          <span
+            className="font-display text-[0.7rem] font-medium uppercase tracking-[0.2em]"
+            style={{ color: 'var(--muted)' }}
+          >
+            What&rsquo;s left over, {to} vs {from}
           </span>
-        </span>
+          <span
+            className="tnum text-[3.2rem] font-bold leading-[1.04] tracking-[-0.04em] xl:text-[3.6rem]"
+            style={{ color: colour }}
+          >
+            {formatUSD(rolled, { signed: true })}
+          </span>
+          <span className="text-[1.05rem] font-medium" style={{ color: 'var(--ink)' }}>
+            a year {better ? 'more to spend or save' : 'less to spend or save'}{' '}
+            <span style={{ color: 'var(--muted)' }}>
+              &middot; <span className="tnum">{formatUSD(Math.abs(result.deltaMonthly))}</span> a
+              month
+              {salaryChanged && (
+                <>
+                  , on <span className="tnum">{formatUSD(Math.abs(payGap))}</span>{' '}
+                  {payGap < 0 ? 'less' : 'more'} pay
+                </>
+              )}
+            </span>
+          </span>
+        </div>
       </div>
 
       <div className="flex flex-wrap gap-2.5">

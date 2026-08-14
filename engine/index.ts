@@ -68,8 +68,10 @@ export {
   whyClause,
   whyNarrative,
   whySentence,
+  verdict,
   type BreakEvenNarrative,
   type Shortfall,
+  type Verdict,
   type WhyNarrative,
 } from './narrative';
 

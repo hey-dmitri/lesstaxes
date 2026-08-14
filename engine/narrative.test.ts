@@ -8,6 +8,7 @@ import {
   breakEvenSentence,
   percentIsMeaningful,
   shortfalls,
+  verdict,
   whyNarrative,
   whySentence,
 } from './narrative';
@@ -35,6 +36,58 @@ function run(
     destination: defaultCityInputs(to, destinationSalary, household, tenure),
   });
 }
+
+describe('verdict', () => {
+  it('says pack when the move wins', () => {
+    const result = run(CHICAGO, AUSTIN, 150_000);
+    expect(result.delta).toBeGreaterThan(0);
+    expect(verdict(result).kind).toBe('pack');
+  });
+
+  it('says stay when the move loses', () => {
+    const result = run(AUSTIN, CHICAGO, 150_000);
+    expect(result.delta).toBeLessThan(0);
+    expect(verdict(result).kind).toBe('stay');
+  });
+
+  it('refuses to call a difference smaller than the data can resolve', () => {
+    // Every cost here is a local median that real households scatter around.
+    // A hundred dollars a month is inside that scatter, so declaring a winner
+    // would be inventing precision the tables do not have.
+    for (const delta of [0, 400, -400, 1_199, -1_199]) {
+      const result = { ...run(CHICAGO, AUSTIN, 150_000), delta };
+      expect(verdict(result).kind).toBe('too-close');
+    }
+  });
+
+  it('calls it the moment the difference clears that threshold', () => {
+    expect(verdict({ ...run(CHICAGO, AUSTIN, 150_000), delta: 1_201 }).kind).toBe('pack');
+    expect(verdict({ ...run(CHICAGO, AUSTIN, 150_000), delta: -1_201 }).kind).toBe('stay');
+  });
+
+  it('never states the verdict without saying it is money only', () => {
+    for (const delta of [50_000, -50_000, 0]) {
+      const v = verdict({ ...run(CHICAGO, AUSTIN, 150_000), delta });
+      expect(v.qualifier.length).toBeGreaterThan(0);
+      if (v.kind !== 'too-close') expect(v.qualifier).toContain('money alone');
+    }
+  });
+
+  it('agrees with the sign of the headline in every case', () => {
+    const cases: Array<[string, string, number, number]> = [
+      [CHICAGO, AUSTIN, 150_000, 150_000],
+      [CHICAGO, AUSTIN, 150_000, 125_000],
+      [AUSTIN, NYC, 150_000, 120_000],
+      [NYC, AUSTIN, 200_000, 200_000],
+    ];
+    for (const [from, to, salary, destinationSalary] of cases) {
+      const result = run(from, to, salary, destinationSalary);
+      const kind = verdict(result).kind;
+      if (kind === 'pack') expect(result.delta).toBeGreaterThan(0);
+      if (kind === 'stay') expect(result.delta).toBeLessThan(0);
+    }
+  });
+});
 
 describe('why narrative', () => {
   it('reads the same salary case without inventing a pay effect', () => {
