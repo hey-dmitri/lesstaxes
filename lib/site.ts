@@ -28,11 +28,10 @@ export const SITE_SLUG = 'packorstay';
 export const TAGLINE = 'Will moving actually leave you with more money?';
 
 /**
- * Recurring supporting copy. The brand name is deliberately about the decision
- * rather than the arithmetic; this is where the arithmetic gets its due. It
- * accompanies TAGLINE, never replaces it.
+ * The one button on the site. Names the act, not the product — "do the move
+ * math" made the reader parse a coined noun before they could press it.
  */
-export const SUPPORTING = 'Do the move math';
+export const ACTION = 'Run the numbers';
 
 /**
  * Not registered yet — see PROJECT.md D24. Kept here so that pointing the site

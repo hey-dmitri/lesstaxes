@@ -8,7 +8,7 @@ import { Results } from '@/components/results';
 import { ShareBar } from '@/components/share-bar';
 import { encodeComparison, type SharedComparison } from '@/lib/share-link';
 import { describeComparison, jurisdictionsFor } from '@/lib/shared-comparison';
-import { SUPPORTING, TAGLINE } from '@/lib/site';
+import { ACTION, TAGLINE } from '@/lib/site';
 import {
   compare,
   DATASET_VERSION,
@@ -221,95 +221,116 @@ export function Calculator({ initial }: CalculatorProps) {
   return (
     <main id="main" className="flex flex-1 flex-col gap-4">
       {/*
-        What the site is, before anything is asked of the reader. The h1 is the
-        question rather than the brand, because the question is the thing a
-        stranger can act on; the sentence under it says what they will get and
-        what it accounts for, so nobody has to infer the product from a form.
+        What the site is, beside what it needs to know about you. Stacked, the
+        two cost enough height to push the leftover figures under the fold on a
+        laptop; side by side they read as one masthead and the work starts
+        higher up the page.
       */}
-      <div className="flex shrink-0 flex-col gap-2">
-        <h1
-          className="font-display text-[2rem] font-bold leading-[1.08] tracking-[-0.035em] xl:text-[2.4rem]"
-          style={{ color: 'var(--ink)' }}
+      <div className="grid shrink-0 gap-3 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] lg:items-start">
+        {/*
+          The h1 is the question rather than the brand, because the question is
+          the thing a stranger can act on; the sentence under it says what they
+          get and what it accounts for, so nobody has to infer the product from
+          a form.
+        */}
+        <div className="flex flex-col gap-2">
+          <h1
+            className="font-display text-[1.9rem] font-bold leading-[1.08] tracking-[-0.035em] xl:text-[2.3rem]"
+            style={{ color: 'var(--ink)' }}
+          >
+            {TAGLINE}
+          </h1>
+          <p className="max-w-[64ch] text-[1rem] leading-snug" style={{ color: 'var(--ink-soft)' }}>
+            Put in the city you live in, the city you&rsquo;re considering and the salary on offer.
+            You get one number: what you&rsquo;d actually have left over each year, after income
+            tax, housing, property tax, cars and everyday costs &mdash; worked out the same way in
+            both places, then compared.
+          </p>
+        </div>
+
+        {/*
+          "About you" as a sentence rather than a row of labelled fields. Filing
+          status and children are the only inputs shared by both cities, and
+          reading them as prose makes the shape of the household obvious at a
+          glance — the redesign's Turn 3 form.
+        */}
+        <section
+          className="flex flex-col gap-1.5 rounded-xl border px-5 py-3.5"
+          style={{ borderColor: 'var(--rule-strong)', background: 'var(--surface)' }}
         >
-          {TAGLINE}
-        </h1>
-        <p className="max-w-[70ch] text-[1.02rem] leading-snug" style={{ color: 'var(--ink-soft)' }}>
-          Put in the city you live in, the city you&rsquo;re considering and the salary on offer.
-          You get one number: what you&rsquo;d actually have left over each year, after income tax,
-          rent or mortgage, property tax, cars, food and everyday costs &mdash; worked out the same
-          way in both places, then compared.
-        </p>
+          <span className="eyebrow">About you</span>
+          <p className="flex flex-wrap items-baseline gap-x-1.5 gap-y-2 text-[1.05rem]" style={{ color: 'var(--ink)' }}>
+            I file as{' '}
+            <InlineSelect
+              label="Filing status"
+              value={filingStatus}
+              onChange={(next) => applyHousehold(next as FilingStatus, children)}
+              options={FILING_OPTIONS}
+            />{' '}
+            with{' '}
+            <InlineSelect
+              label="Children"
+              value={String(children)}
+              onChange={(next: string) => applyHousehold(filingStatus, Number(next))}
+              options={CHILD_OPTIONS}
+            />
+            , and I&rsquo;d{' '}
+            <InlineSelect
+              label="Housing"
+              value={origin.housing.tenure}
+              onChange={(tenure: string) => applyTenure(tenure as 'rent' | 'own')}
+              options={TENURE_OPTIONS}
+            />{' '}
+            in both.
+          </p>
+          <span className="text-[0.8rem]" style={{ color: 'var(--muted)' }}>
+            Salary and housing go in each city, prefilled with real local figures.
+          </span>
+        </section>
       </div>
 
       {/*
-        "About you" as a sentence rather than a row of labelled fields. Filing
-        status and children are the only inputs shared by both cities, and
-        reading them as prose makes the shape of the household obvious at a
-        glance — the redesign's Turn 3 form.
-      */}
-      <section
-        className="flex shrink-0 flex-col gap-1.5 rounded-xl border px-5 py-3.5"
-        style={{ borderColor: 'var(--rule-strong)', background: 'var(--surface)' }}
-      >
-        <span className="eyebrow">About you</span>
-        <p className="flex flex-wrap items-baseline gap-x-1.5 gap-y-2 text-[1.05rem]" style={{ color: 'var(--ink)' }}>
-          I file as{' '}
-          <InlineSelect
-            label="Filing status"
-            value={filingStatus}
-            onChange={(next) => applyHousehold(next as FilingStatus, children)}
-            options={FILING_OPTIONS}
-          />{' '}
-          with{' '}
-          <InlineSelect
-            label="Children"
-            value={String(children)}
-            onChange={(next: string) => applyHousehold(filingStatus, Number(next))}
-            options={CHILD_OPTIONS}
-          />
-          , and I&rsquo;d{' '}
-          <InlineSelect
-            label="Housing"
-            value={origin.housing.tenure}
-            onChange={(tenure: string) => applyTenure(tenure as 'rent' | 'own')}
-            options={TENURE_OPTIONS}
-          />{' '}
-          in both.
-        </p>
-        <span className="text-[0.8rem]" style={{ color: 'var(--muted)' }}>
-          Salary and housing go in each city below. Everything is prefilled with real local figures.
-        </span>
-      </section>
+        Two grids, not three columns, and this is the whole point.
 
-      <div className="grid flex-1 gap-3 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1.35fr)]">
-        <CityPanel
-          title="Living now"
-          state={origin}
-          filingStatus={filingStatus}
-          childCount={children}
-          onChange={setOrigin}
-          onSalaryChange={changeSalary(origin, setOrigin)}
-          salaryLabel="Salary here"
-          salaryHint="a year, gross"
-          result={result?.origin ?? null}
-          takeHomeNote={takeHomeNote(origin.metroId, result?.origin ?? null)}
-        />
-        <CityPanel
-          title="The offer"
-          state={destination}
-          filingStatus={filingStatus}
-          childCount={children}
-          onChange={setDestination}
-          onSalaryChange={changeSalary(destination, setDestination)}
-          result={result?.destination ?? null}
-          takeHomeNote={takeHomeNote(destination.metroId, result?.destination ?? null)}
-          salaryLabel="Salary offered"
-          salaryHint={
-            destination.grossSalary !== origin.grossSalary
-              ? `${formatUSD(destination.grossSalary - origin.grossSalary, { signed: true })} versus now`
-              : 'Defaults to your current salary'
-          }
-        />
+        A single three-column row made every column as tall as the tallest, so
+        revealing the answer stretched the two city panels by a few hundred
+        pixels and their bottom-pinned leftover figures slid down with it —
+        the reader pressed a button and watched the numbers they were reading
+        run away. The cities now share a nested grid, so they stretch to each
+        other and to nothing else, and items-start lets the answer column grow
+        downwards on its own without moving anything.
+      */}
+      <div className="grid flex-1 items-start gap-3 lg:grid-cols-[minmax(0,2fr)_minmax(0,1.3fr)]">
+        <div className="grid gap-3 sm:grid-cols-2">
+          <CityPanel
+            title="Living now"
+            state={origin}
+            filingStatus={filingStatus}
+            childCount={children}
+            onChange={setOrigin}
+            onSalaryChange={changeSalary(origin, setOrigin)}
+            salaryLabel="Salary here"
+            salaryHint="a year, gross"
+            result={result?.origin ?? null}
+            takeHomeNote={takeHomeNote(origin.metroId, result?.origin ?? null)}
+          />
+          <CityPanel
+            title="The offer"
+            state={destination}
+            filingStatus={filingStatus}
+            childCount={children}
+            onChange={setDestination}
+            onSalaryChange={changeSalary(destination, setDestination)}
+            result={result?.destination ?? null}
+            takeHomeNote={takeHomeNote(destination.metroId, result?.destination ?? null)}
+            salaryLabel="Salary offered"
+            salaryHint={
+              destination.grossSalary !== origin.grossSalary
+                ? `${formatUSD(destination.grossSalary - origin.grossSalary, { signed: true })} versus now`
+                : 'Defaults to your current salary'
+            }
+          />
+        </div>
 
         <section
           className="flex flex-col rounded-xl border"
@@ -336,24 +357,30 @@ export function Calculator({ initial }: CalculatorProps) {
               }
             />
           ) : (
-            <div className="flex flex-col items-center justify-center gap-3 px-6 py-8 text-center lg:flex-1">
+            /*
+              Top-aligned and left-aligned, with the same padding the answer
+              uses, so the button sits roughly where the headline figure will
+              land. Pressing it swaps a button for a number in place, rather
+              than firing one in from the top of a tall empty box.
+            */
+            <div className="flex flex-col gap-3 px-5 py-4">
               {sameCity ? (
                 <p className="text-sm" style={{ color: 'var(--bad)' }}>
                   Both cities are the same. Pick a different destination.
                 </p>
               ) : (
                 <>
-                  <p className="max-w-[34ch] text-sm" style={{ color: 'var(--muted)' }}>
-                    Everything is filled in with real local figures. Adjust anything, or just see
-                    the answer.
+                  <p className="text-[0.95rem] leading-snug" style={{ color: 'var(--ink-soft)' }}>
+                    Both cities are filled in and ready. Change anything you like, or go straight
+                    to the answer.
                   </p>
                   <button
                     type="button"
                     onClick={onCompare}
-                    className="w-full max-w-64 rounded-lg px-6 py-3 text-base font-semibold"
+                    className="w-full rounded-lg px-6 py-3 text-base font-semibold"
                     style={{ background: 'var(--accent)', color: '#ffffff' }}
                   >
-                    {SUPPORTING}
+                    {ACTION}
                   </button>
                   <p className="text-[0.76rem]" style={{ color: 'var(--muted)' }}>
                     Nothing is sent anywhere. It all runs in your browser.
