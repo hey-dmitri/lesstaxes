@@ -195,6 +195,21 @@ answer          =  in your pocket THERE  −  in your pocket HERE`}</pre>
           food. Expect this line to be small: a few hundred dollars a year, not thousands.
         </p>
 
+        <h2>What the form starts you on</h2>
+        <p>
+          The salary box opens on <strong>$61,657</strong> &mdash; the median for someone working
+          full time all year, from the same Census release as everything else here (ACS 2024,
+          table S2001). It was $150,000 until August 2026, which is roughly the 90th percentile of
+          American full-time earnings.
+        </p>
+        <p>
+          That mattered more than a starting number usually does, because rent and home price both
+          scale with income: opening on a salary most visitors will never earn quoted them a house
+          and a rent to match, and made every figure on the page a well-paid person&rsquo;s answer
+          until they noticed. Median rather than mean, because earnings have a long tail at the
+          top and the mean describes almost nobody.
+        </p>
+
         <h2>Credits, and who counts as an earner</h2>
         <p>
           Two federal credits are applied. The <strong>Child Tax Credit</strong> is $2,200 per

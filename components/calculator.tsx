@@ -63,7 +63,26 @@ const TENURE_OPTIONS = [
   { value: 'own', label: 'buy' },
 ];
 
-const DEFAULT_SALARY = 150_000;
+/**
+ * The salary the form opens on.
+ *
+ * It was $150,000, which is roughly the 90th percentile of American full-time
+ * earnings. A default is not neutral: it is the number most people will leave
+ * alone, and it seeds the rent and home-price prefills too, because both scale
+ * with income. Opening on a figure most visitors will never earn quoted them a
+ * house and a rent to match, and made every answer on the page a well-paid
+ * person's answer until they noticed and changed it.
+ *
+ * $61,657 is the median for someone working full time all year — the same
+ * population this box asks about, and the same ACS 2024 vintage as every other
+ * figure on the site. Median rather than mean, because earnings are skewed
+ * upward by a long tail and the mean describes almost nobody.
+ *
+ * Source: Census ACS 2024 5-year, table S2001, "Median earnings (dollars) for
+ * full-time, year-round workers with earnings" (S2001_C01_013E), United
+ * States. https://api.census.gov/data/2024/acs/acs5/subject
+ */
+const DEFAULT_SALARY = 61_657;
 
 /**
  * A column with no city in it yet.
@@ -408,7 +427,11 @@ export function Calculator({ initial }: CalculatorProps) {
             onChange={setOrigin}
             onSalaryChange={changeSalary(origin, setOrigin)}
             salaryLabel="Salary here"
-            salaryHint="a year, gross"
+            salaryHint={
+              origin.grossSalary === DEFAULT_SALARY
+                ? 'a year, gross — the US median for full-time work. Change it to yours.'
+                : 'a year, gross'
+            }
             result={result?.origin ?? null}
             takeHomeNote={takeHomeNote(result?.origin ?? null)}
           />
