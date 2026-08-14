@@ -7,6 +7,7 @@ import { InlineSelect, StepBadge } from '@/components/fields';
 import { Results } from '@/components/results';
 import { ShareBar } from '@/components/share-bar';
 import { encodeComparison, type SharedComparison } from '@/lib/share-link';
+import { comparisonInputsFrom } from '@/lib/comparison-inputs';
 import { describeComparison, jurisdictionsFor } from '@/lib/shared-comparison';
 import { ACTION, TAGLINE } from '@/lib/site';
 import {
@@ -18,7 +19,6 @@ import {
   formatUSD,
   housingAtSalary,
   type FilingStatus,
-  type Household,
 } from '@/engine';
 
 const FILING_OPTIONS: Array<{ value: FilingStatus; label: string }> = [
@@ -271,35 +271,21 @@ export function Calculator({ initial }: CalculatorProps) {
     };
   }
 
-  const household: Household = { filingStatus, children, earners };
   const sameCity = bothChosen && origin.metroId === destination.metroId;
 
   // The result exists the moment the inputs do — there is nothing to wait for.
   const result = useMemo(() => {
     if (!bothChosen || sameCity) return null;
+    // Built by lib/comparison-inputs, which strips the one form-only field
+    // rather than listing the ones the engine wants. Listing them is how
+    // stateCode came to be dropped here while the share link carried it.
     return compare(
-      {
-        datasetVersion: DATASET_VERSION,
-        household,
-        origin: {
-          metroId: origin.metroId,
-          grossSalary: origin.grossSalary,
-          housing: origin.housing,
-          cars: origin.cars,
-        },
-        destination: {
-          metroId: destination.metroId,
-          grossSalary: destination.grossSalary,
-          housing: destination.housing,
-          cars: destination.cars,
-        },
-      },
+      comparisonInputsFrom({ filingStatus, children, earners, origin, destination }, DATASET_VERSION),
       {
         origin: { localJurisdictions: jurisdictionsFor(origin) },
         destination: { localJurisdictions: jurisdictionsFor(destination) },
       },
     );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [origin, destination, filingStatus, children, earners, sameCity, bothChosen]);
 
   function onCompare() {
