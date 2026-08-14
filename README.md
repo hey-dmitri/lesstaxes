@@ -22,7 +22,7 @@ index, statutory rate or state average — on the [data page](https://packorstay
 
 | Component | State |
 |---|---|
-| Bracket arithmetic, FICA, federal income tax | ✅ |
+| Bracket arithmetic, FICA, federal income tax, CTC, EITC | ✅ |
 | State income tax — all 50 states + DC | ✅ |
 | Local income tax — NYC, Yonkers, Philadelphia, Detroit, Columbus, Cincinnati | ✅ |
 | 387 metros + 51 rural fallbacks, price parities | ✅ |
@@ -43,9 +43,11 @@ index, statutory rate or state average — on the [data page](https://packorstay
 | Share links pinned to their dataset version | ✅ |
 | Home prices scaled to income, as rents are | ✅ |
 | One-word verdict — pack, stay, or too close to call | ✅ |
+| State choice for the 43 metros that cross a state line | ✅ |
+| Social Security capped per worker, not per household | ✅ |
 | Name and domain — **Pack or Stay**, live at `packorstay.com` | ✅ |
 
-**666 tests**, including 24 golden values reproduced exactly from the IRS rate tables.
+**711 tests**, including 24 golden values reproduced exactly from the IRS rate tables.
 Total data cost: **$0**. No paid feeds, no runtime API calls.
 
 ### Known gaps, in priority order
@@ -54,11 +56,18 @@ Total data cost: **$0**. No paid feeds, no runtime API calls.
    ownership everywhere and badly in Florida and Louisiana, where premiums are a
    multiple of the national average. This is now the largest known gap — see
    OPEN-5 for the sources that were checked and rejected.
-2. **Seven more cities still sit on their state's local-tax average**, which
+2. **No state Earned Income Credits.** The federal EITC is modelled; the ~30
+   states (and NYC) that add their own on top are not, so low-income households
+   in those states are still understated.
+3. **Housing is metro-wide even where the metro crosses a state line.** The
+   state choice fixes income tax, sales tax and city taxes, but the Census
+   publishes rent and home values for the whole metro, so a Newark household is
+   quoted the whole New York metro's rent.
+4. **Seven more cities still sit on their state's local-tax average**, which
    understates all of them: Cleveland, Pittsburgh, Louisville, Kansas City,
    St. Louis, Baltimore and Portland. The mechanism is built and each is now a
    data-only addition; they need a rate from the levying authority first.
-3. **Sales tax uses state-average local rates.** Chicago's real 10.25% against
+5. **Sales tax uses state-average local rates.** Chicago's real 10.25% against
    Austin's 8.25% is a 2.00pp gap; the model sees 0.76pp. PROJECT.md §15 lists
    this as a gotcha the engine must get right.
 
