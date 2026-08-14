@@ -441,16 +441,26 @@ export function CityPanel({
               </span>
             </div>
 
-            <div className="flex items-baseline justify-between gap-2">
-              <span className="text-[0.82rem]" style={{ color: 'var(--muted-strong)' }}>
-                Living costs
-              </span>
-              <span
-                className="tnum text-[1rem] font-semibold"
-                style={{ color: 'var(--bad)' }}
-              >
-                &minus;{formatUSD(livingTotal)}
-              </span>
+            {/*
+              Laid out like the two figures it sits between, rather than as a
+              label on the left with its number pushed to the right margin.
+              Three money figures make a subtraction only if the eye can run
+              straight down them; one of them flung to the opposite edge broke
+              the column and turned the sum into three unrelated rows.
+            */}
+            <div className="flex flex-col gap-0.5">
+              <span className="eyebrow">Living costs</span>
+              <div className="flex items-baseline gap-2">
+                <span
+                  className="tnum text-[1.6rem] font-semibold leading-none"
+                  style={{ color: 'var(--bad)' }}
+                >
+                  &minus;{formatUSD(livingTotal)}
+                </span>
+                <span className="text-[0.82rem]" style={{ color: 'var(--muted)' }}>
+                  &middot; <span className="tnum">{formatUSD(livingTotal / 12)}</span>/mo
+                </span>
+              </div>
             </div>
 
             <div
