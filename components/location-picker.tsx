@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useId, useMemo, useRef, useState } from 'react';
+import { useDeferredValue, useEffect, useId, useMemo, useRef, useState } from 'react';
 
 import { locationById, searchLocations, type LocationOption } from '@/lib/locations';
 
@@ -33,7 +33,17 @@ export function LocationPicker({ id, label, value, onChange, placeholder }: Prop
   const inputRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLUListElement>(null);
 
-  const options = useMemo(() => searchLocations(open ? query : ''), [open, query]);
+  /*
+   * Deferred rather than capped. The list is 438 places and all of them are
+   * reachable now, so the way to keep typing smooth is to let React render the
+   * previous result while the new one is computed — not to hide the tail of
+   * the alphabet and say nothing about it.
+   */
+  const deferredQuery = useDeferredValue(query);
+  const { options, total } = useMemo(
+    () => searchLocations(open ? deferredQuery : ''),
+    [open, deferredQuery],
+  );
 
   // Close when focus or a click leaves the widget entirely.
   useEffect(() => {
@@ -137,12 +147,36 @@ export function LocationPicker({ id, label, value, onChange, placeholder }: Prop
           id={listId}
           role="listbox"
           aria-label={label}
-          className="absolute z-30 mt-1 max-h-64 w-full overflow-y-auto rounded border shadow-lg"
+          className="absolute z-30 mt-1 max-h-80 w-full overflow-y-auto rounded border shadow-lg"
           style={{ background: 'var(--surface)', borderColor: 'var(--rule-strong)' }}
         >
           {options.length === 0 && (
             <li className="px-3 py-3 text-sm" style={{ color: 'var(--muted)' }}>
               No location matches “{query}”. Try a state code, or “Rest of” for rural areas.
+            </li>
+          )}
+
+          {/*
+            The size of the list, always. Without it a capped list looks like
+            the end of the data rather than the end of the page — the old cap
+            of 60 stopped the alphabetical list dead at Chambersburg, PA and
+            said nothing about the 378 places after it.
+          */}
+          {options.length > 0 && (
+            <li
+              aria-hidden="true"
+              className="sticky top-0 z-10 border-b px-2.5 py-1 text-[0.72rem]"
+              style={{
+                background: 'var(--surface)',
+                borderColor: 'var(--rule)',
+                color: 'var(--muted)',
+              }}
+            >
+              {options.length < total
+                ? `${options.length} of ${total} — keep typing to narrow it`
+                : deferredQuery.trim()
+                  ? `${total} ${total === 1 ? 'match' : 'matches'}`
+                  : `All ${total} places — type to jump to one`}
             </li>
           )}
 

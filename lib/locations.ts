@@ -27,16 +27,39 @@ export function locationById(id: string): LocationOption | undefined {
   return BY_ID.get(id);
 }
 
+/** What a search found, and whether the reader is seeing all of it. */
+export interface LocationResults {
+  options: LocationOption[];
+  /** Matches before any cap. Equals options.length when nothing was dropped. */
+  total: number;
+}
+
+/**
+ * A backstop, not a policy.
+ *
+ * There was a cap of 60 and no sign of it anywhere. With an empty box that
+ * returned the first 60 of 438 alphabetically, so the list ran from Aberdeen
+ * to Chambersburg and simply stopped — no message, no count, nothing to say
+ * that Chicago and New York were further down a list you could not reach by
+ * scrolling. Anyone who did not think to type would conclude their city was
+ * missing, which is the worst thing a picker can do.
+ *
+ * It now sits above the total, so nothing is ever hidden. The picker keeps
+ * typing responsive by deferring the filter rather than by truncating the
+ * answer, and the count is shown either way so any future cap announces
+ * itself instead of looking like the end of the data.
+ */
+const RENDER_LIMIT = 1_000;
+
 /**
  * Filter locations for the picker.
  *
  * Ranks exact-prefix matches first so typing "aus" surfaces Austin ahead of
- * places that merely contain the letters. Capped, because rendering 438 rows
- * on every keystroke is wasted work and an unusable list.
+ * places that merely contain the letters.
  */
-export function searchLocations(query: string, limit = 60): LocationOption[] {
+export function searchLocations(query: string, limit = RENDER_LIMIT): LocationResults {
   const q = query.trim().toLowerCase();
-  if (!q) return LOCATIONS.slice(0, limit);
+  if (!q) return { options: LOCATIONS.slice(0, limit), total: LOCATIONS.length };
 
   const prefix: LocationOption[] = [];
   const contains: LocationOption[] = [];
@@ -44,8 +67,8 @@ export function searchLocations(query: string, limit = 60): LocationOption[] {
   for (const location of LOCATIONS) {
     if (location.label.toLowerCase().startsWith(q)) prefix.push(location);
     else if (location.search.includes(q)) contains.push(location);
-    if (prefix.length >= limit) break;
   }
 
-  return [...prefix, ...contains].slice(0, limit);
+  const all = [...prefix, ...contains];
+  return { options: all.slice(0, limit), total: all.length };
 }

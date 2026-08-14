@@ -25,41 +25,64 @@ describe('LOCATIONS', () => {
 
 describe('searchLocations', () => {
   it('ranks a prefix match above a mere substring match', () => {
-    const results = searchLocations('austin');
+    const results = searchLocations('austin').options;
     expect(results[0].label).toBe('Austin, TX');
   });
 
   it('finds a city by its short name', () => {
-    expect(searchLocations('chicago').some((l) => l.id === '16980')).toBe(true);
+    expect(searchLocations('chicago').options.some((l) => l.id === '16980')).toBe(true);
   });
 
   it('finds a city by a name only present in the full CBSA title', () => {
     // "Naperville" appears only in "Chicago-Naperville-Elgin, IL-IN".
-    expect(searchLocations('naperville').some((l) => l.id === '16980')).toBe(true);
+    expect(searchLocations('naperville').options.some((l) => l.id === '16980')).toBe(true);
   });
 
   it('finds every location in a state by its code', () => {
-    const texas = searchLocations('tx', 500);
+    const texas = searchLocations('tx', 500).options;
     expect(texas.length).toBeGreaterThan(20);
     expect(texas.every((l) => l.search.includes('tx'))).toBe(true);
   });
 
   it('surfaces rural fallbacks', () => {
-    const rural = searchLocations('rest of montana');
+    const rural = searchLocations('rest of montana').options;
     expect(rural[0]?.id).toBe('rest-of-MT');
   });
 
   it('returns nothing for a nonsense query rather than everything', () => {
-    expect(searchLocations('zzzzqqq')).toHaveLength(0);
+    expect(searchLocations('zzzzqqq').options).toHaveLength(0);
   });
 
-  it('caps results so the list stays usable', () => {
-    expect(searchLocations('', 25)).toHaveLength(25);
-    expect(searchLocations('a', 10).length).toBeLessThanOrEqual(10);
+  it('caps what it renders but always reports the true total', () => {
+    // The cap used to be silent. An empty box returned the first 60 of 438
+    // alphabetically and the list simply stopped at Chambersburg, PA — no
+    // count, no message, nothing to suggest Chicago was further down.
+    const capped = searchLocations('', 25);
+    expect(capped.options).toHaveLength(25);
+    expect(capped.total).toBe(LOCATIONS.length);
+    expect(capped.total).toBeGreaterThan(400);
+
+    const narrow = searchLocations('a', 10);
+    expect(narrow.options.length).toBeLessThanOrEqual(10);
+    expect(narrow.total).toBeGreaterThan(10);
+  });
+
+  it('shows every location when nothing is typed and the cap allows it', () => {
+    const all = searchLocations('', 1_000);
+    expect(all.options).toHaveLength(LOCATIONS.length);
+    expect(all.options.length).toBe(all.total);
+  });
+
+  it('reaches the far end of the alphabet, which the old cap could not', () => {
+    const all = searchLocations('', 1_000).options;
+    const labels = all.map((l) => l.label);
+    expect(labels.some((l) => l.startsWith('Chicago'))).toBe(true);
+    expect(labels.some((l) => l.startsWith('New York'))).toBe(true);
+    expect(labels.some((l) => l.startsWith('Yuma'))).toBe(true);
   });
 
   it('ignores surrounding whitespace and case', () => {
-    expect(searchLocations('  AUSTIN  ')[0].label).toBe('Austin, TX');
+    expect(searchLocations('  AUSTIN  ').options[0].label).toBe('Austin, TX');
   });
 });
 
