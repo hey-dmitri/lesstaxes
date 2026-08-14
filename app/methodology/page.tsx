@@ -244,11 +244,19 @@ answer          =  in your pocket THERE  −  in your pocket HERE`}</pre>
           reverse the verdict.
         </p>
         <p>
-          What the state choice does <em>not</em> change is housing and living costs. The Census
-          publishes rent, home values and vehicle ownership for the metro as a whole and not for
-          each state&rsquo;s slice of it, so a Newark household is still quoted the whole New York
-          metro&rsquo;s rent. That is a real limitation and it is not fixable from public data at
-          this geography. Rent is editable; if you know your number, use it.
+          What the state choice does <em>not yet</em> change is housing and living costs. A Newark
+          household is still quoted the whole New York metro&rsquo;s rent and home value, and the
+          gap is large: the New Jersey part of that metro has a median home value around $485,000
+          against $660,000 on the New York side, either side of the $614,000 metro-wide figure
+          used here.
+        </p>
+        <p>
+          This page previously said that was not fixable from public data. That was wrong, and
+          worth correcting plainly: the ACS publishes these tables at summary level 311,
+          &ldquo;metropolitan statistical area &rsaquo; state (or part)&rdquo;, and the state-part
+          rows exist for rent by bedroom, home value, property tax and vehicle ownership. It is
+          not implemented, which is a different and more fixable thing than not available. Until
+          it is, rent and home price are editable &mdash; if you know your number, use it.
         </p>
 
         <h2>Pack, stay, or too close to call</h2>

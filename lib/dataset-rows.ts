@@ -26,12 +26,23 @@ import {
 } from '@/engine';
 
 export interface DatasetRow {
+  /** Unique per ROW, which for a split metro means one id per state part. */
   id: string;
   label: string;
   detail: string;
+  /** The state this row's tax figures are for. */
   state: string;
   /** Every state the metro touches. More than one for 43 of them. */
   states: string[];
+  /**
+   * True when this row is one state's slice of a metro that crosses a line.
+   *
+   * The page claims to show every number the calculator uses, and for those 43
+   * metros it was showing only the primary state's — so a reader checking
+   * Newark saw New York's sales tax and New York City's local tax, which is
+   * precisely the combination the calculator was just fixed to stop applying.
+   */
+  isStatePart: boolean;
   isRural: boolean;
   /** Metro-wide median across all unit sizes — the raw published figure. */
   rent: number;
@@ -57,45 +68,58 @@ export interface DatasetRow {
   search: string;
 }
 
-export const DATASET_ROWS: DatasetRow[] = allMetros().map((m) => {
+/*
+ * One row per state part, not per metro.
+ *
+ * Housing, vehicles and price levels are metro-wide and repeat across a
+ * metro's rows; income tax, sales tax and local tax are the state's and differ.
+ * Splitting the rows is what makes the difference inspectable, which is the
+ * whole purpose of this page.
+ */
+export const DATASET_ROWS: DatasetRow[] = allMetros().flatMap((m) => {
   const housing = housingDefaults(m.id);
   const transport = transportDefaults(m.id);
-  const sales = salesTaxRules(m.primaryState);
-  const locals = localTaxOptions(m.id);
+  const split = m.states.length > 1;
 
-  return {
-    id: m.id,
-    label: m.shortName,
-    detail:
-      m.type === 'restOfState'
-        ? 'Rural fallback — statewide figures'
-        : m.states.length > 1
-          ? `${m.name} — crosses a state line, so the calculator asks which of ${m.states.join(', ')} you live in`
-          : m.name,
-    state: m.primaryState,
-    states: m.states,
-    isRural: m.type === 'restOfState',
-    rent: housing.medianRentMonthly,
-    rent1br: housing.rentByBedrooms[1],
-    rent3br: housing.rentByBedrooms[3],
-    homePrice: housing.medianHomePrice,
-    ownerIncome: housing.medianOwnerIncome ?? 0,
-    renterIncome: housing.medianRenterIncome ?? 0,
-    propertyTaxRate: housing.effectivePropertyTaxRate,
-    vehiclesPerAdult: transport.vehiclesPerAdult,
-    parityAll: m.priceParity.allItems,
-    parityHousing: m.priceParity.housing,
-    parityGoods: m.priceParity.goods,
-    parityUtilities: m.priceParity.utilities,
-    parityServices: m.priceParity.otherServices,
-    hasStateIncomeTax: stateRules(m.primaryState).hasWageIncomeTax,
-    salesTaxRate: sales.combinedRate,
-    groceryTreatment: sales.grocery.treatment,
-    localTax: locals.length
-      ? locals.map((l) => localJurisdiction(l.jurisdictionId).name).join(' / ')
-      : null,
-    search: `${m.shortName} ${m.name} ${m.states.join(' ')}`.toLowerCase(),
-  };
+  return m.states.map((state): DatasetRow => {
+    const sales = salesTaxRules(state);
+    const locals = localTaxOptions(m.id, undefined, state);
+
+    return {
+      id: split ? `${m.id}:${state}` : m.id,
+      label: m.shortName,
+      detail:
+        m.type === 'restOfState'
+          ? 'Rural fallback — statewide figures'
+          : split
+            ? `${m.name} — the ${state} part. Housing and price levels are metro-wide; tax is ${state}'s.`
+            : m.name,
+      state,
+      states: m.states,
+      isStatePart: split,
+      isRural: m.type === 'restOfState',
+      rent: housing.medianRentMonthly,
+      rent1br: housing.rentByBedrooms[1],
+      rent3br: housing.rentByBedrooms[3],
+      homePrice: housing.medianHomePrice,
+      ownerIncome: housing.medianOwnerIncome ?? 0,
+      renterIncome: housing.medianRenterIncome ?? 0,
+      propertyTaxRate: housing.effectivePropertyTaxRate,
+      vehiclesPerAdult: transport.vehiclesPerAdult,
+      parityAll: m.priceParity.allItems,
+      parityHousing: m.priceParity.housing,
+      parityGoods: m.priceParity.goods,
+      parityUtilities: m.priceParity.utilities,
+      parityServices: m.priceParity.otherServices,
+      hasStateIncomeTax: stateRules(state).hasWageIncomeTax,
+      salesTaxRate: sales.combinedRate,
+      groceryTreatment: sales.grocery.treatment,
+      localTax: locals.length
+        ? locals.map((l) => localJurisdiction(l.jurisdictionId).name).join(' / ')
+        : null,
+      search: `${m.shortName} ${m.name} ${state} ${m.states.join(' ')}`.toLowerCase(),
+    };
+  });
 });
 
 /**

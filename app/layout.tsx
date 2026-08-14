@@ -154,9 +154,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               </Link>
             </nav>
             <span className="flex-1">
-              Estimates from public federal data — Census, BEA, BLS, IRS and state revenue
-              departments. <strong>Not financial, tax or legal advice.</strong> No accounts, no
-              tracking, nothing stored.
+              Estimates from public sources — Census, BEA, BLS, IRS, SSA, the Tax Foundation and
+              state and city revenue departments. <strong>Not financial, tax or legal
+              advice.</strong> No accounts, no tracking, nothing stored.
             </span>
             <span className="whitespace-nowrap">
               Built by{' '}

@@ -60,9 +60,14 @@ Total data cost: **$0**. No paid feeds, no runtime API calls.
    states (and NYC) that add their own on top are not, so low-income households
    in those states are still understated.
 3. **Housing is metro-wide even where the metro crosses a state line.** The
-   state choice fixes income tax, sales tax and city taxes, but the Census
-   publishes rent and home values for the whole metro, so a Newark household is
-   quoted the whole New York metro's rent.
+   state choice fixes income tax, sales tax and city taxes, but housing is
+   still the whole metro's, so a Newark household is quoted the whole New York
+   metro's rent and home value. This was previously described as unfixable
+   from public data; that was wrong. ACS summary level 311 (`metropolitan
+   statistical area > state (or part)`) publishes the state-part rows for every
+   housing table already used here — NJ part $484,600 against NY part $660,300
+   on B25077, either side of the $614,200 metro figure. Not implemented, not
+   unavailable.
 4. **Seven more cities still sit on their state's local-tax average**, which
    understates all of them: Cleveland, Pittsburgh, Louisville, Kansas City,
    St. Louis, Baltimore and Portland. The mechanism is built and each is now a

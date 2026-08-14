@@ -384,7 +384,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ pay
           <div style={{ display: 'flex', fontWeight: 700, letterSpacing: 3 }}>
             {SITE_NAME.toUpperCase()}
           </div>
-          <div style={{ display: 'flex' }}>{`public federal data · ${card.version}`}</div>
+          <div style={{ display: 'flex' }}>{`public data sources · ${card.version}`}</div>
         </div>
       </div>
     ),

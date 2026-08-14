@@ -10,14 +10,14 @@ import { SITE_NAME } from '@/lib/site';
 export const metadata: Metadata = {
   title: `The data — ${SITE_NAME}`,
   description:
-    'Every figure the calculator uses, for all 438 US locations, with the federal source and vintage of each.',
+    'Every figure the calculator uses, for all 438 US locations — and separately for each state of the 43 that cross a state line — with the source, the licence and the vintage of each.',
 };
 
 export default function DataPage() {
   return (
     <PageShell
       title="The data"
-      standfirst="Every number the calculator uses, for all 438 locations. Look up somewhere you know and check it against your own experience — that is the point of this page."
+      standfirst="Every number the calculator uses, for all 438 locations. The 43 that cross a state line appear once per state, because that is how many different tax answers they have. Look up somewhere you know and check it against your own experience — that is the point of this page."
     >
       <DatasetBrowser />
 
@@ -69,6 +69,12 @@ export default function DataPage() {
             Yonkers, and applying it upstate would invent a tax that does not exist.
           </li>
           <li>
+            <strong>Split metros share one set of housing figures.</strong> A metro that crosses a
+            state line appears once per state and the tax columns differ, but rent, home value,
+            property tax and vehicles are the whole metro&rsquo;s and repeat. The ACS does publish
+            these by state part; it is not wired up yet.
+          </li>
+          <li>
             <strong>Rural entries use statewide price levels.</strong> No federal agency publishes a
             rural-only price index, so &ldquo;Rest of Texas&rdquo; blends Texas cities back in and may
             overstate rural costs.
@@ -95,7 +101,8 @@ export default function DataPage() {
 
         <h2 id="report">Found a number that looks wrong?</h2>
         <p>
-          Please say so. Every figure here is a median for a whole metro area, and the people best
+          Please say so. Every figure here describes a whole area rather than a household — some are
+          medians, some are averages, some are statutory rates — and the people best
           placed to catch one that has gone astray are the ones who live there and pay the actual
           bill. It is worth reporting even if you are not sure &mdash; a figure that surprises
           someone local is worth a second look either way.

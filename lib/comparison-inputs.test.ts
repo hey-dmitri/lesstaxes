@@ -48,7 +48,7 @@ describe('form state reaches the engine intact', () => {
     // The real guarantee. If someone reverts this to an explicit field list,
     // whatever they forget shows up here rather than in someone's tax bill.
     const state = city(NEW_YORK, 'NJ');
-    const inputs = cityInputsFrom(state) as Record<string, unknown>;
+    const inputs = cityInputsFrom(state) as unknown as Record<string, unknown>;
     for (const key of Object.keys(state)) {
       if (key === 'localOptIns') continue;
       expect(inputs).toHaveProperty(key);

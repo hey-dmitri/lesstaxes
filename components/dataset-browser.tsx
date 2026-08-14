@@ -22,6 +22,17 @@ function Row({ row }: { row: DatasetRow }) {
             rural
           </span>
         )}
+        {/* A split metro appears once per state, because that is how many
+            different tax answers it has. */}
+        {row.isStatePart && (
+          <span
+            className="ml-1.5 rounded px-1.5 py-0.5 text-[0.7rem]"
+            style={{ background: 'var(--accent-dim)', color: 'var(--accent)' }}
+            title={`The ${row.state} part of a metro spanning ${row.states.join(', ')}`}
+          >
+            {row.state} part
+          </span>
+        )}
       </th>
       <td className={td} style={{ color: 'var(--ink)' }}>{formatUSD(row.rent)}</td>
       <td className={td} style={{ color: 'var(--ink)' }}>{formatUSD(row.rent1br)}</td>
@@ -53,7 +64,7 @@ function Row({ row }: { row: DatasetRow }) {
 
 export function DatasetBrowser() {
   const [query, setQuery] = useState('');
-  // Typing stays responsive even while 438 rows re-filter and re-render.
+  // Typing stays responsive even while every row re-filters and re-renders.
   const deferred = useDeferredValue(query);
 
   const rows = useMemo(() => {
@@ -72,7 +83,7 @@ export function DatasetBrowser() {
           type="search"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search 438 locations — try Chicago, TX, or Rest of"
+          placeholder="Search 438 locations — try Chicago, NJ, or Rest of"
           aria-label="Search locations"
           className="min-w-64 flex-1 rounded border px-3 py-2 text-sm"
           style={{
