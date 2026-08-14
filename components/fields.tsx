@@ -12,6 +12,30 @@ const inputStyle = {
   color: 'var(--ink)',
 } as const;
 
+/**
+ * The numbered marker on each section that wants something from you.
+ *
+ * The form is three inputs in three boxes, and nothing said so — the two city
+ * columns arrived pre-filled, which read as a finished demo rather than as
+ * blanks. Numbering them makes the sequence plain, and the filled-in state
+ * turns the marker quiet so the eye moves on to whatever is still outstanding.
+ */
+export function StepBadge({ n, done }: { n: number; done?: boolean }) {
+  return (
+    <span
+      aria-hidden="true"
+      className="inline-flex h-[1.35rem] w-[1.35rem] shrink-0 items-center justify-center rounded-full text-[0.72rem] font-bold"
+      style={
+        done
+          ? { background: 'var(--surface-sunken)', color: 'var(--muted)', boxShadow: 'inset 0 0 0 1px var(--rule-strong)' }
+          : { background: 'var(--accent)', color: '#ffffff' }
+      }
+    >
+      {n}
+    </span>
+  );
+}
+
 /** Text shown under a field when its value came from the dataset, not the user. */
 export function PrefillNote({ children }: { children: React.ReactNode }) {
   return (
@@ -391,6 +415,11 @@ interface InlineSelectProps {
  * labelled box. It stays a real <select>: the accessible name comes from
  * aria-label, the keyboard and screen-reader behaviour are the platform's, and
  * only the painting changes.
+ *
+ * Painted as a filled chip rather than a dashed underline. Underlined words
+ * read as links or as emphasis; a chip reads as something you press, which is
+ * what this is, and the sentence is the one part of the form people were
+ * walking past.
  */
 export function InlineSelect({ label, value, onChange, options }: InlineSelectProps) {
   const selected = options.find((o) => o.value === value);
@@ -399,11 +428,11 @@ export function InlineSelect({ label, value, onChange, options }: InlineSelectPr
     <span className="relative inline-flex items-baseline">
       <span
         aria-hidden="true"
-        className="border-b border-dashed pb-0.5 font-medium"
-        style={{ borderColor: 'var(--accent)', color: 'var(--accent)' }}
+        className="rounded-md px-2 py-0.5 font-semibold"
+        style={{ background: 'var(--accent-dim)', color: 'var(--accent)' }}
       >
         {selected?.label ?? value}
-        <span className="pl-1 text-[0.7em]">&#9662;</span>
+        <span className="pl-1.5 text-[0.7em]">&#9662;</span>
       </span>
       <select
         aria-label={label}

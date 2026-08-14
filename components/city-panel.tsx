@@ -25,6 +25,7 @@ import {
   PercentField,
   PrefillNote,
   Segmented,
+  StepBadge,
   Checkbox,
 } from '@/components/fields';
 import { LocationPicker } from '@/components/location-picker';
@@ -37,9 +38,21 @@ export interface CityFormState extends CityInputs {
 
 interface Props {
   title: string;
+  /** Position in the form: the numbered marker, and the "still to do" accent. */
+  step: number;
+  /** Asked when no city has been chosen yet, e.g. "Where do you live now?". */
+  emptyPrompt: string;
   state: CityFormState;
   filingStatus: FilingStatus;
   childCount: number;
+  /**
+   * Renting or buying, from the "About you" sentence.
+   *
+   * Passed in rather than read off state.housing, because a column with no
+   * city has no housing figures to read it from — and the choice can be made
+   * before either city exists.
+   */
+  tenure: 'rent' | 'own';
   onChange: (next: CityFormState) => void;
   /** Salary is handled by the parent, which keeps an untouched rent in step. */
   onSalaryChange: (salary: number) => void;
@@ -97,9 +110,12 @@ export function resetCityForLocation(
 
 export function CityPanel({
   title,
+  step,
+  emptyPrompt,
   state,
   filingStatus,
   childCount,
+  tenure,
   onChange,
   onSalaryChange,
   salaryLabel,
@@ -107,6 +123,59 @@ export function CityPanel({
   result,
   takeHomeNote,
 }: Props) {
+  const [picking, setPicking] = useState(false);
+
+  const pickerId = `location-${title.replace(/\s+/g, '-').toLowerCase()}`;
+  const picker = (
+    <LocationPicker
+      id={pickerId}
+      label="City or area"
+      value={state.metroId || null}
+      onChange={(metroId) => {
+        onChange(
+          resetCityForLocation(metroId, state.grossSalary, filingStatus, tenure, childCount),
+        );
+        setPicking(false);
+      }}
+    />
+  );
+
+  /*
+   * No city yet.
+   *
+   * The form used to open on Chicago and Austin, which made it look like a
+   * finished example rather than something waiting on you — people read the
+   * answer and left without ever noticing the cities were not theirs. An empty
+   * column asks its question outright and shows nothing else, because none of
+   * the other fields have a sensible value until a place is chosen.
+   */
+  if (!state.metroId) {
+    return (
+      <section
+        className="flex flex-col rounded-xl border"
+        style={{ borderColor: 'var(--accent)', background: 'var(--surface)' }}
+      >
+        <div className="flex flex-col gap-3 px-5 py-4">
+          <div className="flex items-center gap-2">
+            <StepBadge n={step} />
+            <span className="eyebrow">{title}</span>
+          </div>
+          <h2
+            className="font-display text-[1.35rem] font-bold leading-tight tracking-[-0.02em]"
+            style={{ color: 'var(--ink)' }}
+          >
+            {emptyPrompt}
+          </h2>
+          {picker}
+          <p className="text-[0.82rem] leading-snug" style={{ color: 'var(--muted)' }}>
+            Any of 438 metro areas, or &ldquo;rest of&rdquo; a state for somewhere rural. Salary,
+            rent and cars fill in with real local figures once you pick.
+          </p>
+        </div>
+      </section>
+    );
+  }
+
   const m = metro(state.metroId);
   const defaults = housingDefaults(state.metroId);
   const transport = transportDefaults(state.metroId);
@@ -122,8 +191,6 @@ export function CityPanel({
   const bedrooms = bedroomsFor(adultsIn(filingStatus), childCount);
   const suggestedRent = defaultRent(state.metroId, state.grossSalary, household);
 
-  const [picking, setPicking] = useState(false);
-
   const set = (patch: Partial<CityFormState>) => onChange({ ...state, ...patch });
   const setHousing = (patch: Partial<Housing>) =>
     set({ housing: { ...state.housing, ...patch } as Housing });
@@ -137,7 +204,8 @@ export function CityPanel({
       style={{ borderColor: 'var(--rule-strong)', background: 'var(--surface)' }}
     >
       <div className="flex shrink-0 flex-col gap-3 px-5 pt-4">
-        <div className="flex items-baseline gap-2">
+        <div className="flex items-center gap-2">
+          <StepBadge n={step} done />
           <span className="eyebrow">{title}</span>
           <span
             className="ml-auto rounded-full px-2.5 py-0.5 text-[0.7rem]"
@@ -178,25 +246,7 @@ export function CityPanel({
       </div>
 
       <div className="flex flex-col gap-3 px-5 py-3.5 lg:flex-1">
-        {picking && (
-          <LocationPicker
-            id={`location-${title.replace(/\s+/g, '-').toLowerCase()}`}
-            label="City or area"
-            value={state.metroId}
-            onChange={(metroId) => {
-              onChange(
-                resetCityForLocation(
-                  metroId,
-                  state.grossSalary,
-                  filingStatus,
-                  state.housing.tenure,
-                  childCount,
-                ),
-              );
-              setPicking(false);
-            }}
-          />
-        )}
+        {picking && picker}
 
         <MoneyField
           label={salaryLabel}

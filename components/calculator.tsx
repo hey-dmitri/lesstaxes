@@ -2,8 +2,8 @@
 
 import { useMemo, useRef, useState } from 'react';
 
-import { CityPanel, housingFor, resetCityForLocation, type CityFormState } from '@/components/city-panel';
-import { InlineSelect } from '@/components/fields';
+import { CityPanel, housingFor, type CityFormState } from '@/components/city-panel';
+import { InlineSelect, StepBadge } from '@/components/fields';
 import { Results } from '@/components/results';
 import { ShareBar } from '@/components/share-bar';
 import { encodeComparison, type SharedComparison } from '@/lib/share-link';
@@ -42,9 +42,26 @@ const TENURE_OPTIONS = [
   { value: 'own', label: 'buy' },
 ];
 
-const DEFAULT_ORIGIN = '16980'; // Chicago
-const DEFAULT_DESTINATION = '12420'; // Austin
 const DEFAULT_SALARY = 150_000;
+
+/**
+ * A column with no city in it yet.
+ *
+ * The site used to open on Chicago and Austin. It demonstrated the tool nicely
+ * and answered nobody's question: a page that arrives already full reads as a
+ * finished example, and the numbers on it are a stranger's. The salary keeps a
+ * starting value because it is the one input nothing can be derived from —
+ * everything else waits until there is a place to derive it from.
+ */
+function emptyCity(): CityFormState {
+  return {
+    metroId: '',
+    grossSalary: DEFAULT_SALARY,
+    cars: 0,
+    housing: { tenure: 'rent', monthlyRent: 0 },
+    localOptIns: {},
+  };
+}
 
 export interface CalculatorProps {
   /** Present when arriving via a share link, so the result opens revealed. */
@@ -69,21 +86,44 @@ function takeHomeNote(metroId: string, result: CityResult | null) {
   return `${list} paid. Nothing spent yet.`;
 }
 
+/** One outstanding step in the answer panel's checklist. */
+function Waiting({
+  done,
+  n,
+  children,
+}: {
+  done: boolean;
+  n: number;
+  children: React.ReactNode;
+}) {
+  return (
+    <li className="flex items-center gap-2" style={{ color: done ? 'var(--muted)' : 'var(--ink)' }}>
+      <StepBadge n={n} done={done} />
+      <span style={{ textDecoration: done ? 'line-through' : undefined }}>{children}</span>
+    </li>
+  );
+}
+
 export function Calculator({ initial }: CalculatorProps) {
   const [filingStatus, setFilingStatus] = useState<FilingStatus>(
     initial?.filingStatus ?? 'single',
   );
   const [children, setChildren] = useState(initial?.children ?? 0);
 
+  /*
+   * Renting or buying is a household fact, not a city fact — the sentence says
+   * "in both". It lives up here rather than being read back off origin.housing
+   * so that the choice can be made before either city exists.
+   */
+  const [tenure, setTenure] = useState<'rent' | 'own'>(
+    initial?.origin.housing.tenure ?? 'rent',
+  );
+
   const [origin, setOrigin] = useState<CityFormState>(() =>
-    initial
-      ? { ...initial.origin }
-      : resetCityForLocation(DEFAULT_ORIGIN, DEFAULT_SALARY, 'single', 'rent', 0),
+    initial ? { ...initial.origin } : emptyCity(),
   );
   const [destination, setDestination] = useState<CityFormState>(() =>
-    initial
-      ? { ...initial.destination }
-      : resetCityForLocation(DEFAULT_DESTINATION, DEFAULT_SALARY, 'single', 'rent'),
+    initial ? { ...initial.destination } : emptyCity(),
   );
 
   // A shared link is already an answer — show it, don't make the recipient
@@ -94,9 +134,14 @@ export function Calculator({ initial }: CalculatorProps) {
   const firstRevealRef = useRef(true);
   const [animate, setAnimate] = useState(false);
 
+  const bothChosen = origin.metroId !== '' && destination.metroId !== '';
+
   // Encoding can legitimately fail (an unknown location, say). Surface that
   // instead of shipping a link that would not open.
   const share = useMemo(() => {
+    // Nothing to encode before both cities exist, and no error to report
+    // either — the reader simply has not finished yet.
+    if (!bothChosen) return { payload: '', path: '', error: null as string | null };
     try {
       const payload = encodeComparison({
         datasetVersion: DATASET_VERSION,
@@ -109,7 +154,7 @@ export function Calculator({ initial }: CalculatorProps) {
     } catch (e) {
       return { payload: '', path: '', error: e instanceof Error ? e.message : 'unknown problem' };
     }
-  }, [filingStatus, children, origin, destination]);
+  }, [filingStatus, children, origin, destination, bothChosen]);
 
   /**
    * Re-derive the fields that depend on the household, but only where the user
@@ -126,6 +171,10 @@ export function Calculator({ initial }: CalculatorProps) {
       [origin, setOrigin],
       [destination, setDestination],
     ] as const) {
+      // An empty column has nothing to re-derive — its defaults are computed
+      // from the place, and there is no place yet.
+      if (!state.metroId) continue;
+
       const before = { filingStatus, children };
       const after = { filingStatus: nextStatus, children: nextChildren };
       const patch: Partial<CityFormState> = {};
@@ -147,15 +196,19 @@ export function Calculator({ initial }: CalculatorProps) {
   }
 
   /** The sentence says "in both", so tenure changes both columns together. */
-  function applyTenure(tenure: 'rent' | 'own') {
+  function applyTenure(next: 'rent' | 'own') {
+    setTenure(next);
     const household = { filingStatus, children };
     for (const [state, setState] of [
       [origin, setOrigin],
       [destination, setDestination],
     ] as const) {
+      // A column with no city has no housing figures to swap; it will pick up
+      // the new tenure from `tenure` when a city is chosen.
+      if (!state.metroId) continue;
       setState({
         ...state,
-        housing: housingFor(state.metroId, tenure, state.grossSalary, household),
+        housing: housingFor(state.metroId, next, state.grossSalary, household),
       });
     }
   }
@@ -165,6 +218,10 @@ export function Calculator({ initial }: CalculatorProps) {
     return (grossSalary: number) => {
       const household = { filingStatus, children };
       const patch: Partial<CityFormState> = { grossSalary };
+      if (state.metroId === '') {
+        setState({ ...state, ...patch });
+        return;
+      }
       if (
         state.housing.tenure === 'rent' &&
         state.housing.monthlyRent === defaultRent(state.metroId, state.grossSalary, household)
@@ -179,11 +236,11 @@ export function Calculator({ initial }: CalculatorProps) {
   }
 
   const household: Household = { filingStatus, children };
-  const sameCity = origin.metroId === destination.metroId;
+  const sameCity = bothChosen && origin.metroId === destination.metroId;
 
   // The result exists the moment the inputs do — there is nothing to wait for.
   const result = useMemo(() => {
-    if (sameCity) return null;
+    if (!bothChosen || sameCity) return null;
     return compare(
       {
         datasetVersion: DATASET_VERSION,
@@ -207,7 +264,7 @@ export function Calculator({ initial }: CalculatorProps) {
       },
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [origin, destination, filingStatus, children, sameCity]);
+  }, [origin, destination, filingStatus, children, sameCity, bothChosen]);
 
   function onCompare() {
     setRevealed(true);
@@ -253,10 +310,13 @@ export function Calculator({ initial }: CalculatorProps) {
           glance — the redesign's Turn 3 form.
         */}
         <section
-          className="flex flex-col gap-1.5 rounded-xl border px-5 py-3.5"
-          style={{ borderColor: 'var(--rule-strong)', background: 'var(--surface)' }}
+          className="flex flex-col gap-2 rounded-xl border-2 px-5 py-4"
+          style={{ borderColor: 'var(--accent)', background: 'var(--surface)' }}
         >
-          <span className="eyebrow">About you</span>
+          <div className="flex items-center gap-2">
+            <StepBadge n={1} />
+            <span className="eyebrow">About you</span>
+          </div>
           <p className="flex flex-wrap items-baseline gap-x-1.5 gap-y-2 text-[1.05rem]" style={{ color: 'var(--ink)' }}>
             I file as{' '}
             <InlineSelect
@@ -275,14 +335,14 @@ export function Calculator({ initial }: CalculatorProps) {
             , and I&rsquo;d{' '}
             <InlineSelect
               label="Housing"
-              value={origin.housing.tenure}
-              onChange={(tenure: string) => applyTenure(tenure as 'rent' | 'own')}
+              value={tenure}
+              onChange={(next: string) => applyTenure(next as 'rent' | 'own')}
               options={TENURE_OPTIONS}
             />{' '}
             in both.
           </p>
           <span className="text-[0.8rem]" style={{ color: 'var(--muted)' }}>
-            Salary and housing go in each city, prefilled with real local figures.
+            Tap any green word to change it. Then pick your two cities below.
           </span>
         </section>
       </div>
@@ -302,9 +362,12 @@ export function Calculator({ initial }: CalculatorProps) {
         <div className="grid gap-3 sm:grid-cols-2">
           <CityPanel
             title="Living now"
+            step={2}
+            emptyPrompt="Where do you live now?"
             state={origin}
             filingStatus={filingStatus}
             childCount={children}
+            tenure={tenure}
             onChange={setOrigin}
             onSalaryChange={changeSalary(origin, setOrigin)}
             salaryLabel="Salary here"
@@ -314,9 +377,12 @@ export function Calculator({ initial }: CalculatorProps) {
           />
           <CityPanel
             title="The offer"
+            step={3}
+            emptyPrompt="Where are you thinking of going?"
             state={destination}
             filingStatus={filingStatus}
             childCount={children}
+            tenure={tenure}
             onChange={setDestination}
             onSalaryChange={changeSalary(destination, setDestination)}
             result={result?.destination ?? null}
@@ -362,15 +428,35 @@ export function Calculator({ initial }: CalculatorProps) {
               than firing one in from the top of a tall empty box.
             */
             <div className="flex flex-col gap-3 px-5 py-4">
-              {sameCity ? (
+              {!bothChosen ? (
+                /*
+                  Name the step that is outstanding rather than showing a dead
+                  button. The two prompts match the headings on the columns, so
+                  the reader is told where to look, not just that something is
+                  missing.
+                */
+                <>
+                  <p className="text-[0.95rem] leading-snug" style={{ color: 'var(--ink-soft)' }}>
+                    Pick both cities and the answer appears here.
+                  </p>
+                  <ul className="flex flex-col gap-1.5 text-[0.9rem]">
+                    <Waiting done={origin.metroId !== ''} n={2}>
+                      Where do you live now
+                    </Waiting>
+                    <Waiting done={destination.metroId !== ''} n={3}>
+                      Where you&rsquo;re thinking of going
+                    </Waiting>
+                  </ul>
+                </>
+              ) : sameCity ? (
                 <p className="text-sm" style={{ color: 'var(--bad)' }}>
                   Both cities are the same. Pick a different destination.
                 </p>
               ) : (
                 <>
                   <p className="text-[0.95rem] leading-snug" style={{ color: 'var(--ink-soft)' }}>
-                    Both cities are filled in and ready. Change anything you like, or go straight
-                    to the answer.
+                    Both cities are set, with real local figures filled in. Change anything you
+                    like, or go straight to the answer.
                   </p>
                   <button
                     type="button"
