@@ -66,6 +66,8 @@
       "lumpSumTax": null,
       "combinedSeparateReturn": false,
       "propertyTaxRelief": null,
+      "taxAddBacks": [],
+      "taxCreditFraction": null,
       "modellingGaps": [],
       "priorYearFigures": null,
       "ratesCheckedAgainstState": null,
@@ -177,6 +179,8 @@
       "lumpSumTax": null,
       "combinedSeparateReturn": false,
       "propertyTaxRelief": null,
+      "taxAddBacks": [],
+      "taxCreditFraction": null,
       "modellingGaps": [
         "Alabama's itemised deductions here cover property tax, mortgage interest and the Social Security and Medicare tax withheld from your pay. Charitable giving and medical costs are not asked about and are not included, so Alabama tax shown here is higher than the true figure for anyone who has them.",
         "Alabama's dependent exemption steps down with income — $1,000 up to $50,000, $500 to $100,000, $300 above — and never reaches zero. Only the $1,000 figure is modelled, so Alabama tax shown is slightly lower than the true figure above $50,000. Alabama also lets you itemise without having itemised federally, and deduct the Social Security and Medicare tax withheld from your pay, which beats the standard deduction at almost any wage; that is not modelled, so Alabama tax shown is higher than the true figure for most earners."
@@ -301,6 +305,8 @@
       "lumpSumTax": null,
       "combinedSeparateReturn": true,
       "propertyTaxRelief": null,
+      "taxAddBacks": [],
+      "taxCreditFraction": null,
       "modellingGaps": [
         "Arkansas reduces the benefit of its lower brackets across a narrow band of income between about $94,700 and $97,600. That adjustment is not modelled, so tax shown for incomes inside that band is slightly lower than the true figure."
       ],
@@ -374,6 +380,8 @@
       "lumpSumTax": null,
       "combinedSeparateReturn": false,
       "propertyTaxRelief": null,
+      "taxAddBacks": [],
+      "taxCreditFraction": null,
       "modellingGaps": [
         "Arizona's dependent credit rose to $125 for a child under 17 for 2026 and we still apply $100, so Arizona tax shown here is $25 a year per young child too much. The same credit shrinks above $200,000 of income ($400,000 for a couple), which is not modelled, so above those incomes the figure shown is slightly low."
       ],
@@ -571,6 +579,8 @@
       "lumpSumTax": null,
       "combinedSeparateReturn": false,
       "propertyTaxRelief": null,
+      "taxAddBacks": [],
+      "taxCreditFraction": null,
       "modellingGaps": [
         "California itemised deductions here cover property tax and mortgage interest only — the two figures this site knows. Charitable giving, medical costs and miscellaneous deductions are not asked about and are not included, so California tax shown here is higher than the true figure for anyone who has them.",
         "California's exemption credits shrink above $252,203 of income ($504,411 for a couple, $378,310 for a head of household) and that is not modelled, so California tax shown here is lower than the true figure above those incomes."
@@ -665,7 +675,8 @@
         "o"
       ],
       "notes": [
-        "Colorado, Idaho, Iowa, Montana, New Mexico, North Dakota, and South Carolina include the federal standard deduction in their income starting point."
+        "Colorado, Idaho, Iowa, Montana, New Mexico, North Dakota, and South Carolina include the federal standard deduction in their income starting point.",
+        "Colorado's add-back is reduced by any state income tax you deducted on your federal return, which this engine does not model — so for someone who itemises federally, Colorado tax shown here above $300,000 is higher than the true figure. Colorado also adds back the federal overtime deduction from 2026, which is not modelled."
       ],
       "earnedIncomeCredit": {
         "percentOfFederal": 0.25,
@@ -674,11 +685,48 @@
         "maxCredit": null
       },
       "creditPhaseOut": null,
-      "allowancePhaseOut": null,
+      "allowancePhaseOut": {
+        "kind": "linear",
+        "appliesTo": [
+          "standardDeduction"
+        ],
+        "floor": {
+          "single": 1000,
+          "marriedJointly": 2000,
+          "headOfHousehold": 1000
+        },
+        "segments": {
+          "single": [
+            {
+              "base": 16100,
+              "start": 300000,
+              "perDollar": 16100
+            }
+          ],
+          "headOfHousehold": [
+            {
+              "base": 24150,
+              "start": 300000,
+              "perDollar": 24150
+            }
+          ],
+          "marriedJointly": [
+            {
+              "base": 32200,
+              "start": 300000,
+              "perDollar": 32200
+            }
+          ]
+        }
+      },
       "lumpSumTax": null,
       "combinedSeparateReturn": false,
       "propertyTaxRelief": null,
-      "modellingGaps": [],
+      "taxAddBacks": [],
+      "taxCreditFraction": null,
+      "modellingGaps": [
+        "Colorado's add-back is reduced by any state income tax you deducted on your federal return, which this engine does not model — so for someone who itemises federally, Colorado tax shown here above $300,000 is higher than the true figure. Colorado also adds back the federal overtime deduction from 2026, which is not modelled."
+      ],
       "priorYearFigures": null,
       "ratesCheckedAgainstState": {
         "url": "https://tax.colorado.gov/income-tax-topics-earned-income-tax-credit",
@@ -686,6 +734,10 @@
         "matched": false
       },
       "itemizedDeductions": null,
+      "verifiedAgainstState": {
+        "url": "https://tax.colorado.gov/individual-income-tax-guide",
+        "checked": "2026-08-15"
+      },
       "communityProperty": false,
       "payrollContributions": [
         {
@@ -866,6 +918,434 @@
       "lumpSumTax": null,
       "combinedSeparateReturn": false,
       "propertyTaxRelief": null,
+      "taxAddBacks": [
+        {
+          "phases": {
+            "single": [
+              {
+                "from": 56500,
+                "stepSize": 5000,
+                "perStep": 25,
+                "capAt": 250
+              }
+            ],
+            "marriedJointly": [
+              {
+                "from": 100500,
+                "stepSize": 5000,
+                "perStep": 50,
+                "capAt": 500
+              }
+            ],
+            "headOfHousehold": [
+              {
+                "from": 78500,
+                "stepSize": 4000,
+                "perStep": 40,
+                "capAt": 400
+              }
+            ]
+          }
+        },
+        {
+          "phases": {
+            "single": [
+              {
+                "from": 105000,
+                "stepSize": 5000,
+                "perStep": 25,
+                "capAt": 250
+              },
+              {
+                "from": 200000,
+                "stepSize": 5000,
+                "perStep": 90,
+                "capAt": 2950
+              },
+              {
+                "from": 500000,
+                "stepSize": 5000,
+                "perStep": 50,
+                "capAt": 3400
+              }
+            ],
+            "marriedJointly": [
+              {
+                "from": 210000,
+                "stepSize": 10000,
+                "perStep": 50,
+                "capAt": 500
+              },
+              {
+                "from": 400000,
+                "stepSize": 10000,
+                "perStep": 180,
+                "capAt": 5900
+              },
+              {
+                "from": 1000000,
+                "stepSize": 10000,
+                "perStep": 100,
+                "capAt": 6800
+              }
+            ],
+            "headOfHousehold": [
+              {
+                "from": 168000,
+                "stepSize": 8000,
+                "perStep": 40,
+                "capAt": 400
+              },
+              {
+                "from": 320000,
+                "stepSize": 8000,
+                "perStep": 140,
+                "capAt": 4600
+              },
+              {
+                "from": 800000,
+                "stepSize": 8000,
+                "perStep": 80,
+                "capAt": 5320
+              }
+            ]
+          }
+        }
+      ],
+      "taxCreditFraction": {
+        "bands": {
+          "single": [
+            [
+              18800,
+              0.75
+            ],
+            [
+              19300,
+              0.7
+            ],
+            [
+              19800,
+              0.65
+            ],
+            [
+              20300,
+              0.6
+            ],
+            [
+              20800,
+              0.55
+            ],
+            [
+              21300,
+              0.5
+            ],
+            [
+              21800,
+              0.45
+            ],
+            [
+              22300,
+              0.4
+            ],
+            [
+              25000,
+              0.35
+            ],
+            [
+              25500,
+              0.3
+            ],
+            [
+              26000,
+              0.25
+            ],
+            [
+              26500,
+              0.2
+            ],
+            [
+              31300,
+              0.15
+            ],
+            [
+              31800,
+              0.14
+            ],
+            [
+              32300,
+              0.13
+            ],
+            [
+              32800,
+              0.12
+            ],
+            [
+              33300,
+              0.11
+            ],
+            [
+              60000,
+              0.1
+            ],
+            [
+              60500,
+              0.09
+            ],
+            [
+              61000,
+              0.08
+            ],
+            [
+              61500,
+              0.07
+            ],
+            [
+              62000,
+              0.06
+            ],
+            [
+              62500,
+              0.05
+            ],
+            [
+              63000,
+              0.04
+            ],
+            [
+              63500,
+              0.03
+            ],
+            [
+              64000,
+              0.02
+            ],
+            [
+              64500,
+              0.01
+            ]
+          ],
+          "marriedJointly": [
+            [
+              30000,
+              0.75
+            ],
+            [
+              30500,
+              0.7
+            ],
+            [
+              31000,
+              0.65
+            ],
+            [
+              31500,
+              0.6
+            ],
+            [
+              32000,
+              0.55
+            ],
+            [
+              32500,
+              0.5
+            ],
+            [
+              33000,
+              0.45
+            ],
+            [
+              33500,
+              0.4
+            ],
+            [
+              40000,
+              0.35
+            ],
+            [
+              40500,
+              0.3
+            ],
+            [
+              41000,
+              0.25
+            ],
+            [
+              41500,
+              0.2
+            ],
+            [
+              50000,
+              0.15
+            ],
+            [
+              50500,
+              0.14
+            ],
+            [
+              51000,
+              0.13
+            ],
+            [
+              51500,
+              0.12
+            ],
+            [
+              52000,
+              0.11
+            ],
+            [
+              96000,
+              0.1
+            ],
+            [
+              96500,
+              0.09
+            ],
+            [
+              97000,
+              0.08
+            ],
+            [
+              97500,
+              0.07
+            ],
+            [
+              98000,
+              0.06
+            ],
+            [
+              98500,
+              0.05
+            ],
+            [
+              99000,
+              0.04
+            ],
+            [
+              99500,
+              0.03
+            ],
+            [
+              100000,
+              0.02
+            ],
+            [
+              100500,
+              0.01
+            ]
+          ],
+          "headOfHousehold": [
+            [
+              24000,
+              0.75
+            ],
+            [
+              24500,
+              0.7
+            ],
+            [
+              25000,
+              0.65
+            ],
+            [
+              25500,
+              0.6
+            ],
+            [
+              26000,
+              0.55
+            ],
+            [
+              26500,
+              0.5
+            ],
+            [
+              27000,
+              0.45
+            ],
+            [
+              27500,
+              0.4
+            ],
+            [
+              34000,
+              0.35
+            ],
+            [
+              34500,
+              0.3
+            ],
+            [
+              35000,
+              0.25
+            ],
+            [
+              35500,
+              0.2
+            ],
+            [
+              44000,
+              0.15
+            ],
+            [
+              44500,
+              0.14
+            ],
+            [
+              45000,
+              0.13
+            ],
+            [
+              45500,
+              0.12
+            ],
+            [
+              46000,
+              0.11
+            ],
+            [
+              74000,
+              0.1
+            ],
+            [
+              74500,
+              0.09
+            ],
+            [
+              75000,
+              0.08
+            ],
+            [
+              75500,
+              0.07
+            ],
+            [
+              76000,
+              0.06
+            ],
+            [
+              76500,
+              0.05
+            ],
+            [
+              77000,
+              0.04
+            ],
+            [
+              77500,
+              0.03
+            ],
+            [
+              78000,
+              0.02
+            ],
+            [
+              78500,
+              0.01
+            ]
+          ]
+        }
+      },
       "modellingGaps": [
         "Connecticut also adds a flat charge above $56,500 single / $100,500 joint (up to $250 / $500) and recaptures the benefit of its lower rates above $105,000 / $210,000 (up to $3,400 / $6,800). Neither is modelled, so Connecticut tax shown here is lower than the true figure for higher earners."
       ],
@@ -991,6 +1471,8 @@
       "lumpSumTax": null,
       "combinedSeparateReturn": true,
       "propertyTaxRelief": null,
+      "taxAddBacks": [],
+      "taxCreditFraction": null,
       "modellingGaps": [],
       "priorYearFigures": null,
       "ratesCheckedAgainstState": {
@@ -1108,6 +1590,8 @@
       "lumpSumTax": null,
       "combinedSeparateReturn": true,
       "propertyTaxRelief": null,
+      "taxAddBacks": [],
+      "taxCreditFraction": null,
       "modellingGaps": [],
       "priorYearFigures": null,
       "ratesCheckedAgainstState": {
@@ -1156,6 +1640,8 @@
       "lumpSumTax": null,
       "combinedSeparateReturn": false,
       "propertyTaxRelief": null,
+      "taxAddBacks": [],
+      "taxCreditFraction": null,
       "modellingGaps": [],
       "priorYearFigures": null,
       "ratesCheckedAgainstState": null,
@@ -1207,6 +1693,8 @@
       "lumpSumTax": null,
       "combinedSeparateReturn": false,
       "propertyTaxRelief": null,
+      "taxAddBacks": [],
+      "taxCreditFraction": null,
       "modellingGaps": [],
       "priorYearFigures": null,
       "ratesCheckedAgainstState": {
@@ -1418,6 +1906,8 @@
       "lumpSumTax": null,
       "combinedSeparateReturn": false,
       "propertyTaxRelief": null,
+      "taxAddBacks": [],
+      "taxCreditFraction": null,
       "modellingGaps": [],
       "priorYearFigures": null,
       "ratesCheckedAgainstState": {
@@ -1502,6 +1992,8 @@
       "lumpSumTax": null,
       "combinedSeparateReturn": false,
       "propertyTaxRelief": null,
+      "taxAddBacks": [],
+      "taxCreditFraction": null,
       "modellingGaps": [],
       "priorYearFigures": null,
       "ratesCheckedAgainstState": {
@@ -1585,6 +2077,8 @@
       "lumpSumTax": null,
       "combinedSeparateReturn": false,
       "propertyTaxRelief": null,
+      "taxAddBacks": [],
+      "taxCreditFraction": null,
       "modellingGaps": [],
       "priorYearFigures": "Idaho's untaxed band of $4,811 for a single filer and $9,622 for a couple is the published 2025 figure; Idaho publishes the 2026 amount around December.",
       "ratesCheckedAgainstState": {
@@ -1670,6 +2164,8 @@
       "lumpSumTax": null,
       "combinedSeparateReturn": false,
       "propertyTaxRelief": null,
+      "taxAddBacks": [],
+      "taxCreditFraction": null,
       "modellingGaps": [],
       "priorYearFigures": null,
       "ratesCheckedAgainstState": {
@@ -1740,6 +2236,8 @@
       "lumpSumTax": null,
       "combinedSeparateReturn": false,
       "propertyTaxRelief": null,
+      "taxAddBacks": [],
+      "taxCreditFraction": null,
       "modellingGaps": [],
       "priorYearFigures": null,
       "ratesCheckedAgainstState": {
@@ -1818,6 +2316,8 @@
       "lumpSumTax": null,
       "combinedSeparateReturn": false,
       "propertyTaxRelief": null,
+      "taxAddBacks": [],
+      "taxCreditFraction": null,
       "modellingGaps": [],
       "priorYearFigures": null,
       "ratesCheckedAgainstState": {
@@ -1897,6 +2397,8 @@
       "lumpSumTax": null,
       "combinedSeparateReturn": true,
       "propertyTaxRelief": null,
+      "taxAddBacks": [],
+      "taxCreditFraction": null,
       "modellingGaps": [],
       "priorYearFigures": null,
       "ratesCheckedAgainstState": {
@@ -1964,6 +2466,8 @@
       "lumpSumTax": null,
       "combinedSeparateReturn": false,
       "propertyTaxRelief": null,
+      "taxAddBacks": [],
+      "taxCreditFraction": null,
       "modellingGaps": [],
       "priorYearFigures": null,
       "ratesCheckedAgainstState": {
@@ -2038,6 +2542,8 @@
       "lumpSumTax": null,
       "combinedSeparateReturn": false,
       "propertyTaxRelief": null,
+      "taxAddBacks": [],
+      "taxCreditFraction": null,
       "modellingGaps": [
         "Massachusetts lets every wage earner deduct up to $2,000 each of the Social Security and Medicare tax they paid. That is not modelled here, so Massachusetts tax shown is about $100 a year higher than the true figure for most earners."
       ],
@@ -2218,6 +2724,8 @@
       "lumpSumTax": null,
       "combinedSeparateReturn": false,
       "propertyTaxRelief": null,
+      "taxAddBacks": [],
+      "taxCreditFraction": null,
       "modellingGaps": [
         "Maryland lets you itemise if you itemised federally, which we do not model at all, so Maryland tax shown here is higher than the true figure for a homeowner with a mortgage. Maryland separately cuts those itemised deductions by 7.5% of income above $200,000, which would pull the other way."
       ],
@@ -2398,6 +2906,8 @@
       "lumpSumTax": null,
       "combinedSeparateReturn": false,
       "propertyTaxRelief": null,
+      "taxAddBacks": [],
+      "taxCreditFraction": null,
       "modellingGaps": [
         "Maine's personal exemption also phases out, from $341,000 of income for a single filer and $409,150 for a couple. That is not modelled, so Maine tax shown above those incomes is slightly lower than the true figure."
       ],
@@ -2472,6 +2982,8 @@
       "lumpSumTax": null,
       "combinedSeparateReturn": false,
       "propertyTaxRelief": null,
+      "taxAddBacks": [],
+      "taxCreditFraction": null,
       "modellingGaps": [],
       "priorYearFigures": null,
       "ratesCheckedAgainstState": {
@@ -2629,6 +3141,8 @@
       "lumpSumTax": null,
       "combinedSeparateReturn": false,
       "propertyTaxRelief": null,
+      "taxAddBacks": [],
+      "taxCreditFraction": null,
       "modellingGaps": [
         "Minnesota's dependent exemption also phases out, by 2 percentage points for each $2,500 of income above $244,500 single and $366,700 joint. That is not modelled, so Minnesota tax shown above those incomes is slightly lower than the true figure."
       ],
@@ -2792,6 +3306,8 @@
       "lumpSumTax": null,
       "combinedSeparateReturn": true,
       "propertyTaxRelief": null,
+      "taxAddBacks": [],
+      "taxCreditFraction": null,
       "modellingGaps": [],
       "priorYearFigures": null,
       "ratesCheckedAgainstState": {
@@ -2863,6 +3379,8 @@
       "lumpSumTax": null,
       "combinedSeparateReturn": true,
       "propertyTaxRelief": null,
+      "taxAddBacks": [],
+      "taxCreditFraction": null,
       "modellingGaps": [],
       "priorYearFigures": "Only Mississippi's rate is published for 2026. Its standard deduction and exemptions here are the 2025 figures, which are fixed in statute and were not changed by any 2026 law.",
       "ratesCheckedAgainstState": {
@@ -2953,6 +3471,8 @@
       "lumpSumTax": null,
       "combinedSeparateReturn": false,
       "propertyTaxRelief": null,
+      "taxAddBacks": [],
+      "taxCreditFraction": null,
       "modellingGaps": [],
       "priorYearFigures": null,
       "ratesCheckedAgainstState": {
@@ -3027,6 +3547,8 @@
       "lumpSumTax": null,
       "combinedSeparateReturn": false,
       "propertyTaxRelief": null,
+      "taxAddBacks": [],
+      "taxCreditFraction": null,
       "modellingGaps": [],
       "priorYearFigures": null,
       "ratesCheckedAgainstState": {
@@ -3139,6 +3661,8 @@
       "lumpSumTax": null,
       "combinedSeparateReturn": false,
       "propertyTaxRelief": null,
+      "taxAddBacks": [],
+      "taxCreditFraction": null,
       "modellingGaps": [],
       "priorYearFigures": null,
       "ratesCheckedAgainstState": {
@@ -3234,7 +3758,8 @@
         "Standard deduction and/or personal exemption is adjusted annually for inflation. Inflation-adjusted amounts for tax year 2026 are shown.",
         "Standard deduction or personal exemption is structured as a tax credit.",
         "State provides a state-defined personal exemption amount for each exemption available and/or deductible under the Internal Revenue Code. The Tax Cuts and Jobs Act set the personal exemption to $0 until 2026 but did not eliminate it, and the One Big Beautiful Bill Act permanently set the personal exemption to $0 but did not eliminate it. Because it is still available, these state-defined personal exemptions remain available in some states but are set to $0 in other states.",
-        "Bracket levels adjusted for inflation each year. Inflation-adjusted bracket levels for 2026 are shown."
+        "Bracket levels adjusted for inflation each year. Inflation-adjusted bracket levels for 2026 are shown.",
+        "Nebraska subtracts the full pre-cap state and local income tax from the federal itemised total even when the federal cap already reduced it, so a capped filer loses those dollars twice. That double subtraction is not modelled, so Nebraska tax shown here is lower than the true figure for anyone the federal cap reaches."
       ],
       "earnedIncomeCredit": {
         "percentOfFederal": 0.1,
@@ -3247,14 +3772,33 @@
       "lumpSumTax": null,
       "combinedSeparateReturn": false,
       "propertyTaxRelief": null,
-      "modellingGaps": [],
+      "taxAddBacks": [],
+      "taxCreditFraction": null,
+      "modellingGaps": [
+        "Nebraska subtracts the full pre-cap state and local income tax from the federal itemised total even when the federal cap already reduced it, so a capped filer loses those dollars twice. That double subtraction is not modelled, so Nebraska tax shown here is lower than the true figure for anyone the federal cap reaches."
+      ],
       "priorYearFigures": null,
       "ratesCheckedAgainstState": {
         "url": "https://revenue.nebraska.gov/sites/default/files/doc/tax-forms/2025/f_1040N-ES.pdf",
         "checked": "2026-08-15",
         "matched": true
       },
-      "itemizedDeductions": null,
+      "itemizedDeductions": {
+        "deductPropertyTax": true,
+        "deductStateIncomeTax": false,
+        "mortgageDebtLimit": 750000,
+        "saltCap": null,
+        "propertyTaxCap": null,
+        "totalCap": null,
+        "deductPayrollTax": false,
+        "requiresFederalItemising": true,
+        "highIncomeReduction": null,
+        "shareKeptCurve": null,
+        "source": {
+          "url": "https://revenue.nebraska.gov/sites/default/files/doc/tax-forms/2025/f_Individual_Income_Tax_Booklet.pdf",
+          "checked": "2026-08-15"
+        }
+      },
       "communityProperty": false,
       "payrollContributions": [],
       "headOfHouseholdBasis": "own",
@@ -3295,6 +3839,8 @@
       "lumpSumTax": null,
       "combinedSeparateReturn": false,
       "propertyTaxRelief": null,
+      "taxAddBacks": [],
+      "taxCreditFraction": null,
       "modellingGaps": [],
       "priorYearFigures": null,
       "ratesCheckedAgainstState": null,
@@ -3415,6 +3961,8 @@
           "headOfHousehold": 20000
         }
       },
+      "taxAddBacks": [],
+      "taxCreditFraction": null,
       "modellingGaps": [
         "New Jersey allows no mortgage interest deduction and no charitable deduction at all, so a homeowner gets relief for property tax only. The extra exemptions for veterans, for filers over 65 or blind, and for a dependent in full-time education are not modelled, so New Jersey tax shown here is higher than the true figure for anyone entitled to them."
       ],
@@ -3550,6 +4098,8 @@
       "lumpSumTax": null,
       "combinedSeparateReturn": false,
       "propertyTaxRelief": null,
+      "taxAddBacks": [],
+      "taxCreditFraction": null,
       "modellingGaps": [],
       "priorYearFigures": null,
       "ratesCheckedAgainstState": {
@@ -3617,6 +4167,8 @@
       "lumpSumTax": null,
       "combinedSeparateReturn": false,
       "propertyTaxRelief": null,
+      "taxAddBacks": [],
+      "taxCreditFraction": null,
       "modellingGaps": [],
       "priorYearFigures": null,
       "ratesCheckedAgainstState": null,
@@ -3782,6 +4334,8 @@
       "lumpSumTax": null,
       "combinedSeparateReturn": false,
       "propertyTaxRelief": null,
+      "taxAddBacks": [],
+      "taxCreditFraction": null,
       "modellingGaps": [
         "New York itemised deductions here cover property tax and mortgage interest only. Charitable giving, medical costs above 10% of income and the job expenses New York still allows are not asked about and are not included, so New York tax shown here is higher than the true figure for anyone who has them.",
         "New York lets you itemise on the state return whether or not you did federally, on pre-2018 rules — property tax uncapped and mortgage interest on $1,000,000 of debt. That is not modelled, so New York tax shown here is higher than the true figure for a homeowner, by roughly $650 to $770 a year plus more again in New York City. Running the other way, New York recaptures the benefit of its lower rates from high earners, which is also not modelled and is worth about $481 a year at $150,000."
@@ -3994,6 +4548,8 @@
       },
       "combinedSeparateReturn": false,
       "propertyTaxRelief": null,
+      "taxAddBacks": [],
+      "taxCreditFraction": null,
       "modellingGaps": [
         "Ohio's personal exemption steps down with income — $2,400 up to $40,000, $2,150 to $80,000, $1,900 to $749,999 and nothing at all from $750,000 — and only the $2,400 is modelled, so Ohio tax shown here is slightly lower than the true figure above $40,000. Ohio also gives couples where both work a credit worth up to $650, which is not modelled, so their figure is higher than the true one."
       ],
@@ -4094,6 +4650,8 @@
       "lumpSumTax": null,
       "combinedSeparateReturn": false,
       "propertyTaxRelief": null,
+      "taxAddBacks": [],
+      "taxCreditFraction": null,
       "modellingGaps": [],
       "priorYearFigures": "Oklahoma's rates for 2026 come from the enacted law, but its standard deduction and exemptions here are the 2025 figures. They are not indexed, so they should carry unchanged.",
       "ratesCheckedAgainstState": {
@@ -4219,6 +4777,8 @@
       "lumpSumTax": null,
       "combinedSeparateReturn": false,
       "propertyTaxRelief": null,
+      "taxAddBacks": [],
+      "taxCreditFraction": null,
       "modellingGaps": [
         "Oregon lets you subtract the federal income tax you paid, capped at $8,500 and tapering to nothing by $145,000 of income for a single filer. That is not modelled — the federalTaxDeductible flag has always been a label rather than a calculation — so Oregon tax shown here is higher than the true figure by up to about $743 a year at lower incomes."
       ],
@@ -4293,6 +4853,8 @@
       "lumpSumTax": null,
       "combinedSeparateReturn": false,
       "propertyTaxRelief": null,
+      "taxAddBacks": [],
+      "taxCreditFraction": null,
       "modellingGaps": [],
       "priorYearFigures": null,
       "ratesCheckedAgainstState": {
@@ -4399,6 +4961,8 @@
       "lumpSumTax": null,
       "combinedSeparateReturn": false,
       "propertyTaxRelief": null,
+      "taxAddBacks": [],
+      "taxCreditFraction": null,
       "modellingGaps": [],
       "priorYearFigures": "Rhode Island's 2026 figures here come from a form the state published carrying a draft watermark. They are internally consistent and are the state's own, but they should be re-checked against the final booklet.",
       "ratesCheckedAgainstState": {
@@ -4525,6 +5089,8 @@
       "lumpSumTax": null,
       "combinedSeparateReturn": false,
       "propertyTaxRelief": null,
+      "taxAddBacks": [],
+      "taxCreditFraction": null,
       "modellingGaps": [
         "South Carolina's dependent exemption is shown at the 2025 figure of $4,930. The state indexes it every December and the 2026 amount appears only in the 2026 return instructions, which are not published yet. The real figure will be slightly higher, so this errs against the reader."
       ],
@@ -4579,6 +5145,8 @@
       "lumpSumTax": null,
       "combinedSeparateReturn": false,
       "propertyTaxRelief": null,
+      "taxAddBacks": [],
+      "taxCreditFraction": null,
       "modellingGaps": [],
       "priorYearFigures": null,
       "ratesCheckedAgainstState": null,
@@ -4619,6 +5187,8 @@
       "lumpSumTax": null,
       "combinedSeparateReturn": false,
       "propertyTaxRelief": null,
+      "taxAddBacks": [],
+      "taxCreditFraction": null,
       "modellingGaps": [],
       "priorYearFigures": null,
       "ratesCheckedAgainstState": null,
@@ -4659,6 +5229,8 @@
       "lumpSumTax": null,
       "combinedSeparateReturn": false,
       "propertyTaxRelief": null,
+      "taxAddBacks": [],
+      "taxCreditFraction": null,
       "modellingGaps": [],
       "priorYearFigures": null,
       "ratesCheckedAgainstState": null,
@@ -4732,6 +5304,8 @@
       "lumpSumTax": null,
       "combinedSeparateReturn": false,
       "propertyTaxRelief": null,
+      "taxAddBacks": [],
+      "taxCreditFraction": null,
       "modellingGaps": [
         "Utah's taxpayer tax credit phase-out thresholds and dependent exemption are the 2025 figures — the state has not published 2026 amounts. Utah indexes them upward, so the reduction starts slightly early here and the credit comes out slightly small."
       ],
@@ -4824,6 +5398,8 @@
       "lumpSumTax": null,
       "combinedSeparateReturn": false,
       "propertyTaxRelief": null,
+      "taxAddBacks": [],
+      "taxCreditFraction": null,
       "modellingGaps": [],
       "priorYearFigures": null,
       "ratesCheckedAgainstState": {
@@ -4956,6 +5532,8 @@
       "lumpSumTax": null,
       "combinedSeparateReturn": false,
       "propertyTaxRelief": null,
+      "taxAddBacks": [],
+      "taxCreditFraction": null,
       "modellingGaps": [],
       "priorYearFigures": "Vermont has published no 2026 rate schedule, so its brackets, standard deduction and personal exemption here are the published 2025 figures.",
       "ratesCheckedAgainstState": {
@@ -5011,6 +5589,8 @@
       "lumpSumTax": null,
       "combinedSeparateReturn": false,
       "propertyTaxRelief": null,
+      "taxAddBacks": [],
+      "taxCreditFraction": null,
       "modellingGaps": [],
       "priorYearFigures": null,
       "ratesCheckedAgainstState": null,
@@ -5148,6 +5728,8 @@
       "lumpSumTax": null,
       "combinedSeparateReturn": false,
       "propertyTaxRelief": null,
+      "taxAddBacks": [],
+      "taxCreditFraction": null,
       "modellingGaps": [],
       "priorYearFigures": null,
       "ratesCheckedAgainstState": {
@@ -5247,6 +5829,8 @@
       "lumpSumTax": null,
       "combinedSeparateReturn": false,
       "propertyTaxRelief": null,
+      "taxAddBacks": [],
+      "taxCreditFraction": null,
       "modellingGaps": [],
       "priorYearFigures": null,
       "ratesCheckedAgainstState": {
@@ -5299,6 +5883,8 @@
       "lumpSumTax": null,
       "combinedSeparateReturn": false,
       "propertyTaxRelief": null,
+      "taxAddBacks": [],
+      "taxCreditFraction": null,
       "modellingGaps": [],
       "priorYearFigures": null,
       "ratesCheckedAgainstState": null,

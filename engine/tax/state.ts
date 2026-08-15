@@ -163,6 +163,26 @@ export interface StateTaxRules {
    */
   combinedSeparateReturn: boolean;
   /**
+   * Flat amounts ADDED to tax once income passes a threshold, in steps.
+   *
+   * CONNECTICUT HAS TWO OF THEM AND WE HAD NEITHER, which is most of why
+   * Connecticut was the worst undercharge in the dataset. A "2% tax rate
+   * phase-out add-back" claws back the benefit of its lowest bracket, and a
+   * separate "tax recapture" claws back the rest for higher earners. Both are
+   * flat steps keyed to Connecticut adjusted gross income, not to taxable
+   * income, and both are added after the brackets are applied.
+   */
+  taxAddBacks: TaxAddBack[];
+  /**
+   * A credit expressed as a FRACTION OF THE TAX, by income band.
+   *
+   * Connecticut's personal credit works this way — up to 75% of the whole
+   * bill wiped out at low incomes, tapering to nothing in 28 steps. Omitting
+   * it overcharged everyone it reaches, which is the opposite direction from
+   * the two add-backs above and lands on a different set of people.
+   */
+  taxCreditFraction: TaxCreditFraction | null;
+  /**
    * A deduction for property tax that is NOT itemising, where the state has
    * one.
    *
@@ -487,6 +507,41 @@ export type AllowancePhaseOut =
       /** Share of the allowance kept at step 1, 2, 3 … Past the last, nothing. */
       factors: number[];
     };
+
+/**
+ * A flat amount added to tax in steps, once income passes a threshold.
+ *
+ * Phases run in sequence: each begins where the previous one's cap is reached,
+ * and `capAt` is the CUMULATIVE ceiling, not the phase's own contribution.
+ * Connecticut's recapture has three, and reading `capAt` as a per-phase amount
+ * would understate the top of the table by thousands.
+ */
+export interface TaxAddBack {
+  phases: Partial<Record<PublishedStatus, TaxAddBackPhase[]>> & {
+    single: TaxAddBackPhase[];
+  };
+}
+
+export interface TaxAddBackPhase {
+  /** Income above which this phase starts adding. */
+  from: USD;
+  stepSize: USD;
+  perStep: USD;
+  /** Cumulative ceiling across this and every earlier phase. */
+  capAt: USD;
+}
+
+/**
+ * A credit that wipes out a share of the tax, by income band.
+ *
+ * Bands are [income at or below which it applies, share of tax credited], in
+ * ascending order. Past the last band nothing is credited.
+ */
+export interface TaxCreditFraction {
+  bands: Partial<Record<PublishedStatus, Array<[number, number]>>> & {
+    single: Array<[number, number]>;
+  };
+}
 
 /** See StateTaxRules.propertyTaxRelief. */
 export interface PropertyTaxRelief {
@@ -952,8 +1007,33 @@ export function computeStateTax(
   const taxableIncome = Math.max(0, gross - deductions - exemptions - propertyTaxDeduction);
   const lump =
     rules.lumpSumTax && taxableIncome > rules.lumpSumTax.above ? rules.lumpSumTax.amount : 0;
+
+  /*
+   * Amounts added on top of the bracket tax. Keyed to GROSS income rather than
+   * taxable income, which is what Connecticut's tables do — they run off
+   * Connecticut adjusted gross income, before the exemption comes off.
+   */
+  let addBacks = 0;
+  /*
+   * Defaulted rather than required, because a share link pinned to an older
+   * release replays that release's JSON — which has no such field. A new
+   * field must never make an old answer throw.
+   */
+  for (const addBack of rules.taxAddBacks ?? []) {
+    const phases =
+      addBack.phases[allowanceKey] ?? addBack.phases[otherwise] ?? addBack.phases.single;
+    let previousCap = 0;
+    for (const phase of phases) {
+      if (gross <= phase.from) break;
+      const steps = Math.ceil((gross - phase.from) / phase.stepSize);
+      addBacks = Math.min(phase.capAt, previousCap + steps * phase.perStep);
+      previousCap = phase.capAt;
+    }
+  }
   const taxBeforeCredits =
-    lump + applyBrackets(taxableIncome, rules.brackets[schedule] ?? rules.brackets[otherwise]);
+    lump +
+    addBacks +
+    applyBrackets(taxableIncome, rules.brackets[schedule] ?? rules.brackets[otherwise]);
 
   const creditsBeforePhaseOut =
     (rules.personalCredit[allowanceKey] ?? rules.personalCredit[otherwise]) +
@@ -1036,6 +1116,19 @@ export function computeStateTax(
         creditOverride + relief.alternativeCredit,
       );
     }
+  }
+
+  /*
+   * A credit that is a share of the tax rather than a fixed amount. Applied to
+   * everything above — brackets, lump and add-backs — because that is the
+   * order Connecticut's own calculation schedule uses.
+   */
+  const fraction = rules.taxCreditFraction;
+  if (fraction) {
+    const bands =
+      fraction.bands[allowanceKey] ?? fraction.bands[otherwise] ?? fraction.bands.single;
+    const band = bands.find(([upper]) => gross <= upper);
+    if (band) creditsWithRelief += taxBeforeCredits * band[1];
   }
 
   creditsWithRelief += creditOverride;

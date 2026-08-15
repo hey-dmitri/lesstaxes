@@ -79,7 +79,7 @@ describe('every other state', () => {
    * form is exactly the regression this guards.
    */
   const ITEMISING_STATES = new Set([
-    'CA', 'KS', 'AL', 'MN', 'NC', 'VA', 'MD', 'MT', 'NM', 'ID', 'OK', 'NY',
+    'CA', 'KS', 'AL', 'MN', 'NC', 'VA', 'MD', 'MT', 'NM', 'ID', 'OK', 'NY', 'NE',
     // New Jersey has no itemising at all, but it does relieve property tax,
     // so housing figures legitimately move its answer.
     'NJ',

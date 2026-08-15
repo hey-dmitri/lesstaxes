@@ -156,6 +156,161 @@ const PRIOR_YEAR_FIGURES = {
  * out and takes whichever is worth more, so the deduction wins only where it
  * saves more than $50.
  */
+/**
+ * FLAT AMOUNTS ADDED TO TAX ONCE INCOME PASSES A THRESHOLD.
+ *
+ * Connecticut has two and we had neither, which is most of why it was the
+ * worst undercharge in the dataset. Both run off Connecticut adjusted gross
+ * income rather than taxable income, and both are added after the brackets.
+ *
+ * TABLE C, the "2% tax rate phase-out add-back", claws back the benefit of
+ * Connecticut's lowest bracket. Its maximum is exactly that benefit: $10,000
+ * of income at 2% instead of 4.5% is $250 for a single filer, $500 for a
+ * couple on $20,000, $400 for a head of household on $16,000. That the caps
+ * reconstruct from the brackets is the check that they are right.
+ *
+ * TABLE D, the recapture, claws back the rest for higher earners in three
+ * phases. Each phase's cap is CUMULATIVE — reading them as separate
+ * contributions would understate the top of the table by thousands.
+ */
+const TAX_ADD_BACKS = {
+  Connecticut: [
+    {
+      phases: {
+        single: [{ from: 56_500, stepSize: 5_000, perStep: 25, capAt: 250 }],
+        marriedJointly: [{ from: 100_500, stepSize: 5_000, perStep: 50, capAt: 500 }],
+        headOfHousehold: [{ from: 78_500, stepSize: 4_000, perStep: 40, capAt: 400 }],
+      },
+    },
+    {
+      phases: {
+        single: [
+          { from: 105_000, stepSize: 5_000, perStep: 25, capAt: 250 },
+          { from: 200_000, stepSize: 5_000, perStep: 90, capAt: 2_950 },
+          { from: 500_000, stepSize: 5_000, perStep: 50, capAt: 3_400 },
+        ],
+        marriedJointly: [
+          { from: 210_000, stepSize: 10_000, perStep: 50, capAt: 500 },
+          { from: 400_000, stepSize: 10_000, perStep: 180, capAt: 5_900 },
+          { from: 1_000_000, stepSize: 10_000, perStep: 100, capAt: 6_800 },
+        ],
+        headOfHousehold: [
+          { from: 168_000, stepSize: 8_000, perStep: 40, capAt: 400 },
+          { from: 320_000, stepSize: 8_000, perStep: 140, capAt: 4_600 },
+          { from: 800_000, stepSize: 8_000, perStep: 80, capAt: 5_320 },
+        ],
+      },
+    },
+  ],
+};
+
+/**
+ * CONNECTICUT'S PERSONAL CREDIT, which is a share of the whole bill rather
+ * than a fixed amount — up to 75% of it wiped out, tapering to nothing in 28
+ * steps.
+ *
+ * This runs the OPPOSITE way from the two add-backs above and lands on a
+ * different set of people: omitting it overcharged everyone it reaches, while
+ * omitting the add-backs undercharged everyone above them. Connecticut was
+ * wrong in both directions at once, on different households.
+ *
+ * The wide plateaus at .35, .15 and .10 are in the printed table, not a
+ * transcription slip.
+ */
+const TAX_CREDIT_FRACTION = {
+  Connecticut: {
+    bands: {
+      single: [
+        [18_800, 0.75],
+        [19_300, 0.7],
+        [19_800, 0.65],
+        [20_300, 0.6],
+        [20_800, 0.55],
+        [21_300, 0.5],
+        [21_800, 0.45],
+        [22_300, 0.4],
+        [25_000, 0.35],
+        [25_500, 0.3],
+        [26_000, 0.25],
+        [26_500, 0.2],
+        [31_300, 0.15],
+        [31_800, 0.14],
+        [32_300, 0.13],
+        [32_800, 0.12],
+        [33_300, 0.11],
+        [60_000, 0.1],
+        [60_500, 0.09],
+        [61_000, 0.08],
+        [61_500, 0.07],
+        [62_000, 0.06],
+        [62_500, 0.05],
+        [63_000, 0.04],
+        [63_500, 0.03],
+        [64_000, 0.02],
+        [64_500, 0.01],
+      ],
+      marriedJointly: [
+        [30_000, 0.75],
+        [30_500, 0.7],
+        [31_000, 0.65],
+        [31_500, 0.6],
+        [32_000, 0.55],
+        [32_500, 0.5],
+        [33_000, 0.45],
+        [33_500, 0.4],
+        [40_000, 0.35],
+        [40_500, 0.3],
+        [41_000, 0.25],
+        [41_500, 0.2],
+        [50_000, 0.15],
+        [50_500, 0.14],
+        [51_000, 0.13],
+        [51_500, 0.12],
+        [52_000, 0.11],
+        [96_000, 0.1],
+        [96_500, 0.09],
+        [97_000, 0.08],
+        [97_500, 0.07],
+        [98_000, 0.06],
+        [98_500, 0.05],
+        [99_000, 0.04],
+        [99_500, 0.03],
+        [100_000, 0.02],
+        [100_500, 0.01],
+      ],
+      headOfHousehold: [
+        [24_000, 0.75],
+        [24_500, 0.7],
+        [25_000, 0.65],
+        [25_500, 0.6],
+        [26_000, 0.55],
+        [26_500, 0.5],
+        [27_000, 0.45],
+        [27_500, 0.4],
+        [34_000, 0.35],
+        [34_500, 0.3],
+        [35_000, 0.25],
+        [35_500, 0.2],
+        [44_000, 0.15],
+        [44_500, 0.14],
+        [45_000, 0.13],
+        [45_500, 0.12],
+        [46_000, 0.11],
+        [74_000, 0.1],
+        [74_500, 0.09],
+        [75_000, 0.08],
+        [75_500, 0.07],
+        [76_000, 0.06],
+        [76_500, 0.05],
+        [77_000, 0.04],
+        [77_500, 0.03],
+        [78_000, 0.02],
+        [78_500, 0.01],
+      ],
+    },
+  },
+};
+
 const PROPERTY_TAX_RELIEF = {
   'New Jersey': {
     cap: 15_000,
@@ -1448,6 +1603,45 @@ const STATE_OVERRIDES = {
     source: 'https://dor.georgia.gov/document/document/2026-employers-tax-guide/download',
     checked: '2026-08-15',
   },
+  Colorado: {
+    /*
+     * COLORADO CLAWS BACK ALMOST THE WHOLE DEDUCTION ABOVE $300,000, and the
+     * cap collapses this year.
+     *
+     * Colorado starts from federal taxable income, so the federal standard
+     * deduction is already inside the number it taxes. Above $300,000 of
+     * federal income you must ADD BACK everything your federal deduction
+     * exceeds a cap — and HB25-1274 cut that cap from $12,000/$16,000 to
+     * $1,000 single / $2,000 joint for 2026 and later.
+     *
+     * So a single Colorado filer over $300,000 adds back $15,100 of the
+     * $16,100 they were getting. We were giving them the lot: about $664 a
+     * year of tax not charged, and $1,329 for a couple.
+     *
+     * HEAD OF HOUSEHOLD AND MARRIED-SEPARATE USE THE SINGLE CAP. Colorado's
+     * booklet groups them explicitly — "single, married filing separately or
+     * head of household … $12,000" in the old regime — with joint handled in
+     * its own paragraph. Only a joint return gets the doubled figure.
+     *
+     * Modelled as a cliff: the deduction drops to the cap the moment income
+     * passes $300,000, which is what the statute does.
+     */
+    allowancePhaseOut: {
+      kind: 'linear',
+      appliesTo: ['standardDeduction'],
+      floor: { single: 1_000, marriedJointly: 2_000, headOfHousehold: 1_000 },
+      segments: {
+        // A rate large enough to remove the whole deduction on the first
+        // dollar over the threshold, which is what a cliff is.
+        single: [{ base: 16_100, start: 300_000, perDollar: 16_100 }],
+        headOfHousehold: [{ base: 24_150, start: 300_000, perDollar: 24_150 }],
+        marriedJointly: [{ base: 32_200, start: 300_000, perDollar: 32_200 }],
+      },
+    },
+    source: 'https://tax.colorado.gov/individual-income-tax-guide',
+    checked: '2026-08-15',
+    note: "Colorado's add-back is reduced by any state income tax you deducted on your federal return, which this engine does not model — so for someone who itemises federally, Colorado tax shown here above $300,000 is higher than the true figure. Colorado also adds back the federal overtime deduction from 2026, which is not modelled.",
+  },
   Hawaii: {
     /*
      * A ONE-NUMBER ERROR THAT NEARLY DOUBLED THE ALLOWANCE. Hawaii's 2024 law
@@ -2083,6 +2277,29 @@ const ITEMIZED_DEDUCTIONS = {
    * `deductStateIncomeTax` could sit unread in the engine for months without
    * anything looking wrong. Iowa is the exception that exposed it.
    */
+  Nebraska: {
+    /*
+     * Nebraska has no schedule of its own: Form 1040N takes the federal
+     * itemised total, subtracts the state and local INCOME taxes from it, and
+     * uses whichever is larger — that or the Nebraska standard deduction.
+     *
+     * Because the federal total arrives already capped, the federal SALT limit
+     * is baked in. Nebraska then subtracts the FULL, PRE-CAP income tax
+     * anyway: "you must enter the amount of state and local income taxes
+     * reported on Federal Schedule A, line 5a EVEN IF the total was limited".
+     * A capped filer loses the same dollars twice. That double hit is not
+     * modelled here, so Nebraska tax shown is slightly lower than the truth
+     * for anyone the federal cap reaches — see the note.
+     */
+    deductPropertyTax: true,
+    deductStateIncomeTax: false,
+    mortgageDebtLimit: 750_000,
+    saltCap: null,
+    requiresFederalItemising: true,
+    source: 'https://revenue.nebraska.gov/sites/default/files/doc/tax-forms/2025/f_Individual_Income_Tax_Booklet.pdf',
+    checked: '2026-08-15',
+    note: 'Nebraska subtracts the full pre-cap state and local income tax from the federal itemised total even when the federal cap already reduced it, so a capped filer loses those dollars twice. That double subtraction is not modelled, so Nebraska tax shown here is lower than the true figure for anyone the federal cap reaches.',
+  },
   Kansas: {
     /*
      * The cleanest of them, and one of the most valuable, because Kansas pairs
@@ -2551,6 +2768,8 @@ for (const [name, s] of Object.entries(states)) {
    */
   s.combinedSeparateReturn = COMBINED_SEPARATE_RETURN.has(name);
   s.propertyTaxRelief = PROPERTY_TAX_RELIEF[name] ?? null;
+  s.taxAddBacks = TAX_ADD_BACKS[name] ?? [];
+  s.taxCreditFraction = TAX_CREDIT_FRACTION[name] ?? null;
   /*
    * Rules we know this state has and do not model, in plain words, each saying
    * which way it runs. Kept apart from `notes` — which carries the source
