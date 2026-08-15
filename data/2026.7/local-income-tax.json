@@ -1,0 +1,1021 @@
+{
+  "datasetVersion": "2026.7",
+  "taxYear": 2026,
+  "sources": [
+    {
+      "name": "New York City and Yonkers resident income tax",
+      "confidence": "secondary — tax.ny.gov blocks automated access; figures corroborated across independent sources"
+    },
+    {
+      "name": "Tax Foundation, \"State Individual Income Tax Rates and Brackets, 2026\", footnote (a) — average effective local income tax rates by state",
+      "url": "https://taxfoundation.org/data/all/state/state-income-tax-rates-2026/",
+      "licence": "CC BY-NC 4.0 — satisfied; this project is permanently non-commercial",
+      "confidence": "secondary; underlying figures are 2023, the latest available"
+    }
+  ],
+  "limitations": [
+    "Outside New York City and Yonkers, local income tax uses the STATE AVERAGE effective rate rather than a city-specific rate.",
+    "This understates high-rate cities. Philadelphia, Columbus, Cleveland, Cincinnati, Detroit, Louisville, Kansas City, St. Louis and Portland all levy more than their state averages.",
+    "It is accurate where local rates are uniform — Maryland counties all fall between 2.25% and 3.20% against a 2.4% average.",
+    "Adding city-specific rates for the largest affected metros is the highest-value refinement to this dataset.",
+    "New York City and Yonkers are modelled as OPTIONAL because the New York metro spans 22 counties and only five-borough residents pay the city tax.",
+    "No New York locality outside New York City and Yonkers levies an income tax, so Buffalo, Rochester, Syracuse and Albany correctly carry none. Applying the NY state average there would invent a tax that does not exist.",
+    "In Missouri, Oregon, Michigan and Alabama the tax is city-specific, so it is applied only to metros that actually contain a taxing jurisdiction."
+  ],
+  "jurisdictions": {
+    "nyc": {
+      "id": "nyc",
+      "kind": "bracketed",
+      "name": "New York City",
+      "stateCode": "NY",
+      "brackets": {
+        "single": [
+          {
+            "from": 0,
+            "rate": 0.03078
+          },
+          {
+            "from": 12000,
+            "rate": 0.03762
+          },
+          {
+            "from": 25000,
+            "rate": 0.03819
+          },
+          {
+            "from": 50000,
+            "rate": 0.03876
+          }
+        ],
+        "marriedJointly": [
+          {
+            "from": 0,
+            "rate": 0.03078
+          },
+          {
+            "from": 21600,
+            "rate": 0.03762
+          },
+          {
+            "from": 45000,
+            "rate": 0.03819
+          },
+          {
+            "from": 90000,
+            "rate": 0.03876
+          }
+        ]
+      },
+      "standardDeduction": {
+        "single": 0,
+        "marriedJointly": 0
+      },
+      "exemptionPerDependent": 0,
+      "confidence": "secondary — corroborated across independent sources; verify against NY Form IT-201 instructions before launch"
+    },
+    "yonkers": {
+      "id": "yonkers",
+      "kind": "stateSurcharge",
+      "name": "Yonkers",
+      "stateCode": "NY",
+      "rate": 0.1675,
+      "confidence": "secondary — verify current surcharge percentage before launch"
+    },
+    "portland-multnomah": {
+      "id": "portland-multnomah",
+      "kind": "bracketed",
+      "name": "Portland (Multnomah County)",
+      "stateCode": "OR",
+      "brackets": {
+        "single": [
+          {
+            "from": 0,
+            "rate": 0
+          },
+          {
+            "from": 125000,
+            "rate": 0.025
+          },
+          {
+            "from": 250000,
+            "rate": 0.04
+          }
+        ],
+        "marriedJointly": [
+          {
+            "from": 0,
+            "rate": 0
+          },
+          {
+            "from": 200000,
+            "rate": 0.025
+          },
+          {
+            "from": 400000,
+            "rate": 0.04
+          }
+        ]
+      }
+    },
+    "portland-metro": {
+      "id": "portland-metro",
+      "kind": "bracketed",
+      "name": "Greater Portland (Metro district)",
+      "stateCode": "OR",
+      "brackets": {
+        "single": [
+          {
+            "from": 0,
+            "rate": 0
+          },
+          {
+            "from": 125000,
+            "rate": 0.01
+          }
+        ],
+        "marriedJointly": [
+          {
+            "from": 0,
+            "rate": 0
+          },
+          {
+            "from": 200000,
+            "rate": 0.01
+          }
+        ]
+      }
+    },
+    "avg-AL": {
+      "id": "avg-AL",
+      "kind": "flatRate",
+      "name": "AL average local income tax",
+      "stateCode": "AL",
+      "rate": 0.0007,
+      "isStateAverage": true,
+      "confidence": "secondary — state average, not a city-specific rate"
+    },
+    "avg-IN": {
+      "id": "avg-IN",
+      "kind": "flatRate",
+      "name": "IN average local income tax",
+      "stateCode": "IN",
+      "rate": 0.0035,
+      "isStateAverage": true,
+      "confidence": "secondary — state average, not a city-specific rate"
+    },
+    "avg-IA": {
+      "id": "avg-IA",
+      "kind": "flatRate",
+      "name": "IA average local income tax",
+      "stateCode": "IA",
+      "rate": 0.0008,
+      "isStateAverage": true,
+      "confidence": "secondary — state average, not a city-specific rate"
+    },
+    "avg-KY": {
+      "id": "avg-KY",
+      "kind": "flatRate",
+      "name": "KY average local income tax",
+      "stateCode": "KY",
+      "rate": 0.0093,
+      "isStateAverage": true,
+      "understatementNote": "Louisville and Lexington levy occupational taxes above the Kentucky average of 0.93%.",
+      "confidence": "secondary — state average, not a city-specific rate"
+    },
+    "avg-MD": {
+      "id": "avg-MD",
+      "kind": "flatRate",
+      "name": "MD average local income tax",
+      "stateCode": "MD",
+      "rate": 0.024,
+      "isStateAverage": true,
+      "confidence": "secondary — state average, not a city-specific rate"
+    },
+    "avg-MI": {
+      "id": "avg-MI",
+      "kind": "flatRate",
+      "name": "MI average local income tax",
+      "stateCode": "MI",
+      "rate": 0.0016,
+      "isStateAverage": true,
+      "understatementNote": "Detroit levies a resident income tax well above the Michigan average of 0.16%.",
+      "confidence": "secondary — state average, not a city-specific rate"
+    },
+    "avg-MO": {
+      "id": "avg-MO",
+      "kind": "flatRate",
+      "name": "MO average local income tax",
+      "stateCode": "MO",
+      "rate": 0.0018,
+      "isStateAverage": true,
+      "understatementNote": "Kansas City and St. Louis each levy a 1% earnings tax, against a Missouri average of 0.18%.",
+      "confidence": "secondary — state average, not a city-specific rate"
+    },
+    "avg-NY": {
+      "id": "avg-NY",
+      "kind": "flatRate",
+      "name": "NY average local income tax",
+      "stateCode": "NY",
+      "rate": 0.016,
+      "isStateAverage": true,
+      "confidence": "secondary — state average, not a city-specific rate"
+    },
+    "avg-OH": {
+      "id": "avg-OH",
+      "kind": "flatRate",
+      "name": "OH average local income tax",
+      "stateCode": "OH",
+      "rate": 0.012,
+      "isStateAverage": true,
+      "understatementNote": "Columbus, Cleveland, Cincinnati and Toledo all levy municipal income taxes above the Ohio average of 1.2%.",
+      "confidence": "secondary — state average, not a city-specific rate"
+    },
+    "avg-OR": {
+      "id": "avg-OR",
+      "kind": "flatRate",
+      "name": "OR average local income tax",
+      "stateCode": "OR",
+      "rate": 0.0018,
+      "isStateAverage": true,
+      "understatementNote": "The Portland metro levies supportive-housing and preschool taxes above the Oregon average of 0.18%.",
+      "confidence": "secondary — state average, not a city-specific rate"
+    },
+    "avg-PA": {
+      "id": "avg-PA",
+      "kind": "flatRate",
+      "name": "PA average local income tax",
+      "stateCode": "PA",
+      "rate": 0.0099,
+      "isStateAverage": true,
+      "understatementNote": "Philadelphia levies a resident wage tax far above the Pennsylvania average of 0.99%.",
+      "confidence": "secondary — state average, not a city-specific rate"
+    },
+    "philadelphia": {
+      "id": "philadelphia",
+      "kind": "flatRate",
+      "name": "Philadelphia",
+      "stateCode": "PA",
+      "rate": 0.037375,
+      "isStateAverage": false,
+      "source": "City of Philadelphia Department of Revenue, Tax Rate History — https://www.phila.gov/departments/department-of-revenue/forms-documents/regulations-rulings/tax-rate-history/",
+      "note": "Resident Wage/Earnings Tax. Calendar-2026 blend of 3.74% (to 30 Jun) and 3.735% (from 1 Jul)."
+    },
+    "detroit": {
+      "id": "detroit",
+      "kind": "flatRate",
+      "name": "Detroit",
+      "stateCode": "MI",
+      "rate": 0.024,
+      "isStateAverage": false,
+      "source": "City of Detroit Office of the Treasury, Income Tax Information — https://detroitmi.gov/departments/office-chief-financial-officer/ocfo-divisions/office-treasury/income-tax/income-tax-information",
+      "note": "Resident rate 2.4%; non-residents pay 1.2%, which this model does not use."
+    },
+    "columbus": {
+      "id": "columbus",
+      "kind": "flatRate",
+      "name": "Columbus",
+      "stateCode": "OH",
+      "rate": 0.025,
+      "isStateAverage": false,
+      "source": "City of Columbus Income Tax Division — https://www.columbus.gov/Government/City-Auditor/Income-Tax-Division",
+      "note": "Municipal income tax, 2.5%."
+    },
+    "cincinnati": {
+      "id": "cincinnati",
+      "kind": "flatRate",
+      "name": "Cincinnati",
+      "stateCode": "OH",
+      "rate": 0.018,
+      "isStateAverage": false,
+      "source": "City of Cincinnati Income Taxes — https://www.cincinnati-oh.gov/finance/income-taxes/",
+      "note": "Municipal income tax, 1.8%."
+    },
+    "cleveland": {
+      "id": "cleveland",
+      "kind": "flatRate",
+      "name": "Cleveland",
+      "stateCode": "OH",
+      "rate": 0.025,
+      "isStateAverage": false,
+      "source": "Central Collection Agency (City of Cleveland Division of Taxation), Tax Rates — https://ccatax.ci.cleveland.oh.us/?p=taxrates",
+      "note": "Municipal income tax, 2.5%. Ohio grants a credit for tax paid to a work city; this models a resident who also works locally."
+    },
+    "pittsburgh": {
+      "id": "pittsburgh",
+      "kind": "flatRate",
+      "name": "Pittsburgh",
+      "stateCode": "PA",
+      "rate": 0.03,
+      "isStateAverage": false,
+      "source": "City of Pittsburgh, Taxes — https://www.pittsburghpa.gov/City-Government/Finance-Budget/Taxes",
+      "note": "Resident Earned Income Tax: 1% city plus 2% school district, 3% total."
+    },
+    "louisville": {
+      "id": "louisville",
+      "kind": "flatRate",
+      "name": "Louisville Metro",
+      "stateCode": "KY",
+      "rate": 0.022,
+      "isStateAverage": false,
+      "source": "Louisville Metro Revenue Commission, Form W-1 instructions — https://louisvilleky.gov/sites/default/files/2024-12/w-1_instructions_2025.pdf",
+      "note": "Occupational licence fee, resident rate 2.2%: Louisville Metro 1.25%, TARC 0.2%, school boards 0.75%. Applies to the whole of Jefferson County, not just the city."
+    },
+    "kansas-city": {
+      "id": "kansas-city",
+      "kind": "flatRate",
+      "name": "Kansas City",
+      "stateCode": "MO",
+      "rate": 0.01,
+      "isStateAverage": false,
+      "source": "City of Kansas City, Missouri, Earnings Tax — https://www.kcmo.gov/city-hall/departments/finance/earnings-tax",
+      "note": "Earnings tax, 1% of earned income. Paid by all KCMO residents wherever they work."
+    },
+    "st-louis": {
+      "id": "st-louis",
+      "kind": "flatRate",
+      "name": "St. Louis",
+      "stateCode": "MO",
+      "rate": 0.01,
+      "isStateAverage": false,
+      "source": "City of St. Louis Collector of Revenue, Earnings Tax — https://www.stlouis-mo.gov/government/departments/collector/earnings-tax/",
+      "note": "Earnings tax, 1%. Paid by City of St. Louis residents regardless of where their employer is."
+    },
+    "baltimore-city": {
+      "id": "baltimore-city",
+      "kind": "flatRate",
+      "name": "Baltimore City",
+      "stateCode": "MD",
+      "rate": 0.032,
+      "isStateAverage": false,
+      "source": "Comptroller of Maryland, Withholding Tax Facts January 2026 - December 2026 — https://www.marylandcomptroller.gov/content/dam/mdcomp/tax/legal-publications/facts/withholding-tax-facts-2026.pdf",
+      "note": "Baltimore City local income tax, 3.20% for 2026. Maryland levies this on Maryland TAXABLE income rather than on gross, so applying it to gross overstates it by roughly the deduction times the rate — about $190 a year at $150,000. That is far smaller than the error it replaces: the Maryland state average is 2.40%, understating a Baltimore City resident by about $1,200 a year."
+    }
+  },
+  "byMetro": {
+    "10420": [
+      {
+        "jurisdictionId": "avg-OH",
+        "optional": false,
+        "defaultApplies": true
+      }
+    ],
+    "10900": [
+      {
+        "jurisdictionId": "avg-PA",
+        "optional": false,
+        "defaultApplies": true
+      }
+    ],
+    "11020": [
+      {
+        "jurisdictionId": "avg-PA",
+        "optional": false,
+        "defaultApplies": true
+      }
+    ],
+    "11180": [
+      {
+        "jurisdictionId": "avg-IA",
+        "optional": false,
+        "defaultApplies": true
+      }
+    ],
+    "12220": [
+      {
+        "jurisdictionId": "avg-AL",
+        "optional": false,
+        "defaultApplies": true
+      }
+    ],
+    "12580": [
+      {
+        "jurisdictionId": "baltimore-city",
+        "optional": true,
+        "defaultApplies": true,
+        "group": "locality",
+        "label": "Inside Baltimore City",
+        "prompt": "Do you live inside Baltimore City?"
+      },
+      {
+        "jurisdictionId": "avg-MD",
+        "optional": true,
+        "defaultApplies": false,
+        "group": "locality",
+        "label": "Elsewhere in the metro (MD average)"
+      }
+    ],
+    "13820": [
+      {
+        "jurisdictionId": "avg-AL",
+        "optional": false,
+        "defaultApplies": true
+      }
+    ],
+    "14020": [
+      {
+        "jurisdictionId": "avg-IN",
+        "optional": false,
+        "defaultApplies": true
+      }
+    ],
+    "14540": [
+      {
+        "jurisdictionId": "avg-KY",
+        "optional": false,
+        "defaultApplies": true
+      }
+    ],
+    "15940": [
+      {
+        "jurisdictionId": "avg-OH",
+        "optional": false,
+        "defaultApplies": true
+      }
+    ],
+    "16300": [
+      {
+        "jurisdictionId": "avg-IA",
+        "optional": false,
+        "defaultApplies": true
+      }
+    ],
+    "16540": [
+      {
+        "jurisdictionId": "avg-PA",
+        "optional": false,
+        "defaultApplies": true
+      }
+    ],
+    "17140": [
+      {
+        "jurisdictionId": "cincinnati",
+        "optional": true,
+        "defaultApplies": true,
+        "group": "locality",
+        "label": "Inside Cincinnati",
+        "prompt": "Do you live inside the City of Cincinnati?"
+      },
+      {
+        "jurisdictionId": "avg-OH",
+        "optional": true,
+        "defaultApplies": false,
+        "group": "locality",
+        "label": "Elsewhere in the metro (OH average)"
+      }
+    ],
+    "17410": [
+      {
+        "jurisdictionId": "cleveland",
+        "optional": true,
+        "defaultApplies": true,
+        "group": "locality",
+        "label": "Inside Cleveland",
+        "prompt": "Do you live inside the City of Cleveland?"
+      },
+      {
+        "jurisdictionId": "avg-OH",
+        "optional": true,
+        "defaultApplies": false,
+        "group": "locality",
+        "label": "Elsewhere in the metro (OH average)"
+      }
+    ],
+    "18020": [
+      {
+        "jurisdictionId": "avg-IN",
+        "optional": false,
+        "defaultApplies": true
+      }
+    ],
+    "18140": [
+      {
+        "jurisdictionId": "columbus",
+        "optional": true,
+        "defaultApplies": true,
+        "group": "locality",
+        "label": "Inside Columbus",
+        "prompt": "Do you live inside the City of Columbus?"
+      },
+      {
+        "jurisdictionId": "avg-OH",
+        "optional": true,
+        "defaultApplies": false,
+        "group": "locality",
+        "label": "Elsewhere in the metro (OH average)"
+      }
+    ],
+    "19340": [
+      {
+        "jurisdictionId": "avg-IA",
+        "optional": false,
+        "defaultApplies": true
+      }
+    ],
+    "19430": [
+      {
+        "jurisdictionId": "avg-OH",
+        "optional": false,
+        "defaultApplies": true
+      }
+    ],
+    "19780": [
+      {
+        "jurisdictionId": "avg-IA",
+        "optional": false,
+        "defaultApplies": true
+      }
+    ],
+    "19820": [
+      {
+        "jurisdictionId": "detroit",
+        "optional": true,
+        "defaultApplies": true,
+        "group": "locality",
+        "label": "Inside Detroit",
+        "prompt": "Do you live inside the City of Detroit?"
+      },
+      {
+        "jurisdictionId": "avg-MI",
+        "optional": true,
+        "defaultApplies": false,
+        "group": "locality",
+        "label": "Elsewhere in the metro (MI average)"
+      }
+    ],
+    "20220": [
+      {
+        "jurisdictionId": "avg-IA",
+        "optional": false,
+        "defaultApplies": true
+      }
+    ],
+    "21060": [
+      {
+        "jurisdictionId": "avg-KY",
+        "optional": false,
+        "defaultApplies": true
+      }
+    ],
+    "21140": [
+      {
+        "jurisdictionId": "avg-IN",
+        "optional": false,
+        "defaultApplies": true
+      }
+    ],
+    "21500": [
+      {
+        "jurisdictionId": "avg-PA",
+        "optional": false,
+        "defaultApplies": true
+      }
+    ],
+    "21780": [
+      {
+        "jurisdictionId": "avg-IN",
+        "optional": false,
+        "defaultApplies": true
+      }
+    ],
+    "22420": [
+      {
+        "jurisdictionId": "avg-MI",
+        "optional": false,
+        "defaultApplies": true
+      }
+    ],
+    "23060": [
+      {
+        "jurisdictionId": "avg-IN",
+        "optional": false,
+        "defaultApplies": true
+      }
+    ],
+    "23460": [
+      {
+        "jurisdictionId": "avg-AL",
+        "optional": false,
+        "defaultApplies": true
+      }
+    ],
+    "23900": [
+      {
+        "jurisdictionId": "avg-PA",
+        "optional": false,
+        "defaultApplies": true
+      }
+    ],
+    "24340": [
+      {
+        "jurisdictionId": "avg-MI",
+        "optional": false,
+        "defaultApplies": true
+      }
+    ],
+    "25180": [
+      {
+        "jurisdictionId": "avg-MD",
+        "optional": false,
+        "defaultApplies": true
+      }
+    ],
+    "25420": [
+      {
+        "jurisdictionId": "avg-PA",
+        "optional": false,
+        "defaultApplies": true
+      }
+    ],
+    "26900": [
+      {
+        "jurisdictionId": "avg-IN",
+        "optional": false,
+        "defaultApplies": true
+      }
+    ],
+    "26980": [
+      {
+        "jurisdictionId": "avg-IA",
+        "optional": false,
+        "defaultApplies": true
+      }
+    ],
+    "27780": [
+      {
+        "jurisdictionId": "avg-PA",
+        "optional": false,
+        "defaultApplies": true
+      }
+    ],
+    "28140": [
+      {
+        "jurisdictionId": "kansas-city",
+        "optional": true,
+        "defaultApplies": true,
+        "group": "locality",
+        "label": "Inside Kansas City",
+        "prompt": "Do you live inside Kansas City, Missouri?"
+      },
+      {
+        "jurisdictionId": "avg-MO",
+        "optional": true,
+        "defaultApplies": false,
+        "group": "locality",
+        "label": "Elsewhere in the metro (MO average)"
+      }
+    ],
+    "29020": [
+      {
+        "jurisdictionId": "avg-IN",
+        "optional": false,
+        "defaultApplies": true
+      }
+    ],
+    "29200": [
+      {
+        "jurisdictionId": "avg-IN",
+        "optional": false,
+        "defaultApplies": true
+      }
+    ],
+    "29540": [
+      {
+        "jurisdictionId": "avg-PA",
+        "optional": false,
+        "defaultApplies": true
+      }
+    ],
+    "29620": [
+      {
+        "jurisdictionId": "avg-MI",
+        "optional": false,
+        "defaultApplies": true
+      }
+    ],
+    "30140": [
+      {
+        "jurisdictionId": "avg-PA",
+        "optional": false,
+        "defaultApplies": true
+      }
+    ],
+    "30460": [
+      {
+        "jurisdictionId": "avg-KY",
+        "optional": false,
+        "defaultApplies": true
+      }
+    ],
+    "30500": [
+      {
+        "jurisdictionId": "avg-MD",
+        "optional": false,
+        "defaultApplies": true
+      }
+    ],
+    "30620": [
+      {
+        "jurisdictionId": "avg-OH",
+        "optional": false,
+        "defaultApplies": true
+      }
+    ],
+    "31140": [
+      {
+        "jurisdictionId": "louisville",
+        "optional": true,
+        "defaultApplies": true,
+        "group": "locality",
+        "label": "Inside Louisville Metro",
+        "prompt": "Do you live in Louisville Metro (Jefferson County)?"
+      },
+      {
+        "jurisdictionId": "avg-KY",
+        "optional": true,
+        "defaultApplies": false,
+        "group": "locality",
+        "label": "Elsewhere in the metro (KY average)"
+      }
+    ],
+    "31900": [
+      {
+        "jurisdictionId": "avg-OH",
+        "optional": false,
+        "defaultApplies": true
+      }
+    ],
+    "33140": [
+      {
+        "jurisdictionId": "avg-IN",
+        "optional": false,
+        "defaultApplies": true
+      }
+    ],
+    "33660": [
+      {
+        "jurisdictionId": "avg-AL",
+        "optional": false,
+        "defaultApplies": true
+      }
+    ],
+    "34620": [
+      {
+        "jurisdictionId": "avg-IN",
+        "optional": false,
+        "defaultApplies": true
+      }
+    ],
+    "35620": [
+      {
+        "jurisdictionId": "nyc",
+        "optional": true,
+        "defaultApplies": true,
+        "prompt": "Do you live in one of the five boroughs of New York City?"
+      },
+      {
+        "jurisdictionId": "yonkers",
+        "optional": true,
+        "defaultApplies": false,
+        "prompt": "Do you live in Yonkers?"
+      }
+    ],
+    "36980": [
+      {
+        "jurisdictionId": "avg-KY",
+        "optional": false,
+        "defaultApplies": true
+      }
+    ],
+    "37140": [
+      {
+        "jurisdictionId": "avg-KY",
+        "optional": false,
+        "defaultApplies": true
+      }
+    ],
+    "37980": [
+      {
+        "jurisdictionId": "philadelphia",
+        "optional": true,
+        "defaultApplies": true,
+        "group": "locality",
+        "label": "Inside Philadelphia",
+        "prompt": "Do you live inside the City of Philadelphia?"
+      },
+      {
+        "jurisdictionId": "avg-PA",
+        "optional": true,
+        "defaultApplies": false,
+        "group": "locality",
+        "label": "Elsewhere in the metro (PA average)"
+      }
+    ],
+    "38300": [
+      {
+        "jurisdictionId": "pittsburgh",
+        "optional": true,
+        "defaultApplies": true,
+        "group": "locality",
+        "label": "Inside Pittsburgh",
+        "prompt": "Do you live inside the City of Pittsburgh?"
+      },
+      {
+        "jurisdictionId": "avg-PA",
+        "optional": true,
+        "defaultApplies": false,
+        "group": "locality",
+        "label": "Elsewhere in the metro (PA average)"
+      }
+    ],
+    "38900": [
+      {
+        "jurisdictionId": "portland-multnomah",
+        "optional": true,
+        "defaultApplies": true,
+        "group": "locality",
+        "label": "Multnomah County",
+        "prompt": "Do you live in Multnomah County, which includes most of Portland?"
+      },
+      {
+        "jurisdictionId": "portland-metro",
+        "optional": true,
+        "defaultApplies": false,
+        "group": "locality",
+        "label": "Rest of Metro",
+        "prompt": "Do you live elsewhere inside the Metro district — Washington or Clackamas County?"
+      },
+      {
+        "jurisdictionId": "avg-OR",
+        "optional": true,
+        "defaultApplies": false,
+        "group": "locality",
+        "label": "Outside Metro",
+        "prompt": "Do you live outside the Metro district?"
+      }
+    ],
+    "39740": [
+      {
+        "jurisdictionId": "avg-PA",
+        "optional": false,
+        "defaultApplies": true
+      }
+    ],
+    "40980": [
+      {
+        "jurisdictionId": "avg-MI",
+        "optional": false,
+        "defaultApplies": true
+      }
+    ],
+    "41180": [
+      {
+        "jurisdictionId": "st-louis",
+        "optional": true,
+        "defaultApplies": true,
+        "group": "locality",
+        "label": "Inside St. Louis",
+        "prompt": "Do you live inside the City of St. Louis?"
+      },
+      {
+        "jurisdictionId": "avg-MO",
+        "optional": true,
+        "defaultApplies": false,
+        "group": "locality",
+        "label": "Elsewhere in the metro (MO average)"
+      }
+    ],
+    "41540": [
+      {
+        "jurisdictionId": "avg-MD",
+        "optional": false,
+        "defaultApplies": true
+      }
+    ],
+    "41780": [
+      {
+        "jurisdictionId": "avg-OH",
+        "optional": false,
+        "defaultApplies": true
+      }
+    ],
+    "42540": [
+      {
+        "jurisdictionId": "avg-PA",
+        "optional": false,
+        "defaultApplies": true
+      }
+    ],
+    "43580": [
+      {
+        "jurisdictionId": "avg-IA",
+        "optional": false,
+        "defaultApplies": true
+      }
+    ],
+    "43780": [
+      {
+        "jurisdictionId": "avg-IN",
+        "optional": false,
+        "defaultApplies": true
+      }
+    ],
+    "44220": [
+      {
+        "jurisdictionId": "avg-OH",
+        "optional": false,
+        "defaultApplies": true
+      }
+    ],
+    "44300": [
+      {
+        "jurisdictionId": "avg-PA",
+        "optional": false,
+        "defaultApplies": true
+      }
+    ],
+    "45460": [
+      {
+        "jurisdictionId": "avg-IN",
+        "optional": false,
+        "defaultApplies": true
+      }
+    ],
+    "45780": [
+      {
+        "jurisdictionId": "avg-OH",
+        "optional": false,
+        "defaultApplies": true
+      }
+    ],
+    "47940": [
+      {
+        "jurisdictionId": "avg-IA",
+        "optional": false,
+        "defaultApplies": true
+      }
+    ],
+    "48700": [
+      {
+        "jurisdictionId": "avg-PA",
+        "optional": false,
+        "defaultApplies": true
+      }
+    ],
+    "49620": [
+      {
+        "jurisdictionId": "avg-PA",
+        "optional": false,
+        "defaultApplies": true
+      }
+    ],
+    "49660": [
+      {
+        "jurisdictionId": "avg-OH",
+        "optional": false,
+        "defaultApplies": true
+      }
+    ],
+    "rest-of-IN": [
+      {
+        "jurisdictionId": "avg-IN",
+        "optional": false,
+        "defaultApplies": true
+      }
+    ],
+    "rest-of-IA": [
+      {
+        "jurisdictionId": "avg-IA",
+        "optional": false,
+        "defaultApplies": true
+      }
+    ],
+    "rest-of-KY": [
+      {
+        "jurisdictionId": "avg-KY",
+        "optional": false,
+        "defaultApplies": true
+      }
+    ],
+    "rest-of-MD": [
+      {
+        "jurisdictionId": "avg-MD",
+        "optional": false,
+        "defaultApplies": true
+      }
+    ],
+    "rest-of-OH": [
+      {
+        "jurisdictionId": "avg-OH",
+        "optional": false,
+        "defaultApplies": true
+      }
+    ],
+    "rest-of-PA": [
+      {
+        "jurisdictionId": "avg-PA",
+        "optional": false,
+        "defaultApplies": true
+      }
+    ]
+  }
+}

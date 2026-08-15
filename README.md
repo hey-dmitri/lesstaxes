@@ -18,7 +18,7 @@ index, statutory rate or state average — on the [data page](https://packorstay
 
 ## Status
 
-**Live** at [packorstay.com](https://packorstay.com). Current dataset: **2026.6**.
+**Live** at [packorstay.com](https://packorstay.com). Current dataset: **2026.7**.
 
 | Component | State |
 |---|---|
@@ -30,7 +30,7 @@ index, statutory rate or state average — on the [data page](https://packorstay
 | Housing, cars and tax sliced by state for the 43 split metros | ✅ |
 | Vehicles per adult, per-vehicle cost | ✅ |
 | Household spending profiles, 9 income bands, interpolated by income | ✅ |
-| Sales tax rates + grocery treatment | ✅ |
+| Sales tax rates + grocery treatment | reference only — already inside the spending basket |
 | Housing (rent, mortgage, property tax), cars, living costs | ✅ |
 | Leftover, city/salary decomposition, break-even solver | ✅ |
 | Input form — pickers, housing, cars, theme | ✅ |

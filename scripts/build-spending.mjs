@@ -358,10 +358,27 @@ writeFileSync(
         transportation: 'Derived from car count per metro — see PROJECT.md section 2.',
         insuranceAndPensions: 'Saving rather than consumption; it is money retained, not spent.',
       },
+      /*
+       * The single most important thing to know about these numbers before
+       * adding anything to them: they are what households PAID at the till,
+       * sales tax included. The engine used to compute a separate sales tax on
+       * top of this basket, which charged it twice.
+       */
+      salesTaxTreatment: {
+        includedInCategories: true,
+        note: 'CE expenditures are transaction costs including sales and excise tax. Where a respondent reported a price without tax, BLS adds it before publishing. A separate sales tax line on top of these figures is a double count.',
+        sources: [
+          'https://www.bls.gov/cex/csxfaqs.htm — question 14, "Is sales tax included in expenditures?"',
+          'https://www.bls.gov/cex/csxgloss.htm — "Expenditures consist of the transaction costs, including excise and sales taxes"',
+          'https://www.bls.gov/opub/hom/cex/concepts.htm — "Expenditure amounts ... include all applicable sales and excise taxes"',
+          'https://www.bls.gov/cex/research_papers/pdf/sun-sales-tax-in-consumer-expenditure-data.pdf',
+        ],
+      },
       notes: [
         'Figures are national means by income bracket. Metro variation comes from applying BEA Regional Price Parities, not from local spending surveys.',
         'These are averages, not budgets. Any individual household will differ.',
         'Brackets are income BEFORE taxes, matching how salary is entered in the interface.',
+        'Amounts include the sales tax the household paid. See salesTaxTreatment.',
       ],
       profiles,
     },

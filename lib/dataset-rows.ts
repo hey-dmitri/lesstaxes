@@ -222,7 +222,9 @@ export const DATASET_SOURCES: Array<{
     licence: 'CC BY-NC 4.0',
   },
   {
-    what: 'Sales tax rates',
+    // Shipped and shown, but no longer used in the calculation: the spending
+    // basket already includes the sales tax those households paid.
+    what: 'Sales tax rates (reference only)',
     kind: 'State average',
     source: 'Tax Foundation (2026) — state rate plus the population-weighted local average',
     licence: 'CC BY-NC 4.0',

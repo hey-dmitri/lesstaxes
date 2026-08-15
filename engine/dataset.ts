@@ -541,6 +541,27 @@ export interface TaxableShares {
   otherServices: number;
 }
 
+/**
+ * True when the spending baseline already has sales tax inside it, which means
+ * the engine must NOT add a separate sales tax line.
+ *
+ * It always did. BLS defines an expenditure as the transaction cost including
+ * sales and excise tax, and where a respondent reports a price without tax BLS
+ * adds it before publishing. So every figure in the basket is what the
+ * household handed over at the till, and charging sales tax on top of it
+ * charged it twice — once inside the price, once as its own line.
+ *
+ * Releases up to 2026.6 do not carry this field and keep charging the separate
+ * line, so links already shared recompute the way they did when they were made
+ * (PROJECT.md section 9.2).
+ */
+export function spendingIncludesSalesTax(version?: string): boolean {
+  const treatment = datasetBundle(version).spending.salesTaxTreatment as
+    | { includedInCategories?: boolean }
+    | undefined;
+  return treatment?.includedInCategories === true;
+}
+
 export function taxableShares(version?: string): TaxableShares {
   return datasetBundle(version).salesTax.taxableShares as TaxableShares;
 }

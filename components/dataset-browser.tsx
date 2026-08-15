@@ -128,8 +128,10 @@ export function DatasetBrowser() {
                 ['Goods', 'Price level vs national = 100'],
                 ['Utilities', 'Price level vs national = 100'],
                 ['Income tax', 'State income tax on wages'],
-                ['Sales tax', 'State plus average local'],
-                ['Groceries', 'Sales tax treatment of food at home'],
+                // Reference only. Nothing in the calculation multiplies by
+                // these — the spending basket already includes sales tax.
+                ['Sales tax', 'State plus average local. Reference only — not charged.'],
+                ['Groceries', 'Sales tax treatment of food at home. Reference only.'],
                 ['Local tax', 'Local income tax jurisdictions'],
               ].map(([label, title]) => (
                 <th

@@ -128,9 +128,12 @@ describe('why narrative', () => {
     // handed that whole bracket's basket, which describes households averaging
     // $171,847. It is now placed between brackets, so the basket is smaller and
     // the gap between two cities pricing it is smaller with it.
+    // And again with 2026.7, from $8,835 to $8,669: the separate sales tax
+    // line was removed as a double count, and Illinois charges more of it than
+    // Texas, so some of Austin's advantage was tax being counted twice.
     const result = run(CHICAGO, AUSTIN, 150_000);
     expect(whySentence(result)).toBe(
-      'Austin, TX is $8,835 cheaper a year to live in at the same salary.',
+      'Austin, TX is $8,669 cheaper a year to live in at the same salary.',
     );
   });
 

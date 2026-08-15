@@ -46,14 +46,24 @@ describe('metros that cross a state line', () => {
     expect(ny.tax.state).not.toBeCloseTo(nj.tax.state, 0);
   });
 
-  it('uses the state you chose for sales tax too', () => {
+  /*
+   * This used to assert that the state choice moved SALES tax as well. It did,
+   * and that was half of the original bug. The separate sales tax line has
+   * since gone entirely: the spending basket comes from the BLS survey, whose
+   * figures already include the sales tax the household paid, so charging it
+   * again beside them charged it twice.
+   *
+   * The state rates are still published data and still differ. Nothing in the
+   * engine multiplies by them any more, and the point of this test is now that
+   * nobody quietly reintroduces the second charge.
+   */
+  it('no longer charges sales tax on top of a basket that includes it', () => {
     const ny = computeCity({ ...defaultCityInputs(NEW_YORK, 150_000, SINGLE), stateCode: 'NY' }, SINGLE);
     const nj = computeCity({ ...defaultCityInputs(NEW_YORK, 150_000, SINGLE), stateCode: 'NJ' }, SINGLE);
 
-    // Sales tax was taken from the metro's first state as well, so this half
-    // of the error was invisible behind the income-tax half.
     expect(salesTaxRules('NY').combinedRate).not.toBe(salesTaxRules('NJ').combinedRate);
-    expect(ny.salesTax).not.toBeCloseTo(nj.salesTax, 0);
+    expect(ny.salesTax).toBe(0);
+    expect(nj.salesTax).toBe(0);
   });
 
   it('does not let New York City tax reach New Jersey', () => {
@@ -199,8 +209,11 @@ describe('housing follows the state too, not just tax', () => {
     );
     // defaultCityInputs prices the home from the metro's primary state, so
     // both start from the New York figure; what must differ is the tax.
+    //
+    // Income tax alone now, since the separate sales tax line was removed as a
+    // double count. It still moves the bottom line, which is the point.
     expect(nj.tax.state).not.toBeCloseTo(ny.tax.state, 0);
-    expect(nj.salesTax).not.toBeCloseTo(ny.salesTax, 0);
+    expect(nj.leftover).not.toBeCloseTo(ny.leftover, 0);
   });
 });
 

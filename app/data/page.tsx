@@ -80,8 +80,12 @@ export default function DataPage() {
             overstate rural costs.
           </li>
           <li>
-            <strong>Sales tax local rates are state averages.</strong> Chicago&rsquo;s actual 10.25% is
-            above the Illinois average used here.
+            <strong>Sales tax is not charged as its own line.</strong> The spending figures behind
+            living costs already include the sales tax those households paid, so adding it again
+            would charge it twice. The rates below are published for reference and nothing
+            multiplies by them. The cost of that: two states at opposite ends of the rate table look
+            identical here. See the{' '}
+            <a href="/methodology#limitations">methodology</a> for why.
           </li>
           <li>
             <strong>Home and renters insurance are missing entirely.</strong> No per-state dataset is

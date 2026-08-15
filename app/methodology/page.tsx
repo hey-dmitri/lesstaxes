@@ -73,7 +73,6 @@ answer          =  in your pocket THERE  −  in your pocket HERE`}</pre>
             what you owe.
           </li>
           <li className="my-1.5">Living costs, re-priced for the local area.</li>
-          <li className="my-1.5">Sales tax on the taxable part of that spending.</li>
         </ol>
         <p>
           Computing federal tax first — the obvious way to write it — would ignore the deduction and
@@ -198,10 +197,25 @@ answer          =  in your pocket THERE  −  in your pocket HERE`}</pre>
 
         <h2>Sales tax</h2>
         <p>
-          The taxable base is much smaller than total spending. Forty states exempt groceries and
-          several more tax them at a reduced rate; services are broadly untaxed everywhere. So food
-          splits — restaurant meals at the ordinary rate, groceries at whatever the state does to
-          food. Expect this line to be small: a few hundred dollars a year, not thousands.
+          There is no sales tax line, and there should not be one. The spending figures above are
+          what households actually handed over at the till, and the government agency that collects
+          them says so plainly: an expenditure is the transaction cost{' '}
+          <em>including sales and excise tax</em>. Where somebody reported a price without the tax,
+          it gets added before the figures are published.
+        </p>
+        <p>
+          This site used to charge sales tax again on top of those figures — once inside the grocery
+          bill, once beside it. That was wrong and it is gone.
+        </p>
+        <p>
+          What is lost by removing it: the basket carries whatever sales tax the surveyed households
+          paid, which is a national blend. So moving from Oregon, which charges none, to Tennessee,
+          which charges the most, no longer shows any sales tax difference at all. Doing that
+          properly means taking the average out of the basket and putting the local rate back in,
+          and the survey does not publish how much is in there per category. A missing difference of
+          a few hundred dollars is a smaller error than charging the whole thing twice, so this line
+          waits for data that can carry it. The published rates are still in the{' '}
+          <a href="/data">data browser</a>.
         </p>
 
         <h2>What the form starts you on</h2>
@@ -350,6 +364,14 @@ answer          =  in your pocket THERE  −  in your pocket HERE`}</pre>
             charges more tax rather than less.
           </li>
           <li>
+            <strong>Sales tax differences between states are not shown.</strong> The spending
+            figures already contain the sales tax those households paid, so charging it again would
+            double it — but what they contain is a national blend. Two states at opposite ends of
+            the rate table therefore look the same on this line, which understates the gain from
+            moving somewhere that charges less and the cost of moving somewhere that charges more.
+            Worth a few hundred dollars a year at most.
+          </li>
+          <li>
             <strong>No state Earned Income Credits.</strong> Around thirty states, and New York
             City, add their own on top of the federal one, usually as a percentage of it. None are
             modelled, so low-income households in those states are understated further.
@@ -399,8 +421,7 @@ answer          =  in your pocket THERE  −  in your pocket HERE`}</pre>
             <strong>Averages are not you.</strong> And they are not all the same kind of number
             either. Housing figures are <em>medians</em> for the local area. Spending and car
             ownership are <em>averages</em>, which sit higher than the median wherever a few large
-            spenders pull them up. Price levels are <em>index numbers</em>, not dollars. Sales tax
-            is a <em>statewide average</em> of local rates. The{' '}
+            spenders pull them up. Price levels are <em>index numbers</em>, not dollars. The{' '}
             <Link href="/data" className="underline underline-offset-4" style={{ color: 'var(--accent)' }}>
               data page
             </Link>{' '}

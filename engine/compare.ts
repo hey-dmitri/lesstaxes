@@ -12,8 +12,8 @@
  *   5. Federal tax     state + local + property tax feed the SALT deduction,
  *                      which decides whether itemising beats the standard
  *                      deduction, which changes federal tax
- *   6. Living costs    national basket re-priced by metro
- *   7. Sales tax       applied to the taxable share of that basket
+ *   6. Living costs    national basket re-priced by metro, sales tax included
+ *   7. Sales tax       nothing to add — see step 7 for why it is zero
  *   8. Leftover        salary minus everything above
  *
  * Computing federal tax before state tax would silently ignore the deduction
@@ -34,6 +34,7 @@ import {
   rentDefault,
   resolveStateCode,
   salesTaxRules,
+  spendingIncludesSalesTax,
   taxableShares,
   transportDefaults,
   DATASET_VERSION,
@@ -181,17 +182,39 @@ export function computeCity(
     datasetVersion: version,
   });
 
-  // 7. Sales tax
-  const salesTax = computeSalesTax({
-    scaledCategories: living.scaledCategories,
-    rules: salesTaxRules(stateCode, version),
-    shares: taxableShares(version),
-  });
+  /*
+   * 7. Sales tax — ZERO, because the basket already contains it.
+   *
+   * The living costs above come from the BLS Consumer Expenditure Survey, and
+   * BLS defines an expenditure as the transaction cost INCLUDING sales and
+   * excise tax. Where a respondent reported a price without tax, BLS adds it
+   * before publishing. Every figure in that basket is what the household
+   * actually handed over at the till.
+   *
+   * So the separate line this used to add charged sales tax twice: once inside
+   * the grocery bill, once again beside it.
+   *
+   * What is lost by removing it: the basket carries the sales tax of wherever
+   * its households happened to live, which is a national blend. Moving from
+   * Oregon, which levies none, to Tennessee, which levies the most, no longer
+   * shows any sales tax difference at all. Modelling that properly means
+   * stripping the embedded average out and applying the local rate instead,
+   * and the survey does not publish the embedded amount per category. An
+   * unmodelled difference of a few hundred dollars is a smaller error than a
+   * doubled charge, so it waits for data that can support it.
+   */
+  const salesTax = spendingIncludesSalesTax(version)
+    ? 0
+    : computeSalesTax({
+        scaledCategories: living.scaledCategories,
+        rules: salesTaxRules(stateCode, version),
+        shares: taxableShares(version),
+      }).tax;
 
   // 8. Leftover
   const taxTotal = federalTotal + stateTotal + localTotal + ficaTotal;
   const takeHome = gross - taxTotal;
-  const leftover = takeHome - housing.total - living.total - salesTax.tax;
+  const leftover = takeHome - housing.total - living.total - salesTax;
 
   return {
     metroId: city.metroId,
@@ -208,7 +231,7 @@ export function computeCity(
     },
     housing,
     living,
-    salesTax: salesTax.tax,
+    salesTax,
     takeHome,
     leftover,
   };

@@ -88,16 +88,25 @@ describe('choosing New Jersey actually changes the answer', () => {
     expect(nj.origin.tax.state).toBeLessThan(ny.origin.tax.state);
   });
 
-  it('charges New Jersey sales tax, not New York', () => {
-    expect(run('NJ').origin.salesTax).toBeLessThan(run('NY').origin.salesTax);
+  /*
+   * The leak this measured was $673 a year: New York state income tax AND New
+   * York sales tax charged to somebody who had said they live in New Jersey.
+   *
+   * The sales tax half of it is now $0 for everyone. Not because the bug came
+   * back, but because the separate sales tax line was removed as a double
+   * count — the spending basket comes from a survey whose figures already
+   * include the sales tax those households paid.
+   *
+   * So the leak is measured on income tax alone, and it is still real money.
+   */
+  it('no longer charges a separate sales tax to either state', () => {
+    expect(run('NJ').origin.salesTax).toBe(0);
+    expect(run('NY').origin.salesTax).toBe(0);
   });
 
-  it('leaves the two roughly $673 apart, which is what was still leaking', () => {
-    const ny = run('NY');
-    const nj = run('NJ');
-    const gap =
-      ny.origin.tax.state + ny.origin.salesTax - (nj.origin.tax.state + nj.origin.salesTax);
-    expect(gap).toBeGreaterThan(500);
-    expect(gap).toBeLessThan(900);
+  it('still leaves the two hundreds of dollars apart on income tax', () => {
+    const gap = run('NY').origin.tax.state - run('NJ').origin.tax.state;
+    expect(gap).toBeGreaterThan(300);
+    expect(gap).toBeLessThan(700);
   });
 });
