@@ -398,6 +398,25 @@ export interface SpendingProfile {
     insideGrossRent: USD;
     telephone: USD;
   };
+  /**
+   * Repairs, upkeep and home insurance for an owned home.
+   *
+   * The whole BLS shelter block used to be dropped and only a mortgage payment
+   * and property tax added back, so this was never restored for anyone. Home
+   * insurance is INSIDE it — the gap the site documented as "insurance is
+   * missing" was one ingredient of a line item missing whole.
+   *
+   * Absent on releases cut before that was noticed, which charge owners nothing
+   * for keeping the house standing.
+   */
+  ownerUpkeep?: {
+    /** As published: averaged over owners and renters together. */
+    perConsumerUnit: USD;
+    /** Share of households in this band who own, which is the divisor. */
+    homeownerShare: number;
+    /** What it costs somebody who actually owns. This is the figure charged. */
+    perOwner: USD;
+  };
   averageHouseholdSize: number;
   categories: SpendingCategories;
   livingTotal: USD;
@@ -522,6 +541,22 @@ export function spendingProfile(householdIncome: USD, version?: string): Spendin
               t,
             ),
             telephone: lerp(lower.utilitiesSplit.telephone, upper.utilitiesSplit.telephone, t),
+          }
+        : undefined,
+    ownerUpkeep:
+      lower.ownerUpkeep && upper.ownerUpkeep
+        ? {
+            perConsumerUnit: lerp(
+              lower.ownerUpkeep.perConsumerUnit,
+              upper.ownerUpkeep.perConsumerUnit,
+              t,
+            ),
+            homeownerShare: lerp(
+              lower.ownerUpkeep.homeownerShare,
+              upper.ownerUpkeep.homeownerShare,
+              t,
+            ),
+            perOwner: lerp(lower.ownerUpkeep.perOwner, upper.ownerUpkeep.perOwner, t),
           }
         : undefined,
     categories,

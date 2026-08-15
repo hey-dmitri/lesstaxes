@@ -101,15 +101,29 @@ export function firstYearAverageBalance(
 export interface HousingInputs {
   housing: Housing;
   /**
-   * Annual home or renters insurance.
+   * Extra insurance ON TOP of what annualMaintenance already carries.
    *
-   * KNOWN DATA GAP: no per-state insurance dataset is loaded yet, so callers
-   * currently pass 0 and the figure is absent from results. This understates
-   * ownership costs everywhere, and badly in Florida and Louisiana where
-   * premiums are a multiple of the national average. Tracked as the top
-   * remaining data refinement alongside city-specific local income tax rates.
+   * This used to be the home-insurance line, always zero, with a note saying no
+   * dataset existed. One did: the published figure for an owned home bundles
+   * maintenance, repairs and insurance into a single item, and the engine was
+   * throwing all three away together. See annualMaintenance.
+   *
+   * Nothing in the app passes this. It is left as an override for a caller who
+   * knows their premium is unusual — Florida and Louisiana run at a multiple of
+   * the national average — and anything passed here ADDS to the baseline rather
+   * than replacing it.
    */
   annualInsurance?: USD;
+  /**
+   * Repairs, upkeep and home insurance for the year. Owners only.
+   *
+   * Charged here because the engine drops the whole published shelter block and
+   * rebuilds it from the reader's own numbers. It used to rebuild only the
+   * mortgage payment and the property tax, which left every owner paying
+   * nothing to keep the house standing — $4,000 a year at $100,000 of income,
+   * and $7,268 above $200,000.
+   */
+  annualMaintenance?: USD;
   mortgageTermYears?: number;
   /**
    * Gas, electricity, water and heating fuel for this metro and household.
@@ -135,6 +149,8 @@ export function computeHousing(inputs: HousingInputs): HousingBreakdown {
       insurance,
       // Already inside the rent above. See annualUtilities.
       utilities: 0,
+      // A tenant's landlord pays for the roof.
+      maintenance: 0,
       total: shelter + insurance,
       mortgageInterest: 0,
       mortgageDebt: 0,
@@ -142,6 +158,7 @@ export function computeHousing(inputs: HousingInputs): HousingBreakdown {
   }
 
   const utilities = Math.max(0, inputs.annualUtilities ?? 0);
+  const maintenance = Math.max(0, inputs.annualMaintenance ?? 0);
 
   const homePrice = Math.max(0, h.homePrice);
   const downPayment = Math.min(Math.max(h.downPayment, 0), 1);
@@ -159,7 +176,8 @@ export function computeHousing(inputs: HousingInputs): HousingBreakdown {
     propertyTax,
     insurance,
     utilities,
-    total: shelter + propertyTax + insurance + utilities,
+    maintenance,
+    total: shelter + propertyTax + insurance + utilities + maintenance,
     mortgageInterest,
     mortgageDebt,
   };

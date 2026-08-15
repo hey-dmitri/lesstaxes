@@ -123,6 +123,16 @@ export interface HousingBreakdown {
    * "mortgage plus utilities" either way.
    */
   utilities: USD;
+  /**
+   * Repairs, upkeep and home insurance. Owners only — a tenant's landlord pays
+   * for the roof, and their renters insurance is a fraction of the figure this
+   * carries.
+   *
+   * This is where home insurance lives now. It used to be its own always-zero
+   * line with a note saying no data existed, while the published figure that
+   * contains it was being discarded along with the rest of the shelter block.
+   */
+  maintenance: USD;
   total: USD;
   /**
    * First-year mortgage interest. Feeds the federal itemization test.
@@ -188,6 +198,7 @@ export type CategoryKey =
   | 'fica'
   | 'housing'
   | 'propertyTax'
+  | 'maintenance'
   | 'transport'
   | 'living'
   | 'salesTax';

@@ -527,12 +527,42 @@ Small in dollars — sales tax is a few hundred a year — but it is a documente
 promise the code does not keep, and Tax Foundation publishes city-level rates
 under the CC BY-NC terms §7 already accepts.
 
-### OPEN-5 — Home and renters insurance have no usable free source
+### OPEN-5 — Owner upkeep and insurance do not scale with the house
 
-Added 2026-08-13, after looking for one. PROJECT.md §6.1 requires state-level
-insurance, and §7 lists it as folded into housing. Neither is true: it is not
-modelled at all, which understates ownership everywhere and badly in Florida and
-Louisiana. This is now the largest known modelling gap.
+**Largely CLOSED 2026-08-15, and the original framing was wrong.**
+
+This was filed as "home insurance has no usable free source", and the search
+below was real but was looking for the wrong thing. Insurance was never a
+separate missing dataset. BLS publishes owned-dwelling spending as three parts —
+mortgage interest, property taxes, and *"Maintenance, Repairs, Insurance, Other
+Expenses"* — and the engine was discarding the whole shelter block and rebuilding
+only the first two. Insurance was one ingredient of a line item that was missing
+whole, along with every roof, boiler and plumber beside it.
+
+The line is now charged to owners: `ownerUpkeep.perOwner` in spending.json,
+published figure divided by the published homeowner share, because the average
+includes renters who pay none of it. About $4,000/yr at $100k of income and
+$7,268 above $200k. Renters are charged nothing.
+
+WHAT REMAINS OPEN. It is adjusted by the BEA *other services* parity, not by the
+price of the house. Local repair labour is what that index measures, and it was
+the honest choice — the housing parity is far higher in expensive metros and
+would have flattered the correction, but it measures RENTS, driven by land
+scarcity, and a roof repair in San Jose does not cost four times an Austin one
+because the land does. The residual error leans towards making expensive metros
+look cheaper than they are. Florida and Louisiana premiums, at a multiple of the
+national average, are likewise invisible — so the source hunt below still has
+value, now for a much smaller correction than it was filed for.
+
+THE LESSON WORTH KEEPING. Four separate audits found four money errors in this
+engine in one day, and three of them were the same mistake: a published
+aggregate excluded wholesale, then rebuilt by hand from fewer parts than it
+contained. Sales tax inside the spending basket, utilities inside gross rent,
+and upkeep inside owned dwellings. When this engine drops a published total and
+reconstructs it, the reconstruction must be checked against the definition of
+what was dropped — not against what seems obviously to belong.
+
+The original search, kept because it is still the state of play for premiums:
 
 What was checked and rejected:
 

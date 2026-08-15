@@ -99,6 +99,26 @@ answer          =  in your pocket THERE  −  in your pocket HERE`}</pre>
           compute first-year interest for the itemisation test.
         </p>
         <p>
+          <strong>Buying a house costs more than the mortgage and the tax on it.</strong> Roofs,
+          boilers, gutters, a plumber, and the home insurance policy. The national statistics bundle
+          all of that into one figure, and because this site throws away their housing number and
+          rebuilds it from yours, that figure used to be thrown away with it. Buyers were paying
+          nothing at all to keep the house standing.
+        </p>
+        <p>
+          It is now charged: about <strong>$4,000 a year</strong> at $100,000 of income, rising to
+          roughly <strong>$7,300</strong> above $200,000. The published figure averages owners and
+          renters together, and renters pay none of this, so it is divided by the share of
+          households who actually own before it is used. Renters are charged nothing — their
+          landlord pays for the roof.
+        </p>
+        <p>
+          This is also where <strong>home insurance</strong> lives. The site used to say insurance
+          was missing and call it the biggest remaining gap. That was the wrong shape: insurance is
+          not a separate thing that was forgotten, it is one ingredient of a figure that was being
+          discarded whole.
+        </p>
+        <p>
           <strong>Only part of a big mortgage earns a deduction.</strong> The interest write-off
           reaches the first <strong>$750,000</strong> of a loan, half that if you are married and
           filing separately. Borrow more and the extra interest is simply not deductible. This site
@@ -437,9 +457,19 @@ answer          =  in your pocket THERE  −  in your pocket HERE`}</pre>
             movers, closing costs and deposits are not counted.
           </li>
           <li>
-            <strong>Home and renters insurance are not included at all.</strong> No per-state
-            dataset is loaded yet, so ownership is understated everywhere — and badly in Florida
-            and Louisiana, where premiums are a multiple of the national average.
+            <strong>Upkeep does not scale with what the house is worth.</strong> Repairs and
+            insurance are now charged to buyers — see below — but from a national figure adjusted
+            for local service prices, not from the price of the house you typed in. A $1.6M house
+            really does cost more to look after than a $500k one, and this does not fully capture
+            that. It leans towards making expensive cities look cheaper than they are.
+          </li>
+          <li>
+            <strong>Hotels and second homes are missing.</strong> The national statistics count
+            them as housing, and this site drops the whole housing figure and rebuilds it from your
+            own numbers, so they never come back. Worth $1,572 a year at $100,000 of income and
+            $4,156 above $200,000 — for renters and buyers alike. It affects both cities equally,
+            so it barely touches the comparison, but it makes the money-left-over figure a little
+            too generous for everybody.
           </li>
           <li>
             <strong>The top income band is open-ended.</strong> The Census publishes rent burden

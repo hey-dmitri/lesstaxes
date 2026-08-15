@@ -469,6 +469,15 @@ function DetailTable({ result }: { result: ComparisonResult }) {
       c: -(result.destination.housing.shelter + result.destination.housing.utilities),
     },
     { key: 'propertyTax', label: 'Property tax', a: -result.origin.housing.propertyTax, b: -mid.housing.propertyTax, c: -result.destination.housing.propertyTax },
+    // Owners only, and worth four figures a year, so it gets its own line
+    // rather than disappearing inside the mortgage figure.
+    {
+      key: 'maintenance',
+      label: 'Upkeep, repairs & insurance',
+      a: -(result.origin.housing.maintenance + result.origin.housing.insurance),
+      b: -(mid.housing.maintenance + mid.housing.insurance),
+      c: -(result.destination.housing.maintenance + result.destination.housing.insurance),
+    },
     { key: 'transport', label: 'Cars & transport', a: -result.origin.living.transport, b: -mid.living.transport, c: -result.destination.living.transport },
     { key: 'food', label: 'Food', a: -result.origin.living.food, b: -mid.living.food, c: -result.destination.living.food },
     // Phone, not "Utilities". Gas, electricity, water and heating now sit in

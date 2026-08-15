@@ -97,7 +97,11 @@ describe('owners', () => {
     const owned = city(CHICAGO, 'own');
     expect(owned.housing.utilities).toBeGreaterThan(1_000);
     expect(owned.housing.total).toBeCloseTo(
-      owned.housing.shelter + owned.housing.propertyTax + owned.housing.insurance + owned.housing.utilities,
+      owned.housing.shelter +
+        owned.housing.propertyTax +
+        owned.housing.insurance +
+        owned.housing.utilities +
+        owned.housing.maintenance,
       6,
     );
   });

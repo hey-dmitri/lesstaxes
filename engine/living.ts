@@ -124,6 +124,15 @@ export interface LivingResult extends LivingBreakdown {
    * before the overlap was found, which leave it inside `utilities`.
    */
   utilitiesInsideRent: USD;
+  /**
+   * Repairs, upkeep and home insurance, priced for this metro — what an OWNER
+   * spends keeping the house standing.
+   *
+   * NOT included in `total`, same as utilitiesInsideRent: computeCity hands it
+   * to the housing block, which charges it to owners only. Zero on releases cut
+   * before it was modelled, which charged it to nobody.
+   */
+  ownerUpkeep: USD;
 }
 
 /** Re-price the national basket for this metro, then add transport. */
@@ -169,6 +178,23 @@ export function computeLiving(inputs: LivingInputs): LivingResult {
     ? split.insideGrossRent * inputs.priceParity.utilities * sizeFactor
     : 0;
 
+  /*
+   * Upkeep is a property of the HOUSE, not of the people in it, so it is the
+   * one figure here that is NOT scaled by household size. A roof costs what it
+   * costs whether one person or five live under it, and the published figure is
+   * already an average over owners of every household size.
+   *
+   * The local price index is the one for other services. Repairs are mostly
+   * local labour, and local labour is what that index measures. The housing
+   * index was the tempting alternative — it is much higher in the expensive
+   * metros, which would have flattered the correction — but it measures RENTS,
+   * driven by land scarcity, and a roof repair in San Jose does not cost four
+   * times an Austin one just because the land underneath does.
+   */
+  const ownerUpkeep = profile.ownerUpkeep
+    ? profile.ownerUpkeep.perOwner * inputs.priceParity.otherServices
+    : 0;
+
   // Map internal categories onto the breakdown the results page shows.
   const food = scaledCategories.food;
   const healthcare = scaledCategories.healthcare;
@@ -185,6 +211,7 @@ export function computeLiving(inputs: LivingInputs): LivingResult {
     profileBracket: profile.bracket,
     equivalenceFactor: sizeFactor,
     utilitiesInsideRent,
+    ownerUpkeep,
   };
 }
 

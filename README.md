@@ -18,7 +18,7 @@ index, statutory rate or state average — on the [data page](https://packorstay
 
 ## Status
 
-**Live** at [packorstay.com](https://packorstay.com). Current dataset: **2026.9**.
+**Live** at [packorstay.com](https://packorstay.com). Current dataset: **2026.10**.
 
 | Component | State |
 |---|---|
@@ -53,10 +53,20 @@ Total data cost: **$0**. No paid feeds, no runtime API calls.
 
 ### Known gaps, in priority order
 
-1. **Home and renters insurance are still missing entirely**, which understates
-   ownership everywhere and badly in Florida and Louisiana, where premiums are a
-   multiple of the national average. This is now the largest known gap — see
-   OPEN-5 for the sources that were checked and rejected.
+1. **Owner upkeep does not scale with the house.** Repairs, maintenance and home
+   insurance are charged now — the BLS owned-dwelling line, divided by the
+   homeowner share to make it per-owner — but they are adjusted by the local
+   *services* price index, not by the price of the home. A $1.6M house costs
+   more to keep than a $500k one and this does not fully see it, which leans
+   towards flattering expensive metros. Florida and Louisiana premiums run at a
+   multiple of the national average and are likewise invisible.
+
+   This replaces the old entry that called missing insurance the largest gap.
+   That was the wrong shape: insurance was never a separate missing dataset, it
+   is one ingredient of the owned-dwelling line that was being discarded whole
+   along with the repairs beside it. OPEN-5 was hunting per-state premium data
+   that does not exist for free, while the figure containing it sat unused in a
+   source already committed to this repo.
 2. **No state Earned Income Credits.** The federal EITC is modelled; the ~30
    states (and NYC) that add their own on top are not, so low-income households
    in those states are still understated.

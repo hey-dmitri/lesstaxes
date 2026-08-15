@@ -156,6 +156,28 @@ const UTILITIES_INSIDE_GROSS_RENT = [
 const UTILITIES_TELEPHONE = ['Telephone services'];
 
 /**
+ * What an owner spends keeping the house standing.
+ *
+ * BLS publishes shelter as three parts — owned dwellings, rented dwellings and
+ * other lodging — and owned dwellings as three more: mortgage interest, property
+ * taxes, and this. The engine excluded the whole shelter block and added back
+ * only a mortgage payment and property tax, so repairs, upkeep and home
+ * insurance were never restored for anybody.
+ *
+ * Insurance is INSIDE this line. The site's documented "insurance is missing"
+ * gap was one ingredient of a line item that was missing whole.
+ *
+ * THE PUBLISHED FIGURE IS AN AVERAGE OVER OWNERS AND RENTERS TOGETHER, and
+ * renters pay none of it, so it has to be divided by the share who own before
+ * it describes an owner. Both numbers are published. At $100,000-$150,000 that
+ * is $2,960 spread across everyone, but $4,000 for someone who actually owns.
+ */
+const OWNER_UPKEEP_ROW = 'Maintenance repairs insurance other expenses for owned dwelling';
+const OWNED_DWELLINGS_ROW = 'Owned dwellings';
+const OTHER_LODGING_ROW = 'Other lodging';
+const HOMEOWNER_PERCENT_ROW = 'Percent homeowner';
+
+/**
  * Lower bound of each published bracket. Kept for labelling and for the range
  * checks below; the engine picks profiles by meanIncome, not by floor.
  * The final bracket is open-ended.
@@ -281,6 +303,14 @@ for (const bracket of incomeBrackets) {
       insideGrossRent: Math.round(sumRows(UTILITIES_INSIDE_GROSS_RENT, bracket)),
       telephone: Math.round(sumRows(UTILITIES_TELEPHONE, bracket)),
     },
+    /* Repairs, upkeep and home insurance. See OWNER_UPKEEP_ROW. */
+    ownerUpkeep: {
+      perConsumerUnit: Math.round(value(OWNER_UPKEEP_ROW, bracket)),
+      homeownerShare: value(HOMEOWNER_PERCENT_ROW, bracket) / 100,
+      perOwner: Math.round(
+        value(OWNER_UPKEEP_ROW, bracket) / (value(HOMEOWNER_PERCENT_ROW, bracket) / 100),
+      ),
+    },
     averageHouseholdSize: value('Average people per consumer unit', bracket),
     averageEarners: value('Average earners', bracket),
     averageChildren: value('Average children under 18', bracket),
@@ -350,6 +380,37 @@ for (const p of profiles) {
   const share = p.utilitiesSplit.insideGrossRent / p.categories.utilities;
   if (!(share > 0.5 && share < 0.85)) {
     throw new Error(`${p.bracket}: ${(share * 100).toFixed(0)}% inside gross rent looks wrong`);
+  }
+}
+
+/*
+ * The owner upkeep figure has to sit inside the block it was taken from, or a
+ * BLS relabelling could silently hand the engine the wrong row. Shelter breaks
+ * into owned dwellings + rented dwellings + other lodging, and owned dwellings
+ * into mortgage interest + property taxes + upkeep, so both of these must hold
+ * with room to spare for the parts not named here.
+ */
+for (const bracket of incomeBrackets) {
+  const p = profiles.find((x) => x.bracket === bracket);
+  const upkeep = p.ownerUpkeep.perConsumerUnit;
+  const owned = value(OWNED_DWELLINGS_ROW, bracket);
+  const lodging = value(OTHER_LODGING_ROW, bracket);
+  const shelter = p.excluded.shelter;
+
+  if (!(upkeep > 0 && upkeep < owned)) {
+    throw new Error(`${bracket}: upkeep ${upkeep} does not sit inside owned dwellings ${owned}`);
+  }
+  if (!(owned + lodging < shelter)) {
+    throw new Error(
+      `${bracket}: owned ${owned} + other lodging ${lodging} leaves nothing for rented ` +
+        `dwellings inside shelter ${shelter}`,
+    );
+  }
+  if (!(p.ownerUpkeep.homeownerShare > 0.2 && p.ownerUpkeep.homeownerShare <= 1)) {
+    throw new Error(`${bracket}: implausible homeowner share ${p.ownerUpkeep.homeownerShare}`);
+  }
+  if (!(p.ownerUpkeep.perOwner > 1_500 && p.ownerUpkeep.perOwner < 15_000)) {
+    throw new Error(`${bracket}: implausible upkeep per owner ${p.ownerUpkeep.perOwner}`);
   }
 }
 

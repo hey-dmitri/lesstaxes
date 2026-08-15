@@ -88,9 +88,10 @@ export default function DataPage() {
             <a href="/methodology#limitations">methodology</a> for why.
           </li>
           <li>
-            <strong>Home and renters insurance are missing entirely.</strong> No per-state dataset is
-            loaded yet, so ownership costs are understated everywhere and badly in Florida and
-            Louisiana.
+            <strong>Upkeep and home insurance do not scale with the house.</strong> Buyers are now
+            charged for repairs, maintenance and insurance, but from a national figure adjusted for
+            local service prices rather than from the price of the house. Florida and Louisiana
+            premiums run at a multiple of the national average and this does not see that.
           </li>
           <li>
             <strong>Smaller towns and US territories are not covered.</strong> The federal price

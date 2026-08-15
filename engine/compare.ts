@@ -126,6 +126,7 @@ export function computeCity(
     housing: city.housing,
     annualInsurance: options.annualInsurance,
     annualUtilities: living.utilitiesInsideRent,
+    annualMaintenance: living.ownerUpkeep,
   });
 
   const jurisdictions =
@@ -390,6 +391,7 @@ const CATEGORY_GROUPS: Record<CategoryKey, 'payAndTax' | 'living'> = {
   fica: 'payAndTax',
   housing: 'living',
   propertyTax: 'living',
+  maintenance: 'living',
   transport: 'living',
   living: 'living',
   salesTax: 'living',
@@ -405,6 +407,7 @@ const CATEGORY_LABELS: Record<CategoryKey, string> = {
   // and "rent or mortgage" makes them work out which half applies to them.
   housing: 'Rent or mortgage',
   propertyTax: 'Property tax',
+  maintenance: 'Upkeep, repairs & insurance',
   transport: 'Cars & transport',
   living: 'Food, phone, healthcare, other',
   salesTax: 'Sales tax',
@@ -452,6 +455,18 @@ function buildBreakdown(origin: CityResult, destination: CityResult): CategoryDe
         (destination.housing.shelter + destination.housing.utilities),
     ],
     ['propertyTax', origin.housing.propertyTax - destination.housing.propertyTax],
+    /*
+     * Its own row rather than folded into the housing line. It is $4,000 to
+     * $7,300 a year for an owner and it was missing entirely until now, so
+     * burying it inside the mortgage figure would hide the correction from the
+     * one reader who most needs to see it.
+     */
+    [
+      'maintenance',
+      origin.housing.maintenance +
+        origin.housing.insurance -
+        (destination.housing.maintenance + destination.housing.insurance),
+    ],
     ['transport', origin.living.transport - destination.living.transport],
     [
       'living',
