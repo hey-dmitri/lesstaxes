@@ -122,9 +122,15 @@ describe('why narrative', () => {
     // from its ILLINOIS part rather than metro-wide, which is $1,453 rent
     // against $1,430 — the Indiana side of that metro is much cheaper and was
     // dragging the average down for people who do not live in it.
+    //
+    // It moved again with 2026.6, from $9,099 to $8,835. $150,000 used to sit
+    // on the very first dollar of the "$150,000 to $199,999" bracket and was
+    // handed that whole bracket's basket, which describes households averaging
+    // $171,847. It is now placed between brackets, so the basket is smaller and
+    // the gap between two cities pricing it is smaller with it.
     const result = run(CHICAGO, AUSTIN, 150_000);
     expect(whySentence(result)).toBe(
-      'Austin, TX is $9,099 cheaper a year to live in at the same salary.',
+      'Austin, TX is $8,835 cheaper a year to live in at the same salary.',
     );
   });
 

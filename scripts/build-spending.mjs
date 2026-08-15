@@ -13,6 +13,28 @@
  *   BLS requires a User-Agent carrying a contact email address, or it returns
  *   403. The relevant rows were extracted to the committed CSV above.
  *
+ *   The "Income before taxes" row was added later, when spending stopped being
+ *   a step function of salary and needed to know what income each bracket
+ *   describes. It is the same row of the same BLS table, taken from FRED,
+ *   which republishes the CE series and is reachable without the contact
+ *   header. Series IDs, all read at 2024:
+ *
+ *     Less than $15,000     CXUINCBEFTXLB0218M      7,637
+ *     $15,000 to $29,999    CXUINCBEFTXLB0219M     22,443
+ *     $30,000 to $39,999    CXUINCBEFTXLB0207M     34,984
+ *     $40,000 to $49,999    CXUINCBEFTXLB0208M     44,824
+ *     $50,000 to $69,999    CXUINCBEFTXLB0209M     59,582
+ *     $70,000 to $99,999    CXUINCBEFTXLB0220M     83,888
+ *     $100,000 to $149,999  CXUINCBEFTXLB0221M    121,852
+ *     $150,000 to $199,999  CXUINCBEFTXLB0222M    171,847
+ *     $200,000 and more     CXUINCBEFTXLB0223M    322,142
+ *
+ *   The all-consumer-units figure, $104,207, is from the CE 2024 news release.
+ *   Note the series numbering is NOT contiguous — LB0207-0209 carry three of
+ *   the middle brackets while the rest sit in LB0218-0223. Every ID above was
+ *   confirmed against its published title before use, because guessing one
+ *   wrong would bend the spending curve without failing anything.
+ *
  * WHAT THIS PRODUCES
  *
  * For each of nine income brackets, an annual dollar baseline split into
@@ -108,7 +130,8 @@ const VEHICLE_COST_ROWS = [
 const TRANSIT_ROW = 'Public and other transportation';
 
 /**
- * Lower bound of each published bracket, used to pick a profile from a salary.
+ * Lower bound of each published bracket. Kept for labelling and for the range
+ * checks below; the engine picks profiles by meanIncome, not by floor.
  * The final bracket is open-ended.
  */
 const BRACKET_FLOORS = {
@@ -121,6 +144,22 @@ const BRACKET_FLOORS = {
   '$100,000 to $149,999': 100_000,
   '$150,000 to $199,999': 150_000,
   '$200,000 and more': 200_000,
+};
+
+/**
+ * Upper bound of each closed bracket, used only to check that the published
+ * mean income really does fall inside its own bracket. The top one is open.
+ */
+const BRACKET_CEILINGS = {
+  'Less than $15,000': 15_000,
+  '$15,000 to $29,999': 30_000,
+  '$30,000 to $39,999': 40_000,
+  '$40,000 to $49,999': 50_000,
+  '$50,000 to $69,999': 70_000,
+  '$70,000 to $99,999': 100_000,
+  '$100,000 to $149,999': 150_000,
+  '$150,000 to $199,999': 200_000,
+  '$200,000 and more': Infinity,
 };
 
 // --- read -------------------------------------------------------------------
@@ -193,6 +232,21 @@ for (const bracket of incomeBrackets) {
   profiles.push({
     bracket,
     incomeFloor: floor,
+    /*
+     * The income this bracket's spending actually describes.
+     *
+     * A bracket's published mean spending is the average over households
+     * spread across the whole bracket, so it belongs at the bracket's mean
+     * INCOME, not at its floor. Pinning it to the floor is what made spending
+     * a step function of salary: a $1 raise across $150,000 moved the basket
+     * by $13,189 and took thousands off the answer.
+     *
+     * With this, the engine interpolates between neighbouring means and
+     * spending becomes continuous. It matters most for the open top bracket,
+     * whose mean income is $322,142 — nothing like the $200,000 floor, and
+     * treating it as $200,000 would make the top segment absurdly steep.
+     */
+    meanIncome: Math.round(value('Income before taxes', bracket)),
     averageHouseholdSize: value('Average people per consumer unit', bracket),
     averageEarners: value('Average earners', bracket),
     averageChildren: value('Average children under 18', bracket),
@@ -219,6 +273,30 @@ profiles.sort((a, b) => a.incomeFloor - b.incomeFloor);
 // --- sanity checks ----------------------------------------------------------
 
 if (profiles.length !== 9) throw new Error(`expected 9 income brackets, got ${profiles.length}`);
+
+/*
+ * The mean incomes are the x-axis the engine interpolates along, so they have
+ * to be strictly increasing and each one has to sit inside its own bracket. A
+ * transcription slip here would not throw anywhere else — it would quietly
+ * bend the spending curve.
+ */
+for (let i = 0; i < profiles.length; i++) {
+  const p = profiles[i];
+  const ceiling = BRACKET_CEILINGS[p.bracket];
+  if (ceiling === undefined) throw new Error(`no ceiling mapped for bracket: ${p.bracket}`);
+  if (!(p.meanIncome >= p.incomeFloor && p.meanIncome < ceiling)) {
+    throw new Error(
+      `${p.bracket}: mean income ${p.meanIncome} is outside its own bracket ` +
+        `[${p.incomeFloor}, ${ceiling})`,
+    );
+  }
+  if (i > 0 && p.meanIncome <= profiles[i - 1].meanIncome) {
+    throw new Error(
+      `${p.bracket}: mean income ${p.meanIncome} does not exceed ` +
+        `${profiles[i - 1].bracket}'s ${profiles[i - 1].meanIncome}`,
+    );
+  }
+}
 
 for (const p of profiles) {
   // The categories we keep plus the ones we exclude must reconstruct the

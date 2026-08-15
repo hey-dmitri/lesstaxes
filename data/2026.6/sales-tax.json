@@ -1,0 +1,651 @@
+{
+  "datasetVersion": "2026.6",
+  "taxYear": 2026,
+  "sources": [
+    {
+      "name": "Tax Foundation, \"State and Local Sales Tax Rates, 2026\"",
+      "url": "https://taxfoundation.org/data/all/state/sales-tax-rates/",
+      "licence": "CC BY-NC 4.0 — satisfied; this project is permanently non-commercial",
+      "snapshot": "data/2026.5/sources/taxfoundation-sales-tax-2026.csv",
+      "confidence": "secondary — reputable aggregator of state statutes"
+    },
+    {
+      "name": "Grocery exemption status by state, tax year 2026",
+      "licence": "State statute",
+      "confidence": "secondary — corroborated across multiple 2026 summaries; worth re-checking each January, when most changes take effect"
+    }
+  ],
+  "taxableShares": {
+    "food": {
+      "groceryPortion": 0.612,
+      "restaurantPortion": 0.388,
+      "note": "Split from BLS: food at home $6,224 of $10,169 total food spending (61.2%)."
+    },
+    "otherGoods": 0.9,
+    "utilities": 0.3,
+    "healthcare": 0.05,
+    "otherServices": 0.15
+  },
+  "limitations": [
+    "Local rates are population-weighted state averages, not the exact rate for a given metro. Chicago at 10.25% is above the Illinois average; the model uses the average.",
+    "Taxable shares by category are informed estimates, not statute. Services and healthcare are broadly untaxed; tangible goods broadly are. Erring low is deliberate.",
+    "In Alaska, Colorado, Louisiana and Arizona, local jurisdictions may tax groceries even where the state does not. Not modelled.",
+    "Idaho offsets its grocery tax with a credit, which is not applied here.",
+    "Sales tax is typically a few hundred dollars a year of difference between metros — real, but small next to income tax and housing."
+  ],
+  "states": {
+    "AL": {
+      "code": "AL",
+      "name": "Alabama",
+      "stateRate": 0.04,
+      "avgLocalRate": 0.05457,
+      "maxLocalRate": 0.11,
+      "combinedRate": 0.09457,
+      "grocery": {
+        "treatment": "reduced",
+        "effectiveRate": 0.08457
+      }
+    },
+    "AK": {
+      "code": "AK",
+      "name": "Alaska",
+      "stateRate": 0,
+      "avgLocalRate": 0.01821,
+      "maxLocalRate": 0.0785,
+      "combinedRate": 0.01821,
+      "grocery": {
+        "treatment": "exempt",
+        "effectiveRate": 0
+      }
+    },
+    "AZ": {
+      "code": "AZ",
+      "name": "Arizona",
+      "stateRate": 0.056,
+      "avgLocalRate": 0.02919,
+      "maxLocalRate": 0.053,
+      "combinedRate": 0.08519,
+      "grocery": {
+        "treatment": "exempt",
+        "effectiveRate": 0
+      }
+    },
+    "AR": {
+      "code": "AR",
+      "name": "Arkansas",
+      "stateRate": 0.065,
+      "avgLocalRate": 0.02963,
+      "maxLocalRate": 0.06125,
+      "combinedRate": 0.09463,
+      "grocery": {
+        "treatment": "reduced",
+        "effectiveRate": 0.03088
+      }
+    },
+    "CA": {
+      "code": "CA",
+      "name": "California",
+      "stateRate": 0.0725,
+      "avgLocalRate": 0.01737,
+      "maxLocalRate": 0.0525,
+      "combinedRate": 0.08987,
+      "grocery": {
+        "treatment": "exempt",
+        "effectiveRate": 0
+      }
+    },
+    "CO": {
+      "code": "CO",
+      "name": "Colorado",
+      "stateRate": 0.029,
+      "avgLocalRate": 0.04994,
+      "maxLocalRate": 0.091,
+      "combinedRate": 0.07894,
+      "grocery": {
+        "treatment": "exempt",
+        "effectiveRate": 0
+      }
+    },
+    "CT": {
+      "code": "CT",
+      "name": "Connecticut",
+      "stateRate": 0.0635,
+      "avgLocalRate": 0,
+      "maxLocalRate": 0,
+      "combinedRate": 0.0635,
+      "grocery": {
+        "treatment": "exempt",
+        "effectiveRate": 0
+      }
+    },
+    "DE": {
+      "code": "DE",
+      "name": "Delaware",
+      "stateRate": 0,
+      "avgLocalRate": 0,
+      "maxLocalRate": 0,
+      "combinedRate": 0,
+      "grocery": {
+        "treatment": "exempt",
+        "effectiveRate": 0
+      }
+    },
+    "FL": {
+      "code": "FL",
+      "name": "Florida",
+      "stateRate": 0.06,
+      "avgLocalRate": 0.00979,
+      "maxLocalRate": 0.02,
+      "combinedRate": 0.06979,
+      "grocery": {
+        "treatment": "exempt",
+        "effectiveRate": 0
+      }
+    },
+    "GA": {
+      "code": "GA",
+      "name": "Georgia",
+      "stateRate": 0.04,
+      "avgLocalRate": 0.03491,
+      "maxLocalRate": 0.05,
+      "combinedRate": 0.07491,
+      "grocery": {
+        "treatment": "exempt",
+        "effectiveRate": 0
+      }
+    },
+    "HI": {
+      "code": "HI",
+      "name": "Hawaii",
+      "stateRate": 0.04,
+      "avgLocalRate": 0.005,
+      "maxLocalRate": 0.005,
+      "combinedRate": 0.045,
+      "grocery": {
+        "treatment": "full",
+        "effectiveRate": 0.045
+      }
+    },
+    "ID": {
+      "code": "ID",
+      "name": "Idaho",
+      "stateRate": 0.06,
+      "avgLocalRate": 0.00027,
+      "maxLocalRate": 0.03,
+      "combinedRate": 0.06027,
+      "grocery": {
+        "treatment": "full",
+        "effectiveRate": 0.06027,
+        "note": "Offsets with a grocery tax credit, which this model does not apply."
+      }
+    },
+    "IL": {
+      "code": "IL",
+      "name": "Illinois",
+      "stateRate": 0.0625,
+      "avgLocalRate": 0.02714,
+      "maxLocalRate": 0.0475,
+      "combinedRate": 0.08964,
+      "grocery": {
+        "treatment": "exempt",
+        "effectiveRate": 0
+      }
+    },
+    "IN": {
+      "code": "IN",
+      "name": "Indiana",
+      "stateRate": 0.07,
+      "avgLocalRate": 0,
+      "maxLocalRate": 0,
+      "combinedRate": 0.07,
+      "grocery": {
+        "treatment": "exempt",
+        "effectiveRate": 0
+      }
+    },
+    "IA": {
+      "code": "IA",
+      "name": "Iowa",
+      "stateRate": 0.06,
+      "avgLocalRate": 0.00943,
+      "maxLocalRate": 0.02,
+      "combinedRate": 0.06943,
+      "grocery": {
+        "treatment": "exempt",
+        "effectiveRate": 0
+      }
+    },
+    "KS": {
+      "code": "KS",
+      "name": "Kansas",
+      "stateRate": 0.065,
+      "avgLocalRate": 0.0219,
+      "maxLocalRate": 0.0425,
+      "combinedRate": 0.0869,
+      "grocery": {
+        "treatment": "exempt",
+        "effectiveRate": 0
+      }
+    },
+    "KY": {
+      "code": "KY",
+      "name": "Kentucky",
+      "stateRate": 0.06,
+      "avgLocalRate": 0,
+      "maxLocalRate": 0,
+      "combinedRate": 0.06,
+      "grocery": {
+        "treatment": "exempt",
+        "effectiveRate": 0
+      }
+    },
+    "LA": {
+      "code": "LA",
+      "name": "Louisiana",
+      "stateRate": 0.05,
+      "avgLocalRate": 0.05113,
+      "maxLocalRate": 0.07,
+      "combinedRate": 0.10113,
+      "grocery": {
+        "treatment": "exempt",
+        "effectiveRate": 0
+      }
+    },
+    "ME": {
+      "code": "ME",
+      "name": "Maine",
+      "stateRate": 0.055,
+      "avgLocalRate": 0,
+      "maxLocalRate": 0,
+      "combinedRate": 0.055,
+      "grocery": {
+        "treatment": "exempt",
+        "effectiveRate": 0
+      }
+    },
+    "MD": {
+      "code": "MD",
+      "name": "Maryland",
+      "stateRate": 0.06,
+      "avgLocalRate": 0,
+      "maxLocalRate": 0,
+      "combinedRate": 0.06,
+      "grocery": {
+        "treatment": "exempt",
+        "effectiveRate": 0
+      }
+    },
+    "MA": {
+      "code": "MA",
+      "name": "Massachusetts",
+      "stateRate": 0.0625,
+      "avgLocalRate": 0,
+      "maxLocalRate": 0,
+      "combinedRate": 0.0625,
+      "grocery": {
+        "treatment": "exempt",
+        "effectiveRate": 0
+      }
+    },
+    "MI": {
+      "code": "MI",
+      "name": "Michigan",
+      "stateRate": 0.06,
+      "avgLocalRate": 0,
+      "maxLocalRate": 0,
+      "combinedRate": 0.06,
+      "grocery": {
+        "treatment": "exempt",
+        "effectiveRate": 0
+      }
+    },
+    "MN": {
+      "code": "MN",
+      "name": "Minnesota",
+      "stateRate": 0.06875,
+      "avgLocalRate": 0.0126,
+      "maxLocalRate": 0.03,
+      "combinedRate": 0.08135,
+      "grocery": {
+        "treatment": "exempt",
+        "effectiveRate": 0
+      }
+    },
+    "MS": {
+      "code": "MS",
+      "name": "Mississippi",
+      "stateRate": 0.07,
+      "avgLocalRate": 0.00062,
+      "maxLocalRate": 0.01,
+      "combinedRate": 0.07062,
+      "grocery": {
+        "treatment": "full",
+        "effectiveRate": 0.07062
+      }
+    },
+    "MO": {
+      "code": "MO",
+      "name": "Missouri",
+      "stateRate": 0.04225,
+      "avgLocalRate": 0.04216,
+      "maxLocalRate": 0.05763,
+      "combinedRate": 0.08441,
+      "grocery": {
+        "treatment": "reduced",
+        "effectiveRate": 0.05441
+      }
+    },
+    "MT": {
+      "code": "MT",
+      "name": "Montana",
+      "stateRate": 0,
+      "avgLocalRate": 0,
+      "maxLocalRate": 0,
+      "combinedRate": 0,
+      "grocery": {
+        "treatment": "exempt",
+        "effectiveRate": 0
+      }
+    },
+    "NE": {
+      "code": "NE",
+      "name": "Nebraska",
+      "stateRate": 0.055,
+      "avgLocalRate": 0.01482,
+      "maxLocalRate": 0.02,
+      "combinedRate": 0.06982,
+      "grocery": {
+        "treatment": "exempt",
+        "effectiveRate": 0
+      }
+    },
+    "NV": {
+      "code": "NV",
+      "name": "Nevada",
+      "stateRate": 0.0685,
+      "avgLocalRate": 0.01386,
+      "maxLocalRate": 0.01525,
+      "combinedRate": 0.08236,
+      "grocery": {
+        "treatment": "exempt",
+        "effectiveRate": 0
+      }
+    },
+    "NH": {
+      "code": "NH",
+      "name": "New Hampshire",
+      "stateRate": 0,
+      "avgLocalRate": 0,
+      "maxLocalRate": 0,
+      "combinedRate": 0,
+      "grocery": {
+        "treatment": "exempt",
+        "effectiveRate": 0
+      }
+    },
+    "NJ": {
+      "code": "NJ",
+      "name": "New Jersey",
+      "stateRate": 0.06625,
+      "avgLocalRate": -0.00024,
+      "maxLocalRate": 0.03313,
+      "combinedRate": 0.06601,
+      "grocery": {
+        "treatment": "exempt",
+        "effectiveRate": 0
+      }
+    },
+    "NM": {
+      "code": "NM",
+      "name": "New Mexico",
+      "stateRate": 0.04875,
+      "avgLocalRate": 0.02792,
+      "maxLocalRate": 0.04562,
+      "combinedRate": 0.07667,
+      "grocery": {
+        "treatment": "exempt",
+        "effectiveRate": 0
+      }
+    },
+    "NY": {
+      "code": "NY",
+      "name": "New York",
+      "stateRate": 0.04,
+      "avgLocalRate": 0.04542,
+      "maxLocalRate": 0.04875,
+      "combinedRate": 0.08542,
+      "grocery": {
+        "treatment": "exempt",
+        "effectiveRate": 0
+      }
+    },
+    "NC": {
+      "code": "NC",
+      "name": "North Carolina",
+      "stateRate": 0.0475,
+      "avgLocalRate": 0.02246,
+      "maxLocalRate": 0.0275,
+      "combinedRate": 0.06996,
+      "grocery": {
+        "treatment": "exempt",
+        "effectiveRate": 0
+      }
+    },
+    "ND": {
+      "code": "ND",
+      "name": "North Dakota",
+      "stateRate": 0.05,
+      "avgLocalRate": 0.02091,
+      "maxLocalRate": 0.0375,
+      "combinedRate": 0.07091,
+      "grocery": {
+        "treatment": "exempt",
+        "effectiveRate": 0
+      }
+    },
+    "OH": {
+      "code": "OH",
+      "name": "Ohio",
+      "stateRate": 0.0575,
+      "avgLocalRate": 0.01545,
+      "maxLocalRate": 0.0225,
+      "combinedRate": 0.07295,
+      "grocery": {
+        "treatment": "exempt",
+        "effectiveRate": 0
+      }
+    },
+    "OK": {
+      "code": "OK",
+      "name": "Oklahoma",
+      "stateRate": 0.045,
+      "avgLocalRate": 0.04559,
+      "maxLocalRate": 0.07,
+      "combinedRate": 0.09059,
+      "grocery": {
+        "treatment": "exempt",
+        "effectiveRate": 0
+      }
+    },
+    "OR": {
+      "code": "OR",
+      "name": "Oregon",
+      "stateRate": 0,
+      "avgLocalRate": 0,
+      "maxLocalRate": 0,
+      "combinedRate": 0,
+      "grocery": {
+        "treatment": "exempt",
+        "effectiveRate": 0
+      }
+    },
+    "PA": {
+      "code": "PA",
+      "name": "Pennsylvania",
+      "stateRate": 0.06,
+      "avgLocalRate": 0.00341,
+      "maxLocalRate": 0.02,
+      "combinedRate": 0.06341,
+      "grocery": {
+        "treatment": "exempt",
+        "effectiveRate": 0
+      }
+    },
+    "RI": {
+      "code": "RI",
+      "name": "Rhode Island",
+      "stateRate": 0.07,
+      "avgLocalRate": 0,
+      "maxLocalRate": 0,
+      "combinedRate": 0.07,
+      "grocery": {
+        "treatment": "exempt",
+        "effectiveRate": 0
+      }
+    },
+    "SC": {
+      "code": "SC",
+      "name": "South Carolina",
+      "stateRate": 0.06,
+      "avgLocalRate": 0.01486,
+      "maxLocalRate": 0.03,
+      "combinedRate": 0.07486,
+      "grocery": {
+        "treatment": "exempt",
+        "effectiveRate": 0
+      }
+    },
+    "SD": {
+      "code": "SD",
+      "name": "South Dakota",
+      "stateRate": 0.042,
+      "avgLocalRate": 0.01914,
+      "maxLocalRate": 0.045,
+      "combinedRate": 0.06114,
+      "grocery": {
+        "treatment": "full",
+        "effectiveRate": 0.06114
+      }
+    },
+    "TN": {
+      "code": "TN",
+      "name": "Tennessee",
+      "stateRate": 0.07,
+      "avgLocalRate": 0.0261,
+      "maxLocalRate": 0.0275,
+      "combinedRate": 0.0961,
+      "grocery": {
+        "treatment": "reduced",
+        "effectiveRate": 0.0661
+      }
+    },
+    "TX": {
+      "code": "TX",
+      "name": "Texas",
+      "stateRate": 0.0625,
+      "avgLocalRate": 0.01951,
+      "maxLocalRate": 0.02,
+      "combinedRate": 0.08201,
+      "grocery": {
+        "treatment": "exempt",
+        "effectiveRate": 0
+      }
+    },
+    "UT": {
+      "code": "UT",
+      "name": "Utah",
+      "stateRate": 0.061,
+      "avgLocalRate": 0.01317,
+      "maxLocalRate": 0.047,
+      "combinedRate": 0.07417,
+      "grocery": {
+        "treatment": "reduced",
+        "effectiveRate": 0.04317
+      }
+    },
+    "VT": {
+      "code": "VT",
+      "name": "Vermont",
+      "stateRate": 0.06,
+      "avgLocalRate": 0.0039,
+      "maxLocalRate": 0.01,
+      "combinedRate": 0.0639,
+      "grocery": {
+        "treatment": "exempt",
+        "effectiveRate": 0
+      }
+    },
+    "VA": {
+      "code": "VA",
+      "name": "Virginia",
+      "stateRate": 0.053,
+      "avgLocalRate": 0.00471,
+      "maxLocalRate": 0.027,
+      "combinedRate": 0.05771,
+      "grocery": {
+        "treatment": "reduced",
+        "effectiveRate": 0.02971
+      }
+    },
+    "WA": {
+      "code": "WA",
+      "name": "Washington",
+      "stateRate": 0.065,
+      "avgLocalRate": 0.03013,
+      "maxLocalRate": 0.041,
+      "combinedRate": 0.09513,
+      "grocery": {
+        "treatment": "exempt",
+        "effectiveRate": 0
+      }
+    },
+    "WV": {
+      "code": "WV",
+      "name": "West Virginia",
+      "stateRate": 0.06,
+      "avgLocalRate": 0.00587,
+      "maxLocalRate": 0.01,
+      "combinedRate": 0.06587,
+      "grocery": {
+        "treatment": "exempt",
+        "effectiveRate": 0
+      }
+    },
+    "WI": {
+      "code": "WI",
+      "name": "Wisconsin",
+      "stateRate": 0.05,
+      "avgLocalRate": 0.0072,
+      "maxLocalRate": 0.029,
+      "combinedRate": 0.0572,
+      "grocery": {
+        "treatment": "exempt",
+        "effectiveRate": 0
+      }
+    },
+    "WY": {
+      "code": "WY",
+      "name": "Wyoming",
+      "stateRate": 0.04,
+      "avgLocalRate": 0.0156,
+      "maxLocalRate": 0.03,
+      "combinedRate": 0.0556,
+      "grocery": {
+        "treatment": "exempt",
+        "effectiveRate": 0
+      }
+    },
+    "DC": {
+      "code": "DC",
+      "name": "District of Columbia",
+      "stateRate": 0.06,
+      "avgLocalRate": 0,
+      "maxLocalRate": 0,
+      "combinedRate": 0.06,
+      "grocery": {
+        "treatment": "exempt",
+        "effectiveRate": 0
+      }
+    }
+  }
+}

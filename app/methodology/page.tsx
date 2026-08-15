@@ -185,6 +185,15 @@ answer          =  in your pocket THERE  −  in your pocket HERE`}</pre>
             uses the square-root rule that the OECD uses: needs grow with household size, but not
             proportionally — two people do not need two fridges.
           </li>
+          <li>
+            <strong>It slides smoothly between income bands.</strong> The survey publishes nine
+            income bands. Reading your band off the bottom of the one you fall into made spending
+            jump the moment your pay crossed a line: a $1 raise from $199,999 to $200,000 took
+            $14,839 off what you had left, and moved the gap between two cities by $1,119. Each
+            band&rsquo;s figures are now placed at the average income of the households in it, and
+            anything in between is read off the line joining them. Nothing is invented — the same
+            nine published points, read at the income they were measured at.
+          </li>
         </ul>
 
         <h2>Sales tax</h2>

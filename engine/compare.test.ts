@@ -12,6 +12,7 @@ import {
 } from './compare';
 import {
   ALL_METRO_IDS,
+  ALL_SPENDING_PROFILES,
   DATASET_VERSION,
   homePriceDefault,
   housingDefaults,
@@ -488,10 +489,25 @@ describe('every location produces a sane result', () => {
 });
 
 describe('spendingProfile', () => {
-  it('picks the bracket by floor, without interpolating', () => {
-    expect(spendingProfile(160_000).bracket).toBe('$150,000 to $199,999');
-    expect(spendingProfile(150_000).bracket).toBe('$150,000 to $199,999');
-    expect(spendingProfile(149_999).bracket).toBe('$100,000 to $149,999');
+  /*
+   * This used to assert the opposite — "picks the bracket by floor, without
+   * interpolating" — and the behaviour it locked in was a bug. See
+   * spending-interpolation.test.ts for what replaced it and why.
+   */
+  it("lands exactly on a published profile at that bracket's mean income", () => {
+    const published = ALL_SPENDING_PROFILES.find((p) => p.incomeFloor === 150_000)!;
+    const at = spendingProfile(published.meanIncome!);
+    expect(at.bracket).toBe('$150,000 to $199,999');
+    expect(at.livingTotal).toBeCloseTo(published.livingTotal, 6);
+  });
+
+  it('sits between the two neighbours it is between', () => {
+    const lower = ALL_SPENDING_PROFILES.find((p) => p.incomeFloor === 100_000)!;
+    const upper = ALL_SPENDING_PROFILES.find((p) => p.incomeFloor === 150_000)!;
+    const mid = spendingProfile((lower.meanIncome! + upper.meanIncome!) / 2);
+    expect(mid.livingTotal).toBeGreaterThan(lower.livingTotal);
+    expect(mid.livingTotal).toBeLessThan(upper.livingTotal);
+    expect(mid.livingTotal).toBeCloseTo((lower.livingTotal + upper.livingTotal) / 2, 6);
   });
 
   it('clamps below and above the published range', () => {

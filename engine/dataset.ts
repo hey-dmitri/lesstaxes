@@ -375,6 +375,14 @@ export interface SpendingCategories {
 export interface SpendingProfile {
   bracket: string;
   incomeFloor: USD;
+  /**
+   * Mean income before taxes of the households in this bracket — the income
+   * this bracket's spending actually describes.
+   *
+   * Absent on releases cut before spending was interpolated, which is what
+   * makes those releases keep computing the way they did when they shipped.
+   */
+  meanIncome?: USD;
   averageHouseholdSize: number;
   categories: SpendingCategories;
   livingTotal: USD;
@@ -399,22 +407,113 @@ export const PARITY_FOR_CATEGORY: Record<keyof SpendingCategories, keyof PricePa
   otherServices: 'otherServices',
 };
 
+/** Linear blend between two numbers. */
+const lerp = (a: number, b: number, t: number): number => a + (b - a) * t;
+
 /**
  * The spending profile for a household income.
  *
- * Brackets are chosen by floor, not interpolated. Interpolating would imply a
- * precision the survey does not have, and would hide the step structure from
- * anyone reading the methodology page.
+ * THIS USED TO BE A STEP FUNCTION AND THAT WAS A REAL BUG. The bracket was
+ * chosen by its floor, so the basket jumped the instant a salary crossed a
+ * published boundary. The justification on record was that interpolating would
+ * "imply a precision the survey does not have". That argument is backwards. A
+ * step function does not express uncertainty about spending — it asserts,
+ * confidently and falsely, that spending is flat across a $50,000 band and then
+ * leaps in a single dollar. What it actually produced:
+ *
+ *   $149,999 -> $150,000   Chicago leftover fell $8,300 for a $1 raise
+ *   $199,999 -> $200,000   Chicago leftover fell $14,839 for a $1 raise
+ *
+ * And because the two cities sit at different price levels, the jumps did not
+ * cancel: a $1 edit moved the gap between them by $614 at $150,000 and $1,119
+ * at $200,000. That is enough to flip a verdict, and it made disposable income
+ * fall as pay rose, which is not a thing that happens.
+ *
+ * THE FIX IS TO PUT EACH BRACKET WHERE IT BELONGS. A bracket's published mean
+ * spending is the average over households spread across the whole bracket, so
+ * it describes that bracket's mean INCOME, not its floor. Anchor each profile
+ * at its mean income, interpolate between neighbours, and spending becomes a
+ * continuous rising function of salary. No smoothing, no invention — the same
+ * nine published points, read at the income they were measured at.
+ *
+ * Below the lowest mean and above the highest, the nearest profile is held
+ * flat rather than extrapolated. The top bracket is open-ended, and its mean
+ * income of $322,142 is a long way above its $200,000 floor, which is exactly
+ * why the floor was the wrong anchor for it.
+ *
+ * OLD RELEASES KEEP STEPPING. Datasets cut before this carry no meanIncome, and
+ * fall back to the original lookup — PROJECT.md §9.2: a shared link recomputes
+ * against the model it was made with, not just the data.
  */
 export function spendingProfile(householdIncome: USD, version?: string): SpendingProfile {
   const income = Math.max(0, householdIncome);
   const all = profiles(version);
-  let chosen = all[0];
-  for (const p of all) {
-    if (income >= p.incomeFloor) chosen = p;
-    else break;
+
+  const knots = all.filter((p) => typeof p.meanIncome === 'number');
+  if (knots.length < 2) {
+    // Pre-interpolation dataset. Choose by floor, exactly as it shipped.
+    let chosen = all[0];
+    for (const p of all) {
+      if (income >= p.incomeFloor) chosen = p;
+      else break;
+    }
+    return chosen;
   }
-  return chosen;
+
+  knots.sort((a, b) => a.meanIncome! - b.meanIncome!);
+  const first = knots[0];
+  const last = knots[knots.length - 1];
+  if (income <= first.meanIncome!) return first;
+  if (income >= last.meanIncome!) return last;
+
+  let lower = first;
+  let upper = last;
+  for (let i = 0; i < knots.length - 1; i++) {
+    if (income >= knots[i].meanIncome! && income <= knots[i + 1].meanIncome!) {
+      lower = knots[i];
+      upper = knots[i + 1];
+      break;
+    }
+  }
+
+  const span = upper.meanIncome! - lower.meanIncome!;
+  const t = span > 0 ? (income - lower.meanIncome!) / span : 0;
+
+  // Landing exactly on a published bracket's mean income should report that
+  // bracket, not a blend of it with its neighbour. Same numbers either way;
+  // this is so profileBracket does not name two brackets for a household
+  // sitting precisely on one of them.
+  if (t <= 0) return lower;
+  if (t >= 1) return upper;
+
+  const categories = {} as SpendingCategories;
+  for (const key of Object.keys(lower.categories) as (keyof SpendingCategories)[]) {
+    categories[key] = lerp(lower.categories[key], upper.categories[key], t);
+  }
+
+  return {
+    // Both ends named, because the household is genuinely between the two and
+    // claiming either one alone would be the same overstatement as before.
+    bracket: `${lower.bracket} to ${upper.bracket}`,
+    incomeFloor: lower.incomeFloor,
+    meanIncome: income,
+    averageHouseholdSize: lerp(lower.averageHouseholdSize, upper.averageHouseholdSize, t),
+    categories,
+    livingTotal: lerp(lower.livingTotal, upper.livingTotal, t),
+    transport: {
+      vehiclesPerHousehold: lerp(
+        lower.transport.vehiclesPerHousehold,
+        upper.transport.vehiclesPerHousehold,
+        t,
+      ),
+      annualCostPerVehicle: lerp(
+        lower.transport.annualCostPerVehicle,
+        upper.transport.annualCostPerVehicle,
+        t,
+      ),
+      transitSpending: lerp(lower.transport.transitSpending, upper.transport.transitSpending, t),
+    },
+  };
 }
 
 export const ALL_SPENDING_PROFILES: readonly SpendingProfile[] = profiles();
