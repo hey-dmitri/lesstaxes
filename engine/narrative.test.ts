@@ -134,13 +134,14 @@ describe('why narrative', () => {
     // And barely at all with 2026.8, $8,669 to $8,664. That release stopped
     // charging renters for utilities their gross rent already covered, which
     // is worth thousands to each city but nearly cancels between two of them.
-    // And with 2026.11, $8,664 to $8,412: every 2024 dollar behind the site is
-    // now restated in today's money, which raises costs in both cities. Chicago
-    // is the more expensive of the two, so it gains more of the uplift and the
-    // gap between them narrows.
+    // And with 2026.11, $8,664 to $8,374. That release restated every 2024
+    // dollar in today's money, which raises costs in both cities, and deflated
+    // the salary before reading it off the 2024 income scales, which lowers the
+    // basket, the rent and the home the household is quoted. Chicago is the
+    // dearer of the two, so it moves more on both counts.
     const result = run(CHICAGO, AUSTIN, 150_000);
     expect(whySentence(result)).toBe(
-      'Austin, TX is $8,412 cheaper a year to live in at the same salary.',
+      'Austin, TX is $8,374 cheaper a year to live in at the same salary.',
     );
   });
 

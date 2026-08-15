@@ -196,6 +196,25 @@ const PRICE_LEVEL = {
       current: 429.098,
       currentMonth: '2026-07',
     },
+    /*
+     * Wages, for the salary the form opens on. That is a 2024 Census median
+     * and it sits against 2026 costs, which is the same vintage mismatch as
+     * everything else here.
+     *
+     * Real median usual weekly earnings for full-time workers rose 2.30% over
+     * the period (LES1252881600Q, a constant-dollar series), and prices rose
+     * 6.09%, so nominal earnings rose 1.0230 x 1.0609. Deflating the salary by
+     * the basket factor then places the default household 2.3% above the 2024
+     * median in real terms, which is where it actually belongs.
+     */
+    wage: {
+      value: (378 / 369.5) * (332.813 / 313.7),
+      series: 'LES1252881600Q x CPIAUCSL',
+      name: 'Median usual weekly earnings, full-time workers, real, restated to nominal',
+      base: 369.5,
+      current: (378 / 369.5) * (332.813 / 313.7) * 369.5,
+      currentMonth: '2026-04',
+    },
     homePrice: {
       value: 331.023 / 321.36,
       series: 'CSUSHPISA',

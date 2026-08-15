@@ -15,6 +15,7 @@ import {
   PARITY_FOR_CATEGORY,
   priceFactor,
   spendingProfile,
+  toBaseYearIncome,
   transportDefaults,
   type PriceParity,
   type SalesTaxRules,
@@ -160,7 +161,15 @@ export interface LivingResult extends LivingBreakdown {
 
 /** Re-price the national basket for this metro, then add transport. */
 export function computeLiving(inputs: LivingInputs): LivingResult {
-  const profile = spendingProfile(inputs.basketIncome, inputs.datasetVersion);
+  /*
+   * Deflated to base-year dollars before the lookup. The bands are indexed by
+   * 2024 income; reading a 2026 salary straight off them hands the household a
+   * basket from further up the curve than it belongs on. See toBaseYearIncome.
+   */
+  const profile = spendingProfile(
+    toBaseYearIncome(inputs.basketIncome, inputs.datasetVersion),
+    inputs.datasetVersion,
+  );
   const sizeFactor = equivalenceFactor(inputs.householdSize, profile.averageHouseholdSize);
 
   /*

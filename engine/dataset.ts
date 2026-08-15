@@ -303,12 +303,23 @@ export function homePriceDefault(
   stateCode?: string,
 ): USD {
   const base = housingDefaults(metroId, version, stateCode).medianHomePrice;
-  // The published median is a 2024 figure; priceFactor restates it in today's
-  // money. Applied here rather than in housingDefaults so the data browser goes
-  // on showing exactly what the Census published.
+  /*
+   * Two different restatements, and they are not the same restatement.
+   *
+   * The income is deflated to base-year dollars BEFORE it is compared with the
+   * local median owner income, because that comparison asks where this earner
+   * sits on the 2024 income scale the table is written on. The resulting price
+   * is then inflated to today's money, because that answers what the house
+   * costs now. Doing only the second is what put the home $2,901 too high.
+   */
   return Math.round(
     base *
-      homeValueFactorForIncome(income, metroId, version, stateCode) *
+      homeValueFactorForIncome(
+        toBaseYearIncome(income, version),
+        metroId,
+        version,
+        stateCode,
+      ) *
       priceFactor('homePrice', version),
   );
 }
@@ -330,12 +341,13 @@ export function rentDefault(
   // household at one metro-wide median, and their links must keep doing so.
   const base = defaults.rentByBedrooms?.[size] ?? defaults.medianRentMonthly;
 
+  // Deflated before it meets the curve, inflated after. See homePriceDefault.
+  const atBaseYear = toBaseYearIncome(income, version);
   const curve = incomeRentCurve(version);
   const local = curve
-    ? localIncomeFactor(income, defaults.medianRenterIncome, curve.elasticity)
+    ? localIncomeFactor(atBaseYear, defaults.medianRenterIncome, curve.elasticity)
     : null;
-  const factor = local ?? rentFactorForIncome(income, version);
-  // 2024 dollars restated in today's money. See homePriceDefault.
+  const factor = local ?? rentFactorForIncome(atBaseYear, version);
   return Math.round(base * factor * priceFactor('rent', version));
 }
 
@@ -472,7 +484,7 @@ export interface PriceLevel {
   baseYear: number;
   asOf: string;
   factors: Record<
-    'basket' | 'rent' | 'homePrice',
+    'basket' | 'rent' | 'homePrice' | 'wage',
     { value: number; series: string; name: string; currentMonth: string }
   >;
 }
@@ -498,10 +510,32 @@ export function priceLevel(version?: string): PriceLevel | undefined {
 
 /** The multiplier for one kind of dollar. 1 when this release has no factors. */
 export function priceFactor(
-  kind: 'basket' | 'rent' | 'homePrice',
+  kind: 'basket' | 'rent' | 'homePrice' | 'wage',
   version?: string,
 ): number {
   return priceLevel(version)?.factors[kind]?.value ?? 1;
+}
+
+/**
+ * Today's salary, restated in the dollars the source tables are written in.
+ *
+ * BOTH AXES HAVE TO MOVE TOGETHER OR NEITHER SHOULD. Restating the published
+ * amounts in today's money without restating the incomes they are indexed by
+ * reads a 2026 earner off a 2024 income scale, which treats them as richer in
+ * real terms than they are and hands them a household's spending, rent and home
+ * from further up the curve than they belong. Measured when exactly that was
+ * shipped: $1,546 a year too much basket, $924 too much rent, and a home priced
+ * $2,901 too high, which then carries into the mortgage and the property tax.
+ *
+ * The all-items index is the deflator, not the shelter or house-price one: the
+ * question here is "how well off is this person", which is a general purchasing
+ * power question. Each cost is then inflated by its own index, which is a
+ * different question about a different thing.
+ *
+ * Returns the income unchanged on releases with no factors.
+ */
+export function toBaseYearIncome(income: USD, version?: string): USD {
+  return income / priceFactor('basket', version);
 }
 
 /**

@@ -165,7 +165,9 @@ const cards = results
       <em>same salary, different city</em></div>
     <div><span class="lbl">The salary change</span><b class="${cls(r.salaryEffect)}">${signed(r.salaryEffect)}</b>
       <em>${r.destination.grossSalary === r.origin.grossSalary ? 'salary unchanged' : 'pay difference and its tax effect'}</em></div>
-    <div><span class="lbl">Break-even salary</span><b>${money(r.breakEvenSalary)}</b>
+    <div><span class="lbl">Break-even salary</span><b>${
+      r.breakEvenSalary === null ? 'none reachable' : money(r.breakEvenSalary)
+    }</b>
       <em>needed in ${esc(to.shortName)} to match</em></div>
   </div>
 

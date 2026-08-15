@@ -246,7 +246,15 @@ export interface ComparisonResult {
   salaryEffect: USD;
 
   /** Destination salary at which delta would be exactly zero. */
-  breakEvenSalary: USD;
+  /**
+   * Destination salary at which the move breaks even.
+   *
+   * ZERO AND NULL ARE DIFFERENT ANSWERS. Zero means no salary is needed at all
+   * — the destination wins even on nothing, the best result this tool can give.
+   * Null means no salary in a sane range closes the gap. Carrying both as 0
+   * left the interface unable to tell them apart.
+   */
+  breakEvenSalary: USD | null;
 
   /** Sorted by absolute impact, largest first. */
   breakdown: CategoryDelta[];

@@ -87,6 +87,7 @@ export { computeFica } from './tax/fica';
 export { computeLocalTax } from './tax/local';
 export { computeStateTax, adultsIn, scheduleFor } from './tax/state';
 export { taxReturnsFor, type TaxReturnShare } from './tax/returns';
+export { priceFactor, priceLevel, toBaseYearIncome, type PriceLevel } from './dataset';
 export { federalRules, ficaRules } from './tax/rules';
 export {
   ALL_FILING_STATUSES,

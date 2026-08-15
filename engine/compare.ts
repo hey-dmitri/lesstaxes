@@ -532,8 +532,21 @@ export function breakEvenSalary(
     ),
   });
 
+  /*
+   * The basket is pinned to the ORIGIN salary here rather than trusted from the
+   * caller's options, because forgetting it is silent and expensive. Without it
+   * every trial salary re-selects its own spending profile, the solver measures
+   * a household that gets hungrier as it earns more, and the answer comes back
+   * two to three thousand dollars low — while still looking like a number.
+   *
+   * compare() passes it correctly. This function is exported, so the next
+   * caller might not.
+   */
   const leftoverAt = (salary: USD) =>
-    computeCity(cityAt(salary), inputs.household, options).leftover;
+    computeCity(cityAt(salary), inputs.household, {
+      ...options,
+      basketIncome: options.basketIncome ?? inputs.origin.grossSalary,
+    }).leftover;
 
   let low = 0;
   let high = Math.max(inputs.origin.grossSalary, inputs.destination.grossSalary) * 4 + 250_000;
@@ -611,7 +624,9 @@ export function compare(
     deltaMonthly: delta / 12,
     cityEffect,
     salaryEffect: delta - cityEffect,
-    breakEvenSalary: breakEvenSalary(inputs, origin.leftover, destinationOpts) ?? 0,
+    // null and 0 mean opposite things — no salary would do it, versus no salary
+    // is needed — and this used to collapse both to 0.
+    breakEvenSalary: breakEvenSalary(inputs, origin.leftover, destinationOpts),
     breakdown: buildBreakdown(origin, destination),
   };
 }

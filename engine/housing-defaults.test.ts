@@ -145,11 +145,12 @@ describe('break-even with income-dependent rent', () => {
       destination: defaultCityInputs(AUSTIN, 150_000, household),
     });
 
+    expect(result.breakEvenSalary).not.toBeNull();
     const check = compare({
       datasetVersion: CURRENT_DATASET_VERSION,
       household,
       origin: defaultCityInputs(CHICAGO, 150_000, household),
-      destination: defaultCityInputs(AUSTIN, result.breakEvenSalary, household),
+      destination: defaultCityInputs(AUSTIN, result.breakEvenSalary!, household),
     });
     expect(check.delta).toBeCloseTo(0, 0);
   });
@@ -170,7 +171,7 @@ describe('break-even with income-dependent rent', () => {
       datasetVersion: CURRENT_DATASET_VERSION,
       household,
       origin,
-      destination: { ...typed, grossSalary: result.breakEvenSalary },
+      destination: { ...typed, grossSalary: result.breakEvenSalary! },
     });
     expect(check.delta).toBeCloseTo(0, 0);
   });
@@ -193,10 +194,13 @@ describe('home price prefill', () => {
     // The published median is a 2024 figure and the prefill is stated in today's
     // money, so the inflation factor is divided back out to test the curve
     // rather than the restatement.
-    const inflation = priceFactor('homePrice');
+    //
+    // The income has to be handed over in TODAY's money, because that is what
+    // the function is given in real use and it deflates before it compares. A
+    // 2024 median income passed raw would deflate to below itself.
     for (const id of [CHICAGO, AUSTIN]) {
-      const ownerIncome = housingDefaults(id).medianOwnerIncome!;
-      expect(homePriceDefault(id, ownerIncome) / inflation).toBeCloseTo(
+      const ownerIncomeToday = housingDefaults(id).medianOwnerIncome! * priceFactor('basket');
+      expect(homePriceDefault(id, ownerIncomeToday) / priceFactor('homePrice')).toBeCloseTo(
         housingDefaults(id).medianHomePrice,
         0,
       );

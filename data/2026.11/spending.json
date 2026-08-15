@@ -46,6 +46,14 @@
         "current": 429.098,
         "currentMonth": "2026-07"
       },
+      "wage": {
+        "value": 1.0853332804196971,
+        "series": "LES1252881600Q x CPIAUCSL",
+        "name": "Median usual weekly earnings, full-time workers, real, restated to nominal",
+        "base": 369.5,
+        "current": 401.03064711507807,
+        "currentMonth": "2026-04"
+      },
       "homePrice": {
         "value": 1.030069081404033,
         "series": "CSUSHPISA",

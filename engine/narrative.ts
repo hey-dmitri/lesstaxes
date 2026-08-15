@@ -212,7 +212,8 @@ export function breakEvenNarrative(result: ComparisonResult): BreakEvenNarrative
         result.destination.grossSalary === result.origin.grossSalary,
     };
   }
-  if (salary <= 0) return null;
+  // Null is "no salary would do it"; a non-positive number is the same news.
+  if (salary === null || salary <= 0) return null;
 
   const against = result.destination.grossSalary;
   const gap = salary - against;

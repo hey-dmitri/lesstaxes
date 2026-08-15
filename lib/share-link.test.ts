@@ -69,6 +69,21 @@ const OWNING: SharedComparison = {
   },
 };
 
+/*
+ * Minor versions went past 9 on 2026-08-15. The wire format writes the minor as
+ * a varint so it was never limited to a digit, but nothing said so out loud,
+ * and a link that decodes to the WRONG dataset recomputes silently against the
+ * wrong data rather than failing.
+ */
+describe('dataset versions past a single digit', () => {
+  it('round trips every shipped release', () => {
+    for (const version of ['2026.1', '2026.9', '2026.10', '2026.11']) {
+      const round = decodeComparison(encodeComparison({ ...RENTING, datasetVersion: version }));
+      expect(round.datasetVersion).toBe(version);
+    }
+  });
+});
+
 describe('round trip', () => {
   it('preserves a renting comparison exactly', () => {
     expect(decodeComparison(encodeComparison(RENTING))).toEqual(RENTING);

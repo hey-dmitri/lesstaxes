@@ -19,6 +19,7 @@ import {
   defaultRent,
   formatUSD,
   housingAtSalary,
+  priceFactor,
   type FilingStatus,
 } from '@/engine';
 
@@ -82,8 +83,15 @@ const TENURE_OPTIONS = [
  * Source: Census ACS 2024 5-year, table S2001, "Median earnings (dollars) for
  * full-time, year-round workers with earnings" (S2001_C01_013E), United
  * States. https://api.census.gov/data/2024/acs/acs5/subject
+ *
+ * BROUGHT FORWARD TO TODAY'S MONEY. $61,657 is a 2024 figure and every cost on
+ * this page is now stated in current prices, so leaving the salary in 2024
+ * would have reintroduced the exact mismatch that restating the costs fixed —
+ * an old wage measured against today's rent. Wages did not move with prices:
+ * real median full-time earnings rose 2.3% while prices rose 6.1%, so the
+ * nominal uplift is the product of the two.
  */
-const DEFAULT_SALARY = 61_657;
+const DEFAULT_SALARY = Math.round(61_657 * priceFactor('wage'));
 
 /**
  * A column with no city in it yet.

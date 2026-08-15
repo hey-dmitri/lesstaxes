@@ -41,7 +41,7 @@ describe('comparisonFromShared', () => {
     const direct = comparisonFromShared(CHICAGO_TO_AUSTIN);
     const viaLink = comparisonFromShared(decodeComparison(encodeComparison(CHICAGO_TO_AUSTIN)));
     expect(viaLink.delta).toBeCloseTo(direct.delta, 6);
-    expect(viaLink.breakEvenSalary).toBeCloseTo(direct.breakEvenSalary, 6);
+    expect(viaLink.breakEvenSalary).toBeCloseTo(direct.breakEvenSalary!, 6);
   });
 });
 

@@ -8,6 +8,7 @@ import {
   priceLevel,
   rentDefault,
   spendingProfile,
+  toBaseYearIncome,
 } from './dataset';
 import { computeTransport } from './living';
 import type { Household } from './types';
@@ -31,15 +32,15 @@ const AUSTIN = '12420';
 const SINGLE: Household = { filingStatus: 'single', children: 0, earners: 1 };
 
 describe('the price level', () => {
-  it('uses a different index for rent, house prices and the shopping basket', () => {
+  it('uses a different index for rent, house prices, the basket and wages', () => {
     const level = priceLevel()!;
     expect(level.baseYear).toBe(2024);
     const series = Object.values(level.factors).map((f) => f.series);
-    expect(new Set(series).size).toBe(3);
+    expect(new Set(series).size).toBe(4);
   });
 
   it('is an uplift in every case, and a believable one', () => {
-    for (const kind of ['basket', 'rent', 'homePrice'] as const) {
+    for (const kind of ['basket', 'rent', 'homePrice', 'wage'] as const) {
       const f = priceFactor(kind);
       expect(f).toBeGreaterThan(1);
       expect(f).toBeLessThan(1.5);
@@ -55,6 +56,15 @@ describe('the price level', () => {
   it('keeps them apart, because they moved apart', () => {
     expect(priceFactor('rent')).toBeGreaterThan(priceFactor('basket'));
     expect(priceFactor('basket')).toBeGreaterThan(priceFactor('homePrice'));
+  });
+
+  /*
+   * Wages outran prices, which is why the salary takes its own factor rather
+   * than the basket one. Using the basket factor for the salary would quietly
+   * assert that nobody got a real raise since 2024.
+   */
+  it('lets wages run ahead of prices, because they did', () => {
+    expect(priceFactor('wage')).toBeGreaterThan(priceFactor('basket'));
   });
 
   it('raises the prefills above the published medians they come from', () => {
@@ -90,6 +100,68 @@ describe('the price level', () => {
     const after = at(undefined);
     const shareOfLeftover = (before.leftover - after.leftover) / before.leftover;
     expect(shareOfLeftover).toBeGreaterThan(0.1);
+  });
+
+  /*
+   * BOTH AXES MOVE OR NEITHER DOES.
+   *
+   * The first cut of this restated the published AMOUNTS in today's money and
+   * left the INCOMES they are indexed by in 2024 dollars. That reads a 2026
+   * earner off a 2024 income scale, making them look richer in real terms than
+   * they are and handing them a basket, a rent and a home from further up the
+   * curve: $1,546, $924 and $2,901 too much respectively.
+   *
+   * Every one of these asks the same question — does a salary worth the same in
+   * REAL terms buy the same real answer? — and the only way to fail it is to
+   * inflate one axis and not the other.
+   */
+  it('reads a salary off the income scale at the right real position', () => {
+    const f = priceFactor('basket');
+    const band = ALL_SPENDING_PROFILES.find((p) => p.incomeFloor === 100_000)!;
+
+    // A salary worth that band's mean income in TODAY's money must land on that
+    // band, not on the one above it.
+    const todaysEquivalent = band.meanIncome! * f;
+    const chosen = spendingProfile(toBaseYearIncome(todaysEquivalent));
+    expect(chosen.livingTotal).toBeCloseTo(band.livingTotal, 6);
+  });
+
+  /*
+   * The cross-version form of the same invariant, and the one that would
+   * actually have caught the bug: 2026.10 has no uplift at all, so the same
+   * REAL household must get the same REAL answer from both releases. Anything
+   * else means one axis moved without the other.
+   */
+  it('quotes the same real rent and home to the same real household', () => {
+    const level = priceLevel()!;
+    const baseYearIncome = 100_000;
+    const todaysIncome = baseYearIncome * level.factors.basket.value;
+
+    // Both are rounded to whole dollars, at different points on the scale, so
+    // they can legitimately land up to about a dollar apart. What must not
+    // happen is the $77 a month the broken version produced.
+    const rentThen = rentDefault(CHICAGO, baseYearIncome, 2, '2026.10');
+    const rentNow = rentDefault(CHICAGO, todaysIncome, 2);
+    expect(Math.abs(rentNow / level.factors.rent.value - rentThen)).toBeLessThan(1.5);
+
+    const homeThen = homePriceDefault(CHICAGO, baseYearIncome, '2026.10');
+    const homeNow = homePriceDefault(CHICAGO, todaysIncome);
+    expect(homeNow / level.factors.homePrice.value).toBeCloseTo(homeThen, -1);
+  });
+
+  it('feeds the same real basket to the same real household', () => {
+    const f = priceFactor('basket');
+    const then = computeCity(
+      defaultCityInputs(CHICAGO, 100_000, SINGLE, 'rent', 0.068, '2026.10'),
+      SINGLE,
+      { datasetVersion: '2026.10' },
+    );
+    const now = computeCity(
+      { ...defaultCityInputs(CHICAGO, 100_000 * f, SINGLE), grossSalary: 100_000 * f },
+      SINGLE,
+    );
+    // Same basket in real terms, so the same figure once the uplift is undone.
+    expect(now.living.food / f).toBeCloseTo(then.living.food, 0);
   });
 
   it('leaves links pinned to an older release in 2024 dollars', () => {

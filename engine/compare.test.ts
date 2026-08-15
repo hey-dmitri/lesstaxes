@@ -85,6 +85,29 @@ describe('structural invariants', () => {
     expect(r.breakdown).toHaveLength(0);
   });
 
+  /*
+   * Reversing a comparison must negate it exactly. Nothing in the engine is
+   * supposed to depend on which city is called "origin" except the spending
+   * basket, which is pinned to the origin salary — so at equal salaries the two
+   * directions must be mirror images. A one-sided cost, or a basket that leaked
+   * the origin's identity into a cost line, would show up here and nowhere else.
+   */
+  it('reversing a comparison negates it, across the country', () => {
+    for (const id of ALL_METRO_IDS.filter((_, i) => i % 37 === 0)) {
+      const forward = quickCompare(id, AUSTIN, 120_000, SINGLE);
+      const backward = quickCompare(AUSTIN, id, 120_000, SINGLE);
+      expect(forward.delta + backward.delta).toBeCloseTo(0, 6);
+    }
+  });
+
+  it('comparing a place with itself is exactly zero, everywhere', () => {
+    for (const id of ALL_METRO_IDS.filter((_, i) => i % 23 === 0)) {
+      for (const h of [SINGLE, FAMILY]) {
+        expect(quickCompare(id, id, 120_000, h).delta).toBeCloseTo(0, 6);
+      }
+    }
+  });
+
   it('the breakdown is sorted by absolute impact', () => {
     const r = quickCompare(NEW_YORK, DALLAS, 200_000, FAMILY, 160_000);
     for (let i = 1; i < r.breakdown.length; i++) {
@@ -155,8 +178,28 @@ describe('breakEvenSalary', () => {
   it('produces a salary at which the delta really is zero', () => {
     const r = quickCompare(CHICAGO, AUSTIN, 150_000, SINGLE, 125_000);
 
-    const atBreakEven = compare(inputsFor(CHICAGO, AUSTIN, 150_000, r.breakEvenSalary));
+    // Null would mean no salary closes the gap, which is not this case.
+    expect(r.breakEvenSalary).not.toBeNull();
+    const atBreakEven = compare(inputsFor(CHICAGO, AUSTIN, 150_000, r.breakEvenSalary!));
     expect(atBreakEven.delta).toBeCloseTo(0, 0);
+  });
+
+  /*
+   * The solver pins the spending basket to the ORIGIN salary itself rather than
+   * trusting the caller to pass it. Without that, every trial salary re-selects
+   * its own basket, the solver measures a household that gets hungrier as it
+   * earns more, and the answer comes back $1,254 to $2,847 low — while still
+   * looking like a perfectly ordinary number.
+   *
+   * compare() passes the option correctly. This function is exported, so the
+   * next caller might not, and nothing would tell them.
+   */
+  it('is right even when the caller forgets to pin the basket', () => {
+    const inputs = inputsFor(CHICAGO, AUSTIN, 120_000);
+    const r = compare(inputs);
+    const bare = breakEvenSalary(inputs, r.origin.leftover);
+    expect(bare).not.toBeNull();
+    expect(bare!).toBeCloseTo(r.breakEvenSalary!, 0);
   });
 
   it('is below the current salary when the destination is cheaper', () => {
@@ -184,12 +227,12 @@ describe('breakEvenSalary', () => {
       origin,
       destination: {
         ...destination,
-        grossSalary: result.breakEvenSalary,
+        grossSalary: result.breakEvenSalary!,
         housing: housingAtSalary(
           destination.metroId,
           destination.housing,
           destination.grossSalary,
-          result.breakEvenSalary,
+          result.breakEvenSalary!,
           household,
         ),
       },
