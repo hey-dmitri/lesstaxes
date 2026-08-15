@@ -49,6 +49,15 @@ export interface FlatRateLocalTax {
   stateCode: string;
   rate: Rate;
   /**
+   * What this rate is and is not, in plain words, where it needs saying.
+   *
+   * Indiana's is a population-weighted average of the counties in the metro,
+   * and the counties range from 0.50% to 3.00% — so an individual reader may
+   * be a long way from the figure shown. A rate that is an average of very
+   * different things should say so.
+   */
+  note?: string;
+  /**
    * What the rate is charged on. Gross wages unless the locality says
    * otherwise, which is how Philadelphia, Detroit and the Ohio cities work.
    *

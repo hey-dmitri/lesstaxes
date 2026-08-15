@@ -218,24 +218,30 @@ describe('housing follows the state too, not just tax', () => {
 });
 
 describe('seven more cities carry their own local income tax', () => {
-  const SINGLE_150K = (metroId: string, jurisdiction: string) =>
+  const SINGLE_150K = (metroId: string, jurisdiction: string, state?: string) =>
     computeCity(defaultCityInputs(metroId, 150_000, SINGLE, 'rent'), SINGLE, {
-      localJurisdictions: resolveLocalJurisdictions(metroId, { [jurisdiction]: true }),
+      localJurisdictions: resolveLocalJurisdictions(metroId, { [jurisdiction]: true }, undefined, state),
     }).tax.local;
 
   it('charges the published city rate rather than the state average', () => {
-    // Every rate transcribed from the levying authority — see
-    // scripts/build-local-income-tax.mjs for the source on each.
-    const expected: Array<[string, string, number]> = [
+    /*
+     * Every rate transcribed from the levying authority — see
+     * scripts/build-local-income-tax.mjs for the source on each.
+     *
+     * Louisville is checked on its KENTUCKY side. Its metro reaches four
+     * Indiana counties, and every Indiana metro now carries a county income
+     * tax — correctly, and only for somebody who picked the Indiana side.
+     */
+    const expected: Array<[string, string, number, string?]> = [
       ['17410', 'cleveland', 0.025], // Cleveland
       ['38300', 'pittsburgh', 0.03], // Pittsburgh: 1% city + 2% school
-      ['31140', 'louisville', 0.022], // Louisville Metro
+      ['31140', 'louisville', 0.022, 'KY'], // Louisville Metro, Kentucky side
       ['28140', 'kansas-city', 0.01], // Kansas City earnings tax
       ['41180', 'st-louis', 0.01], // St. Louis earnings tax
       ['12580', 'baltimore-city', 0.032], // Baltimore City
     ];
-    for (const [metroId, id, rate] of expected) {
-      expect(SINGLE_150K(metroId, id)).toBeCloseTo(150_000 * rate, 0);
+    for (const [metroId, id, rate, state] of expected) {
+      expect(SINGLE_150K(metroId, id, state), id).toBeCloseTo(150_000 * rate, 0);
     }
   });
 

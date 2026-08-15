@@ -26,7 +26,14 @@ describe('city income taxes replace the state average, never add to it', () => {
     [COLUMBUS, 'columbus', 'avg-OH'],
     [CINCINNATI, 'cincinnati', 'avg-OH'],
   ])('%s offers the city or the rest of the metro, not both', (metroId, cityId, averageId) => {
-    const options = localTaxOptions(metroId);
+    /*
+     * Filtered to the city's own state. Cincinnati straddles Indiana, and
+     * every Indiana metro now carries a county tax jurisdiction — which is
+     * correct, and which only ever reaches somebody who picked the Indiana
+     * side. Counting it here would be counting a tax nobody in Ohio pays.
+     */
+    const state = averageId.slice(4);
+    const options = localTaxOptions(metroId, undefined, state);
     const group = options.filter((o) => o.group === 'locality');
     expect(group).toHaveLength(2);
     expect(group.map((o) => o.jurisdictionId).sort()).toEqual([cityId, averageId].sort());
@@ -40,7 +47,7 @@ describe('city income taxes replace the state average, never add to it', () => {
       { [cityId]: true, [averageId]: true },
       { [cityId]: false, [averageId]: false },
     ]) {
-      expect(resolveLocalJurisdictions(metroId, optIns)).toHaveLength(1);
+      expect(resolveLocalJurisdictions(metroId, optIns, undefined, state)).toHaveLength(1);
     }
   });
 
@@ -91,9 +98,20 @@ describe('ungrouped options are unaffected', () => {
       .toEqual(['yonkers']);
   });
 
-  it('leaves metros with no local income tax alone', () => {
-    expect(localTaxOptions(CHICAGO)).toHaveLength(0);
-    expect(resolveLocalJurisdictions(CHICAGO, {})).toHaveLength(0);
+  /*
+   * Illinois levies no local income tax, so the Illinois side of Chicago
+   * carries none. THE INDIANA SIDE DOES, and used to carry nothing at all —
+   * Chicago's primary state is Illinois, so the Indiana counties fell through
+   * every branch and paid zero. Lake County alone is 1.5%.
+   */
+  it('leaves the Illinois side of Chicago alone and taxes the Indiana side', () => {
+    expect(localTaxOptions(CHICAGO, undefined, 'IL')).toHaveLength(0);
+    expect(resolveLocalJurisdictions(CHICAGO, {}, undefined, 'IL')).toHaveLength(0);
+
+    const indiana = resolveLocalJurisdictions(CHICAGO, {}, undefined, 'IN');
+    expect(indiana).toHaveLength(1);
+    expect(indiana[0].stateCode).toBe('IN');
+    expect(indiana[0].kind === 'flatRate' && indiana[0].rate).toBeGreaterThan(0.01);
   });
 });
 
@@ -153,5 +171,67 @@ describe('a local tax charged on the state base', () => {
   it('falls back to gross rather than to zero', () => {
     const result = computeLocalTax(inputs, jurisdiction);
     expect(result.taxableIncome).toBe(100_000);
+  });
+});
+
+/**
+ * Indiana's county income tax.
+ *
+ * The largest single error this dataset carried. Indiana was on the
+ * state-average local rate of 0.35%, which is not merely low — it is below the
+ * LOWEST of the 92 counties. Porter charges 0.50%, Randolph 3.00%, and the
+ * population-weighted statewide average is 1.7536%.
+ */
+describe('Indiana county income tax', () => {
+  const INDIANAPOLIS = '26900';
+  const CHICAGO_METRO = '16980';
+
+  it('charges far more than the state average it replaced', () => {
+    const rules = resolveLocalJurisdictions(INDIANAPOLIS, {}, undefined, 'IN');
+    expect(rules).toHaveLength(1);
+    // 1.81%, weighted across eleven counties from Hamilton's 1.10% to
+    // Morgan's 2.72%. Marion is only 45% of the metro, so its 2.02% cannot
+    // stand in for the whole.
+    expect(rules[0].kind === 'flatRate' && rules[0].rate).toBeCloseTo(0.018054, 6);
+  });
+
+  /*
+   * Charged on the state's taxable income, not on gross pay — so a family
+   * with children pays less than a single filer on the same salary, because
+   * Indiana's exemptions come off first. Charging on gross would have got this
+   * backwards in the one direction that grows with family size.
+   */
+  it('charges on what the state taxed, so children reduce it', () => {
+    const local = (children: number) =>
+      computeCity(
+        {
+          ...defaultCityInputs(INDIANAPOLIS, 120_000, { filingStatus: 'marriedJointly', children }),
+          stateCode: 'IN',
+        },
+        { filingStatus: 'marriedJointly', children },
+      ).tax.local;
+
+    expect(local(3)).toBeLessThan(local(0));
+  });
+
+  /*
+   * The Indiana side of Chicago used to pay NOTHING. Chicago's primary state
+   * is Illinois, which levies no local income tax, so the Indiana counties
+   * fell through every branch in the build and were charged zero — while Lake
+   * County alone charges 1.5%.
+   */
+  it('reaches the Indiana counties of metros led by another state', () => {
+    for (const metroId of [CHICAGO_METRO, '31140', '17140']) {
+      const indiana = resolveLocalJurisdictions(metroId, {}, undefined, 'IN');
+      expect(indiana, metroId).toHaveLength(1);
+      expect(indiana[0].kind === 'flatRate' && indiana[0].rate, metroId).toBeGreaterThan(0.01);
+    }
+  });
+
+  it('says out loud that a county may be far from the metro average', () => {
+    const [rules] = resolveLocalJurisdictions(INDIANAPOLIS, {}, undefined, 'IN');
+    const note = rules.kind === 'flatRate' ? rules.note : undefined;
+    expect(note).toMatch(/0\.50% to 3\.00%/);
+    expect(note).toMatch(/first year/);
   });
 });

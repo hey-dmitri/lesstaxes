@@ -347,7 +347,63 @@ const STATE_AVERAGE_LOCAL = {
  *
  * Where it is city-specific, the tax applies ONLY to the metros listed here.
  */
-const STATEWIDE_LOCAL_TAX = new Set(['MD', 'OH', 'PA', 'IN', 'KY', 'IA']);
+/**
+ * INDIANA'S COUNTY INCOME TAX, per metro.
+ *
+ * This was the largest single error in the dataset. Indiana was carrying the
+ * state-average local rate of 0.35%, which is not merely low — it is below
+ * the LOWEST county in the state. Porter County, the cheapest of the 92,
+ * charges 0.50%; Randolph charges 3.00%. The population-weighted statewide
+ * average is 1.7536%. We were understating Indiana tax by over $1,000 a year
+ * and making the state look cheaper than it is, which is the direction that
+ * sends somebody to the wrong city.
+ *
+ * WEIGHTED BY POPULATION, NOT TAKEN FROM THE PRINCIPAL COUNTY. Indiana taxes
+ * by county of residence and a metro spans several counties, so a single
+ * headline county would misrepresent most of the people in it. The Indiana
+ * side of Chicago makes the case: Porter charges 0.50% and Jasper 2.8640%, a
+ * spread of nearly six times, and Lake and Porter are both central so there is
+ * no obvious principal county to pick. Indianapolis runs from Hamilton's
+ * 1.10% to Morgan's 2.72%, and Marion — 45% of the metro — is not enough of it
+ * for its 2.02% to stand in for the metro's 1.81%.
+ *
+ * Rates: Departmental Notice #1, effective 1 January 2026, cross-checked
+ * against the rate chart printed on Schedule CT-40 for the prior year — the
+ * two agree on 86 of 92 counties, and the six that differ are exactly the six
+ * the notice flags as changed. Populations: Census Vintage 2025 estimates.
+ *
+ * ONE THING THIS CANNOT SEE. Indiana fixes your county on 1 January and does
+ * not change it when you move, so somebody who moves INTO Indiana during the
+ * year owes no county tax at all in year one unless they were already working
+ * there on 1 January. This charges them from day one, which overstates their
+ * first year — the safe direction, and noted.
+ */
+const INDIANA_COUNTY_TAX = {
+  '26900': { rate: 0.018054, name: 'Indianapolis area counties' },
+  '23060': { rate: 0.016286, name: 'Fort Wayne area counties' },
+  '21780': { rate: 0.012073, name: 'Evansville area counties' },
+  '43780': { rate: 0.0175, name: 'St. Joseph County' },
+  '21140': { rate: 0.02, name: 'Elkhart County' },
+  '29200': { rate: 0.014389, name: 'Lafayette area counties' },
+  '34620': { rate: 0.015, name: 'Delaware County' },
+  '45460': { rate: 0.019719, name: 'Terre Haute area counties' },
+  '14020': { rate: 0.021877, name: 'Bloomington area counties' },
+  '18020': { rate: 0.0175, name: 'Bartholomew County' },
+  '29020': { rate: 0.0235, name: 'Howard County' },
+  '33140': { rate: 0.0145, name: 'LaPorte County' },
+  '16980': { rate: 0.013121, name: 'Indiana counties of the Chicago metro' },
+  '31140': { rate: 0.018242, name: 'Indiana counties of the Louisville metro' },
+  '17140': { rate: 0.015308, name: 'Indiana counties of the Cincinnati metro' },
+};
+
+/** Population-weighted across all 92 counties, for rural Indiana. */
+const INDIANA_STATEWIDE_RATE = 0.017536;
+
+const INDIANA_SOURCE = 'https://www.in.gov/dor/files/dn01.pdf';
+const INDIANA_NOTE =
+  'Indiana taxes by county of residence, and this is the population-weighted average of the counties in this metro. An individual county may be well above or below it — the state ranges from 0.50% to 3.00%. Indiana also fixes your county on 1 January and does not change it when you move, so someone moving into Indiana owes no county tax in their first year unless they already worked there; that is not modelled here, so a first year is overstated.';
+
+const STATEWIDE_LOCAL_TAX = new Set(['MD', 'OH', 'PA', 'KY', 'IA']);
 
 /** Metros in city-specific states that actually contain a taxing jurisdiction. */
 const CITY_SPECIFIC_METROS = {
@@ -411,6 +467,34 @@ for (const city of CITY_TAXES) {
     note: city.note,
   };
 }
+
+for (const [metroId, { rate, name }] of Object.entries(INDIANA_COUNTY_TAX)) {
+  jurisdictions[`in-${metroId}`] = {
+    id: `in-${metroId}`,
+    kind: 'flatRate',
+    name,
+    stateCode: 'IN',
+    rate,
+    // Indiana charges the county rate on the SAME taxable income the state
+    // taxes, after Indiana's exemptions — not on gross pay.
+    appliesTo: 'stateTaxableIncome',
+    isStateAverage: false,
+    source: INDIANA_SOURCE,
+    note: INDIANA_NOTE,
+  };
+}
+
+jurisdictions['in-statewide'] = {
+  id: 'in-statewide',
+  kind: 'flatRate',
+  name: 'Indiana county tax (statewide average)',
+  stateCode: 'IN',
+  rate: INDIANA_STATEWIDE_RATE,
+  appliesTo: 'stateTaxableIncome',
+  isStateAverage: true,
+  source: INDIANA_SOURCE,
+  note: INDIANA_NOTE,
+};
 
 const CITY_BY_METRO = Object.fromEntries(CITY_TAXES.map((c) => [c.metroId, c]));
 const PORTLAND_METRO_ID = '38900';
@@ -495,6 +579,20 @@ for (const metro of Object.values(metrosMeta.metros)) {
     entries.push({ jurisdictionId: `avg-${state}`, optional: false, defaultApplies: true });
   } else if (CITY_SPECIFIC_METROS[state]?.includes(metro.id)) {
     entries.push({ jurisdictionId: `avg-${state}`, optional: false, defaultApplies: true });
+  }
+
+  /*
+   * Indiana is added regardless of the metro's primary state, because three of
+   * its metros are led by Illinois, Kentucky and Ohio. The engine filters
+   * jurisdictions by the state the reader picked, so the Indiana entry only
+   * surfaces for someone on the Indiana side.
+   */
+  if (metro.states.includes('IN')) {
+    entries.push({
+      jurisdictionId: INDIANA_COUNTY_TAX[metro.id] ? `in-${metro.id}` : 'in-statewide',
+      optional: false,
+      defaultApplies: true,
+    });
   }
 
   if (entries.length) byMetro[metro.id] = entries;

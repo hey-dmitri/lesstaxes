@@ -361,6 +361,182 @@
       "isStateAverage": false,
       "source": "Comptroller of Maryland, Withholding Tax Facts January 2026 - December 2026 — https://www.marylandcomptroller.gov/content/dam/mdcomp/tax/legal-publications/facts/withholding-tax-facts-2026.pdf",
       "note": "Baltimore City local income tax, 3.20% for 2026. Maryland levies this on Maryland TAXABLE income rather than on gross, so applying it to gross overstates it by roughly the deduction times the rate — about $190 a year at $150,000. That is far smaller than the error it replaces: the Maryland state average is 2.40%, understating a Baltimore City resident by about $1,200 a year."
+    },
+    "in-14020": {
+      "id": "in-14020",
+      "kind": "flatRate",
+      "name": "Bloomington area counties",
+      "stateCode": "IN",
+      "rate": 0.021877,
+      "appliesTo": "stateTaxableIncome",
+      "isStateAverage": false,
+      "source": "https://www.in.gov/dor/files/dn01.pdf",
+      "note": "Indiana taxes by county of residence, and this is the population-weighted average of the counties in this metro. An individual county may be well above or below it — the state ranges from 0.50% to 3.00%. Indiana also fixes your county on 1 January and does not change it when you move, so someone moving into Indiana owes no county tax in their first year unless they already worked there; that is not modelled here, so a first year is overstated."
+    },
+    "in-16980": {
+      "id": "in-16980",
+      "kind": "flatRate",
+      "name": "Indiana counties of the Chicago metro",
+      "stateCode": "IN",
+      "rate": 0.013121,
+      "appliesTo": "stateTaxableIncome",
+      "isStateAverage": false,
+      "source": "https://www.in.gov/dor/files/dn01.pdf",
+      "note": "Indiana taxes by county of residence, and this is the population-weighted average of the counties in this metro. An individual county may be well above or below it — the state ranges from 0.50% to 3.00%. Indiana also fixes your county on 1 January and does not change it when you move, so someone moving into Indiana owes no county tax in their first year unless they already worked there; that is not modelled here, so a first year is overstated."
+    },
+    "in-17140": {
+      "id": "in-17140",
+      "kind": "flatRate",
+      "name": "Indiana counties of the Cincinnati metro",
+      "stateCode": "IN",
+      "rate": 0.015308,
+      "appliesTo": "stateTaxableIncome",
+      "isStateAverage": false,
+      "source": "https://www.in.gov/dor/files/dn01.pdf",
+      "note": "Indiana taxes by county of residence, and this is the population-weighted average of the counties in this metro. An individual county may be well above or below it — the state ranges from 0.50% to 3.00%. Indiana also fixes your county on 1 January and does not change it when you move, so someone moving into Indiana owes no county tax in their first year unless they already worked there; that is not modelled here, so a first year is overstated."
+    },
+    "in-18020": {
+      "id": "in-18020",
+      "kind": "flatRate",
+      "name": "Bartholomew County",
+      "stateCode": "IN",
+      "rate": 0.0175,
+      "appliesTo": "stateTaxableIncome",
+      "isStateAverage": false,
+      "source": "https://www.in.gov/dor/files/dn01.pdf",
+      "note": "Indiana taxes by county of residence, and this is the population-weighted average of the counties in this metro. An individual county may be well above or below it — the state ranges from 0.50% to 3.00%. Indiana also fixes your county on 1 January and does not change it when you move, so someone moving into Indiana owes no county tax in their first year unless they already worked there; that is not modelled here, so a first year is overstated."
+    },
+    "in-21140": {
+      "id": "in-21140",
+      "kind": "flatRate",
+      "name": "Elkhart County",
+      "stateCode": "IN",
+      "rate": 0.02,
+      "appliesTo": "stateTaxableIncome",
+      "isStateAverage": false,
+      "source": "https://www.in.gov/dor/files/dn01.pdf",
+      "note": "Indiana taxes by county of residence, and this is the population-weighted average of the counties in this metro. An individual county may be well above or below it — the state ranges from 0.50% to 3.00%. Indiana also fixes your county on 1 January and does not change it when you move, so someone moving into Indiana owes no county tax in their first year unless they already worked there; that is not modelled here, so a first year is overstated."
+    },
+    "in-21780": {
+      "id": "in-21780",
+      "kind": "flatRate",
+      "name": "Evansville area counties",
+      "stateCode": "IN",
+      "rate": 0.012073,
+      "appliesTo": "stateTaxableIncome",
+      "isStateAverage": false,
+      "source": "https://www.in.gov/dor/files/dn01.pdf",
+      "note": "Indiana taxes by county of residence, and this is the population-weighted average of the counties in this metro. An individual county may be well above or below it — the state ranges from 0.50% to 3.00%. Indiana also fixes your county on 1 January and does not change it when you move, so someone moving into Indiana owes no county tax in their first year unless they already worked there; that is not modelled here, so a first year is overstated."
+    },
+    "in-23060": {
+      "id": "in-23060",
+      "kind": "flatRate",
+      "name": "Fort Wayne area counties",
+      "stateCode": "IN",
+      "rate": 0.016286,
+      "appliesTo": "stateTaxableIncome",
+      "isStateAverage": false,
+      "source": "https://www.in.gov/dor/files/dn01.pdf",
+      "note": "Indiana taxes by county of residence, and this is the population-weighted average of the counties in this metro. An individual county may be well above or below it — the state ranges from 0.50% to 3.00%. Indiana also fixes your county on 1 January and does not change it when you move, so someone moving into Indiana owes no county tax in their first year unless they already worked there; that is not modelled here, so a first year is overstated."
+    },
+    "in-26900": {
+      "id": "in-26900",
+      "kind": "flatRate",
+      "name": "Indianapolis area counties",
+      "stateCode": "IN",
+      "rate": 0.018054,
+      "appliesTo": "stateTaxableIncome",
+      "isStateAverage": false,
+      "source": "https://www.in.gov/dor/files/dn01.pdf",
+      "note": "Indiana taxes by county of residence, and this is the population-weighted average of the counties in this metro. An individual county may be well above or below it — the state ranges from 0.50% to 3.00%. Indiana also fixes your county on 1 January and does not change it when you move, so someone moving into Indiana owes no county tax in their first year unless they already worked there; that is not modelled here, so a first year is overstated."
+    },
+    "in-29020": {
+      "id": "in-29020",
+      "kind": "flatRate",
+      "name": "Howard County",
+      "stateCode": "IN",
+      "rate": 0.0235,
+      "appliesTo": "stateTaxableIncome",
+      "isStateAverage": false,
+      "source": "https://www.in.gov/dor/files/dn01.pdf",
+      "note": "Indiana taxes by county of residence, and this is the population-weighted average of the counties in this metro. An individual county may be well above or below it — the state ranges from 0.50% to 3.00%. Indiana also fixes your county on 1 January and does not change it when you move, so someone moving into Indiana owes no county tax in their first year unless they already worked there; that is not modelled here, so a first year is overstated."
+    },
+    "in-29200": {
+      "id": "in-29200",
+      "kind": "flatRate",
+      "name": "Lafayette area counties",
+      "stateCode": "IN",
+      "rate": 0.014389,
+      "appliesTo": "stateTaxableIncome",
+      "isStateAverage": false,
+      "source": "https://www.in.gov/dor/files/dn01.pdf",
+      "note": "Indiana taxes by county of residence, and this is the population-weighted average of the counties in this metro. An individual county may be well above or below it — the state ranges from 0.50% to 3.00%. Indiana also fixes your county on 1 January and does not change it when you move, so someone moving into Indiana owes no county tax in their first year unless they already worked there; that is not modelled here, so a first year is overstated."
+    },
+    "in-31140": {
+      "id": "in-31140",
+      "kind": "flatRate",
+      "name": "Indiana counties of the Louisville metro",
+      "stateCode": "IN",
+      "rate": 0.018242,
+      "appliesTo": "stateTaxableIncome",
+      "isStateAverage": false,
+      "source": "https://www.in.gov/dor/files/dn01.pdf",
+      "note": "Indiana taxes by county of residence, and this is the population-weighted average of the counties in this metro. An individual county may be well above or below it — the state ranges from 0.50% to 3.00%. Indiana also fixes your county on 1 January and does not change it when you move, so someone moving into Indiana owes no county tax in their first year unless they already worked there; that is not modelled here, so a first year is overstated."
+    },
+    "in-33140": {
+      "id": "in-33140",
+      "kind": "flatRate",
+      "name": "LaPorte County",
+      "stateCode": "IN",
+      "rate": 0.0145,
+      "appliesTo": "stateTaxableIncome",
+      "isStateAverage": false,
+      "source": "https://www.in.gov/dor/files/dn01.pdf",
+      "note": "Indiana taxes by county of residence, and this is the population-weighted average of the counties in this metro. An individual county may be well above or below it — the state ranges from 0.50% to 3.00%. Indiana also fixes your county on 1 January and does not change it when you move, so someone moving into Indiana owes no county tax in their first year unless they already worked there; that is not modelled here, so a first year is overstated."
+    },
+    "in-34620": {
+      "id": "in-34620",
+      "kind": "flatRate",
+      "name": "Delaware County",
+      "stateCode": "IN",
+      "rate": 0.015,
+      "appliesTo": "stateTaxableIncome",
+      "isStateAverage": false,
+      "source": "https://www.in.gov/dor/files/dn01.pdf",
+      "note": "Indiana taxes by county of residence, and this is the population-weighted average of the counties in this metro. An individual county may be well above or below it — the state ranges from 0.50% to 3.00%. Indiana also fixes your county on 1 January and does not change it when you move, so someone moving into Indiana owes no county tax in their first year unless they already worked there; that is not modelled here, so a first year is overstated."
+    },
+    "in-43780": {
+      "id": "in-43780",
+      "kind": "flatRate",
+      "name": "St. Joseph County",
+      "stateCode": "IN",
+      "rate": 0.0175,
+      "appliesTo": "stateTaxableIncome",
+      "isStateAverage": false,
+      "source": "https://www.in.gov/dor/files/dn01.pdf",
+      "note": "Indiana taxes by county of residence, and this is the population-weighted average of the counties in this metro. An individual county may be well above or below it — the state ranges from 0.50% to 3.00%. Indiana also fixes your county on 1 January and does not change it when you move, so someone moving into Indiana owes no county tax in their first year unless they already worked there; that is not modelled here, so a first year is overstated."
+    },
+    "in-45460": {
+      "id": "in-45460",
+      "kind": "flatRate",
+      "name": "Terre Haute area counties",
+      "stateCode": "IN",
+      "rate": 0.019719,
+      "appliesTo": "stateTaxableIncome",
+      "isStateAverage": false,
+      "source": "https://www.in.gov/dor/files/dn01.pdf",
+      "note": "Indiana taxes by county of residence, and this is the population-weighted average of the counties in this metro. An individual county may be well above or below it — the state ranges from 0.50% to 3.00%. Indiana also fixes your county on 1 January and does not change it when you move, so someone moving into Indiana owes no county tax in their first year unless they already worked there; that is not modelled here, so a first year is overstated."
+    },
+    "in-statewide": {
+      "id": "in-statewide",
+      "kind": "flatRate",
+      "name": "Indiana county tax (statewide average)",
+      "stateCode": "IN",
+      "rate": 0.017536,
+      "appliesTo": "stateTaxableIncome",
+      "isStateAverage": true,
+      "source": "https://www.in.gov/dor/files/dn01.pdf",
+      "note": "Indiana taxes by county of residence, and this is the population-weighted average of the counties in this metro. An individual county may be well above or below it — the state ranges from 0.50% to 3.00%. Indiana also fixes your county on 1 January and does not change it when you move, so someone moving into Indiana owes no county tax in their first year unless they already worked there; that is not modelled here, so a first year is overstated."
     }
   },
   "byMetro": {
@@ -425,7 +601,7 @@
     ],
     "14020": [
       {
-        "jurisdictionId": "avg-IN",
+        "jurisdictionId": "in-14020",
         "optional": false,
         "defaultApplies": true
       }
@@ -458,6 +634,13 @@
         "defaultApplies": true
       }
     ],
+    "16980": [
+      {
+        "jurisdictionId": "in-16980",
+        "optional": false,
+        "defaultApplies": true
+      }
+    ],
     "17140": [
       {
         "jurisdictionId": "cincinnati",
@@ -473,6 +656,11 @@
         "defaultApplies": false,
         "group": "locality",
         "label": "Elsewhere in the metro (OH average)"
+      },
+      {
+        "jurisdictionId": "in-17140",
+        "optional": false,
+        "defaultApplies": true
       }
     ],
     "17410": [
@@ -494,7 +682,7 @@
     ],
     "18020": [
       {
-        "jurisdictionId": "avg-IN",
+        "jurisdictionId": "in-18020",
         "optional": false,
         "defaultApplies": true
       }
@@ -570,7 +758,7 @@
     ],
     "21140": [
       {
-        "jurisdictionId": "avg-IN",
+        "jurisdictionId": "in-21140",
         "optional": false,
         "defaultApplies": true
       }
@@ -584,7 +772,7 @@
     ],
     "21780": [
       {
-        "jurisdictionId": "avg-IN",
+        "jurisdictionId": "in-21780",
         "optional": false,
         "defaultApplies": true
       }
@@ -598,7 +786,7 @@
     ],
     "23060": [
       {
-        "jurisdictionId": "avg-IN",
+        "jurisdictionId": "in-23060",
         "optional": false,
         "defaultApplies": true
       }
@@ -640,7 +828,7 @@
     ],
     "26900": [
       {
-        "jurisdictionId": "avg-IN",
+        "jurisdictionId": "in-26900",
         "optional": false,
         "defaultApplies": true
       }
@@ -678,14 +866,14 @@
     ],
     "29020": [
       {
-        "jurisdictionId": "avg-IN",
+        "jurisdictionId": "in-29020",
         "optional": false,
         "defaultApplies": true
       }
     ],
     "29200": [
       {
-        "jurisdictionId": "avg-IN",
+        "jurisdictionId": "in-29200",
         "optional": false,
         "defaultApplies": true
       }
@@ -747,6 +935,11 @@
         "defaultApplies": false,
         "group": "locality",
         "label": "Elsewhere in the metro (KY average)"
+      },
+      {
+        "jurisdictionId": "in-31140",
+        "optional": false,
+        "defaultApplies": true
       }
     ],
     "31900": [
@@ -758,7 +951,7 @@
     ],
     "33140": [
       {
-        "jurisdictionId": "avg-IN",
+        "jurisdictionId": "in-33140",
         "optional": false,
         "defaultApplies": true
       }
@@ -772,7 +965,7 @@
     ],
     "34620": [
       {
-        "jurisdictionId": "avg-IN",
+        "jurisdictionId": "in-34620",
         "optional": false,
         "defaultApplies": true
       }
@@ -926,7 +1119,7 @@
     ],
     "43780": [
       {
-        "jurisdictionId": "avg-IN",
+        "jurisdictionId": "in-43780",
         "optional": false,
         "defaultApplies": true
       }
@@ -947,7 +1140,7 @@
     ],
     "45460": [
       {
-        "jurisdictionId": "avg-IN",
+        "jurisdictionId": "in-45460",
         "optional": false,
         "defaultApplies": true
       }
@@ -989,7 +1182,7 @@
     ],
     "rest-of-IN": [
       {
-        "jurisdictionId": "avg-IN",
+        "jurisdictionId": "in-statewide",
         "optional": false,
         "defaultApplies": true
       }
