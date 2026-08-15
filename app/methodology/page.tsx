@@ -546,8 +546,10 @@ answer          =  in your pocket THERE  −  in your pocket HERE`}</pre>
           ))}
         </ul>
         <p>
-          Every other state has been read off its own 2026 publication with nothing left
-          outstanding.
+          Every other state has been read off its own publication with nothing left outstanding.
+          Ten of the {COVERAGE.taxing} are checked against the state&rsquo;s most recent figures
+          rather than a 2026 document, because those states have published nothing for 2026 — they
+          are named just below.
         </p>
 
         <h3>States still on last year&rsquo;s numbers</h3>

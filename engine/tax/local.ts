@@ -40,6 +40,8 @@ export interface BracketedLocalTax {
   standardDeduction?: Partial<Record<PublishedStatus, USD>> &
     Record<'single' | 'marriedJointly', USD>;
   exemptionPerDependent?: USD;
+  /** True where this is a state-wide average rather than a levied rate. */
+  isStateAverage?: boolean;
 }
 
 export interface FlatRateLocalTax {
@@ -57,6 +59,8 @@ export interface FlatRateLocalTax {
    * different things should say so.
    */
   note?: string;
+  /** True where this is a state-wide average rather than a levied rate. */
+  isStateAverage?: boolean;
   /**
    * What the rate is charged on. Gross wages unless the locality says
    * otherwise, which is how Philadelphia, Detroit and the Ohio cities work.
@@ -78,6 +82,8 @@ export interface StateSurchargeLocalTax {
   stateCode: string;
   /** Fraction of the state income tax liability. */
   rate: Rate;
+  /** True where this is a state-wide average rather than a levied rate. */
+  isStateAverage?: boolean;
 }
 
 export type LocalTaxRules =

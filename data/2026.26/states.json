@@ -8,7 +8,7 @@
     "snapshot": "data/2026.26/sources/taxfoundation-state-income-tax-2026.html",
     "published": "2026-02-17",
     "ageInMonths": 6,
-    "confidence": "secondary — reputable aggregator of state statutes, published once a year. Every state has since been checked against its own revenue department for rates, allowances and head-of-household treatment; see verifiedAgainstState on each state."
+    "confidence": "secondary — a reputable aggregator of state statutes, published once a year. Every taxing state has since had a source recorded for its rates, allowances and head-of-household treatment, and the build reports how many of those are the state's own site, how many are a 2026 document and how many are the state's most recent because it has published nothing for 2026. See ratesCheckedAgainstState and priorYearFigures on each state."
   },
   "payrollContributionSource": {
     "citation": "EY, \"2026 state disability, paid family and medical leave and long-term care insurance wage base and rates\" (5 January 2026), cross-checked against state labour departments",
@@ -4301,7 +4301,7 @@
       "modellingGaps": [],
       "priorYearFigures": null,
       "ratesCheckedAgainstState": {
-        "url": "https://www.taxformfinder.org/forms/2025/2025-new-mexico-income-tax-instructions.pdf",
+        "url": "https://www.tax.newmexico.gov/all-nm-taxes/current-historic-tax-rates-overview/personal-income-tax-rates/",
         "checked": "2026-08-15",
         "matched": false
       },
@@ -4317,19 +4317,19 @@
         "highIncomeReduction": null,
         "shareKeptCurve": null,
         "source": {
-          "url": "https://www.taxformfinder.org/forms/2025/2025-new-mexico-income-tax-instructions.pdf",
+          "url": "https://www.tax.newmexico.gov/all-nm-taxes/current-historic-tax-rates-overview/personal-income-tax-rates/",
           "checked": "2026-08-15"
         }
       },
       "verifiedAgainstState": {
-        "url": "https://www.taxformfinder.org/forms/2025/2025-new-mexico-income-tax-instructions.pdf",
+        "url": "https://www.tax.newmexico.gov/all-nm-taxes/current-historic-tax-rates-overview/personal-income-tax-rates/",
         "checked": "2026-08-15"
       },
       "communityProperty": true,
       "payrollContributions": [],
       "headOfHouseholdBasis": "marriedJointly",
       "headOfHouseholdSource": {
-        "url": "https://law.justia.com/codes/new-mexico/chapter-7/article-2/section-7-2-7-d-1/",
+        "url": "https://www.nmlegis.gov/sessions/24%20Regular/bills/house/HB0252.HTML",
         "checked": "2026-08-15"
       }
     },

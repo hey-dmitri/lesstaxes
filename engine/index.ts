@@ -44,6 +44,7 @@ export {
   rentFactorForIncome,
   taxableShares,
   localJurisdiction,
+  allLocalJurisdictions,
   isMultiState,
   localTaxOptions,
   resolveLocalJurisdictions,

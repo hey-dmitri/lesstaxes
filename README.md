@@ -24,7 +24,8 @@ index, statutory rate or state average — on the [data page](https://packorstay
 |---|---|
 | Bracket arithmetic, FICA, federal income tax, CTC, EITC | ✅ |
 | State income tax — all 50 states + DC | ✅ |
-| Every taxing state read off its own publication — rates, allowances, head of household | 42 of 42 |
+| Every taxing state has a recorded source — rates, allowances, head of household | 42 of 42, all on the state's own site |
+| ...of which against a 2026 document | 32; the other 10 against the state's most recent, because it has published no 2026 figures |
 | State itemised deductions | 14 states, plus NJ property tax relief and WI's credit |
 | Local income tax — 13 named cities, state averages elsewhere | ✅ |
 | 387 metros + 51 rural fallbacks, price parities | ✅ |

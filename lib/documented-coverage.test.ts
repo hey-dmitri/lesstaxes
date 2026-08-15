@@ -16,7 +16,14 @@ import { readFileSync } from 'node:fs';
 
 import { describe, expect, it } from 'vitest';
 
-import { ALL_STATE_CODES, stateRules, localJurisdiction, localTaxOptions, allMetros } from '@/engine';
+import {
+  ALL_STATE_CODES,
+  allLocalJurisdictions,
+  allMetros,
+  localJurisdiction,
+  localTaxOptions,
+  stateRules,
+} from '@/engine';
 
 const taxing = ALL_STATE_CODES.map((c) => stateRules(c)).filter((s) => s.hasWageIncomeTax);
 const readme = readFileSync(new URL('../README.md', import.meta.url), 'utf8');
@@ -151,5 +158,39 @@ describe('what a recorded source actually is', () => {
     const priorYear = taxing.filter((s) => s.priorYearFigures).length;
     expect(priorYear).toBeGreaterThan(0);
     expect(readme).not.toMatch(/all \d+ .{0,40}2026 publication/i);
+  });
+});
+
+/**
+ * The pages that describe local tax coverage.
+ *
+ * The data page named six cities and listed seven more as "still on their
+ * state's average" for weeks after every one of them was given a published
+ * rate — a page about data quality, wrong about its own data.
+ */
+describe('local tax coverage as described', () => {
+  const named = allLocalJurisdictions().filter((j) => !j.isStateAverage);
+
+  it('has more rules than cities, because Portland levies two', () => {
+    const nonIndiana = named.filter((j) => !j.id.startsWith('in-'));
+    const cities = new Set(nonIndiana.map((j) => (j.id.startsWith('portland-') ? 'portland' : j.id)));
+    expect(nonIndiana.length).toBe(cities.size + 1);
+    expect(cities.size).toBe(13);
+  });
+
+  it('does not still list a city as being on a state average', () => {
+    const page = readFileSync(new URL('../app/data/page.tsx', import.meta.url), 'utf8');
+    expect(page).not.toMatch(/Six cities carry their own/);
+    expect(page).not.toMatch(/Baltimore and Portland are still on/);
+  });
+
+  /*
+   * Seven states legislated after the February table, not the four that were
+   * known when the sentence was first written.
+   */
+  it('counts every state that legislated after the bracket table', () => {
+    const browser = readFileSync(new URL('../components/dataset-browser.tsx', import.meta.url), 'utf8');
+    expect(browser).toContain('seven states');
+    expect(browser).not.toMatch(/which four states/);
   });
 });

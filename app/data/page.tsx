@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import { DatasetBrowser } from '@/components/dataset-browser';
 import { ReportProblem } from '@/components/report-problem';
 import { DATASET_SOURCES } from '@/lib/dataset-rows';
+import { allLocalJurisdictions } from '@/engine';
 import { PageShell, Prose } from '@/components/page-shell';
 import { DATASET_VERSION } from '@/engine';
 import { SITE_NAME } from '@/lib/site';
@@ -12,6 +13,20 @@ export const metadata: Metadata = {
   description:
     'Every figure the calculator uses, for all 438 US locations — and separately for each state of the 43 that cross a state line — with the source, the licence and the vintage of each.',
 };
+
+/*
+ * COUNTED FROM THE DATASET. This paragraph named six cities and listed seven
+ * more as "still on their state's average" for weeks after all of them were
+ * given published rates — a page about data quality, wrong about its own data.
+ *
+ * Cities and rules are different numbers: Portland levies two taxes, so there
+ * is one more rule than there are cities.
+ */
+const NAMED_LOCAL = (() => {
+  const named = allLocalJurisdictions().filter((j) => !j.isStateAverage && !j.id.startsWith('in-'));
+  const cities = new Set(named.map((j) => (j.id.startsWith('portland-') ? 'portland' : j.id)));
+  return { cities: cities.size, rules: named.length };
+})();
 
 export default function DataPage() {
   return (
@@ -56,12 +71,17 @@ export default function DataPage() {
         <h2>What this data cannot tell you</h2>
         <ul>
           <li>
-            <strong>Six cities carry their own local income tax rate; the rest use state
-            averages.</strong> New York City, Yonkers, Philadelphia, Detroit, Columbus and
-            Cincinnati are transcribed from the levying city&rsquo;s own revenue department, with
-            the source recorded. Cleveland, Pittsburgh, Louisville, Kansas City, St. Louis,
-            Baltimore and Portland are still on their state&rsquo;s average, which understates all
-            of them. A documented average is honest; a remembered city rate would not be.
+            <strong>
+              {NAMED_LOCAL.cities} cities carry their own published local income tax rate; smaller
+              ones use their state&rsquo;s average.
+            </strong>{' '}
+            New York City, Yonkers, Philadelphia, Detroit, Columbus, Cincinnati, Cleveland,
+            Pittsburgh, Louisville, Kansas City, St. Louis, Baltimore and Portland are transcribed
+            from the levying authority, with the source recorded — {NAMED_LOCAL.rules} rules in
+            all, because Portland has two. Every Indiana metro carries its counties&rsquo; rates
+            weighted by population. What is left on an average is the smaller cities, where the
+            average is much closer to the truth. A documented average is honest; a remembered city
+            rate would not be.
           </li>
           <li>
             <strong>Buffalo, Rochester, Syracuse and Albany carry no local income tax</strong>{' '}

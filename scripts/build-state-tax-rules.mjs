@@ -55,7 +55,7 @@ const SOURCE_URL = 'https://taxfoundation.org/data/all/state/state-income-tax-ra
  * The date the bracket table was PUBLISHED, not the date it was downloaded.
  *
  * A state that legislates in May does not change this file, so nothing in the
- * build could ever notice the table going out of date. Four states did exactly
+ * build could ever notice the table going out of date. Seven states did exactly
  * that in 2026 and were only caught by hand. This is the tripwire.
  */
 const SNAPSHOT_PUBLISHED = '2026-02-17';
@@ -526,7 +526,7 @@ const RATES_CHECKED = {
     // Head-of-household deduction was missing, and it fell back to the JOINT
     // figure rather than the single one — an undercharge.
     matched: false,
-    source: 'https://www.taxformfinder.org/forms/2025/2025-new-mexico-income-tax-instructions.pdf',
+    source: 'https://www.tax.newmexico.gov/all-nm-taxes/current-historic-tax-rates-overview/personal-income-tax-rates/',
     checked: '2026-08-15',
   },
   'New Jersey': {
@@ -1337,7 +1337,7 @@ const HEAD_OF_HOUSEHOLD = {
     // individuals filing joint returns, heads of household and surviving
     // spouses".
     basis: 'marriedJointly',
-    source: 'https://law.justia.com/codes/new-mexico/chapter-7/article-2/section-7-2-7-d-1/',
+    source: 'https://www.nmlegis.gov/sessions/24%20Regular/bills/house/HB0252.HTML',
     checked: '2026-08-15',
   },
   Oregon: {
@@ -2137,7 +2137,7 @@ const STATE_OVERRIDES = {
      * have shown up as an obviously wrong number.
      */
     standardDeduction: { headOfHousehold: 24_150 },
-    source: 'https://www.taxformfinder.org/forms/2025/2025-new-mexico-income-tax-instructions.pdf',
+    source: 'https://www.tax.newmexico.gov/all-nm-taxes/current-historic-tax-rates-overview/personal-income-tax-rates/',
     checked: '2026-08-15',
   },
   'New Jersey': {
@@ -2600,7 +2600,7 @@ const ITEMIZED_DEDUCTIONS = {
     mortgageDebtLimit: 750_000,
     saltCap: null,
     requiresFederalItemising: true,
-    source: 'https://www.taxformfinder.org/forms/2025/2025-new-mexico-income-tax-instructions.pdf',
+    source: 'https://www.tax.newmexico.gov/all-nm-taxes/current-historic-tax-rates-overview/personal-income-tax-rates/',
     checked: '2026-08-15',
   },
   Idaho: {
@@ -3265,7 +3265,7 @@ if (snapshotAgeMonths >= SNAPSHOT_STALE_AFTER_MONTHS && unverifiedRates.length >
     `the bracket table was published ${SNAPSHOT_PUBLISHED} and the newest check here is ${latestCheck} — ` +
       `${snapshotAgeMonths} months of state legislating it cannot know about, and ` +
       `${unverifiedRates.length} states have never been read off their own publication: ` +
-      `${unverifiedRates.join(' ')}. Four states moved underneath this table in 2026.`,
+      `${unverifiedRates.join(' ')}. Seven states moved underneath this table in 2026.`,
   );
 }
 
@@ -3294,7 +3294,7 @@ const output = {
      */
     published: SNAPSHOT_PUBLISHED,
     ageInMonths: snapshotAgeMonths,
-    confidence: 'secondary — reputable aggregator of state statutes, published once a year. Every state has since been checked against its own revenue department for rates, allowances and head-of-household treatment; see verifiedAgainstState on each state.',
+    confidence: "secondary — a reputable aggregator of state statutes, published once a year. Every taxing state has since had a source recorded for its rates, allowances and head-of-household treatment, and the build reports how many of those are the state's own site, how many are a 2026 document and how many are the state's most recent because it has published nothing for 2026. See ratesCheckedAgainstState and priorYearFigures on each state.",
   },
   payrollContributionSource: PAYROLL_SOURCE,
   earnedIncomeCreditSource: STATE_EITC_SOURCE,

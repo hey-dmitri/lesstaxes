@@ -185,7 +185,7 @@ export function DatasetBrowser() {
         already reflects assessment ratios, homestead exemptions and caps.{' '}
         <strong>Tax checked</strong> is the date someone opened that state&rsquo;s own rate schedule
         and compared every bracket and allowance to ours. Where it says <em>not checked</em>, the
-        figures rest on a bracket table published once a year in February — which four states
+        figures rest on a bracket table published once a year in February — which seven states
         legislated their way out of during 2026, every one of them leaving us charging too much.
       </p>
     </div>

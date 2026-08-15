@@ -807,6 +807,17 @@ export function localTaxOptions(
   return all.filter((o) => localJurisdiction(o.jurisdictionId, version).stateCode === stateCode);
 }
 
+/**
+ * Every local jurisdiction in a release.
+ *
+ * Exists so a page can COUNT them rather than describe them from memory: the
+ * data page named six cities and listed seven more as unmodelled for weeks
+ * after all of them had published rates.
+ */
+export function allLocalJurisdictions(version?: string): LocalTaxRules[] {
+  return Object.values(datasetBundle(version).localTax.jurisdictions) as LocalTaxRules[];
+}
+
 export function localJurisdiction(id: string, version?: string): LocalTaxRules {
   const j = datasetBundle(version).localTax.jurisdictions[id] as LocalTaxRules | undefined;
   if (!j) throw new Error(`unknown local jurisdiction: ${id}`);
