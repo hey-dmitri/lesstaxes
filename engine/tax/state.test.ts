@@ -117,16 +117,36 @@ describe('head of household', () => {
     expect(ok.standardDeduction.single).not.toBe(9_350);
   });
 
+  /*
+   * THIS TEST USED NEW YORK AND THE PREMISE WAS WRONG. It asserted that New
+   * York "publishes no separate head-of-household RATE schedule". New York
+   * does publish one — we simply carried none, so the engine fell back to the
+   * single schedule while the data claimed basis 'own'. That is the quietest
+   * way for a rule to go missing: a state marked as having its own treatment,
+   * with nothing of its own to apply.
+   *
+   * Missouri is the real example of the shape. One rate chart for everybody,
+   * and a much larger deduction: it conforms to the FEDERAL figure, $24,150
+   * for a head of household against $16,100 single.
+   */
   it('takes a state deduction even where the brackets are shared', () => {
-    const ny = stateRules('NY');
-    expect(ny.brackets.headOfHousehold).toBeUndefined();
-    expect(ny.standardDeduction.headOfHousehold).toBe(11_200);
+    const mo = stateRules('MO');
+    expect(mo.brackets.headOfHousehold).toBeUndefined();
+    expect(mo.standardDeduction.headOfHousehold).toBe(24_150);
 
-    const asHoh = computeStateTax(HOH, ny);
-    const asSingle = computeStateTax({ ...HOH, filingStatus: 'single' }, ny);
-    expect(asHoh.deductions).toBe(11_200);
-    expect(asSingle.deductions).toBe(ny.standardDeduction.single);
+    const asHoh = computeStateTax(HOH, mo);
+    const asSingle = computeStateTax({ ...HOH, filingStatus: 'single' }, mo);
+    expect(asHoh.deductions).toBe(24_150);
+    expect(asSingle.deductions).toBe(mo.standardDeduction.single);
     expect(asHoh.tax).toBeLessThan(asSingle.tax);
+  });
+
+  it('gives New York the head-of-household schedule it actually publishes', () => {
+    const ny = stateRules('NY');
+    // The 5.4% band runs to $107,650 rather than a single filer's $80,650.
+    expect(ny.brackets.headOfHousehold?.map((b) => b.from)).toContain(107_650);
+    expect(computeStateTax(HOH, ny).scheduleUsed).toBe('headOfHousehold');
+    expect(ny.standardDeduction.headOfHousehold).toBe(11_200);
   });
 
   it('never charges a head of household more than a single filer', () => {

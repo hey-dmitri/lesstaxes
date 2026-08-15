@@ -106,7 +106,7 @@ const RATES_CHECKED = {
     // 2026 is a step year in the 2024 law: the standard deduction nearly
     // doubles and we were shipping the 2024-2025 figure.
     matched: false,
-    source: 'https://files.hawaii.gov/tax/news/announce/ann25-07.pdf',
+    source: 'https://www.capitol.hawaii.gov/hrscurrent/Vol04_Ch0201-0257/HRS0235/HRS_0235-0002_0004.htm',
     checked: '2026-08-15',
   },
   Wisconsin: {
@@ -118,7 +118,7 @@ const RATES_CHECKED = {
   Connecticut: {
     // The personal exemption vanishes by $44,000 and we gave it at every income.
     matched: false,
-    source: 'https://portal.ct.gov/-/media/drs/forms/2025/incometax/ct-1040-tcs.pdf',
+    source: 'https://codes.findlaw.com/ct/title-12-taxation/ct-gen-st-sect-12-702/',
     checked: '2026-08-15',
   },
   'Rhode Island': {
@@ -177,6 +177,33 @@ const RATES_CHECKED = {
     // phase-out was missing and a shipped note about it was wrong.
     matched: false,
     source: 'https://www.maine.gov/revenue/sites/maine.gov.revenue/files/2026-05/ind_tax_rate_sched_2026_rev.pdf',
+    checked: '2026-08-15',
+  },
+  'New York': {
+    // Rates, brackets and standard deductions all matched against New York's
+    // own 2026 estimated-tax instructions; the head-of-household schedule was
+    // missing entirely.
+    matched: false,
+    source: 'https://www.tax.ny.gov/pdf/current_forms/it/it2105i.pdf',
+    checked: '2026-08-15',
+  },
+  Oklahoma: {
+    // Verified against the enrolled text of HB 2764, which sets the 2026
+    // rates outright.
+    matched: true,
+    source: 'https://www.oklegislature.gov/cf_pdf/2025-26%20ENR/hB/HB2764%20ENR.PDF',
+    checked: '2026-08-15',
+  },
+  Pennsylvania: {
+    // 3.07% since 2004, no deduction, no exemption, nothing to get wrong.
+    matched: true,
+    source: 'https://www.pa.gov/agencies/revenue/resources/tax-types-and-information/personal-income-tax.html',
+    checked: '2026-08-15',
+  },
+  Hawaii: {
+    // Re-verified from the statute after a first report proved unreliable.
+    matched: false,
+    source: 'https://www.capitol.hawaii.gov/hrscurrent/Vol04_Ch0201-0257/HRS0235/HRS_0235-0002_0004.htm',
     checked: '2026-08-15',
   },
   Nebraska: {
@@ -1326,7 +1353,7 @@ const STATE_OVERRIDES = {
      * It was overcharging a Hawaii couple about $490 a year.
      */
     standardDeduction: { single: 8_000, marriedJointly: 16_000, headOfHousehold: 12_000 },
-    source: 'https://files.hawaii.gov/tax/news/announce/ann25-07.pdf',
+    source: 'https://www.capitol.hawaii.gov/hrscurrent/Vol04_Ch0201-0257/HRS0235/HRS_0235-0002_0004.htm',
     checked: '2026-08-15',
   },
   'West Virginia': {
@@ -1474,9 +1501,55 @@ const STATE_OVERRIDES = {
         headOfHousehold: [{ base: 19_000, start: 38_000, perDollar: 1 }],
       },
     },
-    source: 'https://portal.ct.gov/-/media/drs/forms/2025/incometax/ct-1040-tcs.pdf',
+    source: 'https://codes.findlaw.com/ct/title-12-taxation/ct-gen-st-sect-12-702/',
     checked: '2026-08-15',
     note: "Connecticut also adds a flat charge above $56,500 single / $100,500 joint (up to $250 / $500) and recaptures the benefit of its lower rates above $105,000 / $210,000 (up to $3,400 / $6,800). Neither is modelled, so Connecticut tax shown here is lower than the true figure for higher earners.",
+  },
+  'New York': {
+    /*
+     * New York publishes its OWN head-of-household schedule and we carried
+     * none, so the engine silently fell back to the single one. The data said
+     * basis 'own' — it just had nothing of its own to use, which is the
+     * quietest way for a rule to go missing.
+     *
+     * The 5.4% band runs to $107,650 for a head of household against $80,650
+     * single, so a New York single parent on $150,000 was overcharged about
+     * $220 a year.
+     */
+    brackets: {
+      headOfHousehold: [
+        { from: 0, rate: 0.039 },
+        { from: 12_800, rate: 0.044 },
+        { from: 17_650, rate: 0.0515 },
+        { from: 20_900, rate: 0.054 },
+        { from: 107_650, rate: 0.059 },
+        { from: 269_300, rate: 0.0685 },
+        { from: 1_616_450, rate: 0.0965 },
+        { from: 5_000_000, rate: 0.103 },
+        { from: 25_000_000, rate: 0.109 },
+      ],
+    },
+    source: 'https://www.tax.ny.gov/pdf/current_forms/it/it2105i.pdf',
+    checked: '2026-08-15',
+    note: 'New York lets you itemise on the state return whether or not you did federally, on pre-2018 rules — property tax uncapped and mortgage interest on $1,000,000 of debt. That is not modelled, so New York tax shown here is higher than the true figure for a homeowner, by roughly $650 to $770 a year plus more again in New York City. Running the other way, New York recaptures the benefit of its lower rates from high earners, which is also not modelled and is worth about $481 a year at $150,000.',
+  },
+  Oregon: {
+    /*
+     * Oregon's exemption credit is a CLIFF, not a taper: "If your federal AGI
+     * is more than $200,000 ($100,000 if your filing status is single or
+     * married filing separately), enter 0." We handed out the $256 at every
+     * income, undercharging a single filer on $150,000 by exactly that.
+     *
+     * A head of household uses the $200,000 threshold.
+     */
+    creditPhaseOut: {
+      hardCliff: true,
+      perDollar: 1,
+      threshold: { single: 100_000, marriedJointly: 200_000, headOfHousehold: 200_000 },
+    },
+    source: 'https://www.oregon.gov/dor/forms/FormsPubs/form-or-40-inst_101-040-1_2025.pdf',
+    checked: '2026-08-15',
+    note: "Oregon lets you subtract the federal income tax you paid, capped at $8,500 and tapering to nothing by $145,000 of income for a single filer. That is not modelled — the federalTaxDeductible flag has always been a label rather than a calculation — so Oregon tax shown here is higher than the true figure by up to about $743 a year at lower incomes. Oregon's head-of-household standard deduction is also the unchanged 2025 figure; the state has not published 2026.",
   },
   'North Dakota': {
     /*
@@ -2127,8 +2200,9 @@ for (const [name, s] of Object.entries(states)) {
       s.allowancePhaseOut = rule;
     }
     if (override.creditPhaseOut) {
-      const { perDollar, threshold } = override.creditPhaseOut;
-      if (!(perDollar > 0 && perDollar < 0.5)) {
+      const { perDollar, threshold, hardCliff } = override.creditPhaseOut;
+      // A cliff has no rate to be implausible — the credit simply stops.
+      if (!hardCliff && !(perDollar > 0 && perDollar < 0.5)) {
         throw new Error(`${name}: implausible credit phase-out rate ${perDollar}`);
       }
       if (!(threshold.single > 0)) {

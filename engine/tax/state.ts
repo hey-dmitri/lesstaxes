@@ -330,6 +330,13 @@ export type AllowancePhaseOut =
 
 /** How a state's personal credit shrinks as income rises. See creditPhaseOut. */
 export interface CreditPhaseOut {
+  /**
+   * The credit vanishes entirely one dollar past the threshold, rather than
+   * tapering. Oregon does this: "If your federal AGI is more than $200,000
+   * ($100,000 if single), enter 0." A cliff, not a slope, and modelling it as
+   * a slope would hand out a credit Oregon does not give.
+   */
+  hardCliff?: boolean;
   /** Cents of credit lost per dollar of taxable income above the threshold. */
   perDollar: number;
   /** Where the reduction starts, by published filing status. */
@@ -637,22 +644,21 @@ export function computeStateTax(
    * income, not from gross pay.
    */
   const phaseOut = rules.creditPhaseOut;
+  const creditThreshold = !phaseOut
+    ? 0
+    : (phaseOut.threshold[allowanceKey] ??
+      phaseOut.threshold[otherwise] ??
+      phaseOut.threshold.single);
   const credits = !phaseOut
     ? creditsBeforePhaseOut
-    : Math.max(
+    : phaseOut.hardCliff
+      ? gross > creditThreshold
+        ? 0
+        : creditsBeforePhaseOut
+      : Math.max(
         0,
         creditsBeforePhaseOut -
-          phaseOut.perDollar *
-            Math.max(
-              0,
-              taxableIncome -
-                (phaseOut.threshold[allowanceKey] ??
-                  phaseOut.threshold[otherwise] ??
-                  // `single` is required on the type precisely so this cannot
-                  // silently become a zero threshold, which would wipe out the
-                  // whole credit at any income.
-                  phaseOut.threshold.single),
-            ),
+          phaseOut.perDollar * Math.max(0, taxableIncome - creditThreshold),
       );
 
   /*

@@ -714,13 +714,13 @@
         }
       },
       "ratesCheckedAgainstState": {
-        "url": "https://portal.ct.gov/-/media/drs/forms/2025/incometax/ct-1040-tcs.pdf",
+        "url": "https://codes.findlaw.com/ct/title-12-taxation/ct-gen-st-sect-12-702/",
         "checked": "2026-08-15",
         "matched": false
       },
       "itemizedDeductions": null,
       "verifiedAgainstState": {
-        "url": "https://portal.ct.gov/-/media/drs/forms/2025/incometax/ct-1040-tcs.pdf",
+        "url": "https://codes.findlaw.com/ct/title-12-taxation/ct-gen-st-sect-12-702/",
         "checked": "2026-08-15"
       },
       "communityProperty": false,
@@ -1239,13 +1239,13 @@
       "creditPhaseOut": null,
       "allowancePhaseOut": null,
       "ratesCheckedAgainstState": {
-        "url": "https://files.hawaii.gov/tax/news/announce/ann25-07.pdf",
+        "url": "https://www.capitol.hawaii.gov/hrscurrent/Vol04_Ch0201-0257/HRS0235/HRS_0235-0002_0004.htm",
         "checked": "2026-08-15",
         "matched": false
       },
       "itemizedDeductions": null,
       "verifiedAgainstState": {
-        "url": "https://files.hawaii.gov/tax/news/announce/ann25-07.pdf",
+        "url": "https://www.capitol.hawaii.gov/hrscurrent/Vol04_Ch0201-0257/HRS0235/HRS_0235-0002_0004.htm",
         "checked": "2026-08-15"
       },
       "communityProperty": false,
@@ -3281,6 +3281,44 @@
             "from": 25000000,
             "rate": 0.109
           }
+        ],
+        "headOfHousehold": [
+          {
+            "from": 0,
+            "rate": 0.039
+          },
+          {
+            "from": 12800,
+            "rate": 0.044
+          },
+          {
+            "from": 17650,
+            "rate": 0.0515
+          },
+          {
+            "from": 20900,
+            "rate": 0.054
+          },
+          {
+            "from": 107650,
+            "rate": 0.059
+          },
+          {
+            "from": 269300,
+            "rate": 0.0685
+          },
+          {
+            "from": 1616450,
+            "rate": 0.0965
+          },
+          {
+            "from": 5000000,
+            "rate": 0.103
+          },
+          {
+            "from": 25000000,
+            "rate": 0.109
+          }
         ]
       },
       "standardDeduction": {
@@ -3305,7 +3343,8 @@
         "i"
       ],
       "notes": [
-        "Connecticut and New York have \"tax benefit recapture,\" by which many high-income taxpayers pay their top tax rate on all income, not just on amounts above the benefit threshold."
+        "Connecticut and New York have \"tax benefit recapture,\" by which many high-income taxpayers pay their top tax rate on all income, not just on amounts above the benefit threshold.",
+        "New York lets you itemise on the state return whether or not you did federally, on pre-2018 rules — property tax uncapped and mortgage interest on $1,000,000 of debt. That is not modelled, so New York tax shown here is higher than the true figure for a homeowner, by roughly $650 to $770 a year plus more again in New York City. Running the other way, New York recaptures the benefit of its lower rates from high earners, which is also not modelled and is worth about $481 a year at $150,000."
       ],
       "earnedIncomeCredit": {
         "percentOfFederal": 0.3,
@@ -3315,8 +3354,16 @@
       },
       "creditPhaseOut": null,
       "allowancePhaseOut": null,
-      "ratesCheckedAgainstState": null,
+      "ratesCheckedAgainstState": {
+        "url": "https://www.tax.ny.gov/pdf/current_forms/it/it2105i.pdf",
+        "checked": "2026-08-15",
+        "matched": false
+      },
       "itemizedDeductions": null,
+      "verifiedAgainstState": {
+        "url": "https://www.tax.ny.gov/pdf/current_forms/it/it2105i.pdf",
+        "checked": "2026-08-15"
+      },
       "communityProperty": false,
       "payrollContributions": [
         {
@@ -3488,7 +3535,11 @@
       },
       "creditPhaseOut": null,
       "allowancePhaseOut": null,
-      "ratesCheckedAgainstState": null,
+      "ratesCheckedAgainstState": {
+        "url": "https://www.oklegislature.gov/cf_pdf/2025-26%20ENR/hB/HB2764%20ENR.PDF",
+        "checked": "2026-08-15",
+        "matched": true
+      },
       "itemizedDeductions": null,
       "communityProperty": false,
       "payrollContributions": [],
@@ -3574,13 +3625,26 @@
         "State provides a state-defined personal exemption amount for each exemption available and/or deductible under the Internal Revenue Code. The Tax Cuts and Jobs Act set the personal exemption to $0 until 2026 but did not eliminate it, and the One Big Beautiful Bill Act permanently set the personal exemption to $0 but did not eliminate it. Because it is still available, these state-defined personal exemptions remain available in some states but are set to $0 in other states.",
         "Bracket levels adjusted for inflation each year. Inflation-adjusted bracket levels for 2026 are shown.",
         "The personal exemption credit is not allowed if federal AGI exceeds $100,000 for single filers or $200,000 for MFJ.",
-        "California and Oregon do not fully index their top brackets."
+        "California and Oregon do not fully index their top brackets.",
+        "Oregon lets you subtract the federal income tax you paid, capped at $8,500 and tapering to nothing by $145,000 of income for a single filer. That is not modelled — the federalTaxDeductible flag has always been a label rather than a calculation — so Oregon tax shown here is higher than the true figure by up to about $743 a year at lower incomes. Oregon's head-of-household standard deduction is also the unchanged 2025 figure; the state has not published 2026."
       ],
       "earnedIncomeCredit": null,
-      "creditPhaseOut": null,
+      "creditPhaseOut": {
+        "hardCliff": true,
+        "perDollar": 1,
+        "threshold": {
+          "single": 100000,
+          "marriedJointly": 200000,
+          "headOfHousehold": 200000
+        }
+      },
       "allowancePhaseOut": null,
       "ratesCheckedAgainstState": null,
       "itemizedDeductions": null,
+      "verifiedAgainstState": {
+        "url": "https://www.oregon.gov/dor/forms/FormsPubs/form-or-40-inst_101-040-1_2025.pdf",
+        "checked": "2026-08-15"
+      },
       "communityProperty": false,
       "payrollContributions": [
         {
@@ -3638,7 +3702,11 @@
       "earnedIncomeCredit": null,
       "creditPhaseOut": null,
       "allowancePhaseOut": null,
-      "ratesCheckedAgainstState": null,
+      "ratesCheckedAgainstState": {
+        "url": "https://www.pa.gov/agencies/revenue/resources/tax-types-and-information/personal-income-tax.html",
+        "checked": "2026-08-15",
+        "matched": true
+      },
       "itemizedDeductions": null,
       "communityProperty": false,
       "payrollContributions": [],
