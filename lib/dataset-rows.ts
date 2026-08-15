@@ -71,17 +71,24 @@ export interface DatasetRow {
 /*
  * One row per state part, not per metro.
  *
- * Housing, vehicles and price levels are metro-wide and repeat across a
- * metro's rows; income tax, sales tax and local tax are the state's and differ.
- * Splitting the rows is what makes the difference inspectable, which is the
- * whole purpose of this page.
+ * THE HOUSING LOOKUPS BELONG INSIDE THE LOOP. They used to sit above it, called
+ * without a state code, so both halves of a split metro showed the same
+ * metro-wide figures — rent $1,830 and home $614,200 on the New Jersey row and
+ * the New York row alike, when the committed data has $512,300 against
+ * $684,700. The calculator had been reading the state slice correctly since
+ * 2026.5; only this page had not caught up.
+ *
+ * That matters more here than almost anywhere, because this page says of itself
+ * that it shows every number the calculator uses. A page that says that and
+ * then shows a different number is worse than no page.
  */
 export const DATASET_ROWS: DatasetRow[] = allMetros().flatMap((m) => {
-  const housing = housingDefaults(m.id);
-  const transport = transportDefaults(m.id);
   const split = m.states.length > 1;
 
   return m.states.map((state): DatasetRow => {
+    // Narrowed to this state's part of the metro, exactly as the engine does.
+    const housing = housingDefaults(m.id, undefined, state);
+    const transport = transportDefaults(m.id, undefined, state);
     const sales = salesTaxRules(state);
     const locals = localTaxOptions(m.id, undefined, state);
 
@@ -92,7 +99,7 @@ export const DATASET_ROWS: DatasetRow[] = allMetros().flatMap((m) => {
         m.type === 'restOfState'
           ? 'Rural fallback — statewide figures'
           : split
-            ? `${m.name} — the ${state} part. Housing and price levels are metro-wide; tax is ${state}'s.`
+            ? `${m.name} — the ${state} part. Housing and tax are ${state}'s; price levels are metro-wide.`
             : m.name,
       state,
       states: m.states,

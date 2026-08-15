@@ -300,10 +300,19 @@ export function CityPanel({
               }
               options={m.states.map((s) => ({ value: s, label: s }))}
             />
+            {/*
+              Both halves of this were true when it was written and neither is
+              now. Rent and home prices ARE sliced by state part — that landed
+              with 2026.5 — and there is no separate sales tax line to set,
+              because the spending basket already contains it. Stale help is
+              worse than none: it tells the reader the tool is doing something
+              it is not.
+            */}
             <span className="text-[0.76rem] leading-snug" style={{ color: 'var(--muted)' }}>
-              This metro crosses a state line. Your state sets the income tax, the sales tax and
-              which city taxes can apply. Rent and living costs stay metro-wide &mdash; the Census
-              does not publish them by state slice.
+              This metro crosses a state line, and the two sides are not alike. Your state sets the
+              income tax, any city tax, and the rent and home prices you are quoted &mdash; the New
+              Jersey side of this metro has a median home value near $512,000 against $685,000 on
+              the New York side.
             </span>
           </div>
         )}

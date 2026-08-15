@@ -5,7 +5,7 @@
 Will you actually have more money in your pocket if you move to another city?
 
 Pick two US metro areas, enter your salary, filing status and housing situation, and get a single
-honest number — net of income tax, property tax, sales tax, housing, cars and cost of living.
+honest number — net of income tax, property tax, state disability, housing, cars and cost of living.
 The answer can be negative, and often is.
 
 Free, no accounts, no tracking, no database. Almost every figure comes from public federal
@@ -48,7 +48,7 @@ index, statutory rate or state average — on the [data page](https://packorstay
 | Social Security capped per worker, not per household | ✅ |
 | Name and domain — **Pack or Stay**, live at `packorstay.com` | ✅ |
 
-**851 tests**, including 24 golden values reproduced exactly from the IRS rate tables.
+**855 tests**, including 24 golden values reproduced exactly from the IRS rate tables.
 Total data cost: **$0**. No paid feeds, no runtime API calls.
 
 ### Known gaps, in priority order
@@ -122,7 +122,7 @@ A GitHub Action runs both quarterly and opens a pull request when a figure
 actually changes. It never pushes to `main` — a human reviews the diff and a
 Vercel preview first.
 
-All raw source responses are committed under `data/2026.1/sources/`, so every script
+All raw source responses are committed under each release's `sources/` directory, so every script
 rebuilds offline with no API key. `CENSUS_API_KEY` is only needed to fetch *fresh* ACS data;
 see `.env.example`.
 

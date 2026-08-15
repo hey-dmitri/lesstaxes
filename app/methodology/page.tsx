@@ -40,6 +40,7 @@ export default function MethodologyPage() {
                  −  state income tax
                  −  local income tax
                  −  Social Security and Medicare
+                 −  state disability and paid leave, where the state charges it
                  −  rent + utilities, or mortgage + property tax + utilities
                  −  cars and transport
                  −  food, phone, healthcare, everything else
@@ -57,9 +58,16 @@ answer          =  in your pocket THERE  −  in your pocket HERE`}</pre>
           relocation calculator produces a confident wrong answer.
         </p>
         <ol className="ml-5 list-decimal">
-          <li className="my-1.5">Social Security and Medicare, from salary alone.</li>
+          <li className="my-1.5">
+            Living costs, re-priced for the local area. These come first because a renter&rsquo;s
+            gas and electricity are already inside their rent figure and a buyer&rsquo;s are not, so
+            the housing step needs to be handed that slice before it can add itself up.
+          </li>
           <li className="my-1.5">
             Housing — which produces your property tax and first-year mortgage interest.
+          </li>
+          <li className="my-1.5">
+            Social Security, Medicare, and state disability where the state charges it.
           </li>
           <li className="my-1.5">State income tax.</li>
           <li className="my-1.5">
@@ -71,7 +79,6 @@ answer          =  in your pocket THERE  −  in your pocket HERE`}</pre>
             deductible. That decides whether itemising beats the standard deduction, which changes
             what you owe.
           </li>
-          <li className="my-1.5">Living costs, re-priced for the local area.</li>
         </ol>
         <p>
           Computing federal tax first — the obvious way to write it — would ignore the deduction and
@@ -442,8 +449,10 @@ answer          =  in your pocket THERE  −  in your pocket HERE`}</pre>
           <li>
             <strong>Filing separately with children puts them all on one return.</strong> A child
             is claimed by one parent or the other, never halved, so the model gives them all to the
-            same person. Where a credit is being phased out, that reaches the phase-out sooner and
-            charges more tax rather than less.
+            same person, which is also how it works in life — one parent claims a child, not half
+            of one. Where the child credit is being withdrawn at higher incomes this can work out
+            slightly cheaper than splitting them, by about $1,900 on a combined $500,000. We had
+            that the wrong way round here until August 2026.
           </li>
           <li>
             <strong>Sales tax differences between states are not shown.</strong> The spending

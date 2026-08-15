@@ -120,11 +120,21 @@ export interface FederalResult {
  * one. A couple filing separately gets $375,000 each against half the loan
  * each, and lands in exactly the same place as filing jointly.
  *
- * Only the post-2017 limit is modelled, and after this tax year that is the
- * only one there is: IRC 163(h)(3)(F)(ii) as amended applies the $750,000 cap
- * to all acquisition debt "without regard to the taxable year in which the
- * indebtedness was incurred", retiring the $1,000,000 grandfather for loans
- * taken out before 2018. This engine models a fresh purchase anyway.
+ * ONLY THE POST-2017 LIMIT IS MODELLED, and the reason is that this engine
+ * models a FRESH PURCHASE in both cities. A mortgage taken out in 2026 is
+ * post-2017 debt, so $750,000 is the right figure for everything here.
+ *
+ * An earlier version of this comment claimed the $1,000,000 limit for pre-2018
+ * loans had been retired, reading IRC 163(h)(3)(F)(ii) — "without regard to the
+ * taxable year in which the indebtedness was incurred" — as killing the
+ * grandfather. That is wrong. OBBBA made subparagraph (F)(i) permanent, and
+ * (F)(i)(IV) is the carve-out that exempts debt incurred on or before December
+ * 15, 2017 from the lower cap, so the carve-out is permanent with it. Congress's
+ * own summary of section 70108 and the current Publication 936 both still state
+ * the $1,000,000 figure for pre-2018 debt.
+ *
+ * Nothing computed here changes — a fresh purchase never qualifies — but the
+ * claim was false and stated confidently, which is worse than not stating it.
  *
  * Home equity debt is not modelled. Interest on it has not been deductible
  * since 2017 unless the money went into the home, in which case it is

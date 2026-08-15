@@ -19,7 +19,7 @@
  * reviewer should be able to see exactly which versions ship.
  */
 
-import { cpSync, existsSync, readFileSync, writeFileSync } from 'node:fs';
+import { cpSync, existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -70,13 +70,36 @@ cpSync(from, to, { recursive: true });
 
 // 2. Restamp every file. The registry asserts these match, so a missed stamp
 //    fails loudly at import rather than quietly mislabelling a link.
-for (const name of FILES) {
-  const path = resolve(to, `${name}.json`);
-  if (!existsSync(path)) continue;
-  const json = JSON.parse(readFileSync(path, 'utf8'));
-  if (json.datasetVersion) {
-    json.datasetVersion = target;
-    writeFileSync(path, `${JSON.stringify(json, null, 2)}\n`);
+/*
+ * STAMP EVERY JSON IN THE DIRECTORY, not a hand-kept list, and rewrite the
+ * PATHS inside as well as the version field.
+ *
+ * The list missed metros-counties.json, which went on announcing itself as
+ * 2026.5 through nine releases. And stamping only the version field left
+ * `"snapshot": "data/2026.5/sources/..."` strings pointing at a directory the
+ * release does not own — so a reader tracing a figure back to its source was
+ * sent to the wrong release.
+ *
+ * Neither changed a computed number. Both broke the one promise this immutable
+ * per-release structure exists to keep: that you can tell exactly which data
+ * produced an answer.
+ */
+const stamped = [];
+for (const file of readdirSync(to)) {
+  if (!file.endsWith('.json')) continue;
+  const path = resolve(to, file);
+  const raw = readFileSync(path, 'utf8');
+
+  // Rewrite embedded references to the release directory, whichever release
+  // they currently name — files rebuilt at different times name different ones.
+  const repointed = raw.replace(/data\/\d{4}\.\d+\//g, `data/${target}/`);
+  const json = JSON.parse(repointed);
+  if (json.datasetVersion) json.datasetVersion = target;
+
+  const next = `${JSON.stringify(json, null, 2)}\n`;
+  if (next !== raw) {
+    writeFileSync(path, next);
+    stamped.push(file);
   }
 }
 
@@ -129,7 +152,7 @@ if (process.env.GITHUB_OUTPUT) {
 }
 
 console.log(`  copied  data/${CURRENT_DATASET_VERSION} -> data/${target}`);
-console.log(`  stamped ${FILES.length} files`);
+console.log(`  stamped ${stamped.length} files: ${stamped.join(', ')}`);
 console.log(`  registered ${target} in engine/datasets.ts and made it current`);
 console.log(`\nNow rebuild into it:  DATASET_VERSION=${target} node scripts/build-all.mjs --refresh`);
 console.log(`data/${CURRENT_DATASET_VERSION} is untouched, so links pinned to it keep resolving.`);

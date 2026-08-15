@@ -31,11 +31,25 @@
  * apart, not to save tax — so this is a small population modelled at its
  * midpoint rather than a systematic lean.
  *
- * CHILDREN GO ON ONE RETURN. A child is claimed by one parent or the other,
- * never halved, so the dependants all land on the first return. Where no
- * phase-out is biting this is the same total credit either way; where one is,
- * concentrating the children pushes them against a single return's phase-out
- * sooner, which produces more tax rather than less.
+ * CHILDREN GO ON ONE RETURN, because a child is claimed by one parent or the
+ * other and never halved. Where no phase-out is biting, the total credit is
+ * identical either way.
+ *
+ * THE ORIGINAL JUSTIFICATION FOR THIS WAS BACKWARDS. It claimed that
+ * concentrating the children hits a phase-out sooner and so "produces more tax
+ * rather than less", offered as the conservative choice. Measured, it is the
+ * opposite: at $500,000 combined with two children, putting both on one return
+ * gives $100,708 of federal tax and splitting them one-and-one gives $102,608.
+ * Ours is $1,900 LOWER.
+ *
+ * The reason is that the phase-out reduction is capped by the credit available
+ * on each return. Split the children and the reduction bites on BOTH returns,
+ * each against a smaller credit, so more credit is destroyed in total.
+ *
+ * The allocation stands — you cannot put half a child on a return, and which
+ * parent claims which child is the couple's choice, not something this engine
+ * can know. But it is the realistic modelling choice, not the cautious one, and
+ * saying otherwise was wrong.
  *
  * DEDUCTIONS SPLIT EVENLY. Property tax and mortgage interest are halved
  * across the two returns, the natural reading for a jointly owned home. Each
