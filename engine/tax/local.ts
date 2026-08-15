@@ -47,8 +47,19 @@ export interface FlatRateLocalTax {
   id: string;
   name: string;
   stateCode: string;
-  /** Applied to gross wages. */
   rate: Rate;
+  /**
+   * What the rate is charged on. Gross wages unless the locality says
+   * otherwise, which is how Philadelphia, Detroit and the Ohio cities work.
+   *
+   * INDIANA IS THE EXCEPTION AND IT IS NOT A ROUNDING. Its county tax is
+   * charged on the same taxable income as the state tax — after Indiana's
+   * $1,000-per-exemption deductions — not on the whole paycheque. Charging a
+   * county rate on gross would overstate every Indiana bill by the rate times
+   * those exemptions, and Indiana's county rates reach 3%, so the error grows
+   * with family size exactly where a family can least absorb it.
+   */
+  appliesTo?: 'grossWages' | 'stateTaxableIncome';
 }
 
 export interface StateSurchargeLocalTax {
@@ -71,6 +82,12 @@ export interface LocalTaxInputs {
   children: number;
   /** State income tax already computed. Required by the surcharge form. */
   stateTax: USD;
+  /**
+   * The income the state itself taxed, after its deductions and exemptions.
+   * Required by any locality that charges on the state's base rather than on
+   * gross wages — Indiana's counties do.
+   */
+  stateTaxableIncome?: USD;
 }
 
 export interface LocalTaxResult {
@@ -102,11 +119,20 @@ export function computeLocalTax(
 
   switch (rules.kind) {
     case 'flatRate': {
+      /*
+       * Falls back to gross where the caller has not supplied the state's
+       * taxable income. That is the safe direction — it charges slightly more,
+       * never less — but it is a fallback, not the intent.
+       */
+      const base =
+        rules.appliesTo === 'stateTaxableIncome'
+          ? Math.max(0, inputs.stateTaxableIncome ?? gross)
+          : gross;
       return {
         jurisdictionId: rules.id,
         name: rules.name,
-        taxableIncome: gross,
-        tax: gross * rules.rate,
+        taxableIncome: base,
+        tax: base * rules.rate,
       };
     }
 

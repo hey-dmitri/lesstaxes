@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import { computeCity, defaultCityInputs } from './compare';
+import { computeLocalTax } from './tax/local';
 import { CURRENT_DATASET_VERSION } from './datasets';
 import {
   localJurisdiction,
@@ -103,5 +104,54 @@ describe('older releases keep their own coverage', () => {
     expect(resolveLocalJurisdictions(PHILADELPHIA, {}, '2026.1').map((j) => j.id)).toEqual([
       'avg-PA',
     ]);
+  });
+});
+
+/**
+ * Indiana's counties charge on the state's taxable income, not on gross wages.
+ *
+ * Every other flat-rate locality in this dataset — Philadelphia, Detroit, the
+ * Ohio cities, the Maryland counties — charges on the whole paycheque. Indiana
+ * does not, and the difference is the rate times Indiana's exemptions, which
+ * grows with family size. County rates there reach 3%, so charging on gross
+ * would overstate a family's bill exactly where they can least absorb it.
+ */
+describe('a local tax charged on the state base', () => {
+  const jurisdiction = {
+    kind: 'flatRate' as const,
+    id: 'test-county',
+    name: 'Test County',
+    stateCode: 'IN',
+    rate: 0.02,
+    appliesTo: 'stateTaxableIncome' as const,
+  };
+
+  const inputs = {
+    grossSalary: 100_000,
+    filingStatus: 'marriedJointly' as const,
+    children: 2,
+    stateTax: 0,
+  };
+
+  it('charges on what the state taxed, not on the whole paycheque', () => {
+    // $100,000 gross, $4,000 of exemptions, so $96,000 is what the state taxed.
+    const result = computeLocalTax({ ...inputs, stateTaxableIncome: 96_000 }, jurisdiction);
+    expect(result.taxableIncome).toBe(96_000);
+    expect(result.tax).toBeCloseTo(1_920, 6);
+  });
+
+  it('leaves every other locality charging on gross', () => {
+    const philadelphia = { ...jurisdiction, stateCode: 'PA', appliesTo: undefined };
+    const result = computeLocalTax({ ...inputs, stateTaxableIncome: 96_000 }, philadelphia);
+    expect(result.taxableIncome).toBe(100_000);
+  });
+
+  /*
+   * Falling back to gross charges slightly MORE, never less, which is the safe
+   * direction for a fallback to fail in.
+   */
+  it('falls back to gross rather than to zero', () => {
+    const result = computeLocalTax(inputs, jurisdiction);
+    expect(result.taxableIncome).toBe(100_000);
   });
 });

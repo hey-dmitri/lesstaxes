@@ -209,6 +209,8 @@ export function computeCity(
           filingStatus: household.filingStatus,
           children: share.children,
           stateTax: state.tax,
+          // Indiana's counties charge on what the state taxed, not on gross.
+          stateTaxableIncome: state.taxableIncome,
         },
         j,
       ).tax;
