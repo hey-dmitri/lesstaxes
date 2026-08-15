@@ -296,6 +296,49 @@ const HEAD_OF_HOUSEHOLD = {
     source: 'https://www.nj.gov/treasury/taxation/pdf/current/njtaxratesch.pdf',
     checked: '2026-08-15',
   },
+  /*
+   * These five publish ONE rate schedule and one set of allowances for
+   * everybody. Verified rather than assumed, which is the whole point of
+   * recording it: Ohio's own return groups "Single, head of household or
+   * qualifying surviving spouse" as a single filing status, and Virginia goes
+   * further — a head of household IS filing status 1, Single, with a tick-box.
+   */
+  Ohio: {
+    basis: 'single',
+    source: 'https://tax.ohio.gov/individual/file-now/annual-tax-rates',
+    checked: '2026-08-15',
+  },
+  Virginia: {
+    basis: 'single',
+    source: 'https://www.tax.virginia.gov/sites/default/files/vatax-pdf/2025-760-instructions.pdf',
+    checked: '2026-08-15',
+  },
+  Wisconsin: {
+    // "For single taxpayers, taxpayers qualified to file as head of household,
+    // estates, and trusts" — the state's own rate page, in those words.
+    basis: 'single',
+    source: 'https://www.revenue.wi.gov/Pages/FAQS/pcs-taxrates.aspx',
+    checked: '2026-08-15',
+  },
+  'South Carolina': {
+    basis: 'single',
+    source: 'https://dor.sc.gov/sites/dor/files/forms/SC1040Instr_2025.pdf',
+    checked: '2026-08-15',
+  },
+  Missouri: {
+    /*
+     * One rate chart for everybody, but a much larger standard deduction: MO
+     * conforms to the FEDERAL figure, which is $24,150 for a head of household
+     * against $16,100 for a single filer. Taking the single figure was costing
+     * them roughly $380 a year. There is also a $1,400 additional exemption
+     * that only a head of household or qualifying widow(er) may claim.
+     */
+    basis: 'own',
+    standardDeduction: 24_150,
+    personalExemption: 1_400,
+    source: 'https://dor.mo.gov/forms/4711_2025.pdf',
+    checked: '2026-08-15',
+  },
   'North Dakota': {
     basis: 'own',
     brackets: [
