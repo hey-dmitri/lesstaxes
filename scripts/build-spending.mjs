@@ -130,6 +130,32 @@ const VEHICLE_COST_ROWS = [
 const TRANSIT_ROW = 'Public and other transportation';
 
 /**
+ * The utilities row, split by whether ACS gross rent already contains it.
+ *
+ * The rent figures this site quotes are Census MEDIAN GROSS RENT, and Census
+ * defines that as "the contract rent plus the estimated average monthly cost of
+ * utilities (electricity, gas, and water and sewer) and fuels (oil, coal,
+ * kerosene, wood, etc.) if these are paid by the renter".
+ *
+ * So for a renter, four of the five things in the BLS utilities row are already
+ * inside the rent, and charging the whole row again on top double-counted them.
+ * About 70% of the line, every bracket: $2,661 a year in Chicago at $100,000.
+ *
+ * Telephone service is the exception. It is in the BLS row and it is NOT in
+ * gross rent, so it stays a living cost for everyone.
+ *
+ * Source: 2024 ACS Subject Definitions, "Gross Rent".
+ * https://www2.census.gov/programs-surveys/acs/tech_docs/subject_definitions/2024_ACSSubjectDefinitions.pdf
+ */
+const UTILITIES_INSIDE_GROSS_RENT = [
+  'Natural gas',
+  'Electricity',
+  'Fuel oil and other fuels',
+  'Water and other public services',
+];
+const UTILITIES_TELEPHONE = ['Telephone services'];
+
+/**
  * Lower bound of each published bracket. Kept for labelling and for the range
  * checks below; the engine picks profiles by meanIncome, not by floor.
  * The final bracket is open-ended.
@@ -247,6 +273,14 @@ for (const bracket of incomeBrackets) {
      * treating it as $200,000 would make the top segment absurdly steep.
      */
     meanIncome: Math.round(value('Income before taxes', bracket)),
+    /*
+     * How the utilities figure divides between what a renter's gross rent
+     * already covers and what it does not. See UTILITIES_INSIDE_GROSS_RENT.
+     */
+    utilitiesSplit: {
+      insideGrossRent: Math.round(sumRows(UTILITIES_INSIDE_GROSS_RENT, bracket)),
+      telephone: Math.round(sumRows(UTILITIES_TELEPHONE, bracket)),
+    },
     averageHouseholdSize: value('Average people per consumer unit', bracket),
     averageEarners: value('Average earners', bracket),
     averageChildren: value('Average children under 18', bracket),
@@ -295,6 +329,27 @@ for (let i = 0; i < profiles.length; i++) {
       `${p.bracket}: mean income ${p.meanIncome} does not exceed ` +
         `${profiles[i - 1].bracket}'s ${profiles[i - 1].meanIncome}`,
     );
+  }
+}
+
+/*
+ * The two halves of the utilities split must add back up to the published
+ * utilities figure. Nothing else would catch a BLS relabelling that quietly
+ * drops one of the five component rows on the floor.
+ */
+for (const p of profiles) {
+  const split = p.utilitiesSplit.insideGrossRent + p.utilitiesSplit.telephone;
+  if (Math.abs(split - p.categories.utilities) > 2) {
+    throw new Error(
+      `${p.bracket}: utilities split sums to ${split}, published total is ` +
+        `${p.categories.utilities}`,
+    );
+  }
+  // Sanity on the shape of the answer: the part inside rent is the large part
+  // everywhere, and telephone is never trivial or dominant.
+  const share = p.utilitiesSplit.insideGrossRent / p.categories.utilities;
+  if (!(share > 0.5 && share < 0.85)) {
+    throw new Error(`${p.bracket}: ${(share * 100).toFixed(0)}% inside gross rent looks wrong`);
   }
 }
 

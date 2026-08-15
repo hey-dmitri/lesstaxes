@@ -14,6 +14,7 @@ export {
   defaultRent,
   housingAtSalary,
   housingIsPrefill,
+  housingLabel,
   breakEvenSalary,
   quickCompare,
 } from './compare';

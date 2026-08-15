@@ -5,24 +5,29 @@
  * getting the sequence wrong is the single most common way a relocation
  * calculator produces a confident wrong answer:
  *
- *   1. Housing         produces property tax and first-year mortgage interest
- *   2. FICA            depends only on wages
+ *   1. Living costs    national basket re-priced by metro, sales tax included
+ *   2. Housing         produces property tax and first-year mortgage interest,
+ *                      and takes the utility slice step 1 hands it
  *   3. State tax       depends on salary and filing status
  *   4. Local tax       Yonkers levies a surcharge ON the state liability
  *   5. Federal tax     state + local + property tax feed the SALT deduction,
  *                      which decides whether itemising beats the standard
  *                      deduction, which changes federal tax
- *   6. Living costs    national basket re-priced by metro, sales tax included
- *   7. Sales tax       nothing to add — see step 7 for why it is zero
- *   8. Leftover        salary minus everything above
+ *   6. Sales tax       nothing to add — see that step for why it is zero
+ *   7. Leftover        salary minus everything above
  *
  * Computing federal tax before state tax would silently ignore the deduction
  * and overstate federal liability in every high-tax state.
  *
- * Steps 1 and 3-5 run once PER TAX RETURN, not once per household — a couple
- * filing separately files two. See taxReturnsFor. Housing, living costs and
- * sales tax are properties of the home, so they are computed once whatever the
- * household does with its paperwork.
+ * Living costs lead because of the utility bill: a renter's Census gross rent
+ * already contains gas, electricity, water and heating, and an owner's mortgage
+ * contains none of them, so the basket has to hand that slice to housing before
+ * housing can total itself.
+ *
+ * Steps 3-5, and FICA with them, run once PER TAX RETURN rather than once per
+ * household — a couple filing separately files two. See taxReturnsFor. Housing
+ * and living costs are properties of the home, so they are computed once
+ * whatever the household does with its paperwork.
  */
 
 import {
@@ -90,22 +95,46 @@ export function computeCity(
   const m = metro(city.metroId, version);
   const gross = Math.max(0, city.grossSalary);
 
-  // 1. Housing — produces the tax inputs the federal step needs, and depends on
+  // The state the person lives in, not the metro's first.
+  const stateCode = resolveStateCode(city.metroId, city.stateCode, version);
+
+  /*
+   * 1. Living costs.
+   *
+   * These come first now, ahead of housing, and the reason is the utility bill.
+   * A renter's figure is Census gross rent, which already includes gas,
+   * electricity, water and heating. An owner's mortgage includes none of them.
+   * So the basket hands that slice to the housing step, which charges it only
+   * to owners — and housing needs it before it can total itself.
+   *
+   * Nothing here depends on tax or on housing, so moving it up costs nothing.
+   */
+  const living = computeLiving({
+    metroId: city.metroId,
+    stateCode,
+    basketIncome: options.basketIncome ?? gross,
+    filingStatus: household.filingStatus,
+    householdSize: adultsIn(household.filingStatus) + Math.max(0, household.children),
+    cars: city.cars,
+    priceParity: m.priceParity,
+    datasetVersion: version,
+  });
+
+  // 2. Housing — produces the tax inputs the federal step needs, and depends on
   //    none of them, so it is settled before any return is filled in.
   const housing = computeHousing({
     housing: city.housing,
     annualInsurance: options.annualInsurance,
+    annualUtilities: living.utilitiesInsideRent,
   });
 
-  // The state the person lives in, not the metro's first.
-  const stateCode = resolveStateCode(city.metroId, city.stateCode, version);
   const jurisdictions =
     options.localJurisdictions ?? defaultLocalJurisdictions(city.metroId, version, stateCode);
   const stateTaxRules = stateRules(stateCode, version);
   const fedRules = federalRules(version);
   const payrollRules = ficaRules(version);
 
-  // 2-5. Every income tax, once per return. One return for most households,
+  // 3-5. Every income tax, once per return. One return for most households,
   //      two when a couple files separately and both of them earn.
   let ficaTotal = 0;
   let stateTotal = 0;
@@ -115,7 +144,7 @@ export function computeCity(
   let itemized = false;
 
   for (const share of taxReturnsFor(household, gross)) {
-    // 2. FICA
+    // FICA, per worker on that return
     ficaTotal += computeFica(
       share.grossSalary,
       household.filingStatus,
@@ -170,20 +199,8 @@ export function computeCity(
     itemized = itemized || federal.itemized;
   }
 
-  // 6. Living costs
-  const living = computeLiving({
-    metroId: city.metroId,
-    stateCode,
-    basketIncome: options.basketIncome ?? gross,
-    filingStatus: household.filingStatus,
-    householdSize: adultsIn(household.filingStatus) + Math.max(0, household.children),
-    cars: city.cars,
-    priceParity: m.priceParity,
-    datasetVersion: version,
-  });
-
   /*
-   * 7. Sales tax — ZERO, because the basket already contains it.
+   * 6. Sales tax — ZERO, because the basket already contains it.
    *
    * The living costs above come from the BLS Consumer Expenditure Survey, and
    * BLS defines an expenditure as the transaction cost INCLUDING sales and
@@ -211,7 +228,7 @@ export function computeCity(
         shares: taxableShares(version),
       }).tax;
 
-  // 8. Leftover
+  // 7. Leftover
   const taxTotal = federalTotal + stateTotal + localTotal + ficaTotal;
   const takeHome = gross - taxTotal;
   const leftover = takeHome - housing.total - living.total - salesTax;
@@ -380,12 +397,27 @@ const CATEGORY_LABELS: Record<CategoryKey, string> = {
   stateTax: 'State income tax',
   localTax: 'Local income tax',
   fica: 'Social Security & Medicare',
+  // Replaced per comparison by housingLabel — the reader either rents or buys,
+  // and "rent or mortgage" makes them work out which half applies to them.
   housing: 'Rent or mortgage',
   propertyTax: 'Property tax',
   transport: 'Cars & transport',
-  living: 'Food, utilities, healthcare, other',
+  living: 'Food, phone, healthcare, other',
   salesTax: 'Sales tax',
 };
+
+/**
+ * What to call the housing row, given what each side is doing.
+ *
+ * It says "plus utilities" in every case because the figure contains them
+ * either way — inside the rent for a renter, added on for an owner. Saying so
+ * is the difference between a reader thinking the site forgot their power bill
+ * and a reader knowing where it went.
+ */
+export function housingLabel(origin: 'rent' | 'own', destination: 'rent' | 'own'): string {
+  if (origin !== destination) return 'Housing + utilities';
+  return origin === 'rent' ? 'Rent + utilities' : 'Mortgage + utilities';
+}
 
 /**
  * Build the breakdown, sorted by absolute impact so the big levers dominate
@@ -401,7 +433,20 @@ function buildBreakdown(origin: CityResult, destination: CityResult): CategoryDe
     ['stateTax', origin.tax.state - destination.tax.state],
     ['localTax', origin.tax.local - destination.tax.local],
     ['fica', origin.tax.fica - destination.tax.fica],
-    ['housing', origin.housing.shelter - destination.housing.shelter],
+    /*
+     * Shelter AND the utility bill, because the label says so and because the
+     * breakdown has to reconcile to the headline. A renter's gross rent already
+     * contains gas, electricity, water and heating; an owner's mortgage does
+     * not, so the engine charges them separately. Leaving that second figure
+     * out of this row would drop it out of the breakdown while it stayed in
+     * leftover, and every owner's rows would stop adding up.
+     */
+    [
+      'housing',
+      origin.housing.shelter +
+        origin.housing.utilities -
+        (destination.housing.shelter + destination.housing.utilities),
+    ],
     ['propertyTax', origin.housing.propertyTax - destination.housing.propertyTax],
     ['transport', origin.living.transport - destination.living.transport],
     [
@@ -415,7 +460,10 @@ function buildBreakdown(origin: CityResult, destination: CityResult): CategoryDe
   return raw
     .map(([key, delta]) => ({
       key,
-      label: CATEGORY_LABELS[key],
+      label:
+        key === 'housing'
+          ? housingLabel(origin.housing.tenure, destination.housing.tenure)
+          : CATEGORY_LABELS[key],
       group: CATEGORY_GROUPS[key],
       delta,
     }))

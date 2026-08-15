@@ -9,6 +9,7 @@ import {
   breakEvenReference,
   formatPercent,
   formatUSD,
+  housingLabel,
   metro,
   percentIsMeaningful,
   shortfalls,
@@ -457,11 +458,22 @@ function DetailTable({ result }: { result: ComparisonResult }) {
     { key: 'stateTax', label: 'State income tax', a: -result.origin.tax.state, b: -mid.tax.state, c: -result.destination.tax.state },
     { key: 'localTax', label: 'Local income tax', a: -result.origin.tax.local, b: -mid.tax.local, c: -result.destination.tax.local },
     { key: 'fica', label: 'Social Security & Medicare', a: -result.origin.tax.fica, b: -mid.tax.fica, c: -result.destination.tax.fica },
-    { key: 'housing', label: 'Rent or mortgage', a: -result.origin.housing.shelter, b: -mid.housing.shelter, c: -result.destination.housing.shelter },
+    // Shelter plus the utility bill, matching the label and the breakdown. It
+    // is inside the rent for a renter and charged separately for an owner, so
+    // adding the field is right in both cases: it is zero for renters.
+    {
+      key: 'housing',
+      label: housingLabel(result.origin.housing.tenure, result.destination.housing.tenure),
+      a: -(result.origin.housing.shelter + result.origin.housing.utilities),
+      b: -(mid.housing.shelter + mid.housing.utilities),
+      c: -(result.destination.housing.shelter + result.destination.housing.utilities),
+    },
     { key: 'propertyTax', label: 'Property tax', a: -result.origin.housing.propertyTax, b: -mid.housing.propertyTax, c: -result.destination.housing.propertyTax },
     { key: 'transport', label: 'Cars & transport', a: -result.origin.living.transport, b: -mid.living.transport, c: -result.destination.living.transport },
     { key: 'food', label: 'Food', a: -result.origin.living.food, b: -mid.living.food, c: -result.destination.living.food },
-    { key: 'utilities', label: 'Utilities', a: -result.origin.living.utilities, b: -mid.living.utilities, c: -result.destination.living.utilities },
+    // Phone, not "Utilities". Gas, electricity, water and heating now sit in
+    // the housing line, where the rent figure was already paying for them.
+    { key: 'phone', label: 'Phone', a: -result.origin.living.utilities, b: -mid.living.utilities, c: -result.destination.living.utilities },
     { key: 'healthcare', label: 'Healthcare', a: -result.origin.living.healthcare, b: -mid.living.healthcare, c: -result.destination.living.healthcare },
     { key: 'other', label: 'Everything else', a: -result.origin.living.other, b: -mid.living.other, c: -result.destination.living.other },
     { key: 'salesTax', label: 'Sales tax', a: -result.origin.salesTax, b: -mid.salesTax, c: -result.destination.salesTax },

@@ -108,10 +108,21 @@ export interface TaxBreakdown {
 }
 
 export interface HousingBreakdown {
+  /** Which one this is, so the interface can name it rather than say "housing". */
+  tenure: 'rent' | 'own';
   /** Rent, or mortgage principal + interest. Principal counts as an outflow (D25). */
   shelter: USD;
   propertyTax: USD;
   insurance: USD;
+  /**
+   * Gas, electricity, water and heating fuel.
+   *
+   * ZERO FOR RENTERS, and that is not a gap: the rent figure is Census gross
+   * rent, which already contains them. For owners nothing else does, so they
+   * are charged here — which is why the line reads "rent plus utilities" or
+   * "mortgage plus utilities" either way.
+   */
+  utilities: USD;
   total: USD;
   /**
    * First-year mortgage interest. Feeds the federal itemization test.

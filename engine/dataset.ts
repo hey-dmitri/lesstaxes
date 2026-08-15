@@ -383,6 +383,21 @@ export interface SpendingProfile {
    * makes those releases keep computing the way they did when they shipped.
    */
   meanIncome?: USD;
+  /**
+   * How the utilities figure divides against ACS gross rent.
+   *
+   * Census gross rent is contract rent PLUS renter-paid electricity, gas, water
+   * and sewer, and fuels. Those four are the `insideGrossRent` half, and for a
+   * renter they are already inside the rent figure this site quotes. Telephone
+   * service is in the BLS utilities row and is not in gross rent.
+   *
+   * Absent on releases cut before the overlap was found, which keep charging
+   * the whole utilities row on top of gross rent.
+   */
+  utilitiesSplit?: {
+    insideGrossRent: USD;
+    telephone: USD;
+  };
   averageHouseholdSize: number;
   categories: SpendingCategories;
   livingTotal: USD;
@@ -498,6 +513,17 @@ export function spendingProfile(householdIncome: USD, version?: string): Spendin
     incomeFloor: lower.incomeFloor,
     meanIncome: income,
     averageHouseholdSize: lerp(lower.averageHouseholdSize, upper.averageHouseholdSize, t),
+    utilitiesSplit:
+      lower.utilitiesSplit && upper.utilitiesSplit
+        ? {
+            insideGrossRent: lerp(
+              lower.utilitiesSplit.insideGrossRent,
+              upper.utilitiesSplit.insideGrossRent,
+              t,
+            ),
+            telephone: lerp(lower.utilitiesSplit.telephone, upper.utilitiesSplit.telephone, t),
+          }
+        : undefined,
     categories,
     livingTotal: lerp(lower.livingTotal, upper.livingTotal, t),
     transport: {

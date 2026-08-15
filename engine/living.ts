@@ -114,6 +114,16 @@ export interface LivingResult extends LivingBreakdown {
   profileBracket: string;
   /** How much the bracket's average basket was scaled for this household. */
   equivalenceFactor: number;
+  /**
+   * Gas, electricity, water and heating fuel, priced for this metro and this
+   * household — the part of the utilities row that a renter's gross rent
+   * already covers.
+   *
+   * NOT included in `utilities` or `total`. computeCity adds it to the housing
+   * block for owners, whose mortgage covers no such thing. Zero on releases cut
+   * before the overlap was found, which leave it inside `utilities`.
+   */
+  utilitiesInsideRent: USD;
 }
 
 /** Re-price the national basket for this metro, then add transport. */
@@ -134,9 +144,33 @@ export function computeLiving(inputs: LivingInputs): LivingResult {
     goodsParity: inputs.priceParity.goods,
   });
 
+  /*
+   * SPLIT THE UTILITIES LINE, because most of it is already paid for.
+   *
+   * The rent this site quotes is Census median GROSS rent, which Census defines
+   * as contract rent plus renter-paid electricity, gas, water and sewer, and
+   * fuels. Charging the whole BLS utilities row beside it billed those four
+   * twice — about 70% of the line, or $2,661 a year in Chicago at $100,000.
+   *
+   * Telephone is the part of the row gross rent does not cover, so it stays
+   * here as an ordinary living cost for everybody.
+   *
+   * Telephone also gets a different price index. Utility prices are intensely
+   * local, which is what the utilities parity measures; a mobile contract is
+   * sold at a national price by a national carrier. Leaving the phone bill on
+   * the utilities parity would have swung it by hundreds in Hawaii for no
+   * reason connected to phones.
+   */
+  const split = profile.utilitiesSplit;
+  const utilities = split
+    ? split.telephone * inputs.priceParity.otherServices * sizeFactor
+    : scaledCategories.utilities;
+  const utilitiesInsideRent = split
+    ? split.insideGrossRent * inputs.priceParity.utilities * sizeFactor
+    : 0;
+
   // Map internal categories onto the breakdown the results page shows.
   const food = scaledCategories.food;
-  const utilities = scaledCategories.utilities;
   const healthcare = scaledCategories.healthcare;
   const other = scaledCategories.otherGoods + scaledCategories.otherServices;
 
@@ -150,6 +184,7 @@ export function computeLiving(inputs: LivingInputs): LivingResult {
     scaledCategories,
     profileBracket: profile.bracket,
     equivalenceFactor: sizeFactor,
+    utilitiesInsideRent,
   };
 }
 

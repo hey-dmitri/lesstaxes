@@ -131,9 +131,12 @@ describe('why narrative', () => {
     // And again with 2026.7, from $8,835 to $8,669: the separate sales tax
     // line was removed as a double count, and Illinois charges more of it than
     // Texas, so some of Austin's advantage was tax being counted twice.
+    // And barely at all with 2026.8, $8,669 to $8,664. That release stopped
+    // charging renters for utilities their gross rent already covered, which
+    // is worth thousands to each city but nearly cancels between two of them.
     const result = run(CHICAGO, AUSTIN, 150_000);
     expect(whySentence(result)).toBe(
-      'Austin, TX is $8,669 cheaper a year to live in at the same salary.',
+      'Austin, TX is $8,664 cheaper a year to live in at the same salary.',
     );
   });
 

@@ -317,14 +317,23 @@ export function CityPanel({
         />
 
         {state.housing.tenure === 'rent' ? (
+          /*
+            "With utilities" is not decoration. The figure behind this box is
+            Census GROSS rent, which is the rent plus the gas, electricity,
+            water and heating the tenant pays. Somebody who types their rent
+            alone, having read a bare "Rent a month", enters a smaller number
+            than the one the comparison is built from — and the site used to
+            charge those utilities a second time on top, which is what this
+            whole change is undoing.
+          */
           <MoneyField
-            label="Rent a month"
+            label="Rent a month, with utilities"
             value={state.housing.monthlyRent}
             onChange={(monthlyRent) => setHousing({ monthlyRent })}
             hint={
               state.housing.monthlyRent === suggestedRent
-                ? `${bedrooms}-bed, typical at this salary`
-                : `${formatUSD(suggestedRent)} typical for ${bedrooms} bed`
+                ? `${bedrooms}-bed, typical at this salary. Includes gas, electricity, water and heating.`
+                : `${formatUSD(suggestedRent)} typical for ${bedrooms} bed, with utilities`
             }
           />
         ) : (

@@ -40,10 +40,9 @@ export default function MethodologyPage() {
                  −  state income tax
                  −  local income tax
                  −  Social Security and Medicare
-                 −  housing (rent, or mortgage + property tax)
+                 −  rent + utilities, or mortgage + property tax + utilities
                  −  cars and transport
-                 −  food, utilities, healthcare, everything else
-                 −  sales tax on what is taxable
+                 −  food, phone, healthcare, everything else
 
 answer          =  in your pocket THERE  −  in your pocket HERE`}</pre>
 
@@ -164,9 +163,34 @@ answer          =  in your pocket THERE  −  in your pocket HERE`}</pre>
           level.
         </p>
 
+        <h2>Where your gas and electricity bill lives</h2>
+        <p>
+          In the housing line, not in the spending one — and this is worth a minute because it was
+          wrong for a long time.
+        </p>
+        <p>
+          The rent figures come from the Census, and the Census measures{' '}
+          <strong>gross rent</strong>: the rent itself <em>plus</em> the electricity, gas, water,
+          sewer and heating the tenant pays. So a renter&rsquo;s energy bill is already inside the
+          rent number on this page. This site used to subtract a full national utilities bill on top
+          of that as well, charging renters for the same thing twice — around $2,700 a year in
+          Chicago and $4,000 in New York.
+        </p>
+        <p>
+          A mortgage covers no such thing, so buyers are charged those utilities separately. Either
+          way the line reads <strong>rent + utilities</strong> or{' '}
+          <strong>mortgage + utilities</strong>, and either way it is counted once.
+        </p>
+        <p>
+          The phone bill is the exception. It sits in the same national statistic as gas and
+          electricity but it is not part of anybody&rsquo;s rent, so it stays with the ordinary
+          spending below. It also gets a different price index: what you pay for electricity is
+          intensely local, while a mobile contract costs much the same everywhere.
+        </p>
+
         <h2>Everything else you spend</h2>
         <p>
-          Food, utilities, healthcare and the rest come from what US households at your income
+          Food, healthcare, the phone bill and the rest come from what US households at your income
           actually spend, then re-priced for each city using federal regional price levels.
         </p>
         <p>Two adjustments are worth knowing about, because both were bugs before they were features:</p>

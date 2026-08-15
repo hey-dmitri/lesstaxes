@@ -80,6 +80,15 @@ export interface HousingInputs {
    */
   annualInsurance?: USD;
   mortgageTermYears?: number;
+  /**
+   * Gas, electricity, water and heating fuel for this metro and household.
+   *
+   * Charged to OWNERS only. A renter's figure is Census gross rent, which is
+   * contract rent plus exactly these, so adding them again would bill them
+   * twice — which is what this engine used to do. A mortgage covers none of
+   * them, so for owners they belong here or nowhere.
+   */
+  annualUtilities?: USD;
 }
 
 export function computeHousing(inputs: HousingInputs): HousingBreakdown {
@@ -89,13 +98,18 @@ export function computeHousing(inputs: HousingInputs): HousingBreakdown {
   if (h.tenure === 'rent') {
     const shelter = Math.max(0, h.monthlyRent) * MONTHS_PER_YEAR;
     return {
+      tenure: 'rent',
       shelter,
       propertyTax: 0,
       insurance,
+      // Already inside the rent above. See annualUtilities.
+      utilities: 0,
       total: shelter + insurance,
       mortgageInterest: 0,
     };
   }
+
+  const utilities = Math.max(0, inputs.annualUtilities ?? 0);
 
   const homePrice = Math.max(0, h.homePrice);
   const downPayment = Math.min(Math.max(h.downPayment, 0), 1);
@@ -107,10 +121,12 @@ export function computeHousing(inputs: HousingInputs): HousingBreakdown {
   const mortgageInterest = firstYearInterest(principal, h.mortgageRate, term);
 
   return {
+    tenure: 'own',
     shelter,
     propertyTax,
     insurance,
-    total: shelter + propertyTax + insurance,
+    utilities,
+    total: shelter + propertyTax + insurance + utilities,
     mortgageInterest,
   };
 }
