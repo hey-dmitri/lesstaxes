@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import { DATASET_ROWS } from './dataset-rows';
-import { housingDefaults, transportDefaults, allMetros } from '@/engine';
+import { housingDefaults, transportDefaults, allMetros, stateRules } from '@/engine';
 
 /**
  * The data page promises to show every number the calculator uses.
@@ -48,6 +48,22 @@ describe('the data browser', () => {
   it('still produces one row per state part', () => {
     const expected = allMetros().reduce((n, m) => n + m.states.length, 0);
     expect(DATASET_ROWS).toHaveLength(expected);
+  });
+
+  /*
+   * The page claims to show every number the calculator uses. Where a number
+   * came FROM is part of that claim: an annual table published in February and
+   * a state's own schedule read in August are not the same provenance, and
+   * four states legislated their way between the two during 2026.
+   */
+  it('carries the tax provenance through to the browser', () => {
+    for (const r of DATASET_ROWS) {
+      const rules = stateRules(r.state);
+      expect(r.taxChecked, r.id).toBe(rules.ratesCheckedAgainstState?.checked ?? null);
+      expect(r.taxCheckedUrl, r.id).toBe(rules.ratesCheckedAgainstState?.url ?? null);
+      // A date without a source to check it against would be a bare assertion.
+      if (r.taxChecked !== null) expect(r.taxCheckedUrl, r.id).toBeTruthy();
+    }
   });
 
   it('says housing belongs to the state, not to the metro', () => {

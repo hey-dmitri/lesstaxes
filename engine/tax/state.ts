@@ -38,6 +38,21 @@ export interface StateTaxRules {
    * overcharged a single parent $2,028 a year.
    */
   headOfHouseholdBasis: 'own' | 'marriedJointly' | 'single' | 'assumed-single';
+  /**
+   * Whether anybody has opened this state's own 2026 rate schedule and compared
+   * every bracket and every allowance to what we ship. Null means nobody has.
+   *
+   * The bracket table behind this dataset is published once a year, in
+   * February, and states legislate through the spring — four of them moved
+   * underneath it in 2026, all in the direction that overcharges. So "our
+   * source is reputable" is not a claim about whether a figure is current, and
+   * this field is the one that is.
+   *
+   * `matched` true means the state's own publication agreed and nothing needed
+   * changing. Recorded on purpose: "checked and agreed" and "never looked"
+   * produce identical numbers, and only a written record tells them apart.
+   */
+  ratesCheckedAgainstState: { url: string; checked: string; matched: boolean } | null;
   personalExemption: {
     single: USD;
     marriedJointly: USD;

@@ -58,6 +58,20 @@ function Row({ row }: { row: DatasetRow }) {
       <td className="px-2.5 py-1.5 text-right text-[0.78rem]" style={{ color: 'var(--muted)' }}>
         {row.localTax ?? '—'}
       </td>
+      {/* Provenance, not a figure. A reader checking our numbers deserves to
+          know whether this state's tax rules were read off the state's own
+          schedule or taken from an annual table published in February. */}
+      <td
+        className="px-2.5 py-1.5 text-right text-[0.78rem] whitespace-nowrap"
+        style={{ color: row.taxChecked ? 'var(--ink)' : 'var(--muted)' }}
+        title={
+          row.taxCheckedUrl
+            ? `Checked against ${row.taxCheckedUrl}`
+            : 'Not yet read off this state\u2019s own publication \u2014 these figures come from the annual bracket table alone.'
+        }
+      >
+        {row.taxChecked ?? 'not checked'}
+      </td>
     </tr>
   );
 }
@@ -133,6 +147,10 @@ export function DatasetBrowser() {
                 ['Sales tax', 'State plus average local. Reference only — not charged.'],
                 ['Groceries', 'Sales tax treatment of food at home. Reference only.'],
                 ['Local tax', 'Local income tax jurisdictions'],
+                [
+                  'Tax checked',
+                  "When this state's rates and allowances were last read off the state's own 2026 publication, rather than taken from the annual bracket table",
+                ],
               ].map(([label, title]) => (
                 <th
                   key={label}
@@ -152,7 +170,7 @@ export function DatasetBrowser() {
             ))}
             {rows.length === 0 && (
               <tr>
-                <td colSpan={13} className="px-3 py-6 text-center text-sm" style={{ color: 'var(--muted)' }}>
+                <td colSpan={17} className="px-3 py-6 text-center text-sm" style={{ color: 'var(--muted)' }}>
                   Nothing matches “{query}”. Try a state code, or “Rest of” for rural areas.
                 </td>
               </tr>
@@ -164,7 +182,11 @@ export function DatasetBrowser() {
       <p className="text-xs" style={{ color: 'var(--muted)' }}>
         Price levels are indexed so the national average is 100 — Chicago housing at 112 means 12%
         above the US average. Property tax is the <em>effective</em> rate actually paid, which
-        already reflects assessment ratios, homestead exemptions and caps.
+        already reflects assessment ratios, homestead exemptions and caps.{' '}
+        <strong>Tax checked</strong> is the date someone opened that state&rsquo;s own rate schedule
+        and compared every bracket and allowance to ours. Where it says <em>not checked</em>, the
+        figures rest on a bracket table published once a year in February — which four states
+        legislated their way out of during 2026, every one of them leaving us charging too much.
       </p>
     </div>
   );

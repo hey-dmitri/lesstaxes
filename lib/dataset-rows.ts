@@ -61,6 +61,18 @@ export interface DatasetRow {
   parityUtilities: number;
   parityServices: number;
   hasStateIncomeTax: boolean;
+  /**
+   * When this state's tax figures were last read off the state's own 2026
+   * publication, or null if nobody has done that and they rest on the
+   * aggregated table alone.
+   *
+   * This page exists to let a reader check our numbers against a place they
+   * know. Telling them WHERE a number came from is most of that, and "a
+   * reputable annual table published in February" and "the state's own
+   * schedule, read in August" are not the same provenance.
+   */
+  taxChecked: string | null;
+  taxCheckedUrl: string | null;
   salesTaxRate: number;
   groceryTreatment: string;
   localTax: string | null;
@@ -119,6 +131,8 @@ export const DATASET_ROWS: DatasetRow[] = allMetros().flatMap((m) => {
       parityUtilities: m.priceParity.utilities,
       parityServices: m.priceParity.otherServices,
       hasStateIncomeTax: stateRules(state).hasWageIncomeTax,
+      taxChecked: stateRules(state).ratesCheckedAgainstState?.checked ?? null,
+      taxCheckedUrl: stateRules(state).ratesCheckedAgainstState?.url ?? null,
       salesTaxRate: sales.combinedRate,
       groceryTreatment: sales.grocery.treatment,
       localTax: locals.length
