@@ -15,7 +15,24 @@ import { comparisonFromShared } from './shared-comparison';
  * shape is what consumers get, so the fixtures use it too and round trips are
  * exact rather than merely equivalent.
  */
-const NO_OPT_INS = { nyc: false, yonkers: false };
+/*
+ * Every question the link can carry, all answered no.
+ *
+ * Written out from the decoder rather than by hand. The list grew from two
+ * entries to twenty-one when the eleven metros with a "Where in this metro?"
+ * question were finally given bits of their own, and a hand-kept copy here
+ * would have failed three round-trip tests for a change that broke nothing —
+ * the decoder returns a complete map, and every added key is false.
+ */
+const NO_OPT_INS = decodeComparison(
+  encodeComparison({
+    datasetVersion: '2026.1',
+    filingStatus: 'single',
+    children: 0,
+    origin: { metroId: '16980', grossSalary: 0, cars: 0, localOptIns: {}, housing: { tenure: 'rent', monthlyRent: 0 } },
+    destination: { metroId: '12420', grossSalary: 0, cars: 0, localOptIns: {}, housing: { tenure: 'rent', monthlyRent: 0 } },
+  }),
+).origin.localOptIns;
 
 const RENTING: SharedComparison = {
   datasetVersion: '2026.1',
@@ -50,7 +67,7 @@ const OWNING: SharedComparison = {
     stateCode: 'NY',
     grossSalary: 240_000,
     cars: 0,
-    localOptIns: { nyc: true, yonkers: false },
+    localOptIns: { ...NO_OPT_INS, nyc: true },
     housing: { tenure: 'rent', monthlyRent: 3_400 },
   },
   destination: {

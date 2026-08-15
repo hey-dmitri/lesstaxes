@@ -69,8 +69,55 @@ const FILING_ORDER: FilingStatus[] = [
   'headOfHousehold',
 ];
 
-/** Local jurisdictions that can be opted into, as a bitmask. Append only. */
-const OPT_IN_ORDER = ['nyc', 'yonkers'] as const;
+/**
+ * Local jurisdictions that can be opted into, as a bitmask. APPEND ONLY — the
+ * index IS the wire value, so reordering this list silently rewrites every
+ * link ever made.
+ *
+ * IT HELD TWO NAMES WHILE THE SITE ASKED ELEVEN QUESTIONS.
+ *
+ * When only New York City and Yonkers had a "do you live inside it?" question,
+ * two entries were the whole story. Then eleven more metros were given a
+ * grouped "Where in this metro do you live?" — Philadelphia, Pittsburgh,
+ * Cleveland, Columbus, Cincinnati, Detroit, Baltimore, Kansas City, St. Louis,
+ * Louisville and Portland — and none of those answers had anywhere to go in
+ * the link. Nothing failed. The encoder simply had no bit for them.
+ *
+ * What the reader got: `resolveLocalJurisdictions` finds no chosen member of
+ * the group and falls back to `defaultApplies`, which is always the CITY rate.
+ * So somebody who said they live outside Philadelphia, shared the result, and
+ * opened their own link was shown the city tax anyway — $990 became $3,738,
+ * their leftover fell by $2,747.50, and the verdict moved by the same amount.
+ * The share bar promises "whoever opens it sees exactly these numbers".
+ *
+ * Appending is safe for links already in the wild. Their masks only ever set
+ * bits 0 and 1; every new bit reads as false, and false is not a choice — the
+ * grouped resolver treats only an explicit `true` as a selection and otherwise
+ * falls back to the default, which is exactly what those links did before.
+ */
+const OPT_IN_ORDER = [
+  'nyc',
+  'yonkers',
+  'philadelphia',
+  'avg-PA',
+  'pittsburgh',
+  'cleveland',
+  'columbus',
+  'cincinnati',
+  'avg-OH',
+  'detroit',
+  'avg-MI',
+  'baltimore-city',
+  'avg-MD',
+  'kansas-city',
+  'st-louis',
+  'avg-MO',
+  'louisville',
+  'avg-KY',
+  'portland-multnomah',
+  'portland-metro',
+  'avg-OR',
+] as const;
 
 export interface SharedCity {
   metroId: string;
@@ -215,17 +262,26 @@ function readState(r: Reader): string | undefined {
   return state;
 }
 
+/*
+ * 2 ** i rather than 1 << i. JavaScript's shift operators coerce to 32-bit
+ * signed integers, so bit 31 would come back negative and bit 32 would wrap to
+ * bit 0 — quietly, and only once this list passed thirty entries. It is at
+ * twenty-one. The varint on the wire is good to 2 ** 53, so plain arithmetic
+ * costs nothing and removes the cliff.
+ */
 function writeOptIns(w: Writer, optIns: Record<string, boolean>): void {
   let mask = 0;
   OPT_IN_ORDER.forEach((id, i) => {
-    if (optIns[id]) mask |= 1 << i;
+    if (optIns[id]) mask += 2 ** i;
   });
   w.uint(mask);
 }
 
 function readOptIns(r: Reader): Record<string, boolean> {
   const mask = r.uint();
-  return Object.fromEntries(OPT_IN_ORDER.map((id, i) => [id, Boolean(mask & (1 << i))]));
+  return Object.fromEntries(
+    OPT_IN_ORDER.map((id, i) => [id, Math.floor(mask / 2 ** i) % 2 === 1]),
+  );
 }
 
 function writeCity(w: Writer, city: SharedCity): void {
