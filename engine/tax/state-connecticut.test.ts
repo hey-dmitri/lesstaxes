@@ -111,3 +111,66 @@ describe('Connecticut add-backs and credit', () => {
     ).not.toThrow();
   });
 });
+
+/**
+ * Oregon's subtraction for the federal income tax you paid.
+ *
+ * `federalTaxDeductible` has flagged Alabama, Missouri and Oregon as allowing
+ * this since the dataset was built, and was never anything but a label —
+ * nothing read it. Oregon's was the largest single overcharge left at the
+ * incomes this site serves.
+ */
+describe('Oregon federal tax subtraction', () => {
+  const or = stateRules('OR');
+  const at = (salary: number, federalTaxPaid: number) =>
+    computeStateTax(
+      { grossSalary: salary, filingStatus: 'single', children: 0, federalTaxPaid },
+      or,
+    );
+
+  it('subtracts the federal bill, capped at $8,500', () => {
+    // A federal bill under the cap is taken in full.
+    expect(at(80_000, 6_000).taxableIncome).toBeCloseTo(
+      at(80_000, 0).taxableIncome - 6_000,
+      2,
+    );
+    // Over the cap, only $8,500 comes off.
+    expect(at(80_000, 20_000).taxableIncome).toBeCloseTo(
+      at(80_000, 0).taxableIncome - 8_500,
+      2,
+    );
+  });
+
+  /*
+   * A staircase, not a taper: the cap holds at $8,500 to $125,000 and then
+   * drops in five steps across a $20,000 span. Modelling it as a smooth taper
+   * would give the wrong answer everywhere inside that span.
+   */
+  it('steps the cap down and then stops entirely', () => {
+    const deducted = (salary: number) =>
+      at(salary, 20_000).taxableIncome === at(salary, 0).taxableIncome
+        ? 0
+        : at(salary, 0).taxableIncome - at(salary, 20_000).taxableIncome;
+
+    expect(deducted(125_000)).toBeCloseTo(8_500, 2);
+    expect(deducted(128_000)).toBeCloseTo(6_800, 2);
+    expect(deducted(143_000)).toBeCloseTo(1_700, 2);
+    expect(deducted(150_000)).toBe(0);
+  });
+
+  /*
+   * A head of household uses the JOINT thresholds, not the single ones —
+   * Oregon's worksheet puts them under "all others".
+   */
+  it('puts a head of household on the joint thresholds', () => {
+    const caps = or.federalTaxDeduction!.caps;
+    expect(caps.headOfHousehold).toEqual(caps.marriedJointly);
+    expect(caps.headOfHousehold?.[0][0]).toBe(250_000);
+  });
+
+  it('leaves states without the subtraction untouched', () => {
+    for (const code of ['CA', 'NY', 'TX']) {
+      expect(stateRules(code).federalTaxDeduction, code).toBeNull();
+    }
+  });
+});

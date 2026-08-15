@@ -183,6 +183,17 @@ export interface StateTaxRules {
    */
   taxCreditFraction: TaxCreditFraction | null;
   /**
+   * A deduction for the FEDERAL income tax you paid, where the state gives
+   * one — capped, and tapering to nothing as income rises.
+   *
+   * OREGON'S IS THE LARGEST SINGLE OVERCHARGE LEFT IN THIS DATASET at the
+   * incomes it reaches: $8,500 off taxable income, worth about $743 a year to
+   * a single filer on $80,000. The `federalTaxDeductible` flag has flagged
+   * Oregon, Alabama and Missouri as allowing it since the dataset was built,
+   * and has never been anything but a label — nothing read it.
+   */
+  federalTaxDeduction: FederalTaxDeduction | null;
+  /**
    * A deduction for property tax that is NOT itemising, where the state has
    * one.
    *
@@ -543,6 +554,19 @@ export interface TaxCreditFraction {
   };
 }
 
+/**
+ * See StateTaxRules.federalTaxDeduction.
+ *
+ * `caps` are [income at or below which it applies, maximum deduction], in
+ * ascending order. Past the last band nothing is deductible — Oregon's is a
+ * staircase down from $8,500 to zero across a $20,000 span, not a taper.
+ */
+export interface FederalTaxDeduction {
+  caps: Partial<Record<PublishedStatus, Array<[number, number]>>> & {
+    single: Array<[number, number]>;
+  };
+}
+
 /** See StateTaxRules.propertyTaxRelief. */
 export interface PropertyTaxRelief {
   cap: USD;
@@ -587,6 +611,11 @@ export interface StateTaxInputs {
    * tax — the one relief in this engine that a renter can claim.
    */
   annualRent?: USD;
+  /**
+   * Federal income tax paid, for the states that let you subtract it. Oregon
+   * is the one modelled.
+   */
+  federalTaxPaid?: USD;
   /**
    * Whether this filer itemised on their federal return. Required by the six
    * states that will not let you itemise for them unless you did.
@@ -1004,7 +1033,23 @@ export function computeStateTax(
     }
   }
 
-  const taxableIncome = Math.max(0, gross - deductions - exemptions - propertyTaxDeduction);
+  /*
+   * The federal income tax you paid, where the state lets you subtract it.
+   * Capped by income band, and never more than the tax actually paid.
+   */
+  let federalTaxDeducted = 0;
+  const fedDeduction = rules.federalTaxDeduction;
+  if (fedDeduction) {
+    const caps =
+      fedDeduction.caps[allowanceKey] ?? fedDeduction.caps[otherwise] ?? fedDeduction.caps.single;
+    const band = caps.find(([upper]) => gross <= upper);
+    if (band) federalTaxDeducted = Math.min(band[1], Math.max(0, inputs.federalTaxPaid ?? 0));
+  }
+
+  const taxableIncome = Math.max(
+    0,
+    gross - deductions - exemptions - propertyTaxDeduction - federalTaxDeducted,
+  );
   const lump =
     rules.lumpSumTax && taxableIncome > rules.lumpSumTax.above ? rules.lumpSumTax.amount : 0;
 

@@ -179,6 +179,35 @@ export function computeCity(
       federalSalt + housing.mortgageInterest * share.deductionShare >
       fedRules.standardDeduction[household.filingStatus];
 
+    /*
+     * A PROVISIONAL FEDERAL BILL, for the states that let you subtract it.
+     *
+     * Oregon does, and this is genuinely circular — federal tax depends on
+     * state tax through the deduction for state and local tax, and Oregon's
+     * state tax depends on the federal bill. Broken by computing the federal
+     * side here with NO state tax deducted, which is exact for the large
+     * majority who take the federal standard deduction and slightly high for
+     * anyone who itemises.
+     *
+     * Slightly high is the wrong direction on its own — a bigger federal bill
+     * means a bigger Oregon subtraction — but Oregon caps the subtraction at
+     * $8,500 and a single filer clears that cap by about $70,000 of income, so
+     * for almost everyone the exact figure never enters the answer.
+     */
+    const provisionalFederalTax = stateTaxRules.federalTaxDeduction
+      ? computeFederal(
+          {
+            grossSalary: share.grossSalary,
+            filingStatus: household.filingStatus,
+            children: share.children,
+            stateAndLocalIncomeTax: 0,
+            propertyTax: 0,
+            mortgageInterest: 0,
+          },
+          fedRules,
+        ).tax
+      : 0;
+
     // 3. State income tax
     const state = computeStateTax(
       {
@@ -191,6 +220,7 @@ export function computeCity(
         mortgageInterest: housing.mortgageInterest * share.deductionShare,
         mortgageDebt: housing.mortgageDebt * share.deductionShare,
         itemisedFederally,
+        federalTaxPaid: provisionalFederalTax,
         /*
          * New Jersey counts 18% of a renter's rent as property tax. Only a
          * renter has rent to count — an owner's shelter line is mortgage

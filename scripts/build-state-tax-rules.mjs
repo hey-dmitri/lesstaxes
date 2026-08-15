@@ -311,6 +311,55 @@ const TAX_CREDIT_FRACTION = {
   },
 };
 
+/**
+ * STATES THAT LET YOU SUBTRACT THE FEDERAL INCOME TAX YOU PAID.
+ *
+ * `federalTaxDeductible` has flagged Alabama, Missouri and Oregon as allowing
+ * this since the dataset was built, and has never been anything but a label —
+ * nothing read it. Oregon's is the largest single overcharge left at the
+ * incomes this site serves: about $743 a year to a single filer on $80,000.
+ *
+ * A STAIRCASE, NOT A TAPER. Oregon's cap holds at $8,500 to $125,000 of
+ * income, then drops in five $1,700 steps across a $20,000 span and is gone.
+ * The joint and head-of-household band runs from $250,000 to $290,000 — note
+ * that head of household uses the JOINT thresholds, not the single ones.
+ *
+ * It is federal tax AFTER credits, and it is liability rather than what was
+ * withheld.
+ *
+ * Alabama and Missouri also allow it and are NOT modelled here: Alabama's runs
+ * through its Schedule A and Missouri's is a percentage of federal tax that
+ * reaches zero above $125,000 of Missouri income, so neither fits this shape.
+ * Both are recorded as gaps on their own states.
+ */
+const FEDERAL_TAX_DEDUCTION = {
+  Oregon: {
+    caps: {
+      single: [
+        [125_000, 8_500],
+        [130_000, 6_800],
+        [135_000, 5_100],
+        [140_000, 3_400],
+        [145_000, 1_700],
+      ],
+      marriedJointly: [
+        [250_000, 8_500],
+        [260_000, 6_800],
+        [270_000, 5_100],
+        [280_000, 3_400],
+        [290_000, 1_700],
+      ],
+      headOfHousehold: [
+        [250_000, 8_500],
+        [260_000, 6_800],
+        [270_000, 5_100],
+        [280_000, 3_400],
+        [290_000, 1_700],
+      ],
+    },
+  },
+};
+
 const PROPERTY_TAX_RELIEF = {
   'New Jersey': {
     cap: 15_000,
@@ -1852,7 +1901,7 @@ const STATE_OVERRIDES = {
     },
     source: 'https://www.oregon.gov/dor/forms/FormsPubs/withholding-tax-formulas_206-436_2026.pdf',
     checked: '2026-08-15',
-    note: "Oregon lets you subtract the federal income tax you paid, capped at $8,500 and tapering to nothing by $145,000 of income for a single filer. That is not modelled — the federalTaxDeductible flag has always been a label rather than a calculation — so Oregon tax shown here is higher than the true figure by up to about $743 a year at lower incomes.",
+    note: "Oregon's subtraction for federal income tax is measured against a federal bill computed without deducting any state tax, which is exact for anyone taking the federal standard deduction and slightly high for anyone who itemises. Oregon caps the subtraction at $8,500 and a single filer clears that cap by about $70,000 of income, so for almost everyone the approximation never reaches the answer.",
   },
   Arkansas: {
     /*
@@ -2770,6 +2819,7 @@ for (const [name, s] of Object.entries(states)) {
   s.propertyTaxRelief = PROPERTY_TAX_RELIEF[name] ?? null;
   s.taxAddBacks = TAX_ADD_BACKS[name] ?? [];
   s.taxCreditFraction = TAX_CREDIT_FRACTION[name] ?? null;
+  s.federalTaxDeduction = FEDERAL_TAX_DEDUCTION[name] ?? null;
   /*
    * Rules we know this state has and do not model, in plain words, each saying
    * which way it runs. Kept apart from `notes` — which carries the source
