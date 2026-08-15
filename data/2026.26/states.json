@@ -139,7 +139,7 @@
         "These states allow some or all of federal income tax paid to be deducted from state taxable income.",
         "Dependent exemption is reduced to $500 for taxpayers with AGI greater than $50,000, and is phased out completely for taxpayers with AGI greater than $100,000.",
         "Alabama's itemised deductions here cover property tax, mortgage interest and the Social Security and Medicare tax withheld from your pay. Charitable giving and medical costs are not asked about and are not included, so Alabama tax shown here is higher than the true figure for anyone who has them.",
-        "Alabama's dependent exemption steps down with income — $1,000 up to $50,000, $500 to $100,000, $300 above — and never reaches zero. Only the $1,000 figure is modelled, so Alabama tax shown is slightly lower than the true figure above $50,000. Alabama also lets you itemise without having itemised federally, and deduct the Social Security and Medicare tax withheld from your pay, which beats the standard deduction at almost any wage; that is not modelled, so Alabama tax shown is higher than the true figure for most earners."
+        "Alabama's dependent exemption steps down with income — $1,000 up to $50,000, $500 to $100,000, $300 above — and never reaches zero. Only the $1,000 figure is used here, so Alabama tax shown is slightly lower than the true figure above $50,000. Alabama also allows a deduction for the federal income tax you paid, which is not included, so the figure shown is higher than the truth in the other direction."
       ],
       "earnedIncomeCredit": null,
       "creditPhaseOut": null,
@@ -185,7 +185,7 @@
       "federalTaxDeduction": null,
       "modellingGaps": [
         "Alabama's itemised deductions here cover property tax, mortgage interest and the Social Security and Medicare tax withheld from your pay. Charitable giving and medical costs are not asked about and are not included, so Alabama tax shown here is higher than the true figure for anyone who has them.",
-        "Alabama's dependent exemption steps down with income — $1,000 up to $50,000, $500 to $100,000, $300 above — and never reaches zero. Only the $1,000 figure is modelled, so Alabama tax shown is slightly lower than the true figure above $50,000. Alabama also lets you itemise without having itemised federally, and deduct the Social Security and Medicare tax withheld from your pay, which beats the standard deduction at almost any wage; that is not modelled, so Alabama tax shown is higher than the true figure for most earners."
+        "Alabama's dependent exemption steps down with income — $1,000 up to $50,000, $500 to $100,000, $300 above — and never reaches zero. Only the $1,000 figure is used here, so Alabama tax shown is slightly lower than the true figure above $50,000. Alabama also allows a deduction for the federal income tax you paid, which is not included, so the figure shown is higher than the truth in the other direction."
       ],
       "priorYearFigures": "Alabama has published nothing for 2026. Its rates, exemptions and deduction charts here are the 2025 figures, all of which are fixed in statute rather than indexed.",
       "ratesCheckedAgainstState": {
@@ -883,7 +883,7 @@
         "Connecticut and New York have \"tax benefit recapture,\" by which many high-income taxpayers pay their top tax rate on all income, not just on amounts above the benefit threshold.",
         "Connecticut has a complex set of phaseout provisions. For each single taxpayer whose Connecticut AGI exceeds $56,500, the amount of the taxpayer's Connecticut taxable income to which the 2 percent tax rate applies shall be reduced by $1,000 for each $5,000, or fraction thereof, by which the taxpayer's Connecticut AGI exceeds said amount. Any such amount will have a tax rate of 4.5 percent instead of 2 percent. Each single taxpayer whose Connecticut AGI exceeds $105,000 shall pay an amount equal to $25 for each $5,000, or fraction thereof, by which the taxpayer's Connecticut AGI exceeds $105,000, up to a maximum payment of $250. Additionally, each single taxpayer whose Connecticut AGI exceeds $200,000 shall pay an amount equal to $90 for each $5,000, or fraction thereof, by which the taxpayer's Connecticut AGI exceeds $200,000 but is less than $500,000, and by an additional $50 for each $5,000, or fraction thereof, by which the taxpayer’s AGI exceeds $500,000, up to a maximum payment of $3,150. For each MFJ taxpayer whose Connecticut AGI exceeds $100,500, the amount of the taxpayer's Connecticut taxable income to which the 2 percent tax rate applies shall be reduced by $2,000 for each $5,000, or fraction thereof, by which the taxpayer's Connecticut AGI exceeds said amount. Any such amount of Connecticut taxable income to which, as provided in the preceding sentence, the 2 percent tax rate does not apply shall be an amount to which the 4.5 percent tax rate shall apply. Each MFJ filer whose Connecticut AGI exceeds $210,000 shall pay an amount equal to $50 for each $10,000, or fraction thereof, by which the taxpayer's Connecticut AGI exceeds $210,000, up to a maximum payment of $500. Additionally, each MFJ taxpayer whose Connecticut AGI exceeds $400,000 shall pay, in addition to the amount above, an amount equal to $180 for each $10,000, or fraction thereof, by which the taxpayer's Connecticut AGI exceeds $400,000, up to a maximum of $5,400, and a further $100 for each $10,000, or fraction thereof, by which Connecticut AGI exceeds $1 million, up to a combined maximum payment of $6,300.",
         "Connecticut's personal exemption phases out by $1,000 for each $1,000, or fraction thereof, by which a single filer's Connecticut AGI exceeds $30,000 and a MFJ filer's Connecticut AGI exceeds $48,000.",
-        "Connecticut also adds a flat charge above $56,500 single / $100,500 joint (up to $250 / $500) and recaptures the benefit of its lower rates above $105,000 / $210,000 (up to $3,400 / $6,800). Neither is modelled, so Connecticut tax shown here is lower than the true figure for higher earners."
+        "Connecticut allows no itemised deductions and no standard deduction at all — the personal exemption is the only across-the-board subtraction — so a homeowner gets no relief for a mortgage here, and that is Connecticut's rule rather than a gap. Its property tax credit of up to $300 is not modelled, so Connecticut tax shown here is higher than the true figure for anyone who owns a home or a car."
       ],
       "earnedIncomeCredit": {
         "percentOfFederal": 0.4,
@@ -1354,7 +1354,7 @@
       },
       "federalTaxDeduction": null,
       "modellingGaps": [
-        "Connecticut also adds a flat charge above $56,500 single / $100,500 joint (up to $250 / $500) and recaptures the benefit of its lower rates above $105,000 / $210,000 (up to $3,400 / $6,800). Neither is modelled, so Connecticut tax shown here is lower than the true figure for higher earners."
+        "Connecticut allows no itemised deductions and no standard deduction at all — the personal exemption is the only across-the-board subtraction — so a homeowner gets no relief for a mortgage here, and that is Connecticut's rule rather than a gap. Its property tax credit of up to $300 is not modelled, so Connecticut tax shown here is higher than the true figure for anyone who owns a home or a car."
       ],
       "priorYearFigures": null,
       "ratesCheckedAgainstState": {
@@ -2711,7 +2711,7 @@
         "State provides a state-defined personal exemption amount for each exemption available and/or deductible under the Internal Revenue Code. The Tax Cuts and Jobs Act set the personal exemption to $0 until 2026 but did not eliminate it, and the One Big Beautiful Bill Act permanently set the personal exemption to $0 but did not eliminate it. Because it is still available, these state-defined personal exemptions remain available in some states but are set to $0 in other states.",
         "Beginning in tax year 2025, Maryland levies an additional 2% surtax A surtax is an additional tax levied on top of an already existing business or individual tax and can have a flat or progressive rate structure. Surtaxes are typically enacted to fund a specific program or initiative, whereas revenue from broader-based taxes, like the individual income tax, typically cover a multitude of programs and services. on capital gains income for filers with AGI exceeding $350,000, regardless of filing status.",
         "The exemption amount has the following phaseout schedule: If AGI is above $100,000 for single filers and above $150,000 for married filers, the $3,200 exemption begins to be phased out. If AGI is above $150,000 for single filers and above $200,000 for married filers, the exemption is phased out entirely.",
-        "Maryland lets you itemise if you itemised federally, which we do not model at all, so Maryland tax shown here is higher than the true figure for a homeowner with a mortgage. Maryland separately cuts those itemised deductions by 7.5% of income above $200,000, which would pull the other way."
+        "Maryland's itemised deductions here cover property tax and mortgage interest only. Charitable giving and medical costs are not asked about and are not included, so Maryland tax shown here is higher than the true figure for anyone who has them. Maryland's 2026 standard deduction for couples has not been announced — the legislature's own fiscal note says so — so the 2025 figure is used."
       ],
       "earnedIncomeCredit": {
         "percentOfFederal": null,
@@ -2748,7 +2748,7 @@
       "taxCreditFraction": null,
       "federalTaxDeduction": null,
       "modellingGaps": [
-        "Maryland lets you itemise if you itemised federally, which we do not model at all, so Maryland tax shown here is higher than the true figure for a homeowner with a mortgage. Maryland separately cuts those itemised deductions by 7.5% of income above $200,000, which would pull the other way."
+        "Maryland's itemised deductions here cover property tax and mortgage interest only. Charitable giving and medical costs are not asked about and are not included, so Maryland tax shown here is higher than the true figure for anyone who has them. Maryland's 2026 standard deduction for couples has not been announced — the legislature's own fiscal note says so — so the 2025 figure is used."
       ],
       "priorYearFigures": null,
       "ratesCheckedAgainstState": {
@@ -4355,7 +4355,7 @@
       "notes": [
         "Connecticut and New York have \"tax benefit recapture,\" by which many high-income taxpayers pay their top tax rate on all income, not just on amounts above the benefit threshold.",
         "New York itemised deductions here cover property tax and mortgage interest only. Charitable giving, medical costs above 10% of income and the job expenses New York still allows are not asked about and are not included, so New York tax shown here is higher than the true figure for anyone who has them.",
-        "New York lets you itemise on the state return whether or not you did federally, on pre-2018 rules — property tax uncapped and mortgage interest on $1,000,000 of debt. That is not modelled, so New York tax shown here is higher than the true figure for a homeowner, by roughly $650 to $770 a year plus more again in New York City. Running the other way, New York recaptures the benefit of its lower rates from high earners, which is also not modelled and is worth about $481 a year at $150,000."
+        "New York recaptures the benefit of its lower brackets from higher earners, so that above about $107,650 they pay their top rate on all their income rather than only the part above each threshold. That is not modelled, so New York tax shown here is lower than the true figure above that income — by roughly $481 a year at $150,000. New York City's school tax credit is not modelled either, which pulls the other way for city residents by $221 to $380 a year."
       ],
       "earnedIncomeCredit": {
         "percentOfFederal": 0.3,
@@ -4373,7 +4373,7 @@
       "federalTaxDeduction": null,
       "modellingGaps": [
         "New York itemised deductions here cover property tax and mortgage interest only. Charitable giving, medical costs above 10% of income and the job expenses New York still allows are not asked about and are not included, so New York tax shown here is higher than the true figure for anyone who has them.",
-        "New York lets you itemise on the state return whether or not you did federally, on pre-2018 rules — property tax uncapped and mortgage interest on $1,000,000 of debt. That is not modelled, so New York tax shown here is higher than the true figure for a homeowner, by roughly $650 to $770 a year plus more again in New York City. Running the other way, New York recaptures the benefit of its lower rates from high earners, which is also not modelled and is worth about $481 a year at $150,000."
+        "New York recaptures the benefit of its lower brackets from higher earners, so that above about $107,650 they pay their top rate on all their income rather than only the part above each threshold. That is not modelled, so New York tax shown here is lower than the true figure above that income — by roughly $481 a year at $150,000. New York City's school tax credit is not modelled either, which pulls the other way for city residents by $221 to $380 a year."
       ],
       "priorYearFigures": null,
       "ratesCheckedAgainstState": {

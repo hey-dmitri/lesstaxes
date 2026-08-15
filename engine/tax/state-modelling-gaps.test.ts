@@ -97,6 +97,40 @@ describe('stated modelling gaps', () => {
     }
   });
 
+  /*
+   * A NOTE THAT SAYS "NOT MODELLED" ABOUT SOMETHING WE NOW MODEL IS WORSE THAN
+   * NO NOTE, and this exact thing happened three times in one afternoon:
+   * Connecticut's add-backs, Maryland's itemising and New York's itemising
+   * were all written up as gaps, then implemented, and the admissions stayed
+   * behind claiming otherwise.
+   *
+   * Nothing failed, because prose is invisible to a type system. So each
+   * capability is paired with the words a note would use to disclaim it, and
+   * a state that has the capability may not carry the disclaimer.
+   */
+  it('never claims a gap the state no longer has', () => {
+    const claims: Array<[string, (s: ReturnType<typeof stateRules>) => boolean, RegExp]> = [
+      ['itemising', (s) => s.itemizedDeductions !== null, /itemis\w+[^.]*not modelled|not modelled[^.]*itemis/i],
+      ['add-backs', (s) => (s.taxAddBacks ?? []).length > 0, /recaptur\w+[^.]*not modelled|neither is modelled/i],
+      ['a credit that is a share of tax', (s) => s.taxCreditFraction !== null, /personal (tax )?credit[^.]*not modelled/i],
+      ['the federal tax subtraction', (s) => s.federalTaxDeduction !== null, /subtract[^.]*federal income tax[^.]*not modelled/i],
+      ['property tax relief', (s) => s.propertyTaxRelief !== null, /property tax deduction[^.]*not modelled/i],
+    ];
+
+    for (const code of ALL_STATE_CODES) {
+      const rules = stateRules(code);
+      for (const [capability, has, disclaimer] of claims) {
+        if (!has(rules)) continue;
+        for (const gap of rules.modellingGaps) {
+          expect(
+            disclaimer.test(gap),
+            `${code} models ${capability} but a note still disclaims it: "${gap}"`,
+          ).toBe(false);
+        }
+      }
+    }
+  });
+
   it('writes them as sentences, not shorthand', () => {
     for (const s of withGaps) {
       for (const gap of s.modellingGaps) {

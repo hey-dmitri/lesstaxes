@@ -1853,7 +1853,7 @@ const STATE_OVERRIDES = {
     },
     source: 'https://codes.findlaw.com/ct/title-12-taxation/ct-gen-st-sect-12-702/',
     checked: '2026-08-15',
-    note: "Connecticut also adds a flat charge above $56,500 single / $100,500 joint (up to $250 / $500) and recaptures the benefit of its lower rates above $105,000 / $210,000 (up to $3,400 / $6,800). Neither is modelled, so Connecticut tax shown here is lower than the true figure for higher earners.",
+    note: "Connecticut allows no itemised deductions and no standard deduction at all — the personal exemption is the only across-the-board subtraction — so a homeowner gets no relief for a mortgage here, and that is Connecticut's rule rather than a gap. Its property tax credit of up to $300 is not modelled, so Connecticut tax shown here is higher than the true figure for anyone who owns a home or a car.",
   },
   Ohio: {
     /*
@@ -1970,7 +1970,7 @@ const STATE_OVERRIDES = {
     },
     source: 'https://www.revenue.alabama.gov/wp-content/uploads/2026/01/25f40bk.pdf',
     checked: '2026-08-15',
-    note: "Alabama's dependent exemption steps down with income — $1,000 up to $50,000, $500 to $100,000, $300 above — and never reaches zero. Only the $1,000 figure is modelled, so Alabama tax shown is slightly lower than the true figure above $50,000. Alabama also lets you itemise without having itemised federally, and deduct the Social Security and Medicare tax withheld from your pay, which beats the standard deduction at almost any wage; that is not modelled, so Alabama tax shown is higher than the true figure for most earners.",
+    note: "Alabama's dependent exemption steps down with income — $1,000 up to $50,000, $500 to $100,000, $300 above — and never reaches zero. Only the $1,000 figure is used here, so Alabama tax shown is slightly lower than the true figure above $50,000. Alabama also allows a deduction for the federal income tax you paid, which is not included, so the figure shown is higher than the truth in the other direction.",
   },
   'New York': {
     /*
@@ -1998,7 +1998,7 @@ const STATE_OVERRIDES = {
     },
     source: 'https://www.tax.ny.gov/pdf/current_forms/it/it2105i.pdf',
     checked: '2026-08-15',
-    note: 'New York lets you itemise on the state return whether or not you did federally, on pre-2018 rules — property tax uncapped and mortgage interest on $1,000,000 of debt. That is not modelled, so New York tax shown here is higher than the true figure for a homeowner, by roughly $650 to $770 a year plus more again in New York City. Running the other way, New York recaptures the benefit of its lower rates from high earners, which is also not modelled and is worth about $481 a year at $150,000.',
+    note: "New York recaptures the benefit of its lower brackets from higher earners, so that above about $107,650 they pay their top rate on all their income rather than only the part above each threshold. That is not modelled, so New York tax shown here is lower than the true figure above that income — by roughly $481 a year at $150,000. New York City's school tax credit is not modelled either, which pulls the other way for city residents by $221 to $380 a year.",
   },
   'North Dakota': {
     /*
@@ -2118,7 +2118,7 @@ const STATE_OVERRIDES = {
     },
     source: 'https://www.marylandcomptroller.gov/content/dam/mdcomp/tax/instructions/withholding/2026/withholding-guide.pdf',
     checked: '2026-08-15',
-    note: 'Maryland lets you itemise if you itemised federally, which we do not model at all, so Maryland tax shown here is higher than the true figure for a homeowner with a mortgage. Maryland separately cuts those itemised deductions by 7.5% of income above $200,000, which would pull the other way.',
+    note: "Maryland's itemised deductions here cover property tax and mortgage interest only. Charitable giving and medical costs are not asked about and are not included, so Maryland tax shown here is higher than the true figure for anyone who has them. Maryland's 2026 standard deduction for couples has not been announced — the legislature's own fiscal note says so — so the 2025 figure is used.",
   },
   Maine: {
     /*
