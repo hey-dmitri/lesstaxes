@@ -1613,6 +1613,38 @@ const SUPERSEDED_NOTES = {
     'top marginal rate is scheduled to revert',
     'include the federal standard deduction in their income starting point',
   ],
+
+  /*
+   * ALABAMA'S DEPENDENT EXEMPTION DOES NOT REACH ZERO, and the aggregated
+   * table said it did.
+   *
+   * The table's footnote read "phased out completely for taxpayers with AGI
+   * greater than $100,000". Alabama's own Form 40 booklet, in the chart at the
+   * instructions for line 14, gives three bands and a floor:
+   *
+   *     0 – 50,000        $1,000
+   *     50,001 – 100,000    $500
+   *     over 100,000        $300
+   *
+   * Checked 2026-08-15 against the booklet already cited for Alabama's
+   * itemised deductions:
+   * https://www.revenue.alabama.gov/wp-content/uploads/2026/01/25f40bk.pdf
+   *
+   * Two things made this worth chasing rather than shrugging at. First, the
+   * state shipped BOTH claims at once — the table's footnote and our own
+   * reading of the booklet sat four lines apart in the same list, saying
+   * opposite things about the same rule, which tells a reader the page does
+   * not know its own answer. Second, the direction is not neutral: this
+   * project ships the flat $1,000 for everyone, so the size of the gap it owes
+   * a warning about depends on which figure is true. Against $300 the
+   * overstatement of the allowance is $700 a dependent; against $0 it would
+   * have been $1,000.
+   *
+   * The band is measured against ALABAMA adjusted gross income — line 10 of
+   * Form 40, after Alabama's own subtractions — not federal AGI. The note that
+   * survives says so.
+   */
+  Alabama: ['is phased out completely for taxpayers with AGI greater than $100,000'],
 };
 
 const STATE_OVERRIDES = {
@@ -2039,7 +2071,7 @@ const STATE_OVERRIDES = {
     },
     source: 'https://www.revenue.alabama.gov/wp-content/uploads/2026/01/25f40bk.pdf',
     checked: '2026-08-15',
-    note: "Alabama's dependent exemption steps down with income — $1,000 up to $50,000, $500 to $100,000, $300 above — and never reaches zero. Only the $1,000 figure is used here, so Alabama tax shown is slightly lower than the true figure above $50,000. Alabama also allows a deduction for the federal income tax you paid, which is not included, so the figure shown is higher than the truth in the other direction.",
+    note: "Alabama's dependent exemption steps down with Alabama adjusted gross income — $1,000 up to $50,000, $500 to $100,000, $300 above — and never reaches zero. Only the $1,000 figure is used here, so Alabama tax shown is lower than the true figure above $50,000, by the tax on $500 or $700 a dependent. Alabama also allows a deduction for the federal income tax you paid, which is not included, so the figure shown is higher than the truth in the other direction.",
   },
   'New York': {
     /*
@@ -3147,6 +3179,33 @@ for (const [name, s] of Object.entries(states)) {
   const drop = SUPERSEDED_NOTES[name];
   if (drop) s.notes = s.notes.filter((n) => !drop.some((d) => n.includes(d)));
 
+  /*
+   * SAY WHETHER WE ACTUALLY DO IT.
+   *
+   * The aggregated table's footnote reads "These states allow some or all of
+   * federal income tax paid to be deducted from state taxable income." It is
+   * true, and it is about the STATE'S law. But it lands in a list a visitor
+   * reads as a description of this calculator, so on Alabama it sat a few
+   * lines above our own note saying the deduction is NOT applied here — two
+   * sentences that look like they contradict each other and do not.
+   *
+   * Three states carry the footnote and they do not get the same treatment:
+   * Oregon's deduction is calculated, Alabama's and Missouri's are not. So the
+   * footnote is annotated per state with which of the two it is. Deriving the
+   * answer from `federalTaxDeduction` rather than a hand-kept list is the
+   * point — if one of those two is ever implemented, the sentence follows on
+   * its own.
+   */
+  s.notes = s.notes.map((n) =>
+    n.startsWith('These states allow some or all of federal income tax paid to be deducted')
+      ? `${n} ${
+          s.federalTaxDeduction
+            ? 'That deduction is calculated here.'
+            : 'That deduction is NOT calculated here, so the tax shown for this state is higher than the true figure — see the note below for how much.'
+        }`
+      : n,
+  );
+
   if (CAPITAL_GAINS_ONLY.has(name)) {
     s.hasWageIncomeTax = false;
     s.brackets = { single: [], marriedJointly: [] };
@@ -3298,7 +3357,7 @@ const output = {
   },
   limitations: [
     'Income-based phase-outs of the standard deduction or personal exemption are modelled in nine states — Alabama, Colorado, Connecticut, Maryland, Maine, Minnesota, Rhode Island, South Carolina and Wisconsin, Colorado\'s as a cliff. Phase-outs of a CREDIT are modelled in two more, Oregon and Utah. Where a state has one that is not modelled, that state carries a note saying so and which way it runs.',
-    'A deduction for federal income tax paid is modelled for Oregon. Alabama and Missouri also allow one and are not modelled: Alabama runs it through its itemised schedule and Missouri sets it as a percentage of federal tax that reaches zero above $125,000 of Missouri income. Both carry a note saying so.',
+    'A deduction for federal income tax paid is modelled for Oregon. Alabama and Missouri also allow one and are not modelled: Alabama gives it on its own line of Form 40, to every filer rather than only to itemisers, worked out as the federal tax you actually bore after the refundable credits are backed out; Missouri sets it as a percentage of federal tax that reaches zero above $125,000 of Missouri income. Both carry a note saying so.',
     'Local income taxes are excluded here and handled separately; see local.json.',
     'Alternative minimum taxes and supplemental high-income surtaxes beyond the published bracket schedules are not modelled. Connecticut\'s recapture IS modelled; New York\'s is not, and New York carries a note.',
     'Every state that taxes wages has been read off its own publication for rates, allowances and head-of-household treatment. Ten states ship the prior year\'s figures because the state has not published this year\'s; each names itself in priorYearFigures.',
