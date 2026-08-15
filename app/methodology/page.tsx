@@ -25,6 +25,21 @@ const STATES_WITH_GAPS = ALL_STATE_CODES.map((code) => stateRules(code))
   .sort((a, b) => a.name.localeCompare(b.name));
 
 /** States whose figures are last year's because this year's are not out. */
+/*
+ * COUNTS COME FROM THE DATA, NEVER FROM PROSE. Every number on this page that
+ * describes coverage drifted at least once — "40 of 42" while the build said
+ * 42, "only California itemises" while fourteen states did. A figure typed
+ * into a sentence is a figure nobody updates.
+ */
+const TAXING = ALL_STATE_CODES.map((code) => stateRules(code)).filter((s) => s.hasWageIncomeTax);
+const COVERAGE = {
+  taxing: TAXING.length,
+  ratesChecked: TAXING.filter((s) => s.ratesCheckedAgainstState).length,
+  headOfHousehold: TAXING.filter((s) => s.headOfHouseholdBasis !== 'assumed-single').length,
+  itemising: TAXING.filter((s) => s.itemizedDeductions).length,
+  earnedIncomeCredit: TAXING.filter((s) => s.earnedIncomeCredit).length,
+};
+
 const STATES_ON_PRIOR_YEAR = ALL_STATE_CODES.map((code) => stateRules(code))
   .filter((s) => s.priorYearFigures)
   .map((s) => ({ code: s.code, name: s.name, why: s.priorYearFigures as string }))
@@ -275,19 +290,23 @@ answer          =  in your pocket THERE  −  in your pocket HERE`}</pre>
         <p>
           <strong>
             Every state&rsquo;s rates and allowances have now been read off that state&rsquo;s own
-            2026 publication — 40 of the 42 that tax wages.
+            publication — all {COVERAGE.ratesChecked} of the {COVERAGE.taxing} that tax wages.
           </strong>{' '}
-          Twenty-two of them were wrong. The two left out are Ohio and Oregon, and neither is
-          unexamined: neither state has published anything for 2026 yet. The{' '}
+          Twenty-four of them were wrong. Ten are on last year&rsquo;s published figures because
+          the state has not released this year&rsquo;s, and those are named below. The{' '}
           <Link href="/data">data page</Link> shows, for every location, the date its state was
           checked and links to the document it was checked against.
         </p>
         <p>
-          Only California is modelled for <em>itemising</em> — the deduction a homeowner gets for
-          mortgage interest and property tax on the state return. About a dozen states allow some
-          version of it, and where we miss it we charge too much. The
-          &ldquo;What this gets wrong&rdquo; list below names every state with a rule we know about
-          and do not yet model, and says which way each one runs.
+          <strong>{COVERAGE.itemising} states</strong> now let a homeowner claim mortgage interest
+          and property tax on the state return, and we calculate all of them. Two more do
+          something different with the same idea: New Jersey relieves property tax without
+          itemising at all — the only relief here a renter can claim, at 18% of rent — and
+          Wisconsin gives a credit for mortgage interest while ignoring property tax entirely.
+        </p>
+        <p>
+          The &ldquo;What this gets wrong&rdquo; list below names every state with a rule we know
+          about and do not yet model, and says which way each one runs.
         </p>
 
         <h2>What year the dollars are in</h2>
@@ -556,8 +575,9 @@ answer          =  in your pocket THERE  −  in your pocket HERE`}</pre>
             Yonkers, Philadelphia, Detroit, Columbus and Cincinnati carry their own published
             rates, and you are asked whether you live inside the city, because a metro is much
             larger than the city at its centre. Cleveland, Pittsburgh, Louisville, Kansas City,
-            St. Louis, Baltimore and Portland do not yet, and sit on their state&rsquo;s average —
-            which understates all of them.
+            St. Louis, Baltimore and Portland now carry their own rates too, and every Indiana
+            metro carries its counties&rsquo; rates weighted by population. What is left on a state
+            average is the smaller cities, where the average is much closer to the truth.
           </li>
           <li>
             <strong>Where two people earn, the split is assumed to be even.</strong> The form asks
@@ -585,7 +605,10 @@ answer          =  in your pocket THERE  −  in your pocket HERE`}</pre>
             Worth a few hundred dollars a year at most.
           </li>
           <li>
-            <strong>State low-income credits are modelled in 23 states, not all of them.</strong>{' '}
+            <strong>
+              State low-income credits are modelled in {COVERAGE.earnedIncomeCredit} states, not
+              all of them.
+            </strong>{' '}
             Around thirty states add their own on top of the federal credit, usually as a share of
             it. Where two independent sources agreed on the figure it is now counted; where they
             disagreed, or the state uses its own formula rather than a share — California,

@@ -813,8 +813,23 @@ export function computeStateTax(
       // Children ride on one return, exactly as they do federally: you cannot
       // claim half a child, and doubling them would invent an exemption.
       children: 0,
+      /*
+       * And so does the federal earned income credit, for the same reason. It
+       * is claimed once on one federal return, and a state match is a share of
+       * that one figure. Copying it into both halves — which spreading the
+       * inputs does by default — let Missouri apply its 20% match twice and
+       * wipe out a family's whole bill.
+       */
+      federalEarnedIncomeCredit: 0,
     };
-    const first = computeStateTax({ ...half, children: inputs.children }, rules);
+    const first = computeStateTax(
+      {
+        ...half,
+        children: inputs.children,
+        federalEarnedIncomeCredit: inputs.federalEarnedIncomeCredit,
+      },
+      rules,
+    );
     const second = computeStateTax(half, rules);
     const combined = first.tax + second.tax;
 
@@ -1007,7 +1022,21 @@ export function computeStateTax(
 
     const interest = Math.max(0, inputs.mortgageInterest ?? 0);
     const debt = inputs.mortgageDebt;
-    const limit = itemizedRules.mortgageDebtLimit;
+    /*
+     * HALVED ON A SEPARATE RETURN. California's $1,000,000 is $500,000 for
+     * married filing separately, and every other state's limit follows the
+     * federal rule of halving too.
+     *
+     * The household's debt is already split across the two returns, so leaving
+     * the limit whole gave the couple an effective $2,000,000 ceiling between
+     * them — worth about $3,941 of California tax on a San Jose house at
+     * $600,000 of combined salary.
+     */
+    const wholeLimit = itemizedRules.mortgageDebtLimit;
+    const limit =
+      wholeLimit !== null && inputs.filingStatus === 'marriedSeparately'
+        ? wholeLimit / 2
+        : wholeLimit;
     itemizedTotal +=
       limit !== null && debt !== undefined && debt > limit
         ? interest * (limit / debt)
@@ -1141,13 +1170,25 @@ export function computeStateTax(
   for (const addBack of rules.taxAddBacks ?? []) {
     const phases =
       addBack.phases[allowanceKey] ?? addBack.phases[otherwise] ?? addBack.phases.single;
+    /*
+     * WITHIN one add-back the phases are cumulative, so each phase REPLACES
+     * the running figure. ACROSS add-backs they stack, so the result is added.
+     *
+     * This used to assign straight into the total, which meant Connecticut's
+     * recapture silently replaced its 2% phase-out add-back instead of joining
+     * it — Connecticut's own schedule prints them as two separate lines that
+     * both feed the tax. Worth up to $250 on a single return and $500 on a
+     * joint one.
+     */
+    let amount = 0;
     let previousCap = 0;
     for (const phase of phases) {
       if (gross <= phase.from) break;
       const steps = Math.ceil((gross - phase.from) / phase.stepSize);
-      addBacks = Math.min(phase.capAt, previousCap + steps * phase.perStep);
+      amount = Math.min(phase.capAt, previousCap + steps * phase.perStep);
       previousCap = phase.capAt;
     }
+    addBacks += amount;
   }
   const taxBeforeCredits =
     lump +

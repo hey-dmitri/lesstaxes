@@ -258,6 +258,18 @@ export function computeCity(
           fedRules.earnedIncomeCredit,
         ),
       stateIncomeTaxPaid,
+      /*
+       * WORKERS ON THIS RETURN. The form asks, FICA has always used it, and
+       * the state step never received it — so every joint return defaulted to
+       * two earners.
+       *
+       * That handed a single-earner couple the split-return treatment that
+       * only a two-earner couple qualifies for: $1,556 of DC tax, $1,017 of
+       * Delaware, and smaller amounts in four more states, none of it owed.
+       * It also gave them two Massachusetts payroll deductions where the state
+       * allows one per working spouse.
+       */
+      earners: share.earners,
     });
 
     const state = stateTaxRules.itemizedDeductions?.deductStateIncomeTax

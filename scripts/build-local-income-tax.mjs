@@ -290,6 +290,14 @@ const NYC = {
       { from: 25_000, rate: 0.03819 },
       { from: 50_000, rate: 0.03876 },
     ],
+    // New York City publishes its own head-of-household schedule and this
+    // carried none, so a single parent was silently charged on the single one.
+    headOfHousehold: [
+      { from: 0, rate: 0.03078 },
+      { from: 14_400, rate: 0.03762 },
+      { from: 30_000, rate: 0.03819 },
+      { from: 60_000, rate: 0.03876 },
+    ],
     marriedJointly: [
       { from: 0, rate: 0.03078 },
       { from: 21_600, rate: 0.03762 },

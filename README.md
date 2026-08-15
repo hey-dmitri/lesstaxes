@@ -24,7 +24,8 @@ index, statutory rate or state average — on the [data page](https://packorstay
 |---|---|
 | Bracket arithmetic, FICA, federal income tax, CTC, EITC | ✅ |
 | State income tax — all 50 states + DC | ✅ |
-| Every taxing state read off its own 2026 publication | 40 of 42 — OH and OR have published nothing |
+| Every taxing state read off its own publication — rates, allowances, head of household | 42 of 42 |
+| State itemised deductions | 14 states, plus NJ property tax relief and WI's credit |
 | Local income tax — 13 named cities, state averages elsewhere | ✅ |
 | 387 metros + 51 rural fallbacks, price parities | ✅ |
 | Rent and home price scaled to household and income, effective property tax | ✅ |
@@ -49,7 +50,7 @@ index, statutory rate or state average — on the [data page](https://packorstay
 | Social Security capped per worker, not per household | ✅ |
 | Name and domain — **Pack or Stay**, live at `packorstay.com` | ✅ |
 
-**901 tests**, including 24 golden values reproduced exactly from the IRS rate tables.
+**969 tests**, including 24 golden values reproduced exactly from the IRS rate tables.
 Total data cost: **$0**. No paid feeds, no runtime API calls.
 
 ### Known gaps, in priority order
@@ -68,7 +69,9 @@ Total data cost: **$0**. No paid feeds, no runtime API calls.
    along with the repairs beside it. OPEN-5 was hunting per-state premium data
    that does not exist for free, while the figure containing it sat unused in a
    source already committed to this repo.
-2. **State Earned Income Credits cover 23 states, not all ~30.** Where two
+2. **State Earned Income Credits cover 23 states, not all ~30.** (This count and
+   every other in this list is checked against the generated data by a test —
+   they drifted badly once and are not allowed to again.) Where two
    independent sources agreed on the match it is modelled, refundability
    included. Left out: California, Minnesota and Washington, which use their own
    formulas rather than a share of the federal credit; Delaware, where the
@@ -162,9 +165,12 @@ Total data cost: **$0**. No paid feeds, no runtime API calls.
    discovered.
 9. **Local income tax outside the 13 named cities** is still each state's
    average, which is fair where rates are uniform and wrong where they are not.
-   Indiana is the known bad case: we apply 0.35% statewide when real county
-   rates run from 0.50% to 3.00%, which understates Indiana tax by over a
-   thousand dollars a year.
+   Indiana is no longer among them: every Indiana metro now carries its own
+   counties' rates weighted by population, and the Indiana sides of Chicago,
+   Louisville and Cincinnati — which were paying nothing at all — are charged.
+   Cleveland, Pittsburgh, Louisville, Kansas City, St. Louis, Baltimore and
+   Portland all carry their own published rates. What remains on a state
+   average is the smaller cities, where the average is much closer to right.
 
 ### Rebuilding the dataset
 

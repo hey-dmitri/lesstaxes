@@ -47,6 +47,24 @@
             "rate": 0.03876
           }
         ],
+        "headOfHousehold": [
+          {
+            "from": 0,
+            "rate": 0.03078
+          },
+          {
+            "from": 14400,
+            "rate": 0.03762
+          },
+          {
+            "from": 30000,
+            "rate": 0.03819
+          },
+          {
+            "from": 60000,
+            "rate": 0.03876
+          }
+        ],
         "marriedJointly": [
           {
             "from": 0,

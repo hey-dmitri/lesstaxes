@@ -172,7 +172,19 @@ export function computeLocalTax(
         rules.standardDeduction?.[schedule] ?? rules.standardDeduction?.[otherwise] ?? 0;
       const exemptions = (rules.exemptionPerDependent ?? 0) * children;
 
-      const taxableIncome = Math.max(0, gross - deduction - exemptions);
+      /*
+       * NEW YORK CITY'S SCHEDULE APPLIES TO NEW YORK TAXABLE INCOME, not to
+       * gross pay — Form IT-201 carries line 47, which is already net of the
+       * state's standard deduction and exemptions.
+       *
+       * The city's own deduction is zero, so rebuilding a base from gross
+       * taxed the whole paycheque and overstated a single renter on $150,000
+       * by about $310 a year. Where the caller supplies the state's taxable
+       * income, that is the base; gross is the fallback, which charges more
+       * rather than less.
+       */
+      const base = Math.max(0, inputs.stateTaxableIncome ?? gross);
+      const taxableIncome = Math.max(0, base - deduction - exemptions);
       return {
         jurisdictionId: rules.id,
         name: rules.name,

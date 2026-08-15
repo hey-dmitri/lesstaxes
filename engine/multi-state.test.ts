@@ -13,6 +13,7 @@ import {
   salesTaxRules,
 } from './dataset';
 import { stateRules } from './tax/rules';
+import { computeStateTax } from './tax/state';
 import type { Household } from './types';
 
 const SINGLE: Household = { filingStatus: 'single', children: 0 };
@@ -278,9 +279,24 @@ describe('seven more cities carry their own local income tax', () => {
         localJurisdictions: resolveLocalJurisdictions(PORTLAND, { 'portland-multnomah': true }),
       }).tax.local;
 
+    /*
+     * MEASURED ON OREGON TAXABLE INCOME, not on gross pay. Multnomah's and
+     * Metro's schedules both apply to Oregon taxable income, so the standard
+     * deduction and the federal-tax subtraction come off first. This test used
+     * to assert the tax on gross, which was the same bug New York City had.
+     */
+    const oregonTaxable = (salary: number) =>
+      computeStateTax(
+        { grossSalary: salary, filingStatus: 'single', children: 0 },
+        stateRules('OR'),
+      ).taxableIncome;
+
     expect(at(100_000)).toBe(0);
-    expect(at(150_000)).toBeCloseTo((150_000 - 125_000) * 0.015, 0);
-    expect(at(300_000)).toBeCloseTo((250_000 - 125_000) * 0.015 + (300_000 - 250_000) * 0.03, 0);
+    expect(at(150_000)).toBeCloseTo((oregonTaxable(150_000) - 125_000) * 0.015, 0);
+    expect(at(300_000)).toBeCloseTo(
+      (250_000 - 125_000) * 0.015 + (oregonTaxable(300_000) - 250_000) * 0.03,
+      0,
+    );
   });
 
   it('offers exactly one choice per Portland resident, not a sum', () => {
