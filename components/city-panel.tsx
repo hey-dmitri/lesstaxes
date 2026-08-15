@@ -449,7 +449,7 @@ export function CityPanel({
               the column and turned the sum into three unrelated rows.
             */}
             <div className="flex flex-col gap-0.5">
-              <span className="eyebrow">Living costs</span>
+              <span className="eyebrow">Typical living costs</span>
               <div className="flex items-baseline gap-2">
                 <span
                   className="tnum text-[1.6rem] font-semibold leading-none"
@@ -461,6 +461,21 @@ export function CityPanel({
                   &middot; <span className="tnum">{formatUSD(livingTotal / 12)}</span>/mo
                 </span>
               </div>
+              {/*
+                This said "Living costs" over a single lump figure, which reads
+                as a statement about the reader: here is what you spend. Only
+                the housing half is theirs — they typed it. The rest is a
+                national spending basket re-priced for this metro and scaled to
+                a household of this size and income, which is a good answer to
+                "what do people like you spend here" and no answer at all to
+                "what do YOU spend". Somebody who cooks at home and cycles will
+                beat it, and should be told so rather than left to conclude the
+                site is wrong about them.
+              */}
+              <span className="text-[0.76rem] leading-snug" style={{ color: 'var(--faint)' }}>
+                Your housing, plus what a household your size usually spends here. Not your own
+                budget.
+              </span>
             </div>
 
             <div
