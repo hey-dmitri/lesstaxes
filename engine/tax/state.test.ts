@@ -101,6 +101,22 @@ describe('head of household', () => {
    * scheduleFor would not select the head-of-household schedule at all unless
    * brackets existed, so the deduction was unreachable.
    */
+  /*
+   * A state can send a head of household to one bracket schedule and give them
+   * a deduction belonging to NEITHER schedule. Oklahoma does: the rate table is
+   * headed "Head of Household, Married Filing Jointly OR Widow(er)", but the
+   * standard deduction is $9,350, between the single $6,350 and joint $12,700.
+   * Tying the deduction to the brackets would hand them $12,700.
+   */
+  it('takes a state deduction that matches neither bracket schedule', () => {
+    const ok = stateRules('OK');
+    expect(ok.headOfHouseholdBasis).toBe('marriedJointly');
+    expect(computeStateTax(HOH, ok).scheduleUsed).toBe('marriedJointly');
+    expect(computeStateTax(HOH, ok).deductions).toBe(9_350);
+    expect(ok.standardDeduction.marriedJointly).not.toBe(9_350);
+    expect(ok.standardDeduction.single).not.toBe(9_350);
+  });
+
   it('takes a state deduction even where the brackets are shared', () => {
     const ny = stateRules('NY');
     expect(ny.brackets.headOfHousehold).toBeUndefined();
@@ -144,7 +160,8 @@ describe('head of household', () => {
     // The verified ones must stay verified: silently dropping back to an
     // assumption is exactly the regression this whole change is about.
     for (const code of [
-      'CA', 'CT', 'MD', 'ME', 'MN', 'MO', 'ND', 'NJ', 'NY', 'OH', 'SC', 'VA', 'WI',
+      'CA', 'CT', 'HI', 'MD', 'ME', 'MN', 'MO', 'ND', 'NJ', 'NY', 'OH', 'OK', 'SC',
+      'VA', 'WI',
     ]) {
       expect(stateRules(code).headOfHouseholdBasis).not.toBe('assumed-single');
     }

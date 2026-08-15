@@ -296,7 +296,26 @@ export function computeStateTax(
   const otherwise: 'single' | 'marriedJointly' =
     schedule === 'marriedJointly' ? 'marriedJointly' : 'single';
 
-  const standardDeduction = rules.standardDeduction[schedule] ?? rules.standardDeduction[otherwise];
+  /*
+   * ALLOWANCES ARE LOOKED UP SEPARATELY FROM BRACKETS, because a state can
+   * send a head of household to one schedule and give them a deduction that
+   * belongs to neither. Oklahoma does exactly that: the rate table is headed
+   * "Head of Household, Married Filing Jointly OR Widow(er)", but the standard
+   * deduction is $9,350 — its own figure, between the single $6,350 and the
+   * joint $12,700.
+   *
+   * Tying the deduction to the bracket schedule would have handed them the
+   * joint $12,700 and undercharged them. So wherever the state publishes a
+   * head-of-household allowance, that wins regardless of which brackets apply.
+   */
+  const allowanceKey: PublishedStatus =
+    inputs.filingStatus === 'headOfHousehold' &&
+    rules.standardDeduction.headOfHousehold !== undefined
+      ? 'headOfHousehold'
+      : schedule;
+
+  const standardDeduction =
+    rules.standardDeduction[allowanceKey] ?? rules.standardDeduction[otherwise];
 
   /*
    * Itemise where the state allows it and it beats the standard deduction.
@@ -322,7 +341,7 @@ export function computeStateTax(
   const itemized = itemizedTotal > standardDeduction;
   const deductions = itemized ? itemizedTotal : standardDeduction;
   const exemptions =
-    (rules.personalExemption[schedule] ?? rules.personalExemption[otherwise]) +
+    (rules.personalExemption[allowanceKey] ?? rules.personalExemption[otherwise]) +
     rules.personalExemption.dependent * children;
 
   const taxableIncome = Math.max(0, gross - deductions - exemptions);
@@ -332,7 +351,7 @@ export function computeStateTax(
   );
 
   const credits =
-    (rules.personalCredit[schedule] ?? rules.personalCredit[otherwise]) +
+    (rules.personalCredit[allowanceKey] ?? rules.personalCredit[otherwise]) +
     rules.personalCredit.dependent * children;
 
   /*

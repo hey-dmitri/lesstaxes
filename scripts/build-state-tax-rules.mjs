@@ -339,6 +339,38 @@ const HEAD_OF_HOUSEHOLD = {
     source: 'https://dor.mo.gov/forms/4711_2025.pdf',
     checked: '2026-08-15',
   },
+  Hawaii: {
+    basis: 'own',
+    // Schedule III, "Unmarried Heads of Households", tax years after 2024.
+    brackets: [
+      { from: 0, rate: 0.014 },
+      { from: 14_400, rate: 0.032 },
+      { from: 21_600, rate: 0.055 },
+      { from: 28_800, rate: 0.064 },
+      { from: 36_000, rate: 0.068 },
+      { from: 54_000, rate: 0.072 },
+      { from: 72_000, rate: 0.076 },
+      { from: 187_500, rate: 0.079 },
+      { from: 262_500, rate: 0.0825 },
+      { from: 337_500, rate: 0.09 },
+      { from: 412_500, rate: 0.1 },
+      { from: 487_500, rate: 0.11 },
+    ],
+    source: 'https://tax.hawaii.gov/forms/d_25table-on/d_25table-on_p13/',
+    checked: '2026-08-15',
+  },
+  Oklahoma: {
+    /*
+     * The rate table is headed "Head of Household, Married Filing Jointly OR
+     * Widow(er)" — one schedule for all three. But the standard deduction is
+     * $9,350, its own figure between the single $6,350 and the joint $12,700,
+     * which is why allowances are looked up separately from brackets.
+     */
+    basis: 'marriedJointly',
+    standardDeduction: 9_350,
+    source: 'https://oklahoma.gov/tax/individuals/pay-taxes.html',
+    checked: '2026-08-15',
+  },
   'North Dakota': {
     basis: 'own',
     brackets: [
