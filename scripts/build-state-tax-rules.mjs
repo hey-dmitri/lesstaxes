@@ -371,6 +371,48 @@ const HEAD_OF_HOUSEHOLD = {
     source: 'https://oklahoma.gov/tax/individuals/pay-taxes.html',
     checked: '2026-08-15',
   },
+  /*
+   * NEBRASKA AND VERMONT ARE DELIBERATELY ABSENT, and the build guard is why.
+   *
+   * Both publish their own head-of-household schedule and I transcribed both.
+   * Nebraska's 2025 schedule has FOUR brackets topping at 5.20%; the brackets
+   * this project ships are 2026, where the statute collapses the top two into
+   * one 4.55% band. Setting a 2025 schedule against 2026 single brackets made a
+   * head of household pay MORE than a single filer at $120,000, and the guard
+   * threw rather than shipping it. Vermont is the same story with different
+   * numbers.
+   *
+   * Mixing tax years within one state is the error this whole exercise exists
+   * to remove, so both wait for their 2026 figures.
+   */
+  'New Mexico': {
+    // Statute 7-2-7, effective 1 January 2025: one table for "married
+    // individuals filing joint returns, heads of household and surviving
+    // spouses".
+    basis: 'marriedJointly',
+    source: 'https://law.justia.com/codes/new-mexico/chapter-7/article-2/section-7-2-7-d-1/',
+    checked: '2026-08-15',
+  },
+  Oregon: {
+    /*
+     * Joint brackets, own deduction — the Oklahoma shape again. Form OR-40
+     * itself prints "Head of household $4,560" against a single filer's $2,835
+     * and a joint $5,670, so sending the deduction with the brackets would have
+     * been $1,110 too generous.
+     */
+    basis: 'marriedJointly',
+    /*
+     * The published 2025 figure. Oregon indexes annually and its 2026 head-of-
+     * household deduction is not out, so this is very slightly low — against
+     * the reader, which is the safe direction. The alternative was letting it
+     * fall back to the joint $5,820, which would be $1,260 too generous. No
+     * figure is invented here; a real published one is used a year late and
+     * said so.
+     */
+    standardDeduction: 4_560,
+    source: 'https://www.oregon.gov/dor/forms/FormsPubs/form-or-40_101-040_2025.pdf',
+    checked: '2026-08-15',
+  },
   'North Dakota': {
     basis: 'own',
     brackets: [

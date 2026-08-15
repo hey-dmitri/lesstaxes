@@ -160,8 +160,8 @@ describe('head of household', () => {
     // The verified ones must stay verified: silently dropping back to an
     // assumption is exactly the regression this whole change is about.
     for (const code of [
-      'CA', 'CT', 'HI', 'MD', 'ME', 'MN', 'MO', 'ND', 'NJ', 'NY', 'OH', 'OK', 'SC',
-      'VA', 'WI',
+      'CA', 'CT', 'HI', 'MD', 'ME', 'MN', 'MO', 'ND', 'NJ', 'NM', 'NY', 'OH', 'OK',
+      'OR', 'SC', 'VA', 'WI',
     ]) {
       expect(stateRules(code).headOfHouseholdBasis).not.toBe('assumed-single');
     }
