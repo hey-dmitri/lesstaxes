@@ -316,6 +316,15 @@ export type AllowancePhaseOut =
           its reduction at 80%, leaving a fifth standing however high income
           goes. */
       floorFraction?: number;
+      /**
+       * A floor in dollars rather than a share, by filing status.
+       *
+       * Alabama's deduction shrinks to a fixed minimum and stops — $2,500 for
+       * a single filer, $5,000 for a couple — rather than to a proportion of
+       * itself. Those are different fractions of different starting amounts,
+       * so a single share cannot express them.
+       */
+      floor?: Partial<Record<PublishedStatus, number>> & { single: number };
     }
   | {
       kind: 'stepped';
@@ -551,7 +560,11 @@ export function computeStateTax(
       const value = seg.base - reduction;
       best = best === null ? value : pick(best, value);
     }
-    const floor = rule.floorFraction ? base * rule.floorFraction : 0;
+    const floor = rule.floor
+      ? (rule.floor[allowanceKey] ?? rule.floor[otherwise] ?? rule.floor.single)
+      : rule.floorFraction
+        ? base * rule.floorFraction
+        : 0;
     return Math.max(floor, best ?? amount, 0);
   };
 

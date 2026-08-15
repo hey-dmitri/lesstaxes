@@ -179,6 +179,39 @@ const RATES_CHECKED = {
     source: 'https://www.maine.gov/revenue/sites/maine.gov.revenue/files/2026-05/ind_tax_rate_sched_2026_rev.pdf',
     checked: '2026-08-15',
   },
+  Arkansas: {
+    // Act 1 of the 2026 First Extraordinary Session cut the top rate to 3.7%
+    // retroactive to 1 January.
+    matched: false,
+    source: 'https://www.dfa.arkansas.gov/wp-content/uploads/Withholding-Tax-Formula.pdf',
+    checked: '2026-08-15',
+  },
+  Alabama: {
+    // The standard deduction shrinks to a floor and we shipped the maximum.
+    matched: false,
+    source: 'https://www.revenue.alabama.gov/wp-content/uploads/2026/01/25f40bk.pdf',
+    checked: '2026-08-15',
+  },
+  Arizona: {
+    // Figures confirmed against HB 4168 — the recorded source had been a
+    // VETOED bill.
+    matched: false,
+    source: 'https://www.azleg.gov/legtext/57leg/2R/laws/0140.htm',
+    checked: '2026-08-15',
+  },
+  Colorado: {
+    // Rate and deduction correct; the earned income credit halves for 2026.
+    matched: false,
+    source: 'https://tax.colorado.gov/income-tax-topics-earned-income-tax-credit',
+    checked: '2026-08-15',
+  },
+  California: {
+    // Everything shipped is TAX YEAR 2025 and California has not published
+    // 2026. Recorded as checked because that is a finding, not a gap.
+    matched: true,
+    source: 'https://www.ftb.ca.gov/about-ftb/newsroom/tax-news/2025/10.html',
+    checked: '2026-08-15',
+  },
   'New York': {
     // Rates, brackets and standard deductions all matched against New York's
     // own 2026 estimated-tax instructions; the head-of-household schedule was
@@ -562,7 +595,7 @@ const HEAD_OF_HOUSEHOLD = {
     // right federal figures for Arizona and the shipped table's are not.
     basis: 'own',
     standardDeduction: 24_150,
-    source: 'https://www.azleg.gov/legtext/57leg/2R/summary/H.HB2785_012926_WM.DOCX.htm',
+    source: 'https://www.azleg.gov/legtext/57leg/2R/laws/0140.htm',
     checked: '2026-08-15',
   },
   Louisiana: {
@@ -1311,8 +1344,20 @@ const STATE_OVERRIDES = {
      * filer about $194 a year and a couple about $388.
      */
     standardDeduction: { single: 16_100, marriedJointly: 32_200, headOfHousehold: 24_150 },
-    source: 'https://www.azleg.gov/legtext/57leg/2R/summary/H.HB2785_012926_WM.DOCX.htm',
+    /*
+     * THE SOURCE RECORDED HERE USED TO BE HB 2785, WHICH WAS VETOED on
+     * 12 February 2026. The figures were right and the citation was not, which
+     * is its own kind of wrong: the whole point of recording a source is that
+     * the next person can re-check rather than re-trust.
+     *
+     * The law that passed is HB 4168, chapter 140 of 2026, signed 13 June
+     * 2026, raising the base to $15,750 / $23,625 / $31,500 and indexing it
+     * the way the federal figure is indexed, retroactive to tax years
+     * beginning after 31 December 2024.
+     */
+    source: 'https://www.azleg.gov/legtext/57leg/2R/laws/0140.htm',
     checked: '2026-08-15',
+    note: "Arizona's dependent credit rose to $125 for a child under 17 for 2026 and shrinks above $200,000 of income ($400,000 for a couple). Neither is modelled. Arizona also caps its state and local tax deduction at $10,000 rather than following the federal figure.",
   },
   Georgia: {
     /*
@@ -1504,6 +1549,73 @@ const STATE_OVERRIDES = {
     source: 'https://codes.findlaw.com/ct/title-12-taxation/ct-gen-st-sect-12-702/',
     checked: '2026-08-15',
     note: "Connecticut also adds a flat charge above $56,500 single / $100,500 joint (up to $250 / $500) and recaptures the benefit of its lower rates above $105,000 / $210,000 (up to $3,400 / $6,800). Neither is modelled, so Connecticut tax shown here is lower than the true figure for higher earners.",
+  },
+  Arkansas: {
+    /*
+     * THE SEVENTH STATE TO LEGISLATE AFTER THE FEBRUARY TABLE. Act 1 of the
+     * First Extraordinary Session of 2026, signed 6 May 2026, cut the top rate
+     * from 3.9% to 3.7% RETROACTIVE to 1 January 2026, and reshaped the low
+     * brackets with it.
+     *
+     * Arkansas runs two schedules by income level. Below $94,700 of net income
+     * the graduated ladder applies; above it, a flatter one. Between $94,701
+     * and $97,600 the state claws the low brackets back through a "bracket
+     * adjustment" that is not modelled here — it is worth at most $290 and
+     * covers a $2,900 band of income.
+     *
+     * We were overcharging roughly $288 to $435 a year.
+     */
+    brackets: {
+      single: [
+        { from: 0, rate: 0 },
+        { from: 5_600, rate: 0.02 },
+        { from: 11_200, rate: 0.03 },
+        { from: 16_000, rate: 0.034 },
+        { from: 26_400, rate: 0.037 },
+      ],
+      marriedJointly: [
+        { from: 0, rate: 0 },
+        { from: 5_600, rate: 0.02 },
+        { from: 11_200, rate: 0.03 },
+        { from: 16_000, rate: 0.034 },
+        { from: 26_400, rate: 0.037 },
+      ],
+    },
+    source: 'https://www.dfa.arkansas.gov/wp-content/uploads/Withholding-Tax-Formula.pdf',
+    checked: '2026-08-15',
+    note: 'Arkansas reduces the benefit of its lower brackets across a narrow band of income between about $94,700 and $97,600. That adjustment is not modelled, so tax shown for incomes inside that band is slightly lower than the true figure.',
+  },
+  Alabama: {
+    /*
+     * ALABAMA'S STANDARD DEDUCTION SHRINKS TO A FLOOR, and we shipped only the
+     * maximum. Every filer this site serves is already at the bottom of the
+     * chart: $2,500 for a single filer against the $3,000 we gave, and $5,000
+     * for a couple against $8,500.
+     *
+     * It stops at a fixed number rather than at a share of itself, and the
+     * three floors are different fractions of three different starting
+     * amounts, which is why the phase-out needed a dollar floor rather than a
+     * percentage one.
+     *
+     * The dependent exemption steps down too — $1,000 up to $50,000 of income,
+     * $500 to $100,000, $300 above — and never reaches zero. A shipped note
+     * said it "phased out completely above $100,000", which was wrong in both
+     * directions at once. The steps are not modelled; the note is corrected.
+     */
+    standardDeduction: { single: 3_000, marriedJointly: 8_500, headOfHousehold: 5_200 },
+    allowancePhaseOut: {
+      kind: 'linear',
+      appliesTo: ['standardDeduction'],
+      floor: { single: 2_500, marriedJointly: 5_000, headOfHousehold: 2_500 },
+      segments: {
+        single: [{ base: 3_000, start: 26_000, perDollar: 25 / 500 }],
+        marriedJointly: [{ base: 8_500, start: 26_000, perDollar: 175 / 500 }],
+        headOfHousehold: [{ base: 5_200, start: 26_000, perDollar: 135 / 500 }],
+      },
+    },
+    source: 'https://www.revenue.alabama.gov/wp-content/uploads/2026/01/25f40bk.pdf',
+    checked: '2026-08-15',
+    note: "Alabama's dependent exemption steps down with income — $1,000 up to $50,000, $500 to $100,000, $300 above — and never reaches zero. Only the $1,000 figure is modelled, so Alabama tax shown is slightly lower than the true figure above $50,000. Alabama also lets you itemise without having itemised federally, and deduct the Social Security and Medicare tax withheld from your pay, which beats the standard deduction at almost any wage; that is not modelled, so Alabama tax shown is higher than the true figure for most earners.",
   },
   'New York': {
     /*
@@ -1937,7 +2049,9 @@ const ITEMIZED_DEDUCTIONS = {
  * Earned Income Tax Credits in 2025".
  */
 const STATE_EITC = {
-  Colorado: { percent: 0.5, refundable: true },
+  // HALVED FOR 2026. Colorado's own page carries a banner saying so: 50% for
+  // 2023 through 2025, 25% for 2026 and later.
+  Colorado: { percent: 0.25, refundable: true },
   Connecticut: { percent: 0.4, refundable: true },
   Hawaii: { percent: 0.4, refundable: true },
   Illinois: { percent: 0.2, refundable: true },

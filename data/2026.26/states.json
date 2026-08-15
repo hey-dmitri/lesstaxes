@@ -105,7 +105,8 @@
       },
       "standardDeduction": {
         "single": 3000,
-        "marriedJointly": 8500
+        "marriedJointly": 8500,
+        "headOfHousehold": 5200
       },
       "personalExemption": {
         "single": 1500,
@@ -128,13 +129,55 @@
       ],
       "notes": [
         "These states allow some or all of federal income tax paid to be deducted from state taxable income.",
-        "Dependent exemption is reduced to $500 for taxpayers with AGI greater than $50,000, and is phased out completely for taxpayers with AGI greater than $100,000."
+        "Dependent exemption is reduced to $500 for taxpayers with AGI greater than $50,000, and is phased out completely for taxpayers with AGI greater than $100,000.",
+        "Alabama's dependent exemption steps down with income — $1,000 up to $50,000, $500 to $100,000, $300 above — and never reaches zero. Only the $1,000 figure is modelled, so Alabama tax shown is slightly lower than the true figure above $50,000. Alabama also lets you itemise without having itemised federally, and deduct the Social Security and Medicare tax withheld from your pay, which beats the standard deduction at almost any wage; that is not modelled, so Alabama tax shown is higher than the true figure for most earners."
       ],
       "earnedIncomeCredit": null,
       "creditPhaseOut": null,
-      "allowancePhaseOut": null,
-      "ratesCheckedAgainstState": null,
+      "allowancePhaseOut": {
+        "kind": "linear",
+        "appliesTo": [
+          "standardDeduction"
+        ],
+        "floor": {
+          "single": 2500,
+          "marriedJointly": 5000,
+          "headOfHousehold": 2500
+        },
+        "segments": {
+          "single": [
+            {
+              "base": 3000,
+              "start": 26000,
+              "perDollar": 0.05
+            }
+          ],
+          "marriedJointly": [
+            {
+              "base": 8500,
+              "start": 26000,
+              "perDollar": 0.35
+            }
+          ],
+          "headOfHousehold": [
+            {
+              "base": 5200,
+              "start": 26000,
+              "perDollar": 0.27
+            }
+          ]
+        }
+      },
+      "ratesCheckedAgainstState": {
+        "url": "https://www.revenue.alabama.gov/wp-content/uploads/2026/01/25f40bk.pdf",
+        "checked": "2026-08-15",
+        "matched": false
+      },
       "itemizedDeductions": null,
+      "verifiedAgainstState": {
+        "url": "https://www.revenue.alabama.gov/wp-content/uploads/2026/01/25f40bk.pdf",
+        "checked": "2026-08-15"
+      },
       "communityProperty": false,
       "payrollContributions": [],
       "headOfHouseholdBasis": "own",
@@ -151,21 +194,45 @@
         "single": [
           {
             "from": 0,
+            "rate": 0
+          },
+          {
+            "from": 5600,
             "rate": 0.02
           },
           {
-            "from": 4600,
-            "rate": 0.039
+            "from": 11200,
+            "rate": 0.03
+          },
+          {
+            "from": 16000,
+            "rate": 0.034
+          },
+          {
+            "from": 26400,
+            "rate": 0.037
           }
         ],
         "marriedJointly": [
           {
             "from": 0,
+            "rate": 0
+          },
+          {
+            "from": 5600,
             "rate": 0.02
           },
           {
-            "from": 4600,
-            "rate": 0.039
+            "from": 11200,
+            "rate": 0.03
+          },
+          {
+            "from": 16000,
+            "rate": 0.034
+          },
+          {
+            "from": 26400,
+            "rate": 0.037
           }
         ]
       },
@@ -196,13 +263,22 @@
         "Standard deduction and/or personal exemption is adjusted annually for inflation. Inflation-adjusted amounts for tax year 2026 are shown.",
         "Standard deduction or personal exemption is structured as a tax credit.",
         "Bracket levels adjusted for inflation each year. Inflation-adjusted bracket widths for 2026 were not available as of publication, so table reflects 2025 inflation-adjusted bracket widths.",
-        "Taxpayers with net income greater than or equal to $89,601 but not greater than $92,700 shall reduce the amount of tax due by deducting a bracket adjustment amount."
+        "Taxpayers with net income greater than or equal to $89,601 but not greater than $92,700 shall reduce the amount of tax due by deducting a bracket adjustment amount.",
+        "Arkansas reduces the benefit of its lower brackets across a narrow band of income between about $94,700 and $97,600. That adjustment is not modelled, so tax shown for incomes inside that band is slightly lower than the true figure."
       ],
       "earnedIncomeCredit": null,
       "creditPhaseOut": null,
       "allowancePhaseOut": null,
-      "ratesCheckedAgainstState": null,
+      "ratesCheckedAgainstState": {
+        "url": "https://www.dfa.arkansas.gov/wp-content/uploads/Withholding-Tax-Formula.pdf",
+        "checked": "2026-08-15",
+        "matched": false
+      },
       "itemizedDeductions": null,
+      "verifiedAgainstState": {
+        "url": "https://www.dfa.arkansas.gov/wp-content/uploads/Withholding-Tax-Formula.pdf",
+        "checked": "2026-08-15"
+      },
       "communityProperty": false,
       "payrollContributions": [],
       "headOfHouseholdBasis": "single",
@@ -253,22 +329,27 @@
         "vv"
       ],
       "notes": [
-        "Deduction and/or exemption tied to federal tax system. Federal deductions are indexed for inflation. Where applicable, the tax year 2026 inflation-adjusted amounts are shown."
+        "Deduction and/or exemption tied to federal tax system. Federal deductions are indexed for inflation. Where applicable, the tax year 2026 inflation-adjusted amounts are shown.",
+        "Arizona's dependent credit rose to $125 for a child under 17 for 2026 and shrinks above $200,000 of income ($400,000 for a couple). Neither is modelled. Arizona also caps its state and local tax deduction at $10,000 rather than following the federal figure."
       ],
       "earnedIncomeCredit": null,
       "creditPhaseOut": null,
       "allowancePhaseOut": null,
-      "ratesCheckedAgainstState": null,
+      "ratesCheckedAgainstState": {
+        "url": "https://www.azleg.gov/legtext/57leg/2R/laws/0140.htm",
+        "checked": "2026-08-15",
+        "matched": false
+      },
       "itemizedDeductions": null,
       "verifiedAgainstState": {
-        "url": "https://www.azleg.gov/legtext/57leg/2R/summary/H.HB2785_012926_WM.DOCX.htm",
+        "url": "https://www.azleg.gov/legtext/57leg/2R/laws/0140.htm",
         "checked": "2026-08-15"
       },
       "communityProperty": true,
       "payrollContributions": [],
       "headOfHouseholdBasis": "own",
       "headOfHouseholdSource": {
-        "url": "https://www.azleg.gov/legtext/57leg/2R/summary/H.HB2785_012926_WM.DOCX.htm",
+        "url": "https://www.azleg.gov/legtext/57leg/2R/laws/0140.htm",
         "checked": "2026-08-15"
       }
     },
@@ -444,7 +525,11 @@
       "earnedIncomeCredit": null,
       "creditPhaseOut": null,
       "allowancePhaseOut": null,
-      "ratesCheckedAgainstState": null,
+      "ratesCheckedAgainstState": {
+        "url": "https://www.ftb.ca.gov/about-ftb/newsroom/tax-news/2025/10.html",
+        "checked": "2026-08-15",
+        "matched": true
+      },
       "itemizedDeductions": {
         "deductPropertyTax": true,
         "deductStateIncomeTax": false,
@@ -527,14 +612,18 @@
         "Colorado, Idaho, Iowa, Montana, New Mexico, North Dakota, and South Carolina include the federal standard deduction in their income starting point."
       ],
       "earnedIncomeCredit": {
-        "percentOfFederal": 0.5,
+        "percentOfFederal": 0.25,
         "byChildren": null,
         "refundable": true,
         "maxCredit": null
       },
       "creditPhaseOut": null,
       "allowancePhaseOut": null,
-      "ratesCheckedAgainstState": null,
+      "ratesCheckedAgainstState": {
+        "url": "https://tax.colorado.gov/income-tax-topics-earned-income-tax-credit",
+        "checked": "2026-08-15",
+        "matched": false
+      },
       "itemizedDeductions": null,
       "communityProperty": false,
       "payrollContributions": [
