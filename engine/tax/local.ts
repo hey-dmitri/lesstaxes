@@ -24,7 +24,29 @@ import { applyBrackets, type Bracket } from './brackets';
 import type { PublishedStatus } from './state';
 import { scheduleFor } from './state';
 
-export interface BracketedLocalTax {
+/**
+ * Where a local rate came from, and how sure of it we are.
+ *
+ * These are on every jurisdiction in the data and were on none of the types,
+ * so nothing could read them without casting and nothing could check them at
+ * all. That is how New York City and Yonkers went months carrying a confidence
+ * of "verify before launch" and no source, while the data page above them said
+ * every named city came "from the levying authority, with the source
+ * recorded".
+ *
+ * One descriptive string rather than the {url, checked} pair the states use.
+ * The convention differs because the two grew up apart, and unifying them is a
+ * change to twenty-nine records for no gain the reader can see; what matters
+ * is that the field exists in the type, so a test can insist on it.
+ */
+interface LocallyLevied {
+  /** The authority and document, ending in the URL. */
+  source?: string;
+  /** Primary or secondary, and what makes it so. */
+  confidence?: string;
+}
+
+export interface BracketedLocalTax extends LocallyLevied {
   kind: 'bracketed';
   id: string;
   name: string;
@@ -44,7 +66,7 @@ export interface BracketedLocalTax {
   isStateAverage?: boolean;
 }
 
-export interface FlatRateLocalTax {
+export interface FlatRateLocalTax extends LocallyLevied {
   kind: 'flatRate';
   id: string;
   name: string;
@@ -75,7 +97,7 @@ export interface FlatRateLocalTax {
   appliesTo?: 'grossWages' | 'stateTaxableIncome';
 }
 
-export interface StateSurchargeLocalTax {
+export interface StateSurchargeLocalTax extends LocallyLevied {
   kind: 'stateSurcharge';
   id: string;
   name: string;

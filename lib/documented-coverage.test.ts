@@ -204,6 +204,32 @@ describe('local tax coverage as described', () => {
     expect(cities.size).toBe(13);
   });
 
+  /*
+   * THE DATA PAGE SAYS "with the source recorded". It has to be true of all of
+   * them.
+   *
+   * New York City and Yonkers were the two it was not true of. Both sat on a
+   * confidence string reading "verify before launch" — written when launch was
+   * ahead rather than months behind — with no source field at all, while the
+   * page above them counted them among the cities taken "from the levying
+   * authority, with the source recorded". Eleven cities had one. The two
+   * biggest did not.
+   *
+   * Nothing was wrong with the rates; both were confirmed against New York's
+   * own IT-201 instructions and matched to the last digit. The defect was the
+   * claim, which is the kind this file exists for.
+   */
+  it('records a source for every city that carries its own rate', () => {
+    for (const j of named) {
+      // The convention here is one descriptive string naming the authority and
+      // ending in the URL, not the {url, checked} object the states use.
+      expect(j.source, j.id).toBeTruthy();
+      expect(j.source ?? '', j.id).toMatch(/https?:\/\//);
+      // "verify before launch" outlived the launch by months on two of these.
+      expect(j.confidence ?? '', j.id).not.toMatch(/before launch/i);
+    }
+  });
+
   it('does not still list a city as being on a state average', () => {
     const page = readFileSync(new URL('../app/data/page.tsx', import.meta.url), 'utf8');
     expect(page).not.toMatch(/Six cities carry their own/);

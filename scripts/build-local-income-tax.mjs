@@ -310,9 +310,56 @@ const NYC = {
       { from: 90_000, rate: 0.03876 },
     ],
   },
+  /*
+   * ZERO ON BOTH, AND THAT IS THE STATE'S OWN ARITHMETIC, not a shortcut.
+   *
+   * The IT-201 instructions for line 47 say to carry the line 38 amount
+   * straight across. Line 38 is New York STATE taxable income, which already
+   * has the state standard or itemised deduction and the state's $1,000 per
+   * dependent taken out of it. So the city tax sits on a figure that has been
+   * reduced once, by the state, and the city adds no allowance of its own.
+   *
+   * The one case the instructions carve out is a taxpayer who gave to the New
+   * York Charitable Gifts Trust Fund and itemised the gift, who adds it back
+   * on a small worksheet. This site does not ask about charitable giving at
+   * all, so there is nothing to add back.
+   */
   standardDeduction: { single: 0, marriedJointly: 0 },
   exemptionPerDependent: 0,
-  confidence: 'secondary — corroborated across independent sources; verify against NY Form IT-201 instructions before launch',
+  source:
+    'New York State Department of Taxation and Finance, Instructions for Form IT-201, "New York City tax rate schedule" — https://www.tax.ny.gov/pdf/current_forms/it/it201i.pdf',
+  /*
+   * WHAT "CHECKED" MEANS HERE, precisely, because it is worth being exact.
+   *
+   * The rate schedules were read out of two New York documents that agree with
+   * each other: the IT-201 instructions above (tax year 2025) and the IT-2105
+   * estimated-payment instructions for tax year 2026, which carry the same
+   * three schedules unchanged. Every rate and every bracket start matched what
+   * was already shipped here.
+   *
+   * The retrieval was indirect. tax.ny.gov refused connections outright from
+   * the machine doing the checking, so both PDFs came through a fetching
+   * service pointed at those exact state URLs. The URL recorded is the state's
+   * own and the documents are plainly genuine — full form structure, line
+   * numbers, internal cross-references, and two separate documents agreeing —
+   * but nobody here opened a socket to New York's server, and pretending
+   * otherwise is the sort of small overclaim this project keeps finding in its
+   * own prose.
+   *
+   * TWO LIMITS THIS MODEL HAS, both small and both in the reader's favour or
+   * near enough:
+   *
+   * Below $65,000 of city taxable income the state says to use a lookup TABLE
+   * of rounded amounts rather than these brackets. The table is built from
+   * these same rates, so bracket arithmetic lands within a dollar or two — but
+   * it is not the official method at those incomes.
+   *
+   * There is no city version of the state's high-income recapture. New York
+   * State claws back the benefit of its lower brackets above $107,650; the
+   * city has nothing of the kind, and its 3.876% top bracket simply runs to
+   * the top. So four brackets are right at every income.
+   */
+  confidence: "primary — New York State's own IT-201 and IT-2105 instructions",
 };
 
 /** Yonkers levies a surcharge on the New York State liability, not on income. */
@@ -322,7 +369,27 @@ const YONKERS = {
   name: 'Yonkers',
   stateCode: 'NY',
   rate: 0.1675,
-  confidence: 'secondary — verify current surcharge percentage before launch',
+  /*
+   * THE SURCHARGE IS ON STATE TAX AFTER CREDITS, which the engine already gets
+   * right and which is worth writing down so it is not "simplified" later.
+   *
+   * The Yonkers worksheet at line 55 does not multiply the state liability. It
+   * takes state tax from line 46, subtracts a list of credits — the child
+   * credit, the real property tax credit, child and dependent care, earned
+   * income, college tuition and others — and multiplies what is left by
+   * 16.75%. Multiplying the pre-credit figure would overcharge every Yonkers
+   * household that claims any of them.
+   *
+   * `computeLocalTax` is handed `state.tax`, which is this project's state
+   * figure after its credits, so the basis is correct. Of the credits on the
+   * state's list, only the earned income credit is modelled here; the others
+   * are not, which leaves the Yonkers figure slightly high for a household
+   * claiming them, in the same direction and for the same reason as New York's
+   * own gap note.
+   */
+  source:
+    'New York State Department of Taxation and Finance, Instructions for Form IT-201, Yonkers worksheet at line 55 — https://www.tax.ny.gov/pdf/current_forms/it/it201i.pdf',
+  confidence: "primary — New York State's own IT-201 instructions, Yonkers worksheet",
 };
 
 /**

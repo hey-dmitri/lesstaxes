@@ -89,7 +89,8 @@
         "marriedJointly": 0
       },
       "exemptionPerDependent": 0,
-      "confidence": "secondary — corroborated across independent sources; verify against NY Form IT-201 instructions before launch"
+      "source": "New York State Department of Taxation and Finance, Instructions for Form IT-201, \"New York City tax rate schedule\" — https://www.tax.ny.gov/pdf/current_forms/it/it201i.pdf",
+      "confidence": "primary — New York State's own IT-201 and IT-2105 instructions"
     },
     "yonkers": {
       "id": "yonkers",
@@ -97,7 +98,8 @@
       "name": "Yonkers",
       "stateCode": "NY",
       "rate": 0.1675,
-      "confidence": "secondary — verify current surcharge percentage before launch"
+      "source": "New York State Department of Taxation and Finance, Instructions for Form IT-201, Yonkers worksheet at line 55 — https://www.tax.ny.gov/pdf/current_forms/it/it201i.pdf",
+      "confidence": "primary — New York State's own IT-201 instructions, Yonkers worksheet"
     },
     "portland-multnomah": {
       "id": "portland-multnomah",
