@@ -316,7 +316,7 @@ answer          =  in your pocket THERE  −  in your pocket HERE`}</pre>
           Twenty-four of them were wrong. Ten are on last year&rsquo;s published figures because
           the state has not released this year&rsquo;s, and those are named below. The{' '}
           <Link href="/data">data page</Link> shows, for every location, the date its state was
-          checked and names the document it was checked against.
+          checked, and that date links to the document it was checked against.
         </p>
         <p>
           <strong>{COVERAGE.itemising} states</strong> now let a homeowner claim mortgage interest

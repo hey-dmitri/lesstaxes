@@ -60,17 +60,35 @@ function Row({ row }: { row: DatasetRow }) {
       </td>
       {/* Provenance, not a figure. A reader checking our numbers deserves to
           know whether this state's tax rules were read off the state's own
-          schedule or taken from an annual table published in February. */}
+          schedule or taken from an annual table published in February.
+
+          THE DATE IS A LINK, because the methodology page promises the data
+          page "links to the document it was checked against" and for a long
+          time it did not — the URL was in a title attribute, which is a hover
+          tooltip. A phone cannot hover and a keyboard cannot reach it, so on
+          the two devices most likely to be used the document was simply not
+          there. This is the sentence carrying the site's whole provenance
+          claim, so it is better to make the claim true than to soften it. */}
       <td
         className="px-2.5 py-1.5 text-right text-[0.78rem] whitespace-nowrap"
         style={{ color: row.taxChecked ? 'var(--ink)' : 'var(--muted)' }}
-        title={
-          row.taxCheckedUrl
-            ? `Checked against ${row.taxCheckedUrl}`
-            : 'This state does not tax wages, so there is no rate schedule to check.'
-        }
       >
-        {row.taxChecked ?? 'not checked'}
+        {row.taxCheckedUrl ? (
+          <a
+            href={row.taxCheckedUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="underline underline-offset-2"
+            style={{ color: 'var(--ink)' }}
+            title={`Open the document ${row.state} was checked against`}
+          >
+            {row.taxChecked}
+          </a>
+        ) : (
+          <span title="This state does not tax wages, so there is no rate schedule to check.">
+            {row.taxChecked ?? 'not checked'}
+          </span>
+        )}
       </td>
     </tr>
   );

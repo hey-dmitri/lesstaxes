@@ -230,6 +230,30 @@ describe('local tax coverage as described', () => {
     }
   });
 
+  /*
+   * THE PROVENANCE PROMISE HAS TO BE REACHABLE, not just present.
+   *
+   * The methodology page says the data page "links to the document it was
+   * checked against". For a long time the URL was in a `title` attribute — a
+   * hover tooltip. A phone cannot hover and a keyboard cannot reach it, so on
+   * the two devices most likely to be used, the document was not there at all.
+   *
+   * The claim was almost softened to "names the document" instead. Making it
+   * true is better: this is the sentence the site's whole honesty argument
+   * rests on. So the date is an anchor now, and this fails if it goes back to
+   * being a tooltip.
+   */
+  it('reaches the source document with a real link, not a hover tooltip', () => {
+    const browser = readFileSync(new URL('../components/dataset-browser.tsx', import.meta.url), 'utf8');
+    expect(browser).toMatch(/href=\{row\.taxCheckedUrl\}/);
+    expect(browser).not.toMatch(/title=\{[\s\S]{0,80}Checked against \$\{row\.taxCheckedUrl\}/);
+
+    const methodology = readFileSync(new URL('../app/methodology/page.tsx', import.meta.url), 'utf8');
+    expect(methodology.replace(/\s+/g, ' ')).toContain(
+      'links to the document it was checked against',
+    );
+  });
+
   it('does not still list a city as being on a state average', () => {
     const page = readFileSync(new URL('../app/data/page.tsx', import.meta.url), 'utf8');
     expect(page).not.toMatch(/Six cities carry their own/);
