@@ -83,8 +83,8 @@ Total data cost: **$0**. No paid feeds, no runtime API calls.
    stripping the embedded average out per category, which the survey does not
    publish. Worth a few hundred a year. The rates stay shipped and visible in
    the data browser, labelled reference-only, for when it can be done.
-4. **28 of 30 graduated states have been checked against their own publication
-   for head of household.** Nothing checked this before, and 17 of the 28 were
+4. **29 of 30 graduated states have been checked against their own publication
+   for head of household.** Nothing checked this before, and 18 of the 29 were
    wrong — always against a single parent, by $75 to $2,559 a year. Six
    different shapes turned up: the state's own rate schedule, the joint
    schedule, the joint schedule with its own deduction, a shared schedule with
@@ -92,11 +92,17 @@ Total data cost: **$0**. No paid feeds, no runtime API calls.
    single schedule with its own deduction. There is no pattern to guess from,
    which is why each one had to be read.
 
-   Nebraska and Vermont are the two left. Both publish a head-of-household
-   schedule, both were transcribed, and both were rejected by the build guard
-   because the only figures published are 2025 and this dataset ships 2026
-   brackets — mixing tax years within one state made a head of household pay
-   more than a single filer. They wait for their 2026 figures.
+   Vermont is the one left, and it is blocked rather than unexamined. Its
+   schedule was transcribed from the statute and rejected by the build guard:
+   the statutory table is a base Vermont indexes every year, and the base sits
+   about 28% below the 2026 brackets shipped here, so a head of household came
+   out paying more than a single filer. Deriving 2026 from it is not available
+   either — no single inflation factor reproduces both the 2026 single and joint
+   brackets already shipped, so any derived schedule would be invented. Vermont
+   has published a document called "2026 VT Rate Schedules" and it is
+   withholding charts with two columns, single and married, and no head of
+   household in it at all. Until the 2026 return forms arrive, Vermont stays on
+   the single schedule, which is the narrowest and therefore charges the most.
 
    Anything unchecked carries `headOfHouseholdBasis: 'assumed-single'`, which is
    deliberately not spelled `'single'`: it records that nobody has looked, and

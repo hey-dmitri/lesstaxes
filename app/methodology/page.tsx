@@ -225,9 +225,9 @@ answer          =  in your pocket THERE  −  in your pocket HERE`}</pre>
             <strong>A head of household is not a single person.</strong> We used to tax them as
             one. California publishes its own schedule and gives them the married standard
             deduction; Maryland puts them on the married table outright; Kansas quietly adds a
-            second exemption on top of the first. We have now read the actual form for 28 of the 30
-            states with graduated rates, and 17 of them were charging a single parent too much — by
-            $75 to $2,559 a year. Nebraska and Vermont are the two still to do.
+            second exemption on top of the first. We have now read the actual form for 29 of the 30
+            states with graduated rates, and 18 of them were charging a single parent too much — by
+            $75 to $2,559 a year. Vermont is the last one, and it is waiting on the state.
           </li>
           <li>
             <strong>California lets you itemise on the state return</strong> whether or not you did

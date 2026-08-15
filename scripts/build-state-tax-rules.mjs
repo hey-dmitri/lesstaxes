@@ -372,19 +372,56 @@ const HEAD_OF_HOUSEHOLD = {
     source: 'https://oklahoma.gov/tax/individuals/pay-taxes.html',
     checked: '2026-08-15',
   },
+  Nebraska: {
+    /*
+     * This was blocked once and is not any more. The first attempt used
+     * Nebraska's 2025 schedule — four brackets topping at 5.20% — against the
+     * 2026 single brackets this project ships, where the statute collapses the
+     * top two into one 4.55% band. That made a head of household pay MORE than
+     * a single filer at $120,000 and the build guard threw it out.
+     *
+     * Form 1040N-ES now carries a "2026 Nebraska Estimated Income Tax Rate
+     * Schedule" with all four filing statuses, and its single and joint columns
+     * reproduce the brackets already shipped here to the dollar — $4,130 and
+     * $24,760 single, $8,250 and $49,530 joint — so the head-of-household
+     * column beside them is the same vintage rather than a year out.
+     *
+     * The same form gives the 2026 standard deduction: $12,950 for a head of
+     * household against $8,850 single, which matches the figures already
+     * shipped for the other two statuses.
+     */
+    basis: 'own',
+    brackets: [
+      { from: 0, rate: 0.0246 },
+      { from: 7_700, rate: 0.0351 },
+      { from: 39_620, rate: 0.0455 },
+    ],
+    standardDeduction: 12_950,
+    source: 'https://revenue.nebraska.gov/sites/default/files/doc/tax-forms/2025/f_1040N-ES.pdf',
+    checked: '2026-08-15',
+  },
   /*
-   * NEBRASKA AND VERMONT ARE DELIBERATELY ABSENT, and the build guard is why.
+   * VERMONT IS THE LAST ONE, and it is still blocked for the original reason.
    *
-   * Both publish their own head-of-household schedule and I transcribed both.
-   * Nebraska's 2025 schedule has FOUR brackets topping at 5.20%; the brackets
-   * this project ships are 2026, where the statute collapses the top two into
-   * one 4.55% band. Setting a 2025 schedule against 2026 single brackets made a
-   * head of household pay MORE than a single filer at $120,000, and the guard
-   * threw rather than shipping it. Vermont is the same story with different
-   * numbers.
+   * Its head-of-household schedule was transcribed from 32 V.S.A. § 5822(a)(2)
+   * and rejected by the build guard: the statutory table is a base that Vermont
+   * indexes for inflation every year, and the base sits about 28% below the
+   * 2026 brackets this project ships, so a head of household came out paying
+   * more than a single filer.
    *
-   * Mixing tax years within one state is the error this whole exercise exists
-   * to remove, so both wait for their 2026 figures.
+   * The obvious shortcut does not work either. Deriving 2026 from the statute
+   * needs one inflation factor, and no single factor reproduces the 2026 single
+   * AND joint brackets already shipped here — the ranges each threshold implies
+   * do not overlap. So a derived head-of-household schedule would be a number
+   * this project made up, which is the one thing it does not do.
+   *
+   * Vermont's department has published a document titled "2026 VT Rate
+   * Schedules", and it is wage-bracket WITHHOLDING charts with two columns,
+   * single and married. There is no head-of-household column in it. The real
+   * rate schedules arrive with the 2026 return forms.
+   *
+   * Until then Vermont stays on the single schedule, which is the narrowest
+   * one and therefore charges the most — the error runs against the reader.
    */
   Alabama: {
     /*

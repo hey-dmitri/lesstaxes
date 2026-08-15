@@ -1,0 +1,504 @@
+{
+  "datasetVersion": "2026.25",
+  "vintage": {
+    "ces": 2024
+  },
+  "source": {
+    "name": "BLS Consumer Expenditure Survey, Table 1203 — income before taxes, 2024",
+    "url": "https://www.bls.gov/cex/tables/calendar-year/mean-item-share-average-standard-error/cu-income-before-taxes-2024.xlsx",
+    "licence": "US Government work — public domain",
+    "snapshot": "data/2026.25/sources/bls-ces-table1203-2024.csv"
+  },
+  "parityMapping": {
+    "food": "goods",
+    "otherGoods": "goods",
+    "utilities": "utilities",
+    "healthcare": "otherServices",
+    "otherServices": "otherServices"
+  },
+  "transportModel": {
+    "method": "annualCostPerVehicle = (vehicle purchases + fuel + other vehicle expenses) / vehicles per household, computed within each income bracket",
+    "rationale": "Cost of living indexes measure PRICES, not QUANTITIES. Going from zero cars to two is the single largest hidden cost in a car-city move, and no price index captures it. See PROJECT.md section 2.",
+    "transitHandledSeparately": true
+  },
+  "excludedFromLivingTotal": {
+    "shelter": "Housing is a separate user input (rent, or mortgage plus property tax).",
+    "transportation": "Derived from car count per metro — see PROJECT.md section 2.",
+    "insuranceAndPensions": "Saving rather than consumption; it is money retained, not spent."
+  },
+  "priceLevel": {
+    "baseYear": 2024,
+    "asOf": "2026-07",
+    "factors": {
+      "basket": {
+        "value": 1.060927637870577,
+        "series": "CPIAUCSL",
+        "name": "CPI-U, all items, seasonally adjusted",
+        "base": 313.7,
+        "current": 332.813,
+        "currentMonth": "2026-07"
+      },
+      "rent": {
+        "value": 1.0712185136180943,
+        "series": "CUSR0000SAH1",
+        "name": "CPI-U, shelter, seasonally adjusted",
+        "base": 400.57,
+        "current": 429.098,
+        "currentMonth": "2026-07"
+      },
+      "wage": {
+        "value": 1.0853332804196971,
+        "series": "LES1252881600Q x CPIAUCSL",
+        "name": "Median usual weekly earnings, full-time workers, real, restated to nominal",
+        "base": 369.5,
+        "current": 401.03064711507807,
+        "currentMonth": "2026-04"
+      },
+      "homePrice": {
+        "value": 1.030069081404033,
+        "series": "CSUSHPISA",
+        "name": "S&P CoreLogic Case-Shiller US National Home Price Index, seasonally adjusted",
+        "base": 321.36,
+        "current": 331.023,
+        "currentMonth": "2026-05"
+      }
+    },
+    "source": {
+      "name": "Federal Reserve Bank of St. Louis (FRED), republishing BLS and S&P Dow Jones Indices",
+      "url": "https://fred.stlouisfed.org/",
+      "note": "Base is the average of the twelve monthly readings for the source vintage year. Current is the latest month published at the time this release was cut."
+    }
+  },
+  "salesTaxTreatment": {
+    "includedInCategories": true,
+    "note": "CE expenditures are transaction costs including sales and excise tax. Where a respondent reported a price without tax, BLS adds it before publishing. A separate sales tax line on top of these figures is a double count.",
+    "sources": [
+      "https://www.bls.gov/cex/csxfaqs.htm — question 14, \"Is sales tax included in expenditures?\"",
+      "https://www.bls.gov/cex/csxgloss.htm — \"Expenditures consist of the transaction costs, including excise and sales taxes\"",
+      "https://www.bls.gov/opub/hom/cex/concepts.htm — \"Expenditure amounts ... include all applicable sales and excise taxes\"",
+      "https://www.bls.gov/cex/research_papers/pdf/sun-sales-tax-in-consumer-expenditure-data.pdf"
+    ]
+  },
+  "notes": [
+    "Figures are national means by income bracket. Metro variation comes from applying BEA Regional Price Parities, not from local spending surveys.",
+    "These are averages, not budgets. Any individual household will differ.",
+    "Brackets are income BEFORE taxes, matching how salary is entered in the interface.",
+    "Amounts include the sales tax the household paid. See salesTaxTreatment."
+  ],
+  "profiles": [
+    {
+      "bracket": "Less than $15,000",
+      "incomeFloor": 0,
+      "meanIncome": 7637,
+      "utilitiesSplit": {
+        "insideGrossRent": 1787,
+        "telephone": 756
+      },
+      "ownerUpkeep": {
+        "perConsumerUnit": 845,
+        "homeownerShare": 0.32,
+        "perOwner": 2641
+      },
+      "averageHouseholdSize": 1.6,
+      "averageEarners": 0.4,
+      "averageChildren": 0.3,
+      "categories": {
+        "food": 5315,
+        "otherGoods": 3026,
+        "utilities": 2543,
+        "healthcare": 2802,
+        "otherServices": 4451
+      },
+      "livingTotal": 19393,
+      "cashContributions": 723,
+      "otherLodging": 533,
+      "transport": {
+        "vehiclesPerHousehold": 0.8,
+        "vehicleSpending": 3950,
+        "annualCostPerVehicle": 4938,
+        "goodsPerVehicle": 3156,
+        "servicesPerVehicle": 1781,
+        "vehicleInsurance": 713,
+        "transitSpending": 381
+      },
+      "excluded": {
+        "shelter": 8508,
+        "transportation": 4331,
+        "insuranceAndPensions": 419
+      },
+      "check": {
+        "publishedTotal": 32118,
+        "reconstructedTotal": 32118,
+        "differencePct": 0
+      }
+    },
+    {
+      "bracket": "$15,000 to $29,999",
+      "incomeFloor": 15000,
+      "meanIncome": 22443,
+      "utilitiesSplit": {
+        "insideGrossRent": 2305,
+        "telephone": 886
+      },
+      "ownerUpkeep": {
+        "perConsumerUnit": 1434,
+        "homeownerShare": 0.49,
+        "perOwner": 2927
+      },
+      "averageHouseholdSize": 1.6,
+      "averageEarners": 0.5,
+      "averageChildren": 0.3,
+      "categories": {
+        "food": 5448,
+        "otherGoods": 3321,
+        "utilities": 3191,
+        "healthcare": 3691,
+        "otherServices": 3837
+      },
+      "livingTotal": 20632,
+      "cashContributions": 811,
+      "otherLodging": 333,
+      "transport": {
+        "vehiclesPerHousehold": 1.1,
+        "vehicleSpending": 5099,
+        "annualCostPerVehicle": 4635,
+        "goodsPerVehicle": 2982,
+        "servicesPerVehicle": 1654,
+        "vehicleInsurance": 1015,
+        "transitSpending": 520
+      },
+      "excluded": {
+        "shelter": 9546,
+        "transportation": 5618,
+        "insuranceAndPensions": 905
+      },
+      "check": {
+        "publishedTotal": 36368,
+        "reconstructedTotal": 36368,
+        "differencePct": 0
+      }
+    },
+    {
+      "bracket": "$30,000 to $39,999",
+      "incomeFloor": 30000,
+      "meanIncome": 34984,
+      "utilitiesSplit": {
+        "insideGrossRent": 2732,
+        "telephone": 1127
+      },
+      "ownerUpkeep": {
+        "perConsumerUnit": 1742,
+        "homeownerShare": 0.57,
+        "perOwner": 3056
+      },
+      "averageHouseholdSize": 2,
+      "averageEarners": 0.7,
+      "averageChildren": 0.4,
+      "categories": {
+        "food": 6956,
+        "otherGoods": 3929,
+        "utilities": 3859,
+        "healthcare": 4802,
+        "otherServices": 5165
+      },
+      "livingTotal": 26263,
+      "cashContributions": 1094,
+      "otherLodging": 458,
+      "transport": {
+        "vehiclesPerHousehold": 1.5,
+        "vehicleSpending": 7086,
+        "annualCostPerVehicle": 4724,
+        "goodsPerVehicle": 2883,
+        "servicesPerVehicle": 1841,
+        "vehicleInsurance": 1595,
+        "transitSpending": 456
+      },
+      "excluded": {
+        "shelter": 10907,
+        "transportation": 7541,
+        "insuranceAndPensions": 1994
+      },
+      "check": {
+        "publishedTotal": 46246,
+        "reconstructedTotal": 46247,
+        "differencePct": 0.002
+      }
+    },
+    {
+      "bracket": "$40,000 to $49,999",
+      "incomeFloor": 40000,
+      "meanIncome": 44824,
+      "utilitiesSplit": {
+        "insideGrossRent": 2953,
+        "telephone": 1219
+      },
+      "ownerUpkeep": {
+        "perConsumerUnit": 2665,
+        "homeownerShare": 0.59,
+        "perOwner": 4517
+      },
+      "averageHouseholdSize": 2.2,
+      "averageEarners": 0.9,
+      "averageChildren": 0.5,
+      "categories": {
+        "food": 6933,
+        "otherGoods": 4177,
+        "utilities": 4173,
+        "healthcare": 5026,
+        "otherServices": 4652
+      },
+      "livingTotal": 27070,
+      "cashContributions": 1551,
+      "otherLodging": 558,
+      "transport": {
+        "vehiclesPerHousehold": 1.6,
+        "vehicleSpending": 8229,
+        "annualCostPerVehicle": 5143,
+        "goodsPerVehicle": 3230,
+        "servicesPerVehicle": 1913,
+        "vehicleInsurance": 1717,
+        "transitSpending": 422
+      },
+      "excluded": {
+        "shelter": 12370,
+        "transportation": 8651,
+        "insuranceAndPensions": 2843
+      },
+      "check": {
+        "publishedTotal": 50375,
+        "reconstructedTotal": 50376,
+        "differencePct": 0.002
+      }
+    },
+    {
+      "bracket": "$50,000 to $69,999",
+      "incomeFloor": 50000,
+      "meanIncome": 59582,
+      "utilitiesSplit": {
+        "insideGrossRent": 2988,
+        "telephone": 1332
+      },
+      "ownerUpkeep": {
+        "perConsumerUnit": 2481,
+        "homeownerShare": 0.59,
+        "perOwner": 4205
+      },
+      "averageHouseholdSize": 2.3,
+      "averageEarners": 1.1,
+      "averageChildren": 0.5,
+      "categories": {
+        "food": 8447,
+        "otherGoods": 4807,
+        "utilities": 4320,
+        "healthcare": 5173,
+        "otherServices": 6319
+      },
+      "livingTotal": 31557,
+      "cashContributions": 1768,
+      "otherLodging": 723,
+      "transport": {
+        "vehiclesPerHousehold": 1.7,
+        "vehicleSpending": 9670,
+        "annualCostPerVehicle": 5688,
+        "goodsPerVehicle": 3602,
+        "servicesPerVehicle": 2086,
+        "vehicleInsurance": 1787,
+        "transitSpending": 654
+      },
+      "excluded": {
+        "shelter": 13706,
+        "transportation": 10324,
+        "insuranceAndPensions": 4514
+      },
+      "check": {
+        "publishedTotal": 59378,
+        "reconstructedTotal": 59378,
+        "differencePct": 0
+      }
+    },
+    {
+      "bracket": "$70,000 to $99,999",
+      "incomeFloor": 70000,
+      "meanIncome": 83888,
+      "utilitiesSplit": {
+        "insideGrossRent": 3309,
+        "telephone": 1556
+      },
+      "ownerUpkeep": {
+        "perConsumerUnit": 2890,
+        "homeownerShare": 0.64,
+        "perOwner": 4516
+      },
+      "averageHouseholdSize": 2.5,
+      "averageEarners": 1.5,
+      "averageChildren": 0.6,
+      "categories": {
+        "food": 9531,
+        "otherGoods": 5381,
+        "utilities": 4865,
+        "healthcare": 6116,
+        "otherServices": 7818
+      },
+      "livingTotal": 36864,
+      "cashContributions": 2174,
+      "otherLodging": 979,
+      "transport": {
+        "vehiclesPerHousehold": 1.9,
+        "vehicleSpending": 11326,
+        "annualCostPerVehicle": 5961,
+        "goodsPerVehicle": 3697,
+        "servicesPerVehicle": 2264,
+        "vehicleInsurance": 2165,
+        "transitSpending": 983
+      },
+      "excluded": {
+        "shelter": 15961,
+        "transportation": 12310,
+        "insuranceAndPensions": 7214
+      },
+      "check": {
+        "publishedTotal": 71369,
+        "reconstructedTotal": 71370,
+        "differencePct": 0.001
+      }
+    },
+    {
+      "bracket": "$100,000 to $149,999",
+      "incomeFloor": 100000,
+      "meanIncome": 121852,
+      "utilitiesSplit": {
+        "insideGrossRent": 3645,
+        "telephone": 1776
+      },
+      "ownerUpkeep": {
+        "perConsumerUnit": 2960,
+        "homeownerShare": 0.74,
+        "perOwner": 4000
+      },
+      "averageHouseholdSize": 2.9,
+      "averageEarners": 1.8,
+      "averageChildren": 0.7,
+      "categories": {
+        "food": 11902,
+        "otherGoods": 7296,
+        "utilities": 5422,
+        "healthcare": 7147,
+        "otherServices": 9956
+      },
+      "livingTotal": 45362,
+      "cashContributions": 2067,
+      "otherLodging": 1572,
+      "transport": {
+        "vehiclesPerHousehold": 2.3,
+        "vehicleSpending": 14777,
+        "annualCostPerVehicle": 6425,
+        "goodsPerVehicle": 4050,
+        "servicesPerVehicle": 2374,
+        "vehicleInsurance": 2564,
+        "transitSpending": 1244
+      },
+      "excluded": {
+        "shelter": 17911,
+        "transportation": 16020,
+        "insuranceAndPensions": 12006
+      },
+      "check": {
+        "publishedTotal": 89727,
+        "reconstructedTotal": 89727,
+        "differencePct": 0
+      }
+    },
+    {
+      "bracket": "$150,000 to $199,999",
+      "incomeFloor": 150000,
+      "meanIncome": 171847,
+      "utilitiesSplit": {
+        "insideGrossRent": 4097,
+        "telephone": 1955
+      },
+      "ownerUpkeep": {
+        "perConsumerUnit": 3703,
+        "homeownerShare": 0.84,
+        "perOwner": 4408
+      },
+      "averageHouseholdSize": 3.1,
+      "averageEarners": 2,
+      "averageChildren": 0.8,
+      "categories": {
+        "food": 14546,
+        "otherGoods": 8963,
+        "utilities": 6051,
+        "healthcare": 8805,
+        "otherServices": 13996
+      },
+      "livingTotal": 59033,
+      "cashContributions": 4618,
+      "otherLodging": 2054,
+      "transport": {
+        "vehiclesPerHousehold": 2.6,
+        "vehicleSpending": 18941,
+        "annualCostPerVehicle": 7285,
+        "goodsPerVehicle": 5030,
+        "servicesPerVehicle": 2255,
+        "vehicleInsurance": 2643,
+        "transitSpending": 1670
+      },
+      "excluded": {
+        "shelter": 21214,
+        "transportation": 20611,
+        "insuranceAndPensions": 18575
+      },
+      "check": {
+        "publishedTotal": 117378,
+        "reconstructedTotal": 117379,
+        "differencePct": 0.001
+      }
+    },
+    {
+      "bracket": "$200,000 and more",
+      "incomeFloor": 200000,
+      "meanIncome": 322142,
+      "utilitiesSplit": {
+        "insideGrossRent": 4882,
+        "telephone": 2055
+      },
+      "ownerUpkeep": {
+        "perConsumerUnit": 6541,
+        "homeownerShare": 0.9,
+        "perOwner": 7268
+      },
+      "averageHouseholdSize": 3.3,
+      "averageEarners": 2.1,
+      "averageChildren": 0.9,
+      "categories": {
+        "food": 18453,
+        "otherGoods": 13153,
+        "utilities": 6938,
+        "healthcare": 10343,
+        "otherServices": 24528
+      },
+      "livingTotal": 82747,
+      "cashContributions": 5176,
+      "otherLodging": 4156,
+      "transport": {
+        "vehiclesPerHousehold": 2.8,
+        "vehicleSpending": 25160,
+        "annualCostPerVehicle": 8986,
+        "goodsPerVehicle": 6269,
+        "servicesPerVehicle": 2716,
+        "vehicleInsurance": 2959,
+        "transitSpending": 3175
+      },
+      "excluded": {
+        "shelter": 31156,
+        "transportation": 28335,
+        "insuranceAndPensions": 32642
+      },
+      "check": {
+        "publishedTotal": 170722,
+        "reconstructedTotal": 170724,
+        "differencePct": 0.001
+      }
+    }
+  ]
+}

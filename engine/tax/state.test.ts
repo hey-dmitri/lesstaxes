@@ -161,19 +161,33 @@ describe('head of household', () => {
     // assumption is exactly the regression this whole change is about.
     for (const code of [
       'AL', 'AR', 'CA', 'CT', 'DC', 'DE', 'HI', 'ID', 'KS', 'MA', 'MD', 'ME',
-      'MN', 'MO', 'MS', 'MT', 'ND', 'NJ', 'NM', 'NY', 'OH', 'OK', 'OR', 'RI',
-      'SC', 'VA', 'WI', 'WV',
+      'MN', 'MO', 'MS', 'MT', 'ND', 'NE', 'NJ', 'NM', 'NY', 'OH', 'OK', 'OR',
+      'RI', 'SC', 'VA', 'WI', 'WV',
     ]) {
       expect(stateRules(code).headOfHouseholdBasis).not.toBe('assumed-single');
     }
-    // Nebraska and Vermont are the only two left, and they are blocked on the
-    // states publishing 2026 figures rather than on nobody having looked.
+    // Vermont is the only one left, and it is blocked on the state publishing
+    // 2026 figures rather than on nobody having looked.
     expect(
       graduated
         .filter((s) => s.headOfHouseholdBasis === 'assumed-single')
-        .map((s) => s.code)
-        .sort(),
-    ).toEqual(['NE', 'VT']);
+        .map((s) => s.code),
+    ).toEqual(['VT']);
+  });
+
+  /*
+   * Nebraska was blocked once, on a 2025 schedule set against 2026 brackets.
+   * What unblocked it was Form 1040N-ES publishing all four statuses for 2026
+   * at once, so this pins the thing that made it safe: the single and joint
+   * columns on that form are the brackets already shipped here. If a refresh
+   * moves those, the head-of-household column beside them is stale too.
+   */
+  it('keeps the Nebraska head-of-household schedule on the same form as the rest', () => {
+    const ne = stateRules('NE');
+    expect(ne.brackets.single.map((b) => b.from)).toEqual([0, 4_130, 24_760]);
+    expect(ne.brackets.marriedJointly.map((b) => b.from)).toEqual([0, 8_250, 49_530]);
+    expect(ne.brackets.headOfHousehold?.map((b) => b.from)).toEqual([0, 7_700, 39_620]);
+    expect(ne.standardDeduction.headOfHousehold).toBe(12_950);
   });
 
   it('reproduces California Schedule Z rather than Schedule X', () => {
