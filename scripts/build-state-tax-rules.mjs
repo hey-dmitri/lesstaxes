@@ -81,7 +81,16 @@ const SNAPSHOT_STALE_AFTER_MONTHS = 4;
  * result, and it is recorded precisely because "checked and agreed" is
  * indistinguishable from "never looked" unless somebody writes it down.
  */
-const RATES_CHECKED = {};
+const RATES_CHECKED = {
+  'South Carolina': {
+    // Act No. 110 of 2026, read from the enacted text. Nothing matched: the
+    // rates, the allowance, the starting point and the earned income credit
+    // all changed, and two shipped footnotes had become false.
+    matched: false,
+    source: 'https://www.scstatehouse.gov/sess126_2025-2026/prever/4216_20260224.htm',
+    checked: '2026-08-15',
+  },
+};
 
 /** Washington's schedule is capital-gains only — never a wage tax. */
 const CAPITAL_GAINS_ONLY = new Set(['Washington']);
@@ -499,8 +508,20 @@ const HEAD_OF_HOUSEHOLD = {
     checked: '2026-08-15',
   },
   'South Carolina': {
-    basis: 'single',
-    source: 'https://dor.sc.gov/sites/dor/files/forms/SC1040Instr_2025.pdf',
+    /*
+     * WAS 'single', AND ACT 110 BROKE THAT. Under the old law treating a head
+     * of household as single was defensible: South Carolina's brackets ignore
+     * filing status and the state used the federal standard deduction. From
+     * 2026 a head of household gets an income adjusted deduction 50% larger
+     * than a single filer's — $22,500 against $15,000 — and a phase-out that
+     * starts $20,000 higher and runs $47,500 longer.
+     *
+     * The brackets are still status-blind. It is the allowance that moved,
+     * which is the sixth distinct shape this table has had to hold.
+     */
+    basis: 'own',
+    standardDeduction: 22_500,
+    source: 'https://www.scstatehouse.gov/sess126_2025-2026/prever/4216_20260224.htm',
     checked: '2026-08-15',
   },
   Missouri: {
@@ -932,6 +953,17 @@ const COMMUNITY_PROPERTY = new Set([
  * deduction a year out of date, and no head-of-household deduction at all when
  * California gives one the same as a joint filer's.
  */
+/**
+ * Source footnotes that a later law has made untrue, keyed by state and matched
+ * on a distinctive fragment. See where this is applied for why it exists.
+ */
+const SUPERSEDED_NOTES = {
+  'South Carolina': [
+    'top marginal rate is scheduled to revert',
+    'include the federal standard deduction in their income starting point',
+  ],
+};
+
 const STATE_OVERRIDES = {
   California: {
     // FTB Tax News, October 2025: "2025 Indexing".
@@ -1051,6 +1083,61 @@ const STATE_OVERRIDES = {
     source: 'https://dor.georgia.gov/document/document/2026-employers-tax-guide/download',
     checked: '2026-08-15',
   },
+  'South Carolina': {
+    /*
+     * SOUTH CAROLINA REWROTE ITS INCOME TAX AND WE WERE STILL MODELLING THE OLD
+     * ONE. H. 4216 became Act No. 110 of 2026, signed 30 March 2026, first
+     * applying to tax years beginning after 2025 — which is the year this
+     * dataset is for.
+     *
+     * Almost nothing survived. The three-bracket 0%/3%/6% schedule is gone.
+     * The federal standard deduction is gone, and so is the federal taxable
+     * income starting point that carried it. What replaced them:
+     *
+     *   rates          1.99% to $30,000, then 5.21%, for EVERY filing status.
+     *                  The statute expresses the second band as "5.21% minus
+     *                  $966", which is the same thing: (5.21% - 1.99%) x
+     *                  $30,000 = $966 exactly, so the schedule is continuous
+     *                  at the break. There is no doubling for a couple — a
+     *                  joint return gets the same $30,000 as a single one.
+     *
+     *   allowance      the South Carolina Income Adjusted Deduction, $15,000
+     *                  single, $22,500 head of household, $30,000 joint,
+     *                  tapering straight to zero as income rises.
+     *
+     * The taper is the interesting part. All three run at exactly 3/11 of a
+     * dollar per dollar — 15,000/55,000 = 22,500/82,500 = 30,000/110,000 —
+     * so the phase-out band carries about 1.4 extra points of effective rate
+     * on top of the 5.21%. That the three fractions reduce to the same ratio
+     * is itself the check that all six numbers were transcribed correctly.
+     *
+     * We were charging a single filer on $150,000 about $994 a year too much.
+     */
+    brackets: {
+      single: [
+        { from: 0, rate: 0.0199 },
+        { from: 30_000, rate: 0.0521 },
+      ],
+      marriedJointly: [
+        { from: 0, rate: 0.0199 },
+        { from: 30_000, rate: 0.0521 },
+      ],
+    },
+    standardDeduction: { single: 15_000, marriedJointly: 30_000, headOfHousehold: 22_500 },
+    allowancePhaseOut: {
+      appliesTo: ['standardDeduction'],
+      start: { single: 40_000, headOfHousehold: 60_000, marriedJointly: 80_000 },
+      range: { single: 55_000, headOfHousehold: 82_500, marriedJointly: 110_000 },
+      // "Any reduction amount which is not a multiplier of ten dollars must be
+      // rounded to the next lowest ten dollars" — 12-6-1140(15)(c). Rounding
+      // the REDUCTION down leaves a slightly larger deduction, so this favours
+      // the taxpayer by a few dollars.
+      roundReductionDownTo: 10,
+    },
+    source: 'https://www.scstatehouse.gov/sess126_2025-2026/prever/4216_20260224.htm',
+    checked: '2026-08-15',
+    note: "South Carolina's dependent exemption is shown at the 2025 figure of $4,930. The state indexes it every December and the 2026 amount appears only in the 2026 return instructions, which are not published yet. The real figure will be slightly higher, so this errs against the reader.",
+  },
   Utah: {
     /*
      * UTAH'S ALLOWANCE WAS BEING DROPPED ON THE FLOOR, all of it.
@@ -1134,9 +1221,36 @@ const ITEMIZED_DEDUCTIONS = {
     deductPropertyTax: true,
     deductStateIncomeTax: false,
     mortgageDebtLimit: 1_000_000,
+    /*
+     * Uncapped on purpose. California explicitly does not conform to OBBBA's
+     * "increased limitation on individual deductions for certain state and
+     * local taxes" — Schedule CA (540) instructions, "What's New" — so a
+     * Californian deducts every dollar of property tax. Copying the federal
+     * cap in here would have overcharged them.
+     */
+    saltCap: null,
+    /*
+     * THIS WAS DOCUMENTED AS NOT MODELLED AND LEFT THAT WAY, and it ran in the
+     * reader's favour, which is the direction that matters most: a high-earning
+     * Californian homeowner was shown a larger deduction than they get, and so
+     * more money left over than they will have.
+     *
+     * California reduces itemised deductions by the LESSER of 6% of adjusted
+     * gross income above the threshold or 80% of the deductions themselves.
+     * The percentage bites first; the 80% stops the reduction ever taking more
+     * than four fifths, however high income goes.
+     *
+     * Thresholds are the 2025 indexed figures, the same vintage as the
+     * exemption-credit phase-out already recorded in the note below.
+     */
+    highIncomeReduction: {
+      perDollarAbove: 0.06,
+      threshold: { single: 252_203, marriedJointly: 504_411, headOfHousehold: 378_310 },
+      maxFractionOfDeductions: 0.8,
+    },
     source: 'https://www.ftb.ca.gov/file/personal/deductions/index.html',
     checked: '2026-08-15',
-    note: 'California itemised deductions here cover property tax and mortgage interest only — the two figures this site knows. Charitable giving, medical costs and miscellaneous deductions are not asked about and are not included. The high-income reduction of itemised deductions is not modelled.',
+    note: 'California itemised deductions here cover property tax and mortgage interest only — the two figures this site knows. Charitable giving, medical costs and miscellaneous deductions are not asked about and are not included.',
   },
 };
 
@@ -1192,7 +1306,14 @@ const STATE_EITC = {
   Ohio: { percent: 0.3, refundable: false },
   Oklahoma: { percent: 0.05, refundable: true },
   'Rhode Island': { percent: 0.16, refundable: true },
-  'South Carolina': { percent: 1.25, refundable: false },
+  /*
+   * Act 110 of 2026 left the 125% alone and capped the result at $200, which
+   * changes what it is: 125% of even a modest federal credit clears $200
+   * immediately, so for almost every claimant with children this is now a flat
+   * $200 rather than a percentage. Modelling the percentage without the cap
+   * would have overstated South Carolina's benefit several times over.
+   */
+  'South Carolina': { percent: 1.25, refundable: false, maxCredit: 200 },
   Utah: { percent: 0.2, refundable: false },
 
   // These vary with the number of children, which the engine knows.
@@ -1270,6 +1391,7 @@ for (const [name, s] of Object.entries(states)) {
         percentOfFederal: eitc.percent ?? null,
         byChildren: eitc.byChildren ?? null,
         refundable: eitc.refundable,
+        maxCredit: eitc.maxCredit ?? null,
       }
     : null;
   if (eitc) {
@@ -1280,6 +1402,7 @@ for (const [name, s] of Object.entries(states)) {
   }
 
   s.creditPhaseOut = null;
+  s.allowancePhaseOut = null;
 
   /*
    * Whether anyone has opened this state's own 2026 publication and compared
@@ -1297,9 +1420,24 @@ for (const [name, s] of Object.entries(states)) {
         deductPropertyTax: itemized.deductPropertyTax,
         deductStateIncomeTax: itemized.deductStateIncomeTax,
         mortgageDebtLimit: itemized.mortgageDebtLimit,
+        // Null means uncapped, which is a real answer and not a missing one.
+        saltCap: itemized.saltCap ?? null,
+        highIncomeReduction: itemized.highIncomeReduction ?? null,
         source: { url: itemized.source, checked: itemized.checked },
       }
     : null;
+  if (itemized?.highIncomeReduction) {
+    const r = itemized.highIncomeReduction;
+    if (!(r.perDollarAbove > 0 && r.perDollarAbove <= 1)) {
+      throw new Error(`${name}: implausible itemised reduction rate ${r.perDollarAbove}`);
+    }
+    if (!(r.maxFractionOfDeductions > 0 && r.maxFractionOfDeductions <= 1)) {
+      throw new Error(`${name}: itemised reduction cap must be a fraction, got ${r.maxFractionOfDeductions}`);
+    }
+    if (!(r.threshold.single > 0)) {
+      throw new Error(`${name}: itemised reduction needs a single threshold`);
+    }
+  }
   if (itemized?.note) s.notes.push(itemized.note);
 
   const override = STATE_OVERRIDES[name];
@@ -1350,6 +1488,16 @@ for (const [name, s] of Object.entries(states)) {
         s.brackets[status] = replacement;
       }
     }
+    if (override.allowancePhaseOut) {
+      const { appliesTo, start, range } = override.allowancePhaseOut;
+      if (!Array.isArray(appliesTo) || appliesTo.length === 0) {
+        throw new Error(`${name}: allowance phase-out must say what it applies to`);
+      }
+      if (!(start.single >= 0) || !(range.single > 0)) {
+        throw new Error(`${name}: allowance phase-out needs a single start and range`);
+      }
+      s.allowancePhaseOut = override.allowancePhaseOut;
+    }
     if (override.creditPhaseOut) {
       const { perDollar, threshold } = override.creditPhaseOut;
       if (!(perDollar > 0 && perDollar < 0.5)) {
@@ -1386,6 +1534,17 @@ for (const [name, s] of Object.entries(states)) {
   }
   if (hoh) s.headOfHouseholdSource = { url: hoh.source, checked: hoh.checked };
   validateHeadOfHousehold(name, s);
+
+  /*
+   * Drop source footnotes a later law has made false. South Carolina's two
+   * were "top marginal rate is scheduled to revert to 6.2% on July 1, 2026"
+   * and the note grouping it with states that start from federal taxable
+   * income — both superseded by Act 110 of 2026, which set the rate at 5.21%
+   * and moved the starting point to federal AGI. A stale note on a page that
+   * exists to explain the numbers is worse than no note.
+   */
+  const drop = SUPERSEDED_NOTES[name];
+  if (drop) s.notes = s.notes.filter((n) => !drop.some((d) => n.includes(d)));
 
   if (CAPITAL_GAINS_ONLY.has(name)) {
     s.hasWageIncomeTax = false;

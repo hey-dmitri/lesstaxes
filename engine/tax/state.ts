@@ -116,6 +116,11 @@ export interface StateTaxRules {
    * overcharges everyone below the threshold.
    */
   creditPhaseOut: CreditPhaseOut | null;
+  /**
+   * How the standard deduction and/or personal exemption shrink as income
+   * rises, where the state does that. Null means they do not.
+   */
+  allowancePhaseOut: AllowancePhaseOut | null;
   /** AL, MO, OR allow a deduction for federal income tax paid. Not yet modelled. */
   federalTaxDeductible: boolean;
   hasLocalIncomeTax: boolean;
@@ -184,6 +189,39 @@ export interface StateItemizedRules {
   deductStateIncomeTax: boolean;
   /** California allows $1,000,000 where the federal limit is $750,000. */
   mortgageDebtLimit: USD | null;
+  /**
+   * A cap on deductible state and local tax, where the state applies one.
+   *
+   * Null means uncapped, which is not an oversight: California explicitly does
+   * not conform to the federal SALT limit, so a Californian deducts every
+   * dollar of property tax. Copying the federal cap into every state would
+   * have quietly overcharged them.
+   */
+  saltCap: USD | null;
+  /**
+   * How the state cuts itemised deductions for high earners.
+   *
+   * THIS RAN THE READER'S WAY AND WAS DOCUMENTED AS SUCH FOR MONTHS. California
+   * reduces itemised deductions by the lesser of 6% of income above roughly
+   * $252,000 or 80% of the deductions themselves, and we applied neither — so
+   * every high-earning Californian homeowner was shown a bigger deduction than
+   * they get, and therefore more money left over than they will have.
+   *
+   * The "lesser of" is the whole shape: the percentage bites first, and the
+   * 80% floor stops the reduction ever taking the deduction below a fifth of
+   * itself no matter how high income goes.
+   */
+  highIncomeReduction: ItemizedReduction | null;
+}
+
+/** See StateItemizedRules.highIncomeReduction. */
+export interface ItemizedReduction {
+  /** Dollars of deduction lost per dollar of income above the threshold. */
+  perDollarAbove: number;
+  /** Where the reduction starts, by published filing status. */
+  threshold: Partial<Record<PublishedStatus, number>> & { single: number };
+  /** The reduction never exceeds this share of the deductions themselves. */
+  maxFractionOfDeductions: number;
 }
 
 export interface StateEitcRules {
@@ -192,6 +230,45 @@ export interface StateEitcRules {
   /** Share by number of children, indexed 0..3 where 3 means three or more. */
   byChildren: Record<number, number> | null;
   refundable: boolean;
+  /**
+   * A ceiling on the credit, where the state sets one. Null means none.
+   *
+   * South Carolina added one in 2026 and it changes what the credit IS: 125%
+   * of even a modest federal credit clears the $200 cap immediately, so for
+   * almost every claimant with children this is a flat $200 rather than a
+   * percentage of anything. Applying the percentage alone would overstate it
+   * several times over.
+   */
+  maxCredit: USD | null;
+}
+
+/**
+ * How a state's DEDUCTION or EXEMPTION shrinks as income rises.
+ *
+ * Straight-line: the allowance falls from its full value at `start` to nothing
+ * once income is `range` dollars past it. South Carolina's new income adjusted
+ * deduction works exactly this way, and so do Wisconsin's and Rhode Island's
+ * standard deductions.
+ *
+ * These were listed for months under "not modelled", and the direction is why
+ * they matter: ignoring a phase-out hands the reader an allowance the state
+ * takes away, so we show more money left over than they will have. That is the
+ * error that flatters a destination, and a flattering verdict is the one that
+ * actually moves somebody across the country.
+ */
+export interface AllowancePhaseOut {
+  /** Which allowances shrink. Rhode Island reduces both at once. */
+  appliesTo: Array<'standardDeduction' | 'personalExemption'>;
+  /** Income at which the reduction starts, by published filing status. */
+  start: Partial<Record<PublishedStatus, number>> & { single: number };
+  /** How far past `start` the allowance reaches zero, by filing status. */
+  range: Partial<Record<PublishedStatus, number>> & { single: number };
+  /**
+   * Round the REDUCTION down to this multiple, where the state says to.
+   * South Carolina rounds to $10, which slightly favours the taxpayer: a
+   * smaller reduction leaves a larger deduction.
+   */
+  roundReductionDownTo?: number;
 }
 
 /** How a state's personal credit shrinks as income rises. See creditPhaseOut. */
@@ -352,8 +429,36 @@ export function computeStateTax(
       ? 'headOfHousehold'
       : schedule;
 
-  const standardDeduction =
-    rules.standardDeduction[allowanceKey] ?? rules.standardDeduction[otherwise];
+  /*
+   * Shrink an allowance for income above the state's threshold, straight-line
+   * to zero. Returns the allowance untouched where the state has no phase-out
+   * or this is not one of the allowances it applies to.
+   */
+  const phaseOutAllowance = (
+    amount: number,
+    which: 'standardDeduction' | 'personalExemption',
+  ): number => {
+    const rule = rules.allowancePhaseOut;
+    if (!rule || amount <= 0 || !rule.appliesTo.includes(which)) return amount;
+
+    const start = rule.start[allowanceKey] ?? rule.start[otherwise] ?? rule.start.single;
+    const range = rule.range[allowanceKey] ?? rule.range[otherwise] ?? rule.range.single;
+    if (!(range > 0)) return amount;
+
+    // Measured on gross income, which is this engine's stand-in for the AGI
+    // every one of these statutes is written against.
+    const fraction = Math.min(1, Math.max(0, (gross - start) / range));
+    let reduction = amount * fraction;
+    if (rule.roundReductionDownTo) {
+      reduction = Math.floor(reduction / rule.roundReductionDownTo) * rule.roundReductionDownTo;
+    }
+    return Math.max(0, amount - reduction);
+  };
+
+  const standardDeduction = phaseOutAllowance(
+    rules.standardDeduction[allowanceKey] ?? rules.standardDeduction[otherwise],
+    'standardDeduction',
+  );
 
   /*
    * Itemise where the state allows it and it beats the standard deduction.
@@ -366,7 +471,19 @@ export function computeStateTax(
   const itemizedRules = rules.itemizedDeductions;
   let itemizedTotal = 0;
   if (itemizedRules) {
-    if (itemizedRules.deductPropertyTax) itemizedTotal += Math.max(0, inputs.propertyTax ?? 0);
+    /*
+     * Property tax first, because it is the part a cap bites on. Where the
+     * state caps state and local tax, the cap applies to this line — and where
+     * it does not, as in California, every dollar counts.
+     */
+    let stateAndLocal = itemizedRules.deductPropertyTax
+      ? Math.max(0, inputs.propertyTax ?? 0)
+      : 0;
+    if (itemizedRules.saltCap !== null) {
+      stateAndLocal = Math.min(stateAndLocal, itemizedRules.saltCap);
+    }
+    itemizedTotal += stateAndLocal;
+
     const interest = Math.max(0, inputs.mortgageInterest ?? 0);
     const debt = inputs.mortgageDebt;
     const limit = itemizedRules.mortgageDebtLimit;
@@ -374,13 +491,33 @@ export function computeStateTax(
       limit !== null && debt !== undefined && debt > limit
         ? interest * (limit / debt)
         : interest;
+
+    /*
+     * Then cut it back for high earners, where the state does that. The
+     * reduction is the LESSER of a percentage of income above a threshold and
+     * a fixed share of the deductions, so it grows with income but never
+     * consumes the whole deduction.
+     */
+    const reduce = itemizedRules.highIncomeReduction;
+    if (reduce && itemizedTotal > 0) {
+      const over = Math.max(
+        0,
+        gross - (reduce.threshold[allowanceKey] ?? reduce.threshold[otherwise] ?? reduce.threshold.single),
+      );
+      itemizedTotal -= Math.min(
+        reduce.perDollarAbove * over,
+        reduce.maxFractionOfDeductions * itemizedTotal,
+      );
+    }
   }
 
   const itemized = itemizedTotal > standardDeduction;
   const deductions = itemized ? itemizedTotal : standardDeduction;
-  const exemptions =
+  const exemptions = phaseOutAllowance(
     (rules.personalExemption[allowanceKey] ?? rules.personalExemption[otherwise]) +
-    rules.personalExemption.dependent * children;
+      rules.personalExemption.dependent * children,
+    'personalExemption',
+  );
 
   const taxableIncome = Math.max(0, gross - deductions - exemptions);
   const taxBeforeCredits = applyBrackets(
@@ -440,7 +577,10 @@ export function computeStateTax(
     : eitcRules.byChildren !== null
       ? (eitcRules.byChildren[Math.min(3, Math.floor(children))] ?? 0)
       : (eitcRules.percentOfFederal ?? 0);
-  const earnedIncomeCredit = federalEitc * match;
+  const earnedIncomeCredit = Math.min(
+    federalEitc * match,
+    eitcRules?.maxCredit ?? Number.POSITIVE_INFINITY,
+  );
 
   /*
    * Personal and dependent credits stop at zero. The state EITC stops at zero

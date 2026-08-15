@@ -121,4 +121,68 @@ describe('the whole calculation', () => {
   it('leaves links pinned to an older release on the standard deduction', () => {
     expect(stateRules('CA', '2026.15').itemizedDeductions).toBeUndefined();
   });
+
+  /*
+   * CALIFORNIA CUTS ITEMISED DEDUCTIONS FOR HIGH EARNERS and we used to ignore
+   * it, with a comment saying so. That ran in the reader's favour — a bigger
+   * deduction than they get, and so more money left over than they will have —
+   * which is the direction that actually moves someone across the country.
+   *
+   * The reduction is the LESSER of 6% of income above the threshold and 80% of
+   * the deductions themselves.
+   */
+  it('cuts a high earner\'s California itemised deductions', () => {
+    const rules = stateRules('CA');
+    const reduce = rules.itemizedDeductions?.highIncomeReduction;
+    expect(reduce?.perDollarAbove).toBe(0.06);
+    expect(reduce?.maxFractionOfDeductions).toBe(0.8);
+
+    const withHouse = { propertyTax: 12_000, mortgageInterest: 50_000, mortgageDebt: 900_000 };
+    const below = computeStateTax(
+      { grossSalary: 200_000, filingStatus: 'single', children: 0, ...withHouse },
+      rules,
+    );
+    const above = computeStateTax(
+      { grossSalary: 500_000, filingStatus: 'single', children: 0, ...withHouse },
+      rules,
+    );
+
+    // Under the threshold the whole $62,000 survives.
+    expect(below.deductions).toBeCloseTo(62_000, 2);
+    // Over it, 6% of the $247,797 excess comes off — $14,868 — which is well
+    // short of the 80% floor, so the percentage is what bites.
+    expect(above.deductions).toBeCloseTo(62_000 - 0.06 * (500_000 - 252_203), 2);
+    expect(above.itemized).toBe(true);
+  });
+
+  /*
+   * The 80% floor is not decoration. Without it the reduction would eventually
+   * exceed the deduction itself and start adding to taxable income.
+   */
+  it('never lets the reduction take more than four fifths', () => {
+    const rules = stateRules('CA');
+    const result = computeStateTax(
+      {
+        grossSalary: 5_000_000,
+        filingStatus: 'single',
+        children: 0,
+        propertyTax: 12_000,
+        mortgageInterest: 50_000,
+        mortgageDebt: 900_000,
+      },
+      rules,
+    );
+    // 6% of the excess would be about $285,000, far more than the $62,000 of
+    // deductions. The floor holds it at a fifth of them.
+    expect(result.deductions).toBeCloseTo(62_000 * 0.2, 2);
+  });
+
+  /*
+   * California does NOT conform to the federal cap on state and local tax, so
+   * every dollar of property tax is deductible. Copying the federal cap in
+   * would have overcharged Californians.
+   */
+  it('applies no cap to California property tax', () => {
+    expect(stateRules('CA').itemizedDeductions?.saltCap).toBeNull();
+  });
 });
