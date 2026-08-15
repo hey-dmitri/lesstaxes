@@ -326,9 +326,19 @@ answer          =  in your pocket THERE  −  in your pocket HERE`}</pre>
             which understates all of them.
           </li>
           <li>
-            <strong>Where two people earn, the split is assumed to be even.</strong> A lopsided
-            split puts more of the total under one person&rsquo;s Social Security cap and owes
-            less. Two equal earners is the case this gets exactly right.
+            <strong>Where two people earn, the split is assumed to be even.</strong> The form asks
+            for one household salary, so when the maths needs to know what each person earns it
+            halves the total. This matters twice: the Social Security cap is a per-person limit, and
+            a couple who file separately file two returns that are each worked out on their own
+            income. Two equal earners is the case this gets exactly right. A lopsided split puts
+            more of the total under one person&rsquo;s Social Security cap and owes less there, and
+            climbs one person&rsquo;s income tax brackets faster and owes more there.
+          </li>
+          <li>
+            <strong>Filing separately with children puts them all on one return.</strong> A child
+            is claimed by one parent or the other, never halved, so the model gives them all to the
+            same person. Where a credit is being phased out, that reaches the phase-out sooner and
+            charges more tax rather than less.
           </li>
           <li>
             <strong>No state Earned Income Credits.</strong> Around thirty states, and New York

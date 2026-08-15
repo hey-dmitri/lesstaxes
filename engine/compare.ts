@@ -5,8 +5,8 @@
  * getting the sequence wrong is the single most common way a relocation
  * calculator produces a confident wrong answer:
  *
- *   1. FICA            depends only on salary
- *   2. Housing         produces property tax and first-year mortgage interest
+ *   1. Housing         produces property tax and first-year mortgage interest
+ *   2. FICA            depends only on wages
  *   3. State tax       depends on salary and filing status
  *   4. Local tax       Yonkers levies a surcharge ON the state liability
  *   5. Federal tax     state + local + property tax feed the SALT deduction,
@@ -18,6 +18,11 @@
  *
  * Computing federal tax before state tax would silently ignore the deduction
  * and overstate federal liability in every high-tax state.
+ *
+ * Steps 1 and 3-5 run once PER TAX RETURN, not once per household — a couple
+ * filing separately files two. See taxReturnsFor. Housing, living costs and
+ * sales tax are properties of the home, so they are computed once whatever the
+ * household does with its paperwork.
  */
 
 import {
@@ -39,6 +44,7 @@ import { computeFederal } from './tax/federal';
 import { computeFica } from './tax/fica';
 import { computeLocalTax, type LocalTaxRules } from './tax/local';
 import { federalRules, ficaRules, stateRules } from './tax/rules';
+import { taxReturnsFor } from './tax/returns';
 import { adultsIn, computeStateTax } from './tax/state';
 import type {
   CategoryDelta,
@@ -83,50 +89,85 @@ export function computeCity(
   const m = metro(city.metroId, version);
   const gross = Math.max(0, city.grossSalary);
 
-  // 1. FICA
-  const fica = computeFica(gross, household.filingStatus, ficaRules(version), household.earners);
-
-  // 2. Housing — produces the tax inputs the federal step needs
+  // 1. Housing — produces the tax inputs the federal step needs, and depends on
+  //    none of them, so it is settled before any return is filled in.
   const housing = computeHousing({
     housing: city.housing,
     annualInsurance: options.annualInsurance,
   });
 
-  // 3. State income tax — the state the person lives in, not the metro's first
+  // The state the person lives in, not the metro's first.
   const stateCode = resolveStateCode(city.metroId, city.stateCode, version);
-  const state = computeStateTax(
-    { grossSalary: gross, filingStatus: household.filingStatus, children: household.children },
-    stateRules(stateCode, version),
-  );
-
-  // 4. Local income tax — may be a surcharge on the state liability
   const jurisdictions =
     options.localJurisdictions ?? defaultLocalJurisdictions(city.metroId, version, stateCode);
-  let localTotal = 0;
-  for (const j of jurisdictions) {
-    localTotal += computeLocalTax(
-      {
-        grossSalary: gross,
-        filingStatus: household.filingStatus,
-        children: household.children,
-        stateTax: state.tax,
-      },
-      j,
-    ).tax;
-  }
+  const stateTaxRules = stateRules(stateCode, version);
+  const fedRules = federalRules(version);
+  const payrollRules = ficaRules(version);
 
-  // 5. Federal income tax — needs everything above
-  const federal = computeFederal(
-    {
-      grossSalary: gross,
-      filingStatus: household.filingStatus,
-      children: household.children,
-      stateAndLocalIncomeTax: state.tax + localTotal,
-      propertyTax: housing.propertyTax,
-      mortgageInterest: housing.mortgageInterest,
-    },
-    federalRules(version),
-  );
+  // 2-5. Every income tax, once per return. One return for most households,
+  //      two when a couple files separately and both of them earn.
+  let ficaTotal = 0;
+  let stateTotal = 0;
+  let localTotal = 0;
+  let federalTotal = 0;
+  let deductionTaken = 0;
+  let itemized = false;
+
+  for (const share of taxReturnsFor(household, gross)) {
+    // 2. FICA
+    ficaTotal += computeFica(
+      share.grossSalary,
+      household.filingStatus,
+      payrollRules,
+      share.earners,
+    ).total;
+
+    // 3. State income tax
+    const state = computeStateTax(
+      {
+        grossSalary: share.grossSalary,
+        filingStatus: household.filingStatus,
+        children: share.children,
+      },
+      stateTaxRules,
+    );
+    stateTotal += state.tax;
+
+    // 4. Local income tax — may be a surcharge on THIS return's state liability
+    let local = 0;
+    for (const j of jurisdictions) {
+      local += computeLocalTax(
+        {
+          grossSalary: share.grossSalary,
+          filingStatus: household.filingStatus,
+          children: share.children,
+          stateTax: state.tax,
+        },
+        j,
+      ).tax;
+    }
+    localTotal += local;
+
+    // 5. Federal income tax — needs everything above, and its own share of the
+    //    housing deductions, because the SALT cap applies per return.
+    const federal = computeFederal(
+      {
+        grossSalary: share.grossSalary,
+        filingStatus: household.filingStatus,
+        children: share.children,
+        stateAndLocalIncomeTax: state.tax + local,
+        propertyTax: housing.propertyTax * share.deductionShare,
+        mortgageInterest: housing.mortgageInterest * share.deductionShare,
+      },
+      fedRules,
+    );
+    federalTotal += federal.tax;
+    deductionTaken += federal.deductionTaken;
+    // Two returns can land on different sides of the choice. The flag means
+    // "some of this household's deduction was itemised", which is what the
+    // breakdown line it drives is telling the reader.
+    itemized = itemized || federal.itemized;
+  }
 
   // 6. Living costs
   const living = computeLiving({
@@ -148,7 +189,7 @@ export function computeCity(
   });
 
   // 8. Leftover
-  const taxTotal = federal.tax + state.tax + localTotal + fica.total;
+  const taxTotal = federalTotal + stateTotal + localTotal + ficaTotal;
   const takeHome = gross - taxTotal;
   const leftover = takeHome - housing.total - living.total - salesTax.tax;
 
@@ -157,13 +198,13 @@ export function computeCity(
     stateCode,
     grossSalary: gross,
     tax: {
-      federal: federal.tax,
-      state: state.tax,
+      federal: federalTotal,
+      state: stateTotal,
       local: localTotal,
-      fica: fica.total,
+      fica: ficaTotal,
       total: taxTotal,
-      itemized: federal.itemized,
-      deductionTaken: federal.deductionTaken,
+      itemized,
+      deductionTaken,
     },
     housing,
     living,

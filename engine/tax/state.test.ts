@@ -78,11 +78,19 @@ describe('scheduleFor', () => {
 });
 
 describe('adultsIn', () => {
-  it('counts two adults only for joint filers', () => {
+  it('counts two adults for both married statuses', () => {
     expect(adultsIn('marriedJointly')).toBe(2);
     expect(adultsIn('single')).toBe(1);
     expect(adultsIn('headOfHousehold')).toBe(1);
-    expect(adultsIn('marriedSeparately')).toBe(1);
+  });
+
+  /*
+   * This asserted 1 for years. Filing separately is a choice about returns, not
+   * about who lives in the house, and reading it as a one-person household
+   * under-fed the living-cost basket and under-counted the cars.
+   */
+  it('does not shrink a couple because they file apart', () => {
+    expect(adultsIn('marriedSeparately')).toBe(adultsIn('marriedJointly'));
   });
 });
 

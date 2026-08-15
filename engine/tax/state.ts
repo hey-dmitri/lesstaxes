@@ -67,9 +67,23 @@ export function scheduleFor(filingStatus: FilingStatus): PublishedStatus {
   return filingStatus === 'marriedJointly' ? 'marriedJointly' : 'single';
 }
 
-/** Number of adults implied by filing status. Also used for car defaults. */
+/**
+ * Number of adults implied by filing status. Drives the living-cost basket,
+ * the bedroom count behind the rent prefill, and the default car count.
+ *
+ * BOTH married statuses count two. This used to test for marriedJointly alone,
+ * which quietly made a couple filing separately a household of one: it fed them
+ * a one-adult grocery basket, sized them a smaller home, and gave them half the
+ * cars. Whether two spouses file one return or two is a paperwork question. It
+ * does not change how many people are eating in the kitchen.
+ *
+ * A couple who file separately BECAUSE they have separated and live apart are
+ * modelled as sharing a home here. The form asks "one of us earns" or "we both
+ * earn", which is a question about a household, so that is the reading the rest
+ * of the engine is entitled to.
+ */
 export function adultsIn(filingStatus: FilingStatus): 1 | 2 {
-  return filingStatus === 'marriedJointly' ? 2 : 1;
+  return filingStatus === 'marriedJointly' || filingStatus === 'marriedSeparately' ? 2 : 1;
 }
 
 export function computeStateTax(
