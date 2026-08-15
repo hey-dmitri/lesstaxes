@@ -385,6 +385,43 @@ const HEAD_OF_HOUSEHOLD = {
    * Mixing tax years within one state is the error this whole exercise exists
    * to remove, so both wait for their 2026 figures.
    */
+  Alabama: {
+    /*
+     * "For single persons, HEADS OF FAMILIES, and married persons filing
+     * separate returns" — one rate schedule. But the personal exemption follows
+     * the JOINT figure: "Taxpayers using the Married Filing Jointly and Head of
+     * Family filing statuses are entitled to a $3,000 personal exemption",
+     * against $1,500 for a single filer. Brackets one way, allowance the other.
+     */
+    basis: 'own',
+    personalExemption: 3_000,
+    source: 'https://www.revenue.alabama.gov/faqs/what-is-alabamas-individual-income-tax-rate/',
+    checked: '2026-08-15',
+  },
+  'Rhode Island': {
+    /*
+     * The rate schedule is headed "FOR ALL FILING STATUS TYPES" — genuinely one
+     * schedule — but the standard deduction is $16,350 for a head of household
+     * against $10,900 single and $21,800 joint.
+     *
+     * That is the published 2025 figure and this project ships 2026 brackets,
+     * so it is a little low, the same trade Oregon makes: a real figure used a
+     * year late, erring against the reader, rather than the single $11,200 that
+     * would be wrong by five thousand.
+     */
+    basis: 'own',
+    standardDeduction: 16_350,
+    source: 'https://tax.ri.gov/sites/g/files/xkgbur541/files/2026-01/2025%20Tax%20Rate%20and%20Worksheets.pdf',
+    checked: '2026-08-15',
+  },
+  'West Virginia': {
+    // Rate Schedule I: "Use this schedule if you checked 1 (Single), 2 (Head of
+    // household), 3 (Married filing joint), or 5 (Widow[er])". One schedule for
+    // everyone except married-filing-separately.
+    basis: 'single',
+    source: 'https://tax.wv.gov/Documents/PIT/2025/it140.TaxRateSchedules.2025.pdf',
+    checked: '2026-08-15',
+  },
   'New Mexico': {
     // Statute 7-2-7, effective 1 January 2025: one table for "married
     // individuals filing joint returns, heads of household and surviving
