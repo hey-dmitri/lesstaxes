@@ -133,11 +133,16 @@ describe('head of household', () => {
     // FTB 2025 Schedule Z: $98,990 of taxable income owes $2,401.65 + 8% over
     // $83,805 at the start of its range. Checking through computeStateTax means
     // the standard deduction is in play, so this pins the SAVING instead.
+    //
+    // $2,028 when the schedule landed, $2,559 now. California also gives a head
+    // of household the JOINT standard deduction — $11,412 against $5,706 — and
+    // that was still falling back to the single figure until the FTB numbers
+    // were read properly.
     const ca = stateRules('CA');
     const hoh = computeStateTax(HOH, ca).tax;
     const asSingle = computeStateTax({ ...HOH, filingStatus: 'single' }, ca).tax;
-    expect(asSingle - hoh).toBeGreaterThan(1_900);
-    expect(asSingle - hoh).toBeLessThan(2_200);
+    expect(asSingle - hoh).toBeGreaterThan(2_400);
+    expect(asSingle - hoh).toBeLessThan(2_800);
   });
 
   it('leaves links pinned to an older release on the single schedule', () => {

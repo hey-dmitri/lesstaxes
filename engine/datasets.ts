@@ -145,6 +145,15 @@ import spending202614 from '../data/2026.14/spending.json';
 import states202614 from '../data/2026.14/states.json';
 import transport202614 from '../data/2026.14/transport.json';
 
+import federal202615 from '../data/2026.15/federal.json';
+import housing202615 from '../data/2026.15/housing.json';
+import localTax202615 from '../data/2026.15/local-income-tax.json';
+import metros202615 from '../data/2026.15/metros.json';
+import salesTax202615 from '../data/2026.15/sales-tax.json';
+import spending202615 from '../data/2026.15/spending.json';
+import states202615 from '../data/2026.15/states.json';
+import transport202615 from '../data/2026.15/transport.json';
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 export interface DatasetBundle {
@@ -314,6 +323,17 @@ const BUNDLES: Record<string, DatasetBundle> = {
     states: states202614,
     transport: transport202614,
   },
+  '2026.15': {
+    version: '2026.15',
+    federal: federal202615,
+    housing: housing202615,
+    localTax: localTax202615,
+    metros: metros202615,
+    salesTax: salesTax202615,
+    spending: spending202615,
+    states: states202615,
+    transport: transport202615,
+  },
 };
 
 /**
@@ -321,7 +341,7 @@ const BUNDLES: Record<string, DatasetBundle> = {
  * release needs on the engine side — everything downstream reads it from here,
  * which is what the two hardcoded boundary modules failed to provide.
  */
-export const CURRENT_DATASET_VERSION = '2026.14';
+export const CURRENT_DATASET_VERSION = '2026.15';
 
 export const ALL_DATASET_VERSIONS: readonly string[] = Object.keys(BUNDLES).sort();
 

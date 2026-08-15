@@ -393,6 +393,37 @@ const COMMUNITY_PROPERTY = new Set([
   'Wisconsin',
 ]);
 
+
+/**
+ * FIGURES READ OFF THE STATE'S OWN PUBLICATION, overriding the aggregator.
+ *
+ * Tax Foundation is a good secondary source for brackets and it is where every
+ * bracket here comes from. It is not the state, and where the two disagree the
+ * state wins.
+ *
+ * California is the first one checked in detail and it found three things: a
+ * dependent credit that was carrying the PERSONAL credit's value, a standard
+ * deduction a year out of date, and no head-of-household deduction at all when
+ * California gives one the same as a joint filer's.
+ */
+const STATE_OVERRIDES = {
+  California: {
+    // FTB Tax News, October 2025: "2025 Indexing".
+    standardDeduction: { single: 5_706, marriedJointly: 11_412, headOfHousehold: 11_412 },
+    personalCredit: {
+      single: 153,
+      marriedJointly: 306,
+      headOfHousehold: 153,
+      // $475, not $153. The dependent credit was carrying the personal credit's
+      // figure, understating a family with two children by $644 a year.
+      dependent: 475,
+    },
+    source: 'https://www.ftb.ca.gov/about-ftb/newsroom/tax-news/2025/10.html',
+    checked: '2026-08-15',
+    note: 'Exemption credits phase out above $252,203 single / $504,411 joint / $378,310 head of household. Not modelled.',
+  },
+};
+
 // --- post-process ----------------------------------------------------------
 
 const warnings = [];
@@ -439,6 +470,15 @@ function applyBracketsLocal(income, brackets) {
 
 for (const [name, s] of Object.entries(states)) {
   s.notes = s.footnotes.map((f) => footnoteText[f]).filter(Boolean);
+
+  const override = STATE_OVERRIDES[name];
+  if (override) {
+    if (override.standardDeduction) Object.assign(s.standardDeduction, override.standardDeduction);
+    if (override.personalCredit) Object.assign(s.personalCredit, override.personalCredit);
+    if (override.personalExemption) Object.assign(s.personalExemption, override.personalExemption);
+    s.verifiedAgainstState = { url: override.source, checked: override.checked };
+    if (override.note) s.notes.push(override.note);
+  }
 
   s.communityProperty = COMMUNITY_PROPERTY.has(name);
   s.payrollContributions = PAYROLL_CONTRIBUTIONS[name] ?? [];

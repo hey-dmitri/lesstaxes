@@ -46,7 +46,7 @@ import {
 } from './dataset';
 import { computeHousing } from './housing';
 import { computeLiving, computeSalesTax, defaultCarCount } from './living';
-import { computeFederal } from './tax/federal';
+import { computeFederal, type FederalInputs } from './tax/federal';
 import { computeFica } from './tax/fica';
 import { computeLocalTax, type LocalTaxRules } from './tax/local';
 import { federalRules, ficaRules, stateRules } from './tax/rules';
@@ -144,6 +144,7 @@ export function computeCity(
   let federalTotal = 0;
   let deductionTaken = 0;
   let itemized = false;
+  const federalInputs: FederalInputs[] = [];
 
   for (const share of taxReturnsFor(household, gross, {
     communityProperty: stateTaxRules.communityProperty,
@@ -199,26 +200,43 @@ export function computeCity(
 
     // 5. Federal income tax — needs everything above, and its own share of the
     //    housing deductions, because the SALT cap applies per return.
-    const federal = computeFederal(
-      {
-        grossSalary: share.grossSalary,
-        filingStatus: household.filingStatus,
-        children: share.children,
-        stateAndLocalIncomeTax: state.tax + local + payroll.deductible,
-        propertyTax: housing.propertyTax * share.deductionShare,
-        mortgageInterest: housing.mortgageInterest * share.deductionShare,
-        // The debt splits with the interest, and the separate filer's limit is
-        // half the joint one, so two separate returns reach the same answer as
-        // one joint return on the same loan.
-        mortgageDebt: housing.mortgageDebt * share.deductionShare,
-      },
-      fedRules,
+    //    Collected rather than computed here: the itemise-or-not choice is a
+    //    JOINT one for separate filers, so it cannot be settled per return.
+    federalInputs.push({
+      grossSalary: share.grossSalary,
+      filingStatus: household.filingStatus,
+      children: share.children,
+      stateAndLocalIncomeTax: state.tax + local + payroll.deductible,
+      propertyTax: housing.propertyTax * share.deductionShare,
+      mortgageInterest: housing.mortgageInterest * share.deductionShare,
+      // The debt splits with the interest, and the separate filer's limit is
+      // half the joint one, so two separate returns reach the same answer as
+      // one joint return on the same loan.
+      mortgageDebt: housing.mortgageDebt * share.deductionShare,
+    });
+  }
+
+  /*
+   * ITEMISING IS A JOINT DECISION FOR SEPARATE FILERS. If either spouse
+   * itemises, federal law makes the other itemise too — they cannot take the
+   * standard deduction even when it would be larger. IRS Publication 555.
+   *
+   * This used to be settled independently per return, so the two halves of one
+   * household could disagree, which no real couple is permitted to do. So:
+   * compute both, and if either itemised, compute both again with the choice
+   * forced. The second pass costs nothing for the 99% of households that file
+   * one return.
+   */
+  let federals = federalInputs.map((input) => computeFederal(input, fedRules));
+  if (federals.length > 1 && federals.some((f) => f.itemized)) {
+    federals = federalInputs.map((input) =>
+      computeFederal({ ...input, forceItemize: true }, fedRules),
     );
+  }
+
+  for (const federal of federals) {
     federalTotal += federal.tax;
     deductionTaken += federal.deductionTaken;
-    // Two returns can land on different sides of the choice. The flag means
-    // "some of this household's deduction was itemised", which is what the
-    // breakdown line it drives is telling the reader.
     itemized = itemized || federal.itemized;
   }
 

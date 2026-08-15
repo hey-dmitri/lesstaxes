@@ -263,3 +263,96 @@ describe('community property', () => {
     }
   });
 });
+
+/**
+ * Itemising is a JOINT decision for a couple filing separately.
+ *
+ * Federal law: if either spouse itemises, the other must itemise too, and takes
+ * whatever their own itemised total comes to even where the standard deduction
+ * would have been larger. IRS Publication 555.
+ *
+ * This engine settled the choice independently on each return, so the two
+ * halves of one household could disagree — which no real couple is permitted
+ * to do.
+ */
+describe('itemising, for a couple filing separately', () => {
+  const rulesWithSalt = federalRules();
+
+  const twoReturns = (interest: number, propertyTax: number, salt: number) => {
+    const shares = taxReturnsFor(household('marriedSeparately', 2), 400_000);
+    return shares.map((s) =>
+      computeFederal(
+        {
+          grossSalary: s.grossSalary,
+          filingStatus: 'marriedSeparately',
+          children: s.children,
+          stateAndLocalIncomeTax: salt * s.deductionShare,
+          propertyTax: propertyTax * s.deductionShare,
+          mortgageInterest: interest * s.deductionShare,
+          mortgageDebt: 0,
+        },
+        rulesWithSalt,
+      ),
+    );
+  };
+
+  it('can produce two returns that disagree, which is the thing to prevent', () => {
+    // Everything splits evenly here, so both land the same way. The guard that
+    // matters is in computeCity, where children land unevenly and can tip one
+    // return over the line while the other stays under.
+    const [a, b] = twoReturns(40_000, 12_000, 20_000);
+    expect(a.itemized).toBe(b.itemized);
+  });
+
+  it('forces the second return to itemise, standard deduction or not', () => {
+    // A return whose itemised total is tiny still itemises when forced, and
+    // takes the smaller figure — that is the point of the rule.
+    const forced = computeFederal(
+      {
+        grossSalary: 200_000,
+        filingStatus: 'marriedSeparately',
+        children: 0,
+        stateAndLocalIncomeTax: 0,
+        propertyTax: 0,
+        mortgageInterest: 0,
+        mortgageDebt: 0,
+        forceItemize: true,
+      },
+      rulesWithSalt,
+    );
+    const free = computeFederal(
+      {
+        grossSalary: 200_000,
+        filingStatus: 'marriedSeparately',
+        children: 0,
+        stateAndLocalIncomeTax: 0,
+        propertyTax: 0,
+        mortgageInterest: 0,
+        mortgageDebt: 0,
+      },
+      rulesWithSalt,
+    );
+    expect(forced.itemized).toBe(true);
+    expect(free.itemized).toBe(false);
+    // Forced to itemise nothing, so a larger taxable income and more tax.
+    expect(forced.deductionTaken).toBeLessThan(free.deductionTaken);
+    expect(forced.tax).toBeGreaterThan(free.tax);
+  });
+
+  it('leaves a single filer entirely alone', () => {
+    const single = computeFederal(
+      {
+        grossSalary: 200_000,
+        filingStatus: 'single',
+        children: 0,
+        stateAndLocalIncomeTax: 5_000,
+        propertyTax: 0,
+        mortgageInterest: 0,
+        mortgageDebt: 0,
+      },
+      rulesWithSalt,
+    );
+    // Standard deduction still wins where it is larger, as it always did.
+    expect(single.itemized).toBe(false);
+  });
+});

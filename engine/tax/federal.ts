@@ -80,6 +80,15 @@ export interface FederalInputs {
    * off — the behaviour of every release before it was modelled.
    */
   mortgageDebt?: USD;
+  /**
+   * Force itemising even where the standard deduction is larger.
+   *
+   * Only ever true for a couple filing separately. Federal law makes the choice
+   * a JOINT one: if either spouse itemises, the other must itemise too, and
+   * takes whatever their own itemised total comes to even when the standard
+   * deduction would have been kinder. IRS Publication 555.
+   */
+  forceItemize?: boolean;
 }
 
 export interface FederalResult {
@@ -291,8 +300,8 @@ export function computeFederal(
   const itemizedTotal = saltDeducted + mortgageInterestDeducted;
   const standardDeduction = rules.standardDeduction[filingStatus];
 
-  const itemized = itemizedTotal > standardDeduction;
-  const deductionTaken = Math.max(itemizedTotal, standardDeduction);
+  const itemized = inputs.forceItemize === true || itemizedTotal > standardDeduction;
+  const deductionTaken = itemized ? itemizedTotal : standardDeduction;
 
   // --- Tax on what's left ---------------------------------------------------
   const taxableIncome = Math.max(0, magi - deductionTaken);
