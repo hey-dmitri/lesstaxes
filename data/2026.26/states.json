@@ -1295,7 +1295,8 @@
       "personalCredit": {
         "single": 40,
         "marriedJointly": 80,
-        "dependent": 40
+        "dependent": 40,
+        "headOfHousehold": 80
       },
       "federalTaxDeductible": false,
       "hasLocalIncomeTax": true,
@@ -1319,9 +1320,13 @@
       "ratesCheckedAgainstState": {
         "url": "https://revenue.iowa.gov/taxes/tax-guidance/individual-income-tax",
         "checked": "2026-08-15",
-        "matched": true
+        "matched": false
       },
       "itemizedDeductions": null,
+      "verifiedAgainstState": {
+        "url": "https://revenue.iowa.gov/taxes/tax-guidance/individual-income-tax",
+        "checked": "2026-08-15"
+      },
       "communityProperty": false,
       "payrollContributions": [],
       "headOfHouseholdBasis": "own",
@@ -1739,7 +1744,7 @@
             "rate": 0.05
           },
           {
-            "from": 1083150,
+            "from": 1107750,
             "rate": 0.09
           }
         ],
@@ -1749,7 +1754,7 @@
             "rate": 0.05
           },
           {
-            "from": 1083150,
+            "from": 1107750,
             "rate": 0.09
           }
         ]
@@ -1777,13 +1782,22 @@
       ],
       "notes": [
         "Bracket levels adjusted for inflation each year. Inflation-adjusted bracket widths for 2026 were not available as of publication, so table reflects 2025 inflation-adjusted bracket widths.",
-        "In Massachusetts, rates exclude the paid family and medical leave payroll tax. Employers must withhold 0.46 percent of employees' eligible wages. Additionally, employers with 25 or more employees contribute an extra 0.42 percent of eligible wages."
+        "In Massachusetts, rates exclude the paid family and medical leave payroll tax. Employers must withhold 0.46 percent of employees' eligible wages. Additionally, employers with 25 or more employees contribute an extra 0.42 percent of eligible wages.",
+        "Massachusetts lets every wage earner deduct up to $2,000 each of the Social Security and Medicare tax they paid. That is not modelled here, so Massachusetts tax shown is about $100 a year higher than the true figure for most earners."
       ],
       "earnedIncomeCredit": null,
       "creditPhaseOut": null,
       "allowancePhaseOut": null,
-      "ratesCheckedAgainstState": null,
+      "ratesCheckedAgainstState": {
+        "url": "https://www.mass.gov/info-details/massachusetts-tax-rates",
+        "checked": "2026-08-15",
+        "matched": false
+      },
       "itemizedDeductions": null,
+      "verifiedAgainstState": {
+        "url": "https://www.mass.gov/info-details/massachusetts-tax-rates",
+        "checked": "2026-08-15"
+      },
       "communityProperty": false,
       "payrollContributions": [
         {
@@ -1891,7 +1905,7 @@
         ]
       },
       "standardDeduction": {
-        "single": 3350,
+        "single": 3400,
         "marriedJointly": 6700
       },
       "personalExemption": {
@@ -1916,7 +1930,8 @@
       "notes": [
         "State provides a state-defined personal exemption amount for each exemption available and/or deductible under the Internal Revenue Code. The Tax Cuts and Jobs Act set the personal exemption to $0 until 2026 but did not eliminate it, and the One Big Beautiful Bill Act permanently set the personal exemption to $0 but did not eliminate it. Because it is still available, these state-defined personal exemptions remain available in some states but are set to $0 in other states.",
         "Beginning in tax year 2025, Maryland levies an additional 2% surtax A surtax is an additional tax levied on top of an already existing business or individual tax and can have a flat or progressive rate structure. Surtaxes are typically enacted to fund a specific program or initiative, whereas revenue from broader-based taxes, like the individual income tax, typically cover a multitude of programs and services. on capital gains income for filers with AGI exceeding $350,000, regardless of filing status.",
-        "The exemption amount has the following phaseout schedule: If AGI is above $100,000 for single filers and above $150,000 for married filers, the $3,200 exemption begins to be phased out. If AGI is above $150,000 for single filers and above $200,000 for married filers, the exemption is phased out entirely."
+        "The exemption amount has the following phaseout schedule: If AGI is above $100,000 for single filers and above $150,000 for married filers, the $3,200 exemption begins to be phased out. If AGI is above $150,000 for single filers and above $200,000 for married filers, the exemption is phased out entirely.",
+        "Maryland also reduces itemised deductions by 7.5% of federal income above $200,000 from 2025. Itemising is not modelled for Maryland at all, so this does not apply yet."
       ],
       "earnedIncomeCredit": {
         "percentOfFederal": null,
@@ -1930,9 +1945,32 @@
         "maxCredit": null
       },
       "creditPhaseOut": null,
-      "allowancePhaseOut": null,
-      "ratesCheckedAgainstState": null,
+      "allowancePhaseOut": {
+        "kind": "stepped",
+        "appliesTo": [
+          "personalExemption"
+        ],
+        "start": {
+          "single": 100000,
+          "marriedJointly": 150000,
+          "headOfHousehold": 150000
+        },
+        "stepSize": 25000,
+        "factors": [
+          0.5,
+          0.25
+        ]
+      },
+      "ratesCheckedAgainstState": {
+        "url": "https://www.marylandcomptroller.gov/content/dam/mdcomp/tax/instructions/withholding/2026/withholding-guide.pdf",
+        "checked": "2026-08-15",
+        "matched": false
+      },
       "itemizedDeductions": null,
+      "verifiedAgainstState": {
+        "url": "https://www.marylandcomptroller.gov/content/dam/mdcomp/tax/instructions/withholding/2026/withholding-guide.pdf",
+        "checked": "2026-08-15"
+      },
       "communityProperty": false,
       "payrollContributions": [],
       "headOfHouseholdBasis": "marriedJointly",
@@ -2030,7 +2068,7 @@
         "Deduction and/or exemption tied to federal tax system. Federal deductions are indexed for inflation. Where applicable, the tax year 2026 inflation-adjusted amounts are shown.",
         "Bracket levels adjusted for inflation each year. Inflation-adjusted bracket levels for 2026 are shown.",
         "The dependent deduction/exemption is adjusted annually for inflation, but the 2026 amount was not available at the time of publication, so the 2025 amount is shown.",
-        "Maine's standard deduction and personal exemption phase out above $100,000 of Maine income for a single filer and $150,000 for a couple, reaching zero $75,000 later. That phase-out is not modelled, so above those incomes this figure is too generous."
+        "Maine's personal exemption also phases out, from $341,000 of income for a single filer and $409,150 for a couple. That is not modelled, so Maine tax shown above those incomes is slightly lower than the true figure."
       ],
       "earnedIncomeCredit": {
         "percentOfFederal": null,
@@ -2044,11 +2082,43 @@
         "maxCredit": null
       },
       "creditPhaseOut": null,
-      "allowancePhaseOut": null,
-      "ratesCheckedAgainstState": null,
+      "allowancePhaseOut": {
+        "kind": "linear",
+        "appliesTo": [
+          "standardDeduction"
+        ],
+        "segments": {
+          "single": [
+            {
+              "base": 15700,
+              "start": 102250,
+              "perDollar": 0.20933333333333334
+            }
+          ],
+          "headOfHousehold": [
+            {
+              "base": 23550,
+              "start": 153400,
+              "perDollar": 0.20933333333333334
+            }
+          ],
+          "marriedJointly": [
+            {
+              "base": 31400,
+              "start": 204550,
+              "perDollar": 0.20933333333333334
+            }
+          ]
+        }
+      },
+      "ratesCheckedAgainstState": {
+        "url": "https://www.maine.gov/revenue/sites/maine.gov.revenue/files/2026-05/ind_tax_rate_sched_2026_rev.pdf",
+        "checked": "2026-08-15",
+        "matched": false
+      },
       "itemizedDeductions": null,
       "verifiedAgainstState": {
-        "url": "https://www.maine.gov/revenue/sites/maine.gov.revenue/files/inline-files/ind_tax_rate_sched_2026.pdf",
+        "url": "https://www.maine.gov/revenue/sites/maine.gov.revenue/files/2026-05/ind_tax_rate_sched_2026_rev.pdf",
         "checked": "2026-08-15"
       },
       "communityProperty": false,
@@ -2209,17 +2279,67 @@
       "notes": [
         "Standard deduction and/or personal exemption is adjusted annually for inflation. Inflation-adjusted amounts for tax year 2026 are shown.",
         "Bracket levels adjusted for inflation each year. Inflation-adjusted bracket levels for 2026 are shown.",
-        "Minnesota has a surtax on individuals, estates, and trusts equal to 1% of net investment income over $1 million."
+        "Minnesota has a surtax on individuals, estates, and trusts equal to 1% of net investment income over $1 million.",
+        "Minnesota's dependent exemption also phases out, by 2 percentage points for each $2,500 of income above $244,500 single and $366,700 joint. That is not modelled, so Minnesota tax shown above those incomes is slightly lower than the true figure."
       ],
       "earnedIncomeCredit": null,
       "creditPhaseOut": null,
-      "allowancePhaseOut": null,
+      "allowancePhaseOut": {
+        "kind": "linear",
+        "appliesTo": [
+          "standardDeduction"
+        ],
+        "combine": "min",
+        "floorFraction": 0.2,
+        "segments": {
+          "single": [
+            {
+              "base": 15300,
+              "start": 244400,
+              "perDollar": 0.03
+            },
+            {
+              "base": 12498,
+              "start": 337800,
+              "perDollar": 0.1
+            }
+          ],
+          "headOfHousehold": [
+            {
+              "base": 23000,
+              "start": 244400,
+              "perDollar": 0.03
+            },
+            {
+              "base": 20198,
+              "start": 337800,
+              "perDollar": 0.1
+            }
+          ],
+          "marriedJointly": [
+            {
+              "base": 30600,
+              "start": 244400,
+              "perDollar": 0.03
+            },
+            {
+              "base": 27798,
+              "start": 337800,
+              "perDollar": 0.1
+            }
+          ]
+        }
+      },
       "ratesCheckedAgainstState": {
         "url": "https://www.revenue.state.mn.us/sites/default/files/2025-12/inflation-adjusted-amounts-2026.pdf",
         "checked": "2026-08-15",
-        "matched": true
+        "matched": false
       },
       "itemizedDeductions": null,
+      "verifiedAgainstState": {
+        "url": "https://www.revisor.mn.gov/statutes/cite/290.0123",
+        "checked": "2026-08-15"
+      },
       "communityProperty": false,
       "payrollContributions": [
         {
@@ -2556,7 +2676,11 @@
       "earnedIncomeCredit": null,
       "creditPhaseOut": null,
       "allowancePhaseOut": null,
-      "ratesCheckedAgainstState": null,
+      "ratesCheckedAgainstState": {
+        "url": "https://www.ncdor.gov/taxes-forms/individual-income-tax/tax-rate-schedules",
+        "checked": "2026-08-15",
+        "matched": true
+      },
       "itemizedDeductions": null,
       "communityProperty": false,
       "payrollContributions": [],
@@ -2577,11 +2701,11 @@
             "rate": 0
           },
           {
-            "from": 48475,
+            "from": 49575,
             "rate": 0.0195
           },
           {
-            "from": 244825,
+            "from": 250400,
             "rate": 0.025
           }
         ],
@@ -2591,11 +2715,11 @@
             "rate": 0
           },
           {
-            "from": 80975,
+            "from": 82800,
             "rate": 0.0195
           },
           {
-            "from": 298075,
+            "from": 304850,
             "rate": 0.025
           }
         ],
@@ -2616,7 +2740,8 @@
       },
       "standardDeduction": {
         "single": 16100,
-        "marriedJointly": 32200
+        "marriedJointly": 32200,
+        "headOfHousehold": 24150
       },
       "personalExemption": {
         "single": 0,
@@ -2638,15 +2763,21 @@
       "notes": [
         "Bracket levels adjusted for inflation each year. Inflation-adjusted bracket widths for 2026 were not available as of publication, so table reflects 2025 inflation-adjusted bracket widths.",
         "Colorado, Idaho, Iowa, Montana, New Mexico, North Dakota, and South Carolina include the federal standard deduction in their income starting point.",
-        "Deduction and/or exemption tied to federal tax system. Federal deductions are indexed for inflation. Where applicable, the tax year 2026 inflation-adjusted amounts are shown.",
-        "Income below $48,475 (single) is not taxed.",
-        "Income below $80,975 (married filing jointly) is not taxed."
+        "Deduction and/or exemption tied to federal tax system. Federal deductions are indexed for inflation. Where applicable, the tax year 2026 inflation-adjusted amounts are shown."
       ],
       "earnedIncomeCredit": null,
       "creditPhaseOut": null,
       "allowancePhaseOut": null,
-      "ratesCheckedAgainstState": null,
+      "ratesCheckedAgainstState": {
+        "url": "https://www.tax.nd.gov/sites/www/files/documents/forms/software-developer/individual-income-forms/28709-form-nd-1es-2026%20final.pdf",
+        "checked": "2026-08-15",
+        "matched": false
+      },
       "itemizedDeductions": null,
+      "verifiedAgainstState": {
+        "url": "https://www.tax.nd.gov/sites/www/files/documents/forms/software-developer/individual-income-forms/28709-form-nd-1es-2026%20final.pdf",
+        "checked": "2026-08-15"
+      },
       "communityProperty": false,
       "payrollContributions": [],
       "headOfHouseholdBasis": "own",
@@ -2740,7 +2871,11 @@
       },
       "creditPhaseOut": null,
       "allowancePhaseOut": null,
-      "ratesCheckedAgainstState": null,
+      "ratesCheckedAgainstState": {
+        "url": "https://revenue.nebraska.gov/sites/default/files/doc/tax-forms/2025/f_1040N-ES.pdf",
+        "checked": "2026-08-15",
+        "matched": true
+      },
       "itemizedDeductions": null,
       "communityProperty": false,
       "payrollContributions": [],
@@ -2805,7 +2940,7 @@
           },
           {
             "from": 40000,
-            "rate": 0.0553
+            "rate": 0.05525
           },
           {
             "from": 75000,
@@ -2839,7 +2974,7 @@
           },
           {
             "from": 80000,
-            "rate": 0.0553
+            "rate": 0.05525
           },
           {
             "from": 150000,
@@ -2874,7 +3009,9 @@
       "footnotes": [
         "a"
       ],
-      "notes": [],
+      "notes": [
+        "New Jersey lets a homeowner deduct up to $15,000 of property tax, and a renter count 18% of rent as property tax toward the same limit. That is not modelled here, so New Jersey tax shown is higher than the true figure — by roughly $530 a year for a homeowner on $80,000 and $765 on $150,000. New Jersey has the highest property taxes in the country, so this affects nearly every household."
+      ],
       "earnedIncomeCredit": {
         "percentOfFederal": 0.4,
         "byChildren": null,
@@ -2883,8 +3020,16 @@
       },
       "creditPhaseOut": null,
       "allowancePhaseOut": null,
-      "ratesCheckedAgainstState": null,
+      "ratesCheckedAgainstState": {
+        "url": "https://www.nj.gov/treasury/taxation/pdf/current/1040esi.pdf",
+        "checked": "2026-08-15",
+        "matched": false
+      },
       "itemizedDeductions": null,
+      "verifiedAgainstState": {
+        "url": "https://www.nj.gov/treasury/taxation/pdf/current/1040esi.pdf",
+        "checked": "2026-08-15"
+      },
       "communityProperty": false,
       "payrollContributions": [
         {
@@ -2968,7 +3113,8 @@
       },
       "standardDeduction": {
         "single": 16100,
-        "marriedJointly": 32200
+        "marriedJointly": 32200,
+        "headOfHousehold": 24150
       },
       "personalExemption": {
         "single": 0,
@@ -3002,8 +3148,16 @@
       },
       "creditPhaseOut": null,
       "allowancePhaseOut": null,
-      "ratesCheckedAgainstState": null,
+      "ratesCheckedAgainstState": {
+        "url": "https://www.taxformfinder.org/forms/2025/2025-new-mexico-income-tax-instructions.pdf",
+        "checked": "2026-08-15",
+        "matched": false
+      },
       "itemizedDeductions": null,
+      "verifiedAgainstState": {
+        "url": "https://www.taxformfinder.org/forms/2025/2025-new-mexico-income-tax-instructions.pdf",
+        "checked": "2026-08-15"
+      },
       "communityProperty": true,
       "payrollContributions": [],
       "headOfHouseholdBasis": "marriedJointly",

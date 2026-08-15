@@ -141,6 +141,55 @@ const RATES_CHECKED = {
     checked: '2026-08-15',
   },
 
+  'North Dakota': {
+    // Brackets were the 2025 figures; head-of-household deduction was missing.
+    matched: false,
+    source: 'https://www.tax.nd.gov/sites/www/files/documents/forms/software-developer/individual-income-forms/28709-form-nd-1es-2026%20final.pdf',
+    checked: '2026-08-15',
+  },
+  'New Mexico': {
+    // Head-of-household deduction was missing, and it fell back to the JOINT
+    // figure rather than the single one — an undercharge.
+    matched: false,
+    source: 'https://www.taxformfinder.org/forms/2025/2025-new-mexico-income-tax-instructions.pdf',
+    checked: '2026-08-15',
+  },
+  'New Jersey': {
+    matched: false,
+    source: 'https://www.nj.gov/treasury/taxation/pdf/current/1040esi.pdf',
+    checked: '2026-08-15',
+  },
+  Massachusetts: {
+    // Surtax threshold was the 2025 figure.
+    matched: false,
+    source: 'https://www.mass.gov/info-details/massachusetts-tax-rates',
+    checked: '2026-08-15',
+  },
+  Maryland: {
+    // Standard deduction was a 2025 figure and the exemption phase-out was
+    // missing entirely.
+    matched: false,
+    source: 'https://www.marylandcomptroller.gov/content/dam/mdcomp/tax/instructions/withholding/2026/withholding-guide.pdf',
+    checked: '2026-08-15',
+  },
+  Maine: {
+    // Rates confirmed against the 20 May 2026 revision; the deduction
+    // phase-out was missing and a shipped note about it was wrong.
+    matched: false,
+    source: 'https://www.maine.gov/revenue/sites/maine.gov.revenue/files/2026-05/ind_tax_rate_sched_2026_rev.pdf',
+    checked: '2026-08-15',
+  },
+  Nebraska: {
+    matched: true,
+    source: 'https://revenue.nebraska.gov/sites/default/files/doc/tax-forms/2025/f_1040N-ES.pdf',
+    checked: '2026-08-15',
+  },
+  'North Carolina': {
+    // 3.99% holds for 2026; the July 2026 budget did not raise the deduction.
+    matched: true,
+    source: 'https://www.ncdor.gov/taxes-forms/individual-income-tax/tax-rate-schedules',
+    checked: '2026-08-15',
+  },
   // --- read and found RIGHT -------------------------------------------------
   /*
    * These are the most common result and the least interesting to read, and
@@ -155,7 +204,9 @@ const RATES_CHECKED = {
     checked: '2026-08-15',
   },
   Minnesota: {
-    matched: true,
+    // Brackets and deductions all matched; the standard deduction phase-out
+    // was missing.
+    matched: false,
     source: 'https://www.revenue.state.mn.us/sites/default/files/2025-12/inflation-adjusted-amounts-2026.pdf',
     checked: '2026-08-15',
   },
@@ -189,8 +240,9 @@ const RATES_CHECKED = {
     checked: '2026-08-15',
   },
   Iowa: {
-    // 3.8%, not the 3.9% one stale Iowa government page still shows.
-    matched: true,
+    // 3.8%, not the 3.9% one stale Iowa government page still shows. The
+    // head-of-household personal credit was $40 and should be $80.
+    matched: false,
     source: 'https://revenue.iowa.gov/taxes/tax-guidance/individual-income-tax',
     checked: '2026-08-15',
   },
@@ -1425,6 +1477,219 @@ const STATE_OVERRIDES = {
     source: 'https://portal.ct.gov/-/media/drs/forms/2025/incometax/ct-1040-tcs.pdf',
     checked: '2026-08-15',
     note: "Connecticut also adds a flat charge above $56,500 single / $100,500 joint (up to $250 / $500) and recaptures the benefit of its lower rates above $105,000 / $210,000 (up to $3,400 / $6,800). Neither is modelled, so Connecticut tax shown here is lower than the true figure for higher earners.",
+  },
+  'North Dakota': {
+    /*
+     * A YEAR STALE. North Dakota indexes its brackets every year and the 2026
+     * figures are published on the 2026 Form ND-1ES — we were shipping 2025.
+     *
+     * The state's own "Individual Income Tax" web page still displays the 2025
+     * schedule and says so in its text, which is exactly how this stays
+     * invisible: the page a checker would naturally open agrees with the wrong
+     * answer.
+     *
+     * Also fixed here: North Dakota starts from FEDERAL taxable income, so the
+     * federal standard deduction is already inside the number it taxes — and
+     * the federal head-of-household figure is $24,150, not the $16,100 a head
+     * of household was falling back to.
+     */
+    brackets: {
+      single: [
+        { from: 0, rate: 0 },
+        { from: 49_575, rate: 0.0195 },
+        { from: 250_400, rate: 0.025 },
+      ],
+      marriedJointly: [
+        { from: 0, rate: 0 },
+        { from: 82_800, rate: 0.0195 },
+        { from: 304_850, rate: 0.025 },
+      ],
+    },
+    standardDeduction: { headOfHousehold: 24_150 },
+    source: 'https://www.tax.nd.gov/sites/www/files/documents/forms/software-developer/individual-income-forms/28709-form-nd-1es-2026%20final.pdf',
+    checked: '2026-08-15',
+  },
+  'New Mexico': {
+    /*
+     * THE MIRROR IMAGE OF NORTH DAKOTA'S BUG, running the other way.
+     *
+     * New Mexico puts a head of household on the JOINT bracket table, which is
+     * right — and because no head-of-household allowance was recorded, the
+     * engine handed them the joint deduction to match. New Mexico's deduction
+     * is the FEDERAL one, and the federal head-of-household figure is $24,150,
+     * not the couple's $32,200. We were undercharging by about $380 a year.
+     *
+     * Two states, the same missing line, opposite directions. Neither would
+     * have shown up as an obviously wrong number.
+     */
+    standardDeduction: { headOfHousehold: 24_150 },
+    source: 'https://www.taxformfinder.org/forms/2025/2025-new-mexico-income-tax-instructions.pdf',
+    checked: '2026-08-15',
+  },
+  'New Jersey': {
+    // 5.525%, not 5.53%. Worth about $2 a year, and wrong is wrong.
+    brackets: {
+      single: [
+        { from: 0, rate: 0.014 },
+        { from: 20_000, rate: 0.0175 },
+        { from: 35_000, rate: 0.035 },
+        { from: 40_000, rate: 0.05525 },
+        { from: 75_000, rate: 0.0637 },
+        { from: 500_000, rate: 0.0897 },
+        { from: 1_000_000, rate: 0.1075 },
+      ],
+      marriedJointly: [
+        { from: 0, rate: 0.014 },
+        { from: 20_000, rate: 0.0175 },
+        { from: 50_000, rate: 0.0245 },
+        { from: 70_000, rate: 0.035 },
+        { from: 80_000, rate: 0.05525 },
+        { from: 150_000, rate: 0.0637 },
+        { from: 500_000, rate: 0.0897 },
+        { from: 1_000_000, rate: 0.1075 },
+      ],
+    },
+    source: 'https://www.nj.gov/treasury/taxation/pdf/current/1040esi.pdf',
+    checked: '2026-08-15',
+    note: 'New Jersey lets a homeowner deduct up to $15,000 of property tax, and a renter count 18% of rent as property tax toward the same limit. That is not modelled here, so New Jersey tax shown is higher than the true figure — by roughly $530 a year for a homeowner on $80,000 and $765 on $150,000. New Jersey has the highest property taxes in the country, so this affects nearly every household.',
+  },
+  Massachusetts: {
+    // The surtax threshold is indexed and we shipped the 2025 figure. It only
+    // bites above a million, but it is a plain factual error.
+    brackets: {
+      single: [
+        { from: 0, rate: 0.05 },
+        { from: 1_107_750, rate: 0.09 },
+      ],
+      marriedJointly: [
+        { from: 0, rate: 0.05 },
+        { from: 1_107_750, rate: 0.09 },
+      ],
+    },
+    source: 'https://www.mass.gov/info-details/massachusetts-tax-rates',
+    checked: '2026-08-15',
+    note: 'Massachusetts lets every wage earner deduct up to $2,000 each of the Social Security and Medicare tax they paid. That is not modelled here, so Massachusetts tax shown is about $100 a year higher than the true figure for most earners.',
+  },
+  Maryland: {
+    /*
+     * THE EXEMPTION DOES NOT TAPER, IT FALLS DOWNSTAIRS. $3,200 each up to
+     * $100,000 of federal income, then $1,600, then $800, then nothing above
+     * $150,000 — and the reduced amount applies to EVERY exemption, children
+     * included. Thresholds are $150,000 to $200,000 for a couple or a head of
+     * household.
+     *
+     * We gave the full $3,200 at every income, which undercharged a single
+     * filer on $150,000 by about $199 a year and more above that.
+     *
+     * The standard deduction also moved: $3,400 for 2026, from Maryland's own
+     * withholding guide. The joint figure is indexed off $6,700 and has not
+     * been announced — the legislature's own fiscal note says so — and it is
+     * left alone rather than computed.
+     */
+    standardDeduction: { single: 3_400 },
+    allowancePhaseOut: {
+      kind: 'stepped',
+      appliesTo: ['personalExemption'],
+      start: { single: 100_000, marriedJointly: 150_000, headOfHousehold: 150_000 },
+      stepSize: 25_000,
+      factors: [0.5, 0.25],
+    },
+    source: 'https://www.marylandcomptroller.gov/content/dam/mdcomp/tax/instructions/withholding/2026/withholding-guide.pdf',
+    checked: '2026-08-15',
+    note: 'Maryland also reduces itemised deductions by 7.5% of federal income above $200,000 from 2025. Itemising is not modelled for Maryland at all, so this does not apply yet.',
+  },
+  Maine: {
+    /*
+     * MAINE'S DEDUCTION DISAPPEARS TOO, and this was the largest undercharge
+     * the audit found after Wisconsin: about $715 a year for a single filer on
+     * $150,000, growing across the band and then flattening.
+     *
+     * 36 M.R.S. 5124-C(2): subtract the threshold from Maine adjusted gross
+     * income, divide by the range, cap the fraction at 1, and multiply the
+     * deduction by it. So the deduction is gone entirely at $177,250 single,
+     * $265,900 head of household, $354,550 joint.
+     *
+     * All three run at the same rate — 15,700/75,000, 23,550/112,500 and
+     * 31,400/150,000 all equal 0.2093 — which is the check that the six
+     * figures belong together.
+     *
+     * A NOTE HERE WAS WRONG and is replaced: it said the phase-out ran from
+     * $100,000 single and $150,000 joint "reaching zero $75,000 later". The
+     * thresholds are $102,250 and $204,550, and the range is $75,000 only for
+     * a single filer.
+     */
+    standardDeduction: { single: 15_700, marriedJointly: 31_400, headOfHousehold: 23_550 },
+    allowancePhaseOut: {
+      kind: 'linear',
+      appliesTo: ['standardDeduction'],
+      segments: {
+        single: [{ base: 15_700, start: 102_250, perDollar: 15_700 / 75_000 }],
+        headOfHousehold: [{ base: 23_550, start: 153_400, perDollar: 23_550 / 112_500 }],
+        marriedJointly: [{ base: 31_400, start: 204_550, perDollar: 31_400 / 150_000 }],
+      },
+    },
+    brackets: {
+      single: [
+        { from: 0, rate: 0.058 },
+        { from: 27_400, rate: 0.0675 },
+        { from: 64_850, rate: 0.0715 },
+        { from: 1_000_000, rate: 0.0915 },
+      ],
+      marriedJointly: [
+        { from: 0, rate: 0.058 },
+        { from: 54_850, rate: 0.0675 },
+        { from: 129_750, rate: 0.0715 },
+        { from: 1_500_000, rate: 0.0915 },
+      ],
+    },
+    source: 'https://www.maine.gov/revenue/sites/maine.gov.revenue/files/2026-05/ind_tax_rate_sched_2026_rev.pdf',
+    checked: '2026-08-15',
+    note: "Maine's personal exemption also phases out, from $341,000 of income for a single filer and $409,150 for a couple. That is not modelled, so Maine tax shown above those incomes is slightly lower than the true figure.",
+  },
+  Minnesota: {
+    /*
+     * Two reductions stacked, not one. Minn. Stat. 290.0123 subd. 5 takes 3%
+     * of income above $244,400 and then 10% of income above $337,800, and caps
+     * the whole reduction at 80% of the deduction — so a fifth of it always
+     * survives, however high income goes.
+     *
+     * Expressed as two lines and taking the SMALLER, which is the opposite of
+     * Wisconsin: there the two lines are alternative formulas that cross, here
+     * they stack. The second line only exists above its own threshold.
+     *
+     * It bites nothing below $244,400, and up to $1,206 a year for a single
+     * filer and $2,411 for a couple above it.
+     */
+    allowancePhaseOut: {
+      kind: 'linear',
+      appliesTo: ['standardDeduction'],
+      combine: 'min',
+      floorFraction: 0.2,
+      segments: {
+        single: [
+          { base: 15_300, start: 244_400, perDollar: 0.03 },
+          { base: 15_300 - 0.03 * 93_400, start: 337_800, perDollar: 0.1 },
+        ],
+        headOfHousehold: [
+          { base: 23_000, start: 244_400, perDollar: 0.03 },
+          { base: 23_000 - 0.03 * 93_400, start: 337_800, perDollar: 0.1 },
+        ],
+        marriedJointly: [
+          { base: 30_600, start: 244_400, perDollar: 0.03 },
+          { base: 30_600 - 0.03 * 93_400, start: 337_800, perDollar: 0.1 },
+        ],
+      },
+    },
+    source: 'https://www.revisor.mn.gov/statutes/cite/290.0123',
+    checked: '2026-08-15',
+    note: "Minnesota's dependent exemption also phases out, by 2 percentage points for each $2,500 of income above $244,500 single and $366,700 joint. That is not modelled, so Minnesota tax shown above those incomes is slightly lower than the true figure.",
+  },
+  Iowa: {
+    // The personal credit is $80 for a head of household, the same as a couple,
+    // not the single filer's $40.
+    personalCredit: { headOfHousehold: 80 },
+    source: 'https://revenue.iowa.gov/taxes/tax-guidance/individual-income-tax',
+    checked: '2026-08-15',
   },
   'South Carolina': {
     /*

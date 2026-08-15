@@ -521,6 +521,14 @@ export function computeStateTax(
     let base = 0;
     for (const seg of segments) {
       /*
+       * A segment does not exist below its own threshold. That matters only
+       * for 'min': Minnesota's second, steeper reduction starts at $337,800,
+       * and counting it below that would apply a reduction the statute has not
+       * reached yet. Wisconsin's two segments share a start, so this is a
+       * no-op there.
+       */
+      if (gross <= seg.start) continue;
+      /*
        * Round to cents before anything else. A rate like 15,000/55,000 cannot
        * be held exactly in binary, so at the very top of South Carolina's
        * taper the reduction came out as 14,999.999999999998 — which, floored
