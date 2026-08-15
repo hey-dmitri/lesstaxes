@@ -24,6 +24,12 @@ const STATES_WITH_GAPS = ALL_STATE_CODES.map((code) => stateRules(code))
   .map((s) => ({ code: s.code, name: s.name, gaps: s.modellingGaps }))
   .sort((a, b) => a.name.localeCompare(b.name));
 
+/** States whose figures are last year's because this year's are not out. */
+const STATES_ON_PRIOR_YEAR = ALL_STATE_CODES.map((code) => stateRules(code))
+  .filter((s) => s.priorYearFigures)
+  .map((s) => ({ code: s.code, name: s.name, why: s.priorYearFigures as string }))
+  .sort((a, b) => a.name.localeCompare(b.name));
+
 export default function MethodologyPage() {
   return (
     <PageShell
@@ -521,8 +527,29 @@ answer          =  in your pocket THERE  −  in your pocket HERE`}</pre>
         </ul>
         <p>
           Every other state has been read off its own 2026 publication with nothing left
-          outstanding, except Ohio and Oregon, which have not published anything for 2026 at all.
+          outstanding.
         </p>
+
+        <h3>States still on last year&rsquo;s numbers</h3>
+        <p>
+          States publish their new brackets and allowances on their own timetable, and many do not
+          until the tax forms come out — which for 2026 means late this year or early next. This
+          calculator has to answer today, so where a state has not published we use its{' '}
+          <strong>last published figures</strong> and say so here.
+        </p>
+        <p>
+          Prices rise, so last year&rsquo;s bands are slightly narrow and last year&rsquo;s
+          allowances slightly small. That means these figures show{' '}
+          <strong>a little more tax than you will really owe</strong>, not less — the error runs
+          against us, not against you.
+        </p>
+        <ul>
+          {STATES_ON_PRIOR_YEAR.map(({ code, name, why }) => (
+            <li key={code}>
+              <strong>{name}.</strong> {why}
+            </li>
+          ))}
+        </ul>
         <ul>
           <li>
             <strong>Some local income taxes still use state averages.</strong> New York City,

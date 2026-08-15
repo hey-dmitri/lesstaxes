@@ -63,6 +63,40 @@ const SNAPSHOT_PUBLISHED = '2026-02-17';
 const SNAPSHOT_STALE_AFTER_MONTHS = 4;
 
 /**
+ * FIGURES THAT ARE LAST YEAR'S, BECAUSE THE STATE HAS NOT PUBLISHED THIS
+ * YEAR'S.
+ *
+ * States index their brackets and allowances on their own timetable, and many
+ * do not publish until the return forms appear — which for tax year 2026 means
+ * late 2026 or early 2027. Waiting is not an option: the calculator has to
+ * answer today.
+ *
+ * So where 2026 does not exist we ship the state's last published figures and
+ * say so here, per state, in plain words. That is better than a blank and far
+ * better than a number nobody can source. Inflation means last year's brackets
+ * are slightly narrow and last year's allowances slightly small, so the error
+ * is small and runs AGAINST the reader — we show marginally more tax than they
+ * will owe, not less.
+ *
+ * This is separate from `modellingGaps`, which is about rules we do not
+ * calculate at all. This is about figures that are real and published, just a
+ * year old.
+ */
+const PRIOR_YEAR_FIGURES = {
+  California: 'California indexes its brackets, standard deduction and exemption credits every autumn and has not published 2026 yet, so every California figure here is the published 2025 one.',
+  Vermont: 'Vermont has published no 2026 rate schedule, so its brackets, standard deduction and personal exemption here are the published 2025 figures.',
+  Ohio: 'Ohio has published no 2026 rate schedule, so its figures here are carried forward from 2025.',
+  Oregon: "Oregon has published no 2026 forms, so its head-of-household standard deduction and exemption credit here are the published 2025 figures.",
+  'South Carolina': "South Carolina's dependent exemption here is the published 2025 figure of $4,930; the state indexes it each December and the 2026 amount appears only in return instructions that are not out yet.",
+  Utah: "Utah's taxpayer tax credit phase-out thresholds and dependent exemption here are the published 2025 figures; the state has not released 2026 amounts.",
+  Idaho: "Idaho's untaxed band of $4,811 for a single filer and $9,622 for a couple is the published 2025 figure; Idaho publishes the 2026 amount around December.",
+  Mississippi: "Only Mississippi's rate is published for 2026. Its standard deduction and exemptions here are the 2025 figures, which are fixed in statute and were not changed by any 2026 law.",
+  Alabama: 'Alabama has published nothing for 2026. Its rates, exemptions and deduction charts here are the 2025 figures, all of which are fixed in statute rather than indexed.',
+  Oklahoma: "Oklahoma's rates for 2026 come from the enacted law, but its standard deduction and exemptions here are the 2025 figures. They are not indexed, so they should carry unchanged.",
+  'Rhode Island': "Rhode Island's 2026 figures here come from a form the state published carrying a draft watermark. They are internally consistent and are the state's own, but they should be re-checked against the final booklet.",
+};
+
+/**
  * STATES WHOSE RATES AND ALLOWANCES HAVE BEEN READ OFF THE STATE'S OWN 2026
  * PUBLICATION, rather than taken on trust from the aggregated table.
  *
@@ -2179,6 +2213,11 @@ for (const [name, s] of Object.entries(states)) {
    * mixing them into somebody else's annotations.
    */
   s.modellingGaps = [];
+  /*
+   * Figures that are last year's because the state has not published this
+   * year's. Real, published numbers — just a year old. See PRIOR_YEAR_FIGURES.
+   */
+  s.priorYearFigures = PRIOR_YEAR_FIGURES[name] ?? null;
 
   /*
    * Whether anyone has opened this state's own 2026 publication and compared

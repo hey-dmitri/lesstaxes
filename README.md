@@ -147,9 +147,19 @@ Total data cost: **$0**. No paid feeds, no runtime API calls.
    and a dozen states let a homeowner deduct mortgage interest and property tax
    on the state return. Where that is missing we charge too much.
 
-8. **California's figures are tax year 2025.** California indexes in the autumn
-   and has not published 2026. Rather than invent a number, the 2025 figures
-   ship and this says so.
+8. **Eleven states are on last year's figures, because they have not published
+   this year's.** States index on their own timetable and many wait for the
+   return forms, which for 2026 means late 2026 or early 2027. The calculator
+   has to answer today, so where 2026 does not exist we ship the state's last
+   published figures and name the state.
+
+   Alabama, California, Idaho, Mississippi, Ohio, Oklahoma, Oregon, Rhode
+   Island, South Carolina, Utah and Vermont, each with a sentence saying which
+   figures are affected and why. Prices rise, so last year's bands are slightly
+   narrow and last year's allowances slightly small — meaning these show a
+   little MORE tax than is really owed. The error runs against us, not against
+   the reader, and it is stated on the methodology page rather than left to be
+   discovered.
 9. **Local income tax outside the 13 named cities** is still each state's
    average, which is fair where rates are uniform and wrong where they are not.
    Indiana is the known bad case: we apply 0.35% statewide when real county

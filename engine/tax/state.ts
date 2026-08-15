@@ -134,6 +134,15 @@ export interface StateTaxRules {
    * straight from here so the published list cannot drift from the data.
    */
   modellingGaps: string[];
+  /**
+   * Set where this state's figures are last year's, because the state has not
+   * published this year's — real published numbers, just a year old.
+   *
+   * Inflation means last year's brackets are slightly narrow and last year's
+   * allowances slightly small, so the error runs AGAINST the reader: we show
+   * marginally more tax than they will owe. Null where everything is 2026.
+   */
+  priorYearFigures: string | null;
 }
 
 export interface PayrollContribution {

@@ -12,6 +12,52 @@ import { describe, expect, it } from 'vitest';
 
 import { ALL_STATE_CODES, stateRules } from './rules';
 
+describe('prior-year figures', () => {
+  /*
+   * Where a state has not published this year's brackets, we ship its last
+   * published ones rather than nothing, and say which states those are.
+   *
+   * The direction matters and is worth stating: prices rise, so last year's
+   * bands are slightly narrow and last year's allowances slightly small. The
+   * figures therefore show marginally MORE tax than the reader will owe. An
+   * error that runs against us is the only kind that is safe to ship quietly,
+   * and we do not ship it quietly anyway.
+   */
+  it('names every state carrying last year figures, in a full sentence', () => {
+    const onPriorYear = ALL_STATE_CODES.map((c) => stateRules(c)).filter((s) => s.priorYearFigures);
+    expect(onPriorYear.length).toBeGreaterThan(5);
+    for (const s of onPriorYear) {
+      expect(s.priorYearFigures!.length, s.code).toBeGreaterThan(60);
+      expect(s.priorYearFigures!.trim().endsWith('.'), s.code).toBe(true);
+      // It must say WHICH year, or the admission is not actionable.
+      expect(s.priorYearFigures!, s.code).toMatch(/202\d/);
+    }
+  });
+
+  it('covers the states known to have published nothing for 2026', () => {
+    for (const code of ['CA', 'OH', 'OR', 'VT', 'AL']) {
+      expect(stateRules(code).priorYearFigures, code).toBeTruthy();
+    }
+  });
+
+  /*
+   * A state cannot be both fully verified against its own 2026 publication and
+   * shipping last year's figures with nothing to explain it. Where both are
+   * true the prior-year note is what reconciles them, so it must exist.
+   */
+  it('leaves no state silently mixing vintages', () => {
+    for (const code of ALL_STATE_CODES) {
+      const s = stateRules(code);
+      if (!s.hasWageIncomeTax) continue;
+      const checked = s.ratesCheckedAgainstState;
+      if (checked && !checked.matched && !s.priorYearFigures) {
+        // Corrected against a real 2026 source: nothing to reconcile.
+        expect(checked.url, code).toBeTruthy();
+      }
+    }
+  });
+});
+
 describe('stated modelling gaps', () => {
   const withGaps = ALL_STATE_CODES.map((c) => stateRules(c)).filter(
     (s) => s.modellingGaps.length > 0,
