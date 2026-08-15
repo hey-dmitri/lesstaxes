@@ -59,6 +59,31 @@ describe('what the README claims', () => {
    * every commit and is verified by nobody is not evidence of anything; the
    * badge on the repository already reports it, and always correctly.
    */
+  /*
+   * Every count in that list has now gone stale at least once, so each one the
+   * README still states by hand is checked against the generated data.
+   */
+  it('states the real number of states carrying a gap note', () => {
+    const withGaps = taxing.filter((s) => s.modellingGaps.length > 0).length;
+    const words = ['Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen',
+      'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen', 'Twenty'];
+    expect(readme).toContain(`${words[withGaps - 10]} states carry a note`);
+  });
+
+  it('states the real number of states on prior-year figures', () => {
+    const priorYear = taxing.filter((s) => s.priorYearFigures).length;
+    expect(readme).toContain(`${priorYear === 10 ? 'Ten' : String(priorYear)} states are on last year's figures`);
+    // And names every one of them.
+    for (const s of taxing.filter((x) => x.priorYearFigures)) {
+      expect(readme, s.code).toContain(s.name.replace('Washington DC', 'DC'));
+    }
+  });
+
+  it('states the real number of states that itemise', () => {
+    const itemising = taxing.filter((s) => s.itemizedDeductions).length;
+    expect(readme).toContain(`${itemising === 14 ? 'Fourteen' : String(itemising)} states now let a`);
+  });
+
   it('does not quote a test count it cannot keep true', () => {
     expect(readme).not.toMatch(/\*\*\d+ tests\*\*/);
   });

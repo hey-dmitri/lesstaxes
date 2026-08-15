@@ -141,25 +141,28 @@ Total data cost: **$0**. No paid feeds, no runtime API calls.
    at a cliff.
 
 7. **What is still not modelled is written on the state, not buried here.**
-   Ten states carry a note saying which rule is missing and which way it runs —
-   New Jersey's $15,000 property tax deduction, New York's itemising and its
-   recapture, Oregon's federal tax subtraction, Connecticut's add-back and
-   recapture, Alabama's payroll-tax deduction, Colorado's high-income add-back,
-   and more. Those notes appear on the methodology page.
+   Nineteen states carry a note naming the rule that is missing and which way
+   it runs — New York's recapture from high earners, Missouri's and Alabama's
+   federal-tax deductions, Connecticut's property tax credit, Colorado's
+   interaction with itemising, and the rest. Those notes are rendered on the
+   methodology page straight from the data, so they cannot drift out of it.
 
-   The largest single gap is **state itemising**: only California is modelled,
-   and a dozen states let a homeowner deduct mortgage interest and property tax
-   on the state return. Where that is missing we charge too much.
+   **State itemising is no longer the largest gap.** Fourteen states now let a
+   homeowner claim mortgage interest and property tax on the state return and
+   all fourteen are calculated, plus two more that do it differently: New
+   Jersey relieves property tax without itemising at all — the only relief here
+   a renter can claim — and Wisconsin gives a credit for mortgage interest
+   while ignoring property tax entirely.
 
-8. **Eleven states are on last year's figures, because they have not published
+8. **Ten states are on last year's figures, because they have not published
    this year's.** States index on their own timetable and many wait for the
    return forms, which for 2026 means late 2026 or early 2027. The calculator
    has to answer today, so where 2026 does not exist we ship the state's last
    published figures and name the state.
 
-   Alabama, California, Idaho, Mississippi, Ohio, Oklahoma, Oregon, Rhode
-   Island, South Carolina, Utah and Vermont, each with a sentence saying which
-   figures are affected and why. Prices rise, so last year's bands are slightly
+   Alabama, California, Idaho, Mississippi, Oklahoma, Oregon, Rhode Island,
+   South Carolina, Utah and Vermont, each with a sentence saying which figures
+   are affected and why. Prices rise, so last year's bands are slightly
    narrow and last year's allowances slightly small — meaning these show a
    little MORE tax than is really owed. The error runs against us, not against
    the reader, and it is stated on the methodology page rather than left to be
