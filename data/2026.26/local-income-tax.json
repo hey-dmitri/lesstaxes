@@ -86,6 +86,7 @@
       "kind": "bracketed",
       "name": "Portland (Multnomah County)",
       "stateCode": "OR",
+      "source": "https://www.multco.us/finance/preschool-all-personal-income-tax",
       "brackets": {
         "single": [
           {
@@ -94,11 +95,11 @@
           },
           {
             "from": 125000,
-            "rate": 0.025
+            "rate": 0.015
           },
           {
             "from": 250000,
-            "rate": 0.04
+            "rate": 0.03
           }
         ],
         "marriedJointly": [
@@ -108,11 +109,11 @@
           },
           {
             "from": 200000,
-            "rate": 0.025
+            "rate": 0.015
           },
           {
             "from": 400000,
-            "rate": 0.04
+            "rate": 0.03
           }
         ]
       }
@@ -122,6 +123,7 @@
       "kind": "bracketed",
       "name": "Greater Portland (Metro district)",
       "stateCode": "OR",
+      "source": "https://www.portland.gov/revenue/personal-tax",
       "brackets": {
         "single": [
           {
@@ -129,7 +131,7 @@
             "rate": 0
           },
           {
-            "from": 125000,
+            "from": 128000,
             "rate": 0.01
           }
         ],
@@ -139,7 +141,17 @@
             "rate": 0
           },
           {
-            "from": 200000,
+            "from": 205000,
+            "rate": 0.01
+          }
+        ],
+        "headOfHousehold": [
+          {
+            "from": 0,
+            "rate": 0
+          },
+          {
+            "from": 205000,
             "rate": 0.01
           }
         ]

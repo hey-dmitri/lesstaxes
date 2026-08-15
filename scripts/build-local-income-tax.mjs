@@ -209,38 +209,70 @@ const CITY_TAXES = [
  * And both taxes are levied on Oregon TAXABLE income while this applies them
  * to gross, which pulls a household just above a threshold in slightly early.
  */
+/*
+ * THE RATES HERE WERE A FULL POINT TOO HIGH, and Portland is expensive enough
+ * that a wrong local rate is worth more than most state errors.
+ *
+ * We charged 2.5% and 4%. Multnomah County and the Portland Revenue Division —
+ * the office that actually administers the tax — both say, word for word:
+ * "1.5% on Multnomah County taxable income over $125,000 for individuals or
+ * $200,000 for joint filers, and an additional 1.5%" above $250,000 and
+ * $400,000. So 1.5% then 3%, not 2.5% then 4%.
+ *
+ * A single filer on $300,000 was being charged $5,125 against a true $3,375 —
+ * $1,750 a year too much, on top of everything else Portland costs.
+ *
+ * The thresholds are NOT indexed, unlike the Metro tax below. The rate rises
+ * by 0.8 points in 2027, to 2.3% and 3.8%, thresholds unchanged.
+ */
 const PORTLAND_MULTNOMAH = {
   id: 'portland-multnomah',
   kind: 'bracketed',
   name: 'Portland (Multnomah County)',
   stateCode: 'OR',
+  source: 'https://www.multco.us/finance/preschool-all-personal-income-tax',
   brackets: {
     single: [
       { from: 0, rate: 0 },
-      { from: 125_000, rate: 0.025 },
-      { from: 250_000, rate: 0.04 },
+      { from: 125_000, rate: 0.015 },
+      { from: 250_000, rate: 0.03 },
     ],
     marriedJointly: [
       { from: 0, rate: 0 },
-      { from: 200_000, rate: 0.025 },
-      { from: 400_000, rate: 0.04 },
+      { from: 200_000, rate: 0.015 },
+      { from: 400_000, rate: 0.03 },
     ],
   },
 };
 
+/*
+ * The Metro housing tax is 1%, unchanged — but its thresholds START MOVING in
+ * 2026: $128,000 single and $205,000 joint, up from $125,000 and $200,000,
+ * "adjusted annually for inflation" from this year on. The Preschool tax next
+ * door is not indexed at all, so the two now drift apart and cannot share a
+ * threshold.
+ *
+ * Metro's "joint" band also covers a HEAD OF HOUSEHOLD, which is why one is
+ * declared here rather than left to fall back to the single schedule.
+ */
 const PORTLAND_METRO = {
   id: 'portland-metro',
   kind: 'bracketed',
   name: 'Greater Portland (Metro district)',
   stateCode: 'OR',
+  source: 'https://www.portland.gov/revenue/personal-tax',
   brackets: {
     single: [
       { from: 0, rate: 0 },
-      { from: 125_000, rate: 0.01 },
+      { from: 128_000, rate: 0.01 },
     ],
     marriedJointly: [
       { from: 0, rate: 0 },
-      { from: 200_000, rate: 0.01 },
+      { from: 205_000, rate: 0.01 },
+    ],
+    headOfHousehold: [
+      { from: 0, rate: 0 },
+      { from: 205_000, rate: 0.01 },
     ],
   },
 };

@@ -253,9 +253,19 @@ describe('seven more cities carry their own local income tax', () => {
   });
 
   it('gives Portland brackets, because below the threshold nothing is owed', () => {
-    // Metro's housing tax and Multnomah's preschool tax both start at
-    // $125,000 single. A flat state average charged everyone a little and the
-    // people who actually owe them far too little.
+    /*
+     * Multnomah's preschool tax starts at $125,000 for a single filer. A flat
+     * state average charged everyone a little and the people who actually owe
+     * it far too little.
+     *
+     * THE RATES HERE USED TO BE 2.5% AND 4% AND THAT WAS WRONG. Multnomah
+     * County and the Portland Revenue Division both publish 1.5%, plus "an
+     * additional 1.5%" above $250,000. A single filer on $300,000 was being
+     * charged $1,750 a year too much.
+     *
+     * Metro's housing tax no longer shares these thresholds: from 2026 it
+     * indexes ($128,000 single) while the preschool tax does not.
+     */
     const PORTLAND = '38900';
     const at = (salary: number) =>
       computeCity(defaultCityInputs(PORTLAND, salary, SINGLE, 'rent'), SINGLE, {
@@ -263,8 +273,8 @@ describe('seven more cities carry their own local income tax', () => {
       }).tax.local;
 
     expect(at(100_000)).toBe(0);
-    expect(at(150_000)).toBeCloseTo((150_000 - 125_000) * 0.025, 0);
-    expect(at(300_000)).toBeCloseTo((250_000 - 125_000) * 0.025 + (300_000 - 250_000) * 0.04, 0);
+    expect(at(150_000)).toBeCloseTo((150_000 - 125_000) * 0.015, 0);
+    expect(at(300_000)).toBeCloseTo((250_000 - 125_000) * 0.015 + (300_000 - 250_000) * 0.03, 0);
   });
 
   it('offers exactly one choice per Portland resident, not a sum', () => {

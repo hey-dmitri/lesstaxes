@@ -35,9 +35,13 @@ describe('prior-year figures', () => {
   });
 
   it('covers the states known to have published nothing for 2026', () => {
-    for (const code of ['CA', 'OH', 'OR', 'VT', 'AL']) {
+    // Ohio came OFF this list: its 2026 schedule turned out to be in the
+    // statute all along, even though the Department's own rates page still
+    // stops at 2025 and made it look unpublished.
+    for (const code of ['CA', 'OR', 'VT', 'AL']) {
       expect(stateRules(code).priorYearFigures, code).toBeTruthy();
     }
+    expect(stateRules('OH').priorYearFigures).toBeNull();
   });
 
   /*

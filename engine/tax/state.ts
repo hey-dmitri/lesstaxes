@@ -121,6 +121,22 @@ export interface StateTaxRules {
    * rises, where the state does that. Null means they do not.
    */
   allowancePhaseOut: AllowancePhaseOut | null;
+  /**
+   * A flat amount added once taxable income passes a threshold, where the
+   * state charges one.
+   *
+   * OHIO IS THE ONLY ONE AND IT CANNOT BE WRITTEN AS A BRACKET. Ohio charges
+   * nothing at all up to $26,050 and then "$332.00 plus 2.75% of the amount in
+   * excess of $26,050" — a genuine step in the middle of the schedule, not a
+   * rate. The statute derives the $332 as a low rate applied to that first
+   * band, so it could be written as a bracket of 1.27448%, and above the
+   * threshold that gives the identical answer. Below it, it would charge up to
+   * $332 where Ohio charges nothing, which is the wrong direction against
+   * exactly the people who can least afford it.
+   *
+   * We had no lump at all, which understated every Ohio bill by about $332.
+   */
+  lumpSumTax: { above: USD; amount: USD } | null;
   /** AL, MO, OR allow a deduction for federal income tax paid. Not yet modelled. */
   federalTaxDeductible: boolean;
   hasLocalIncomeTax: boolean;
@@ -651,10 +667,10 @@ export function computeStateTax(
   );
 
   const taxableIncome = Math.max(0, gross - deductions - exemptions);
-  const taxBeforeCredits = applyBrackets(
-    taxableIncome,
-    rules.brackets[schedule] ?? rules.brackets[otherwise],
-  );
+  const lump =
+    rules.lumpSumTax && taxableIncome > rules.lumpSumTax.above ? rules.lumpSumTax.amount : 0;
+  const taxBeforeCredits =
+    lump + applyBrackets(taxableIncome, rules.brackets[schedule] ?? rules.brackets[otherwise]);
 
   const creditsBeforePhaseOut =
     (rules.personalCredit[allowanceKey] ?? rules.personalCredit[otherwise]) +

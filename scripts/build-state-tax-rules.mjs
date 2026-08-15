@@ -85,8 +85,7 @@ const SNAPSHOT_STALE_AFTER_MONTHS = 4;
 const PRIOR_YEAR_FIGURES = {
   California: 'California indexes its brackets, standard deduction and exemption credits every autumn and has not published 2026 yet, so every California figure here is the published 2025 one.',
   Vermont: 'Vermont has published no 2026 rate schedule, so its brackets, standard deduction and personal exemption here are the published 2025 figures.',
-  Ohio: 'Ohio has published no 2026 rate schedule, so its figures here are carried forward from 2025.',
-  Oregon: "Oregon has published no 2026 forms, so its head-of-household standard deduction and exemption credit here are the published 2025 figures.",
+  Oregon: "Oregon has published no 2026 return forms. Its brackets, standard deduction and exemption credit here come from Oregon's own 2026 withholding formulas, but no 2026 head-of-household standard deduction exists anywhere, so that one figure is the published 2025 amount of $4,560.",
   'South Carolina': "South Carolina's dependent exemption here is the published 2025 figure of $4,930; the state indexes it each December and the 2026 amount appears only in return instructions that are not out yet.",
   Utah: "Utah's taxpayer tax credit phase-out thresholds and dependent exemption here are the published 2025 figures; the state has not released 2026 amounts.",
   Idaho: "Idaho's untaxed band of $4,811 for a single filer and $9,622 for a couple is the published 2025 figure; Idaho publishes the 2026 amount around December.",
@@ -138,7 +137,8 @@ const RATES_CHECKED = {
   },
   Hawaii: {
     // 2026 is a step year in the 2024 law: the standard deduction nearly
-    // doubles and we were shipping the 2024-2025 figure.
+    // doubles and we were shipping the 2024-2025 figure. Re-verified from the
+    // statute after a first research report proved unreliable.
     matched: false,
     source: 'https://www.capitol.hawaii.gov/hrscurrent/Vol04_Ch0201-0257/HRS0235/HRS_0235-0002_0004.htm',
     checked: '2026-08-15',
@@ -213,6 +213,20 @@ const RATES_CHECKED = {
     source: 'https://www.maine.gov/revenue/sites/maine.gov.revenue/files/2026-05/ind_tax_rate_sched_2026_rev.pdf',
     checked: '2026-08-15',
   },
+  Ohio: {
+    // 2026 is in the statute even though the Department's rates page stops at
+    // 2025: HB 96 sets "$332.00 plus 2.75%" for 2026 and drops the top band.
+    matched: false,
+    source: 'https://codes.ohio.gov/ohio-revised-code/section-5747.02',
+    checked: '2026-08-15',
+  },
+  Oregon: {
+    // 2026 brackets and deductions confirmed from the 2026 withholding
+    // formulas; the exemption credit was the 2025 figure.
+    matched: false,
+    source: 'https://www.oregon.gov/dor/forms/FormsPubs/withholding-tax-formulas_206-436_2026.pdf',
+    checked: '2026-08-15',
+  },
   Arkansas: {
     // Act 1 of the 2026 First Extraordinary Session cut the top rate to 3.7%
     // retroactive to 1 January.
@@ -265,12 +279,6 @@ const RATES_CHECKED = {
     // 3.07% since 2004, no deduction, no exemption, nothing to get wrong.
     matched: true,
     source: 'https://www.pa.gov/agencies/revenue/resources/tax-types-and-information/personal-income-tax.html',
-    checked: '2026-08-15',
-  },
-  Hawaii: {
-    // Re-verified from the statute after a first report proved unreliable.
-    matched: false,
-    source: 'https://www.capitol.hawaii.gov/hrscurrent/Vol04_Ch0201-0257/HRS0235/HRS_0235-0002_0004.htm',
     checked: '2026-08-15',
   },
   Nebraska: {
@@ -1323,48 +1331,6 @@ const STATE_OVERRIDES = {
    * standard deduction is real money in the wrong direction — it OVERCHARGES
    * every filer in the state.
    */
-  Maine: {
-    /*
-     * Maine does not conform to the federal standard deduction at all any more.
-     * 36 M.R.S. § 5124-C sub-§ 1-B, which takes effect for tax years beginning
-     * on or after 1 January 2026, gives Maine its own base of $12,000 for a
-     * single filer, 1.5x that for a head of household and 2x for a couple,
-     * indexed. So the pre-OBBBA federal figure never applied to Maine.
-     *
-     * Maine Revenue Services publishes the indexed result. Its 2026 schedule,
-     * revised 5 May 2026: single $15,700, joint $31,400, head of household
-     * $23,550. Against the $8,350 shipped, a single filer was being charged
-     * about $430 a year too much and a couple about $880.
-     *
-     * An earlier MRS release, from September 2025, had $15,300 / $30,600 /
-     * $22,950. The May 2026 revision supersedes it and is used here; the
-     * difference is worth about $25 a year.
-     */
-    standardDeduction: { single: 15_700, marriedJointly: 31_400, headOfHousehold: 23_550 },
-    /*
-     * Maine also added a 2% surcharge for 2026 on taxable income above $1M
-     * single, $1.5M joint and head of household, taking the top rate to 9.15%.
-     * The shipped table stops at 7.15%, which understates the very largest
-     * incomes.
-     */
-    brackets: {
-      single: [
-        { from: 0, rate: 0.058 },
-        { from: 27_400, rate: 0.0675 },
-        { from: 64_850, rate: 0.0715 },
-        { from: 1_000_000, rate: 0.0915 },
-      ],
-      marriedJointly: [
-        { from: 0, rate: 0.058 },
-        { from: 54_850, rate: 0.0675 },
-        { from: 129_750, rate: 0.0715 },
-        { from: 1_500_000, rate: 0.0915 },
-      ],
-    },
-    source: 'https://www.maine.gov/revenue/sites/maine.gov.revenue/files/inline-files/ind_tax_rate_sched_2026.pdf',
-    checked: '2026-08-15',
-    note: "Maine's standard deduction and personal exemption phase out above $100,000 of Maine income for a single filer and $150,000 for a couple, reaching zero $75,000 later. That phase-out is not modelled, so above those incomes this figure is too generous.",
-  },
   Arizona: {
     /*
      * Arizona DID update. HB 4168, signed June 2026, aligns Title 43 with
@@ -1584,6 +1550,54 @@ const STATE_OVERRIDES = {
     checked: '2026-08-15',
     note: "Connecticut also adds a flat charge above $56,500 single / $100,500 joint (up to $250 / $500) and recaptures the benefit of its lower rates above $105,000 / $210,000 (up to $3,400 / $6,800). Neither is modelled, so Connecticut tax shown here is lower than the true figure for higher earners.",
   },
+  Ohio: {
+    /*
+     * OHIO CHARGES A LUMP AND WE CHARGED NONE, so every Ohio bill was about
+     * $332 too low — an undercharge on every single filer in the state.
+     *
+     * The schedule is 0% up to $26,050 and then "$332.00 plus 2.75% of the
+     * amount in excess of $26,050". That $332 is a step, not a rate, and it
+     * cannot be written as a bracket without charging it to people below the
+     * threshold who owe nothing at all.
+     *
+     * OHIO HAS PUBLISHED 2026, just not in a form. ORC 5747.02(A)(3)(c), as
+     * amended by House Bill 96 and effective 30 September 2025, sets "$332.00
+     * plus 2.75%" for "2026 and thereafter" — down from $342 for 2025 — and
+     * drops the old 3.125% top band entirely. The Department's own rates page
+     * still stops at 2025, which is why this looked unpublished.
+     */
+    lumpSumTax: { above: 26_050, amount: 332 },
+    source: 'https://codes.ohio.gov/ohio-revised-code/section-5747.02',
+    checked: '2026-08-15',
+    note: "Ohio's personal exemption steps down with income — $2,400 up to $40,000, $2,150 to $80,000, $1,900 to $749,999 and nothing at all from $750,000 — and only the $2,400 is modelled, so Ohio tax shown here is slightly lower than the true figure above $40,000. Ohio also gives couples where both work a credit worth up to $650, which is not modelled, so their figure is higher than the true one.",
+  },
+  Oregon: {
+    /*
+     * The exemption credit is $263 for 2026, from Oregon's own 2026
+     * withholding formulas. Those formulas reproduce every published 2025
+     * figure exactly when checked against the 2025 return — the brackets, the
+     * $256 credit, the $8,500 federal cap and the rate-chart constants — which
+     * is what makes them trustworthy for 2026.
+     *
+     * One caution recorded rather than hidden: the 2026 document still shows
+     * $256 in an un-updated worked example while its formulas say $263.
+     */
+    personalCredit: { single: 263, marriedJointly: 526, headOfHousehold: 263, dependent: 263 },
+    /*
+     * And it is a CLIFF, not a taper: "If your federal AGI is more than
+     * $200,000 ($100,000 if your filing status is single or married filing
+     * separately), enter 0." We handed the credit out at every income. A head
+     * of household falls under "all others", so $200,000.
+     */
+    creditPhaseOut: {
+      hardCliff: true,
+      perDollar: 1,
+      threshold: { single: 100_000, marriedJointly: 200_000, headOfHousehold: 200_000 },
+    },
+    source: 'https://www.oregon.gov/dor/forms/FormsPubs/withholding-tax-formulas_206-436_2026.pdf',
+    checked: '2026-08-15',
+    note: "Oregon lets you subtract the federal income tax you paid, capped at $8,500 and tapering to nothing by $145,000 of income for a single filer. That is not modelled — the federalTaxDeductible flag has always been a label rather than a calculation — so Oregon tax shown here is higher than the true figure by up to about $743 a year at lower incomes.",
+  },
   Arkansas: {
     /*
      * THE SEVENTH STATE TO LEGISLATE AFTER THE FEBRUARY TABLE. Act 1 of the
@@ -1678,24 +1692,6 @@ const STATE_OVERRIDES = {
     source: 'https://www.tax.ny.gov/pdf/current_forms/it/it2105i.pdf',
     checked: '2026-08-15',
     note: 'New York lets you itemise on the state return whether or not you did federally, on pre-2018 rules — property tax uncapped and mortgage interest on $1,000,000 of debt. That is not modelled, so New York tax shown here is higher than the true figure for a homeowner, by roughly $650 to $770 a year plus more again in New York City. Running the other way, New York recaptures the benefit of its lower rates from high earners, which is also not modelled and is worth about $481 a year at $150,000.',
-  },
-  Oregon: {
-    /*
-     * Oregon's exemption credit is a CLIFF, not a taper: "If your federal AGI
-     * is more than $200,000 ($100,000 if your filing status is single or
-     * married filing separately), enter 0." We handed out the $256 at every
-     * income, undercharging a single filer on $150,000 by exactly that.
-     *
-     * A head of household uses the $200,000 threshold.
-     */
-    creditPhaseOut: {
-      hardCliff: true,
-      perDollar: 1,
-      threshold: { single: 100_000, marriedJointly: 200_000, headOfHousehold: 200_000 },
-    },
-    source: 'https://www.oregon.gov/dor/forms/FormsPubs/form-or-40-inst_101-040-1_2025.pdf',
-    checked: '2026-08-15',
-    note: "Oregon lets you subtract the federal income tax you paid, capped at $8,500 and tapering to nothing by $145,000 of income for a single filer. That is not modelled — the federalTaxDeductible flag has always been a label rather than a calculation — so Oregon tax shown here is higher than the true figure by up to about $743 a year at lower incomes. Oregon's head-of-household standard deduction is also the unchanged 2025 figure; the state has not published 2026.",
   },
   'North Dakota': {
     /*
@@ -2185,6 +2181,35 @@ function applyBracketsLocal(income, brackets) {
   return tax;
 }
 
+/*
+ * DUPLICATE KEYS IN THESE TABLES ARE SILENT AND EXPENSIVE. A second `Oregon:`
+ * in STATE_OVERRIDES quietly discarded the first — including a correction and
+ * the note that explained it — and nothing failed, because in JavaScript the
+ * later key simply wins. The tables are long enough now that a state can be
+ * added twice without anyone seeing it.
+ *
+ * JavaScript has already collapsed the duplicates by the time this runs, so
+ * this cannot catch them by inspecting the object. It reads the source text
+ * instead, which is the only place the evidence survives.
+ */
+for (const [label, table] of [
+  ['STATE_OVERRIDES', 'const STATE_OVERRIDES = {'],
+  ['HEAD_OF_HOUSEHOLD', 'const HEAD_OF_HOUSEHOLD = {'],
+  ['RATES_CHECKED', 'const RATES_CHECKED = {'],
+  ['ITEMIZED_DEDUCTIONS', 'const ITEMIZED_DEDUCTIONS = {'],
+  ['STATE_EITC', 'const STATE_EITC = {'],
+]) {
+  const source = readFileSync(new URL(import.meta.url), 'utf8');
+  const start = source.indexOf(table);
+  if (start < 0) continue;
+  const body = source.slice(start, source.indexOf('\n};', start));
+  const seen = new Set();
+  for (const m of body.matchAll(/^  '?([A-Z][A-Za-z ]+)'?: \{/gm)) {
+    if (seen.has(m[1])) throw new Error(`${label}: ${m[1]} appears twice — the later one silently wins`);
+    seen.add(m[1]);
+  }
+}
+
 for (const [name, s] of Object.entries(states)) {
   s.notes = s.footnotes.map((f) => footnoteText[f]).filter(Boolean);
 
@@ -2206,6 +2231,7 @@ for (const [name, s] of Object.entries(states)) {
 
   s.creditPhaseOut = null;
   s.allowancePhaseOut = null;
+  s.lumpSumTax = null;
   /*
    * Rules we know this state has and do not model, in plain words, each saying
    * which way it runs. Kept apart from `notes` — which carries the source
@@ -2361,6 +2387,13 @@ for (const [name, s] of Object.entries(states)) {
         throw new Error(`${name}: unknown allowance phase-out kind ${rule.kind}`);
       }
       s.allowancePhaseOut = rule;
+    }
+    if (override.lumpSumTax) {
+      const { above, amount } = override.lumpSumTax;
+      if (!(above > 0) || !(amount > 0)) {
+        throw new Error(`${name}: implausible lump-sum tax ${amount} above ${above}`);
+      }
+      s.lumpSumTax = override.lumpSumTax;
     }
     if (override.creditPhaseOut) {
       const { perDollar, threshold, hardCliff } = override.creditPhaseOut;
