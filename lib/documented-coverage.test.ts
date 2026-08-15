@@ -91,6 +91,32 @@ describe('what the README claims', () => {
     expect(readme).toContain(`${itemising === 14 ? 'Fourteen' : String(itemising)} states now let a`);
   });
 
+  /*
+   * THE STATES THAT DO IT DIFFERENTLY ARE A SEPARATE COUNT, and it drifted on
+   * its own. Illinois was given a property tax credit and the README went on
+   * saying "plus two more", naming New Jersey and Wisconsin — which is the
+   * exact shape of every other stale claim here: the data grew, the sentence
+   * did not, and nothing failed.
+   *
+   * They cannot be folded into the itemising count because none of them is
+   * itemising. New Jersey relieves property tax with no itemising at all,
+   * Wisconsin credits mortgage interest and ignores property tax, and Illinois
+   * credits property tax to an income cliff. What they share is only that a
+   * homeowner gets something back, so the test counts the three fields rather
+   * than naming the states.
+   */
+  it('states the real number of states that relieve housing costs another way', () => {
+    const otherWays = taxing.filter(
+      (s) => s.propertyTaxRelief || s.itemisedDeductionCredit || s.propertyTaxCredit,
+    );
+    const words = ['one', 'two', 'three', 'four', 'five', 'six'];
+    // The README is hard-wrapped, so "New Jersey" spans two lines. Match on
+    // the prose, not on the line breaks.
+    const unwrapped = readme.replace(/\s+/g, ' ');
+    expect(unwrapped).toContain(`plus ${words[otherWays.length - 1]} more that do it differently`);
+    for (const s of otherWays) expect(unwrapped, s.code).toContain(s.name);
+  });
+
   it('does not quote a test count it cannot keep true', () => {
     expect(readme).not.toMatch(/\*\*\d+ tests\*\*/);
   });

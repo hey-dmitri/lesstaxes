@@ -26,7 +26,7 @@ index, statutory rate or state average — on the [data page](https://packorstay
 | State income tax — all 50 states + DC | ✅ |
 | Every taxing state has a recorded source — rates, allowances, head of household | 42 of 42, all on the state's own site |
 | ...of which against a 2026 document | 32; the other 10 against the state's most recent, because it has published no 2026 figures |
-| State itemised deductions | 14 states, plus NJ property tax relief and WI's credit |
+| State itemised deductions | 14 states, plus NJ's property tax relief, WI's mortgage-interest credit and IL's property tax credit |
 | Local income tax — 13 named cities, state averages elsewhere | ✅ |
 | 387 metros + 51 rural fallbacks, price parities | ✅ |
 | Rent and home price scaled to household and income, effective property tax | ✅ |
@@ -150,10 +150,11 @@ Total data cost: **$0**. No paid feeds, no runtime API calls.
 
    **State itemising is no longer the largest gap.** Fourteen states now let a
    homeowner claim mortgage interest and property tax on the state return and
-   all fourteen are calculated, plus two more that do it differently: New
+   all fourteen are calculated, plus three more that do it differently: New
    Jersey relieves property tax without itemising at all — the only relief here
-   a renter can claim — and Wisconsin gives a credit for mortgage interest
-   while ignoring property tax entirely.
+   a renter can claim, at 18% of rent — Wisconsin gives a credit for mortgage
+   interest while ignoring property tax entirely, and Illinois credits 5% of
+   property tax until income passes $250,000, when it stops dead.
 
 8. **Ten states are on last year's figures, because they have not published
    this year's.** States index on their own timetable and many wait for the
