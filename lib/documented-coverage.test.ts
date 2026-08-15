@@ -79,7 +79,10 @@ describe('what the README claims', () => {
 
   it('states the real number of states on prior-year figures', () => {
     const priorYear = taxing.filter((s) => s.priorYearFigures).length;
-    expect(readme).toContain(`${priorYear === 10 ? 'Ten' : String(priorYear)} states are on last year's figures`);
+    // The README writes counts as words. A ternary against one hard-coded
+    // number is how this last passed while saying "Ten" of twelve states.
+    const words = ['Nine', 'Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen'];
+    expect(readme).toContain(`${words[priorYear - 9]} states are on last year's figures`);
     // And names every one of them.
     for (const s of taxing.filter((x) => x.priorYearFigures)) {
       expect(readme, s.code).toContain(s.name.replace('Washington DC', 'DC'));

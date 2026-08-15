@@ -536,6 +536,25 @@ export type AllowancePhaseOut =
       /** Round the REDUCTION down to this multiple, where the state says to. */
       roundReductionDownTo?: number;
       /**
+       * Round the REDUCTION UP to this multiple. The opposite direction, and
+       * the states that need it are the ones that publish a BANDED table
+       * rather than a formula.
+       *
+       * Connecticut is the case. Its Table A is not a taper, it is a staircase
+       * in $1,000 steps: $30,000 or less keeps the whole $15,000 exemption,
+       * "more than $30,000 but not more than $31,000" keeps $14,000, and so on
+       * down to "$44,000 and up" keeping nothing. A dollar over a band edge
+       * costs a full $1,000 of exemption.
+       *
+       * Modelled as a smooth line, this engine gave a Connecticut filer up to
+       * $1,000 of exemption the state does not allow — most of it in the band
+       * above $44,000, where the table has already reached zero and a straight
+       * line has not. Small money, about $50 of tax, and in the flattering
+       * direction: an allowance the state takes away is exactly the error that
+       * makes a destination look better than it is.
+       */
+      roundReductionUpTo?: number;
+      /**
        * Which line wins where a status has more than one.
        *
        * 'max' is Wisconsin: two alternative formulas that cross, and the
@@ -975,6 +994,11 @@ export function computeStateTax(
       if (rule.roundReductionDownTo) {
         reduction =
           Math.floor(reduction / rule.roundReductionDownTo) * rule.roundReductionDownTo;
+      }
+      if (rule.roundReductionUpTo) {
+        // Ceil, so any fraction of a band costs the whole band — which is what
+        // a banded table does and a taper does not.
+        reduction = Math.ceil(reduction / rule.roundReductionUpTo) * rule.roundReductionUpTo;
       }
       base = Math.max(base, seg.base);
       const value = seg.base - reduction;

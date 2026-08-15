@@ -83,6 +83,31 @@ const SNAPSHOT_STALE_AFTER_MONTHS = 4;
  * year old.
  */
 const PRIOR_YEAR_FIGURES = {
+  /*
+   * CONNECTICUT AND DELAWARE WERE FOUND BY THEIR FILENAMES, and the filenames
+   * were not the evidence — opening the documents was.
+   *
+   * Both sat in the count of states "checked against a 2026 document" with
+   * source URLs living in a /2025/ folder. Filename years lie in both
+   * directions, so that alone proved nothing: Nebraska's schedule sits in a
+   * 2025 folder under a "Rev. 11-2025" stamp and is headed "2026 Nebraska
+   * Estimated Income Tax Rate Schedule", which is genuinely 2026. These two
+   * are not.
+   *
+   * Connecticut's document is headed "2025 Tax Calculation Schedule" and every
+   * table inside it says "for 2025 Taxable Year"; the string 2026 does not
+   * appear anywhere in it. The "12/25" is a December 2025 revision date.
+   * Delaware's is headed "RESIDENT INSTRUCTIONS 2025" and tells you what to
+   * file "for 2025"; its "Revised 03/26/26" stamp is a March 2026 reprint of
+   * the 2025 instructions.
+   *
+   * Neither state's figures are wrong for it. Both are simply last year's, and
+   * that is what this list is for.
+   */
+  Connecticut:
+    "Connecticut's brackets, personal exemption and tax credit here are read off its 2025 Tax Calculation Schedule; the state has published no 2026 one. Connecticut does not index these for inflation, so they should carry unchanged unless the legislature moves them.",
+  Delaware:
+    "Delaware's standard deduction and personal credit here come from its 2025 resident instructions, the most recent published. Its bracket schedule is not in that document at all — Delaware prints the rates in a separate tax table — so the brackets shipped here rest on the annual compilation rather than on a Delaware document, and are the only figures in this state not read off the state's own paper.",
   California: 'California indexes its brackets, standard deduction and exemption credits every autumn and has not published 2026 yet, so every California figure here is the published 2025 one.',
   Vermont: 'Vermont has published no 2026 rate schedule, so its brackets, standard deduction and personal exemption here are the published 2025 figures.',
   Oregon: "Oregon has published no 2026 return forms. Its brackets, standard deduction and exemption credit here come from Oregon's own 2026 withholding formulas, but no 2026 head-of-household standard deduction exists anywhere, so that one figure is the published 2025 amount of $4,560.",
@@ -672,7 +697,18 @@ const RATES_CHECKED = {
     checked: '2026-08-15',
   },
   Delaware: {
+    /*
+     * WHAT THIS DOCUMENT ACTUALLY CONFIRMS is the standard deduction and the
+     * personal credit, and nothing else. Delaware's resident instructions
+     * carry no rate table — they send you to a separate tax table for income
+     * under $60,000 and a schedule at the end of it above — so the brackets
+     * here are still the compilation's, unverified against Delaware's own
+     * paper. The state carries a note saying so.
+     *
+     * It is also a 2025 document, not a 2026 one. See PRIOR_YEAR_FIGURES.
+     */
     matched: true,
+    confirms: 'allowances only — this document contains no rate schedule',
     source: 'https://revenuefiles.delaware.gov/2025/PITForms_Instructions/Instructions/PIT-RES_Instructions_2025-01.pdf',
     checked: '2026-08-15',
   },
@@ -1943,9 +1979,28 @@ const STATE_OVERRIDES = {
      * short of the truth rather than past it.
      */
     personalExemption: { single: 15_000, marriedJointly: 24_000, headOfHousehold: 19_000 },
+    /*
+     * A STAIRCASE, NOT A TAPER, and the difference is real money.
+     *
+     * Connecticut's Table A is a banded lookup in $1,000 steps: $30,000 or
+     * less keeps the whole $15,000 exemption, "more than $30,000 but not more
+     * than $31,000" keeps $14,000, and it walks down to "$44,000 and up"
+     * keeping nothing. One dollar over a band edge costs a full $1,000 of
+     * exemption.
+     *
+     * Modelled as a straight line, this gave a Connecticut filer up to $1,000
+     * of exemption the state does not allow — in the middle of every band, and
+     * worst in the stretch above $44,000 where the table has already reached
+     * zero and a line has not. About $50 of tax, in the direction that
+     * flatters a destination.
+     *
+     * roundReductionUpTo turns the line back into the staircase it was drawn
+     * from. Read off the state's own Table A, page 1 of Form CT-1040 TCS.
+     */
     allowancePhaseOut: {
       kind: 'linear',
       appliesTo: ['personalExemption'],
+      roundReductionUpTo: 1_000,
       segments: {
         single: [{ base: 15_000, start: 30_000, perDollar: 1 }],
         marriedJointly: [{ base: 24_000, start: 48_000, perDollar: 1 }],
@@ -2979,7 +3034,16 @@ for (const [name, s] of Object.entries(states)) {
    */
   const ratesCheck = RATES_CHECKED[name];
   s.ratesCheckedAgainstState = ratesCheck
-    ? { url: ratesCheck.source, checked: ratesCheck.checked, matched: ratesCheck.matched === true }
+    ? {
+        url: ratesCheck.source,
+        checked: ratesCheck.checked,
+        matched: ratesCheck.matched === true,
+        // What the document actually settles, where it is less than everything.
+        // Delaware's resident instructions carry the allowances and no rate
+        // table at all, so saying only "checked" would have been a stronger
+        // claim than the paper supports.
+        ...(ratesCheck.confirms ? { confirms: ratesCheck.confirms } : {}),
+      }
     : null;
 
   const itemized = ITEMIZED_DEDUCTIONS[name];

@@ -284,7 +284,9 @@ answer          =  in your pocket THERE  −  in your pocket HERE`}</pre>
             <strong>Allowances that shrink as you earn more.</strong> Several states quietly take
             back the deduction or exemption they give you, and we used to hand it out at every
             income. Wisconsin&rsquo;s disappears completely by $136,000. Connecticut&rsquo;s is gone
-            by $45,000. Colorado&rsquo;s is the harshest shape of the lot &mdash; above $300,000 the
+            above $44,000, and it goes in $1,000 steps rather than smoothly &mdash; a dollar over a
+            band edge costs a whole $1,000 of exemption. Colorado&rsquo;s is the harshest shape of
+            the lot &mdash; above $300,000 the
             standard deduction drops from $16,100 to a $1,000 floor in a single step, worth about
             $660 a year for a single filer and $1,330 for a couple. South Carolina, Maine,
             Minnesota, Maryland, Rhode Island and Alabama all do a version of it, and Oregon and
@@ -313,8 +315,9 @@ answer          =  in your pocket THERE  −  in your pocket HERE`}</pre>
             Every state&rsquo;s rates and allowances have now been read off that state&rsquo;s own
             publication — all {COVERAGE.ratesChecked} of the {COVERAGE.taxing} that tax wages.
           </strong>{' '}
-          Twenty-four of them were wrong. Ten are on last year&rsquo;s published figures because
-          the state has not released this year&rsquo;s, and those are named below. The{' '}
+          Twenty-four of them were wrong. {STATES_ON_PRIOR_YEAR.length} are on last year&rsquo;s
+          published figures because the state has not released this year&rsquo;s, and those are
+          named below. The{' '}
           <Link href="/data">data page</Link> shows, for every location, the date its state was
           checked, and that date links to the document it was checked against.
         </p>
@@ -574,7 +577,8 @@ answer          =  in your pocket THERE  −  in your pocket HERE`}</pre>
         </ul>
         <p>
           Every other state has been read off its own publication with nothing left outstanding.
-          Ten of the {COVERAGE.taxing} are checked against the state&rsquo;s most recent figures
+          {STATES_ON_PRIOR_YEAR.length} of the {COVERAGE.taxing} are checked against the
+          state&rsquo;s most recent figures
           rather than a 2026 document, because those states have published nothing for 2026 — they
           are named just below.
         </p>

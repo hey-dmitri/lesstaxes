@@ -921,6 +921,7 @@
         "appliesTo": [
           "personalExemption"
         ],
+        "roundReductionUpTo": 1000,
         "segments": {
           "single": [
             {
@@ -1384,7 +1385,7 @@
       "modellingGaps": [
         "Connecticut allows no itemised deductions and no standard deduction at all — the personal exemption is the only across-the-board subtraction — so a homeowner gets no relief for a mortgage here, and that is Connecticut's rule rather than a gap. Its property tax credit of up to $300 is not modelled, so Connecticut tax shown here is higher than the true figure for anyone who owns a home or a car."
       ],
-      "priorYearFigures": null,
+      "priorYearFigures": "Connecticut's brackets, personal exemption and tax credit here are read off its 2025 Tax Calculation Schedule; the state has published no 2026 one. Connecticut does not index these for inflation, so they should carry unchanged unless the legislature moves them.",
       "ratesCheckedAgainstState": {
         "url": "https://portal.ct.gov/-/media/drs/forms/2025/income/ct-1040-tcs_1225.pdf",
         "checked": "2026-08-15",
@@ -1638,11 +1639,12 @@
       "propertyTaxCredit": null,
       "payrollTaxDeduction": null,
       "modellingGaps": [],
-      "priorYearFigures": null,
+      "priorYearFigures": "Delaware's standard deduction and personal credit here come from its 2025 resident instructions, the most recent published. Its bracket schedule is not in that document at all — Delaware prints the rates in a separate tax table — so the brackets shipped here rest on the annual compilation rather than on a Delaware document, and are the only figures in this state not read off the state's own paper.",
       "ratesCheckedAgainstState": {
         "url": "https://revenuefiles.delaware.gov/2025/PITForms_Instructions/Instructions/PIT-RES_Instructions_2025-01.pdf",
         "checked": "2026-08-15",
-        "matched": true
+        "matched": true,
+        "confirms": "allowances only — this document contains no rate schedule"
       },
       "itemizedDeductions": null,
       "communityProperty": false,

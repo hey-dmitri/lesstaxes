@@ -25,7 +25,7 @@ index, statutory rate or state average — on the [data page](https://packorstay
 | Bracket arithmetic, FICA, federal income tax, CTC, EITC | ✅ |
 | State income tax — all 50 states + DC | ✅ |
 | Every taxing state has a recorded source — rates, allowances, head of household | 42 of 42, all on the state's own site |
-| ...of which against a 2026 document | 32; the other 10 against the state's most recent, because it has published no 2026 figures |
+| ...of which against a 2026 document | 30; the other 12 against the state's most recent, because it has published no 2026 figures |
 | State itemised deductions | 14 states, plus NJ's property tax relief, WI's mortgage-interest credit and IL's property tax credit |
 | Local income tax — 13 named cities, state averages elsewhere | ✅ |
 | 387 metros + 51 rural fallbacks, price parities | ✅ |
@@ -156,15 +156,25 @@ Total data cost: **$0**. No paid feeds, no runtime API calls.
    interest while ignoring property tax entirely, and Illinois credits 5% of
    property tax until income passes $250,000, when it stops dead.
 
-8. **Ten states are on last year's figures, because they have not published
+8. **Twelve states are on last year's figures, because they have not published
    this year's.** States index on their own timetable and many wait for the
    return forms, which for 2026 means late 2026 or early 2027. The calculator
    has to answer today, so where 2026 does not exist we ship the state's last
    published figures and name the state.
 
-   Alabama, California, Idaho, Mississippi, Oklahoma, Oregon, Rhode Island,
-   South Carolina, Utah and Vermont, each with a sentence saying which figures
-   are affected and why. Prices rise, so last year's bands are slightly
+   Alabama, California, Connecticut, Delaware, Idaho, Mississippi, Oklahoma,
+   Oregon, Rhode Island, South Carolina, Utah and Vermont, each with a sentence
+   saying which figures are affected and why.
+
+   Connecticut and Delaware joined the list after their cited documents were
+   opened rather than trusted. Both source URLs sat in a `/2025/` folder, which
+   proves nothing on its own — Nebraska's genuinely-2026 schedule also lives in
+   a 2025 folder under a 2025 revision stamp. But Connecticut's document is
+   headed "2025 Tax Calculation Schedule" and does not contain the string 2026
+   anywhere, and Delaware's is headed "RESIDENT INSTRUCTIONS 2025". Delaware's
+   also turned out to carry no rate table at all, so its brackets are the one
+   set of figures on this site still resting on the compilation rather than on
+   the state's own paper, and the state says so. Prices rise, so last year's bands are slightly
    narrow and last year's allowances slightly small — meaning these show a
    little MORE tax than is really owed. The error runs against us, not against
    the reader, and it is stated on the methodology page rather than left to be

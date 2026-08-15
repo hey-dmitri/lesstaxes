@@ -4,6 +4,16 @@ import { useDeferredValue, useMemo, useState } from 'react';
 
 import { formatUSD } from '@/engine';
 import { DATASET_ROWS, type DatasetRow } from '@/lib/dataset-rows';
+import { ALL_STATE_CODES, stateRules } from '@/engine';
+
+/*
+ * Counted, not typed. This said "Ten" while twelve states were on prior-year
+ * figures — Connecticut and Delaware joined once their cited documents were
+ * opened and turned out to be 2025 papers with 2026 revision stamps.
+ */
+const PRIOR_YEAR_COUNT = ALL_STATE_CODES.map((code) => stateRules(code)).filter(
+  (s) => s.priorYearFigures,
+).length;
 
 const pct = (v: number, dp = 1) => `${(v * 100).toFixed(dp)}%`;
 
@@ -167,7 +177,7 @@ export function DatasetBrowser() {
                 ['Local tax', 'Local income tax jurisdictions'],
                 [
                   'Tax checked',
-                  "When this state's rates and allowances were last read off the state's own publication, rather than taken from the annual bracket table. Ten states are checked against their most recent figures rather than a 2026 document, because they have published none",
+                  `When this state's rates and allowances were last read off the state's own publication, rather than taken from the annual bracket table. ${PRIOR_YEAR_COUNT} states are checked against their most recent figures rather than a 2026 document, because they have published none`,
                 ],
               ].map(([label, title]) => (
                 <th
