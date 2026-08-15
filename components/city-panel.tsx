@@ -163,7 +163,9 @@ export function CityPanel({
         className="flex flex-col rounded-xl border"
         style={{ borderColor: 'var(--accent)', background: 'var(--surface)' }}
       >
-        <div className="flex flex-col gap-3 px-5 py-4">
+        {/* Same padding as the filled state, so choosing a city does not
+            shift the frame the reader is already looking at. */}
+        <div className="flex flex-col gap-3 px-4 py-3.5">
           <div className="flex items-center gap-2">
             <StepBadge n={step} />
             <span className="eyebrow">{title}</span>
@@ -212,7 +214,13 @@ export function CityPanel({
       className="flex flex-col rounded-xl border"
       style={{ borderColor: 'var(--rule-strong)', background: 'var(--surface)' }}
     >
-      <div className="flex shrink-0 flex-col gap-3 px-5 pt-4">
+      {/*
+        Padding and type step down a little from what they were, because the
+        column itself did: the two cities share half the width on a wide screen
+        now rather than 60% of it. Every pixel taken off the frame here is a
+        pixel the three mortgage fields keep, and they have to stay on one line.
+      */}
+      <div className="flex shrink-0 flex-col gap-3 px-4 pt-3.5">
         <div className="flex items-center gap-2">
           <StepBadge n={step} done />
           <span className="eyebrow">{title}</span>
@@ -233,8 +241,14 @@ export function CityPanel({
           className="flex items-baseline gap-2 border-b pb-3"
           style={{ borderColor: 'var(--rule)' }}
         >
+          {/*
+            Sized to the narrower column. "Louisville/Jefferson County" and
+            "Rest of District of Columbia" are real entries in this list, and
+            they share the line with the state code and the change button, so
+            the name has to give way before the row does.
+          */}
           <h2
-            className="font-display text-[1.9rem] font-bold leading-none tracking-[-0.03em]"
+            className="font-display text-[1.5rem] font-bold leading-none tracking-[-0.03em] xl:text-[1.7rem]"
             style={{ color: 'var(--ink)' }}
           >
             {m.shortName.replace(/,.*$/, '')}
@@ -254,7 +268,7 @@ export function CityPanel({
         </div>
       </div>
 
-      <div className="flex flex-col gap-3 px-5 py-3.5 lg:flex-1">
+      <div className="flex flex-col gap-2.5 px-4 py-3 lg:flex-1">
         {picking && picker}
 
         {/*
@@ -327,7 +341,7 @@ export function CityPanel({
               unrelated decisions; the shared note now sits under all three.
             */}
             <div>
-              <div className="grid grid-cols-3 items-end gap-2">
+              <div className="grid grid-cols-3 items-end gap-1.5">
                 <PercentField
                   label="Down payment"
                   value={state.housing.downPayment}

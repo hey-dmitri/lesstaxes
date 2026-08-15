@@ -425,8 +425,20 @@ export function Calculator({ initial }: CalculatorProps) {
         run away. The cities now share a nested grid, so they stretch to each
         other and to nothing else, and items-start lets the answer column grow
         downwards on its own without moving anything.
+
+        THE SPLIT IS EVEN ON A WIDE SCREEN. The two city columns used to take
+        60% of the width between them, which had the form outweighing the
+        thing the form is for. Nobody comes here to fill in a form. They come
+        for the verdict and the reasoning under it, and that half was the half
+        running out of room — the breakdown rows and the table are what get
+        read once the answer lands.
+
+        At lg the ratio stays near where it was. The city columns are already
+        tight at 1024px, and the three mortgage fields share one line by
+        request, so an even split there would squeeze them for the sake of
+        space the answer panel does not need at that width.
       */}
-      <div className="grid flex-1 items-start gap-3 lg:grid-cols-[minmax(0,2fr)_minmax(0,1.3fr)]">
+      <div className="grid flex-1 items-start gap-3 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1.2fr)] xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
         <div className="grid gap-3 sm:grid-cols-2">
           <CityPanel
             title="Living now"
