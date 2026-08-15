@@ -83,15 +83,32 @@ Total data cost: **$0**. No paid feeds, no runtime API calls.
    stripping the embedded average out per category, which the survey does not
    publish. Worth a few hundred a year. The rates stay shipped and visible in
    the data browser, labelled reference-only, for when it can be done.
-4. **Only 5 of 30 graduated states have been checked against their own
-   publication.** California, Maryland, Minnesota, Maine and North Dakota are
-   verified — including how each treats a head of household, which nothing
-   checked before and which California was getting wrong by $2,028 a year. The
-   other 25 carry `headOfHouseholdBasis: 'assumed-single'`, which is deliberately
-   not spelled `'single'`: it records that nobody has looked, and the build
-   prints the list every time it runs. Tax Foundation, the source for brackets,
-   publishes single and joint columns only, so this can only come from each
-   state's own revenue department.
+4. **28 of 30 graduated states have been checked against their own publication
+   for head of household.** Nothing checked this before, and 17 of the 28 were
+   wrong — always against a single parent, by $75 to $2,559 a year. Six
+   different shapes turned up: the state's own rate schedule, the joint
+   schedule, the joint schedule with its own deduction, a shared schedule with
+   its own deduction, the single schedule with the joint exemption, and the
+   single schedule with its own deduction. There is no pattern to guess from,
+   which is why each one had to be read.
+
+   Nebraska and Vermont are the two left. Both publish a head-of-household
+   schedule, both were transcribed, and both were rejected by the build guard
+   because the only figures published are 2025 and this dataset ships 2026
+   brackets — mixing tax years within one state made a head of household pay
+   more than a single filer. They wait for their 2026 figures.
+
+   Anything unchecked carries `headOfHouseholdBasis: 'assumed-single'`, which is
+   deliberately not spelled `'single'`: it records that nobody has looked, and
+   the build prints the list every time it runs. Tax Foundation, the source for
+   brackets, publishes single and joint columns only, so this can only come from
+   each state's own revenue department.
+
+   One narrower gap remains inside a checked state: Arkansas publishes separate
+   low-income tax tables by filing status, with a higher threshold for a head of
+   household. That is a rule this engine does not model at all. It bites only
+   well below the salaries this calculator is used for, and it errs against the
+   reader.
 5. **Local income tax outside the 13 named cities** is still each state's
    average, which is fair where rates are uniform and wrong where they are not.
 

@@ -35,10 +35,11 @@
  * the user confirms, rather than being applied blindly to the whole metro.
  */
 
-import { readFileSync, writeFileSync } from 'node:fs';
+import { readFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { CURRENT_DATASET_VERSION } from './lib/version.mjs';
+import { writeDataset } from './lib/write-dataset.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 /** Overridable so a new dated release can be built without editing every script. */
@@ -525,7 +526,7 @@ if (!byMetro['28140'] || !byMetro['19820']) throw new Error('Kansas City and Det
 
 // --- emit -------------------------------------------------------------------
 
-writeFileSync(
+writeDataset(
   OUT,
   `${JSON.stringify(
     {

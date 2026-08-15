@@ -32,6 +32,7 @@ import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { CURRENT_DATASET_VERSION } from './lib/version.mjs';
+import { writeDataset } from './lib/write-dataset.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 /** Overridable so a new dated release can be built without editing every script. */
@@ -777,7 +778,7 @@ const provenance = {
   },
 };
 
-writeFileSync(
+writeDataset(
   resolve(DATA_DIR, 'housing.json'),
   `${JSON.stringify(
     {
@@ -802,7 +803,7 @@ writeFileSync(
   )}\n`,
 );
 
-writeFileSync(
+writeDataset(
   resolve(DATA_DIR, 'transport.json'),
   `${JSON.stringify(
     {

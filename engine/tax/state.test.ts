@@ -160,11 +160,20 @@ describe('head of household', () => {
     // The verified ones must stay verified: silently dropping back to an
     // assumption is exactly the regression this whole change is about.
     for (const code of [
-      'AL', 'CA', 'CT', 'HI', 'MD', 'ME', 'MN', 'MO', 'ND', 'NJ', 'NM', 'NY', 'OH',
-      'OK', 'OR', 'RI', 'SC', 'VA', 'WI', 'WV',
+      'AL', 'AR', 'CA', 'CT', 'DC', 'DE', 'HI', 'ID', 'KS', 'MA', 'MD', 'ME',
+      'MN', 'MO', 'MS', 'MT', 'ND', 'NJ', 'NM', 'NY', 'OH', 'OK', 'OR', 'RI',
+      'SC', 'VA', 'WI', 'WV',
     ]) {
       expect(stateRules(code).headOfHouseholdBasis).not.toBe('assumed-single');
     }
+    // Nebraska and Vermont are the only two left, and they are blocked on the
+    // states publishing 2026 figures rather than on nobody having looked.
+    expect(
+      graduated
+        .filter((s) => s.headOfHouseholdBasis === 'assumed-single')
+        .map((s) => s.code)
+        .sort(),
+    ).toEqual(['NE', 'VT']);
   });
 
   it('reproduces California Schedule Z rather than Schedule X', () => {
@@ -185,6 +194,98 @@ describe('head of household', () => {
 
   it('leaves links pinned to an older release on the single schedule', () => {
     expect(computeStateTax(HOH, stateRules('CA', '2026.11')).scheduleUsed).toBe('single');
+  });
+
+  /*
+   * THE LAST EIGHT, and the two that turned out to have nothing of their own.
+   *
+   * Delaware and Arkansas are pinned here precisely BECAUSE nothing changed.
+   * "Checked and identical to single" and "never looked at" produce the same
+   * numbers, and the only thing separating them is a record. If a later refresh
+   * moves either state's figures apart, this fails and someone re-reads the
+   * form instead of assuming the old answer still holds.
+   */
+  it('leaves Delaware and Arkansas exactly where a single filer sits', () => {
+    for (const code of ['DE', 'AR']) {
+      const rules = stateRules(code);
+      expect(rules.headOfHouseholdBasis).toBe('single');
+      expect(rules.standardDeduction.headOfHousehold).toBeUndefined();
+      expect(rules.personalExemption.headOfHousehold).toBeUndefined();
+
+      const hoh = computeStateTax(HOH, rules);
+      const single = computeStateTax({ ...HOH, filingStatus: 'single' }, rules);
+      expect(hoh.tax, code).toBeCloseTo(single.tax, 2);
+    }
+  });
+
+  /*
+   * Montana's is the widest gap found anywhere: HB 337 puts the 4.7% band at
+   * $47,500 single and $71,250 head of household for 2026, and the federal
+   * standard deduction Montana starts from moves too.
+   */
+  it('reads Montana HB 337 head-of-household brackets', () => {
+    const mt = stateRules('MT');
+    expect(mt.brackets.headOfHousehold?.[1]?.from).toBe(71_250);
+    expect(mt.standardDeduction.headOfHousehold).toBe(24_150);
+    expect(computeStateTax(HOH, mt).scheduleUsed).toBe('headOfHousehold');
+  });
+
+  /*
+   * Idaho's flat rate sits above an exempt band, and Form 40's worksheet sends
+   * a head of household to the JOINT figure: "$4,811 single ... $9,622 married
+   * filing jointly, head of household, or qualifying surviving spouse".
+   */
+  it('sends Idaho to the joint exempt band', () => {
+    const id = stateRules('ID');
+    expect(id.headOfHouseholdBasis).toBe('marriedJointly');
+    expect(computeStateTax(HOH, id).scheduleUsed).toBe('marriedJointly');
+    expect(computeStateTax(HOH, id).deductions).toBe(24_150);
+  });
+
+  /*
+   * Kansas is the only state found with an ADDITIONAL exemption on top of the
+   * one everybody gets: $9,160 plus $2,320 for filing as head of household.
+   * Reading the standard deduction and stopping there would have missed half.
+   */
+  it('adds the extra Kansas head-of-household exemption, not just the deduction', () => {
+    const ks = stateRules('KS');
+    expect(ks.standardDeduction.headOfHousehold).toBe(6_180);
+    expect(ks.personalExemption.headOfHousehold).toBe(ks.personalExemption.single + 2_320);
+  });
+
+  /*
+   * Flat-rate states can still differ, which is the trap: nothing about the
+   * brackets hints that anything is different, so it looks checked when it is
+   * not. Massachusetts moves the personal exemption and Mississippi moves both
+   * allowances.
+   */
+  it('finds the difference in flat-rate Massachusetts and Mississippi', () => {
+    const ma = stateRules('MA');
+    expect(ma.personalExemption.headOfHousehold).toBe(6_800);
+
+    const ms = stateRules('MS');
+    expect(ms.standardDeduction.headOfHousehold).toBe(3_400);
+    expect(ms.personalExemption.headOfHousehold).toBe(8_000);
+    // The child that makes you a head of family still gets its own $1,500 —
+    // the state's own instructions add them to $9,500 explicitly.
+    expect(ms.personalExemption.dependent).toBe(1_500);
+
+    for (const rules of [ma, ms]) {
+      expect(computeStateTax(HOH, rules).tax).toBeLessThan(
+        computeStateTax({ ...HOH, filingStatus: 'single' }, rules).tax,
+      );
+    }
+  });
+
+  /*
+   * DC publishes one rate schedule for everybody and its own deduction by
+   * status, at 1.5x the single amount in every year it has published.
+   */
+  it('gives DC its own deduction on a shared schedule', () => {
+    const dc = stateRules('DC');
+    expect(dc.brackets.headOfHousehold).toBeUndefined();
+    expect(dc.standardDeduction.headOfHousehold).toBe(dc.standardDeduction.single * 1.5);
+    expect(computeStateTax(HOH, dc).deductions).toBe(24_150);
   });
 });
 

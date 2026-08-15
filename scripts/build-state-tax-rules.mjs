@@ -36,10 +36,11 @@
  *     on the methodology page.
  */
 
-import { readFileSync, writeFileSync } from 'node:fs';
+import { readFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { CURRENT_DATASET_VERSION } from './lib/version.mjs';
+import { writeDataset } from './lib/write-dataset.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 /** Overridable so a new dated release can be built without editing every script. */
@@ -458,6 +459,126 @@ const HEAD_OF_HOUSEHOLD = {
       { from: 271_450, rate: 0.025 },
     ],
     source: 'https://www.tax.nd.gov/individual-income-tax',
+    checked: '2026-08-15',
+  },
+  Montana: {
+    /*
+     * Its own schedule, and the widest gap of any state checked: HB 337 sets
+     * the 4.7% band at $47,500 single, $71,250 head of household and $95,000
+     * joint for 2026. Exactly 1.5x the single figure — Montana has published
+     * a head-of-household column for years and nobody was reading it.
+     *
+     * The standard deduction is the federal one (Montana starts from federal
+     * taxable income), so that moves too: $24,150 against $16,100.
+     */
+    basis: 'own',
+    brackets: [
+      { from: 0, rate: 0.047 },
+      { from: 71_250, rate: 0.0565 },
+    ],
+    standardDeduction: 24_150,
+    source: 'https://revenue.mt.gov/news/recent-news/HB-337',
+    checked: '2026-08-15',
+  },
+  Idaho: {
+    /*
+     * Idaho's flat 5.3% sits above an exempt band, and Form 40's tax worksheet
+     * sends a head of household to the JOINT one: "Single or married filing
+     * separately, enter $4,811; Married filing jointly, HEAD OF HOUSEHOLD, or
+     * qualifying surviving spouse, enter $9,622."
+     *
+     * The standard deduction is the federal figure and moves as well. Both
+     * together were costing a single parent about $680 a year.
+     */
+    basis: 'marriedJointly',
+    standardDeduction: 24_150,
+    source: 'https://tax.idaho.gov/wp-content/uploads/forms/EFO00089/EFO00089_03-02-2026.pdf',
+    checked: '2026-08-15',
+  },
+  Kansas: {
+    /*
+     * Brackets are split "married filing joint" against everybody else, so a
+     * head of household is on the single schedule. Both allowances differ
+     * though, and the second one is easy to miss: the standard deduction is
+     * $6,180 against a single filer's $3,605, AND the booklet adds "If your
+     * filing status is Head of Household, you are allowed an ADDITIONAL
+     * exemption of $2,320" on top of the $9,160 everyone gets.
+     */
+    basis: 'own',
+    standardDeduction: 6_180,
+    personalExemption: 11_480,
+    source: 'https://www.ksrevenue.gov/incomebook25.html',
+    checked: '2026-08-15',
+  },
+  Mississippi: {
+    /*
+     * One flat rate and one exempt band for everybody, but both allowances are
+     * larger: the standard deduction is $3,400 against $2,300, and the filing
+     * status exemption is $8,000 against a single filer's $6,000.
+     *
+     * The dependent exemptions are untouched. The state spells this out — the
+     * child who makes you a head of family still counts: "you are allowed
+     * $8,000 on line 11 and $1,500 for the required dependent listed on line 6
+     * which totals $9,500". So $8,000 here plus the usual $1,500 per child.
+     */
+    basis: 'own',
+    standardDeduction: 3_400,
+    personalExemption: 8_000,
+    source: 'https://www.dor.ms.gov/individual/tax-rates',
+    checked: '2026-08-15',
+  },
+  Massachusetts: {
+    // Flat rate, so the schedule cannot differ. The personal exemption does:
+    // Form 1 line 2a prints "Single/Married filing separately ($4,400), Head of
+    // household ($6,800), Married filing jointly ($8,800)".
+    basis: 'own',
+    personalExemption: 6_800,
+    source: 'https://www.mass.gov/info-details/massachusetts-personal-income-tax-exemptions',
+    checked: '2026-08-15',
+  },
+  'Washington DC': {
+    /*
+     * DC publishes ONE rate schedule for every filing status, but its own
+     * standard deduction by status — and since 2025 those are DC's figures
+     * rather than the federal ones (D.C. Act 26-214). The head-of-household
+     * amount is exactly 1.5x the single amount at every vintage: $22,500
+     * against $15,000 for 2025, and the same ratio applied to the $16,100 this
+     * project ships gives $24,150.
+     */
+    basis: 'own',
+    standardDeduction: 24_150,
+    source: 'https://otr.cfo.dc.gov/page/district-columbia-tax-rates-individual-income-and-business-franchise-taxes',
+    checked: '2026-08-15',
+  },
+  /*
+   * These two were checked and genuinely have nothing of their own, which is
+   * worth recording precisely because it looks like nothing happened.
+   */
+  Delaware: {
+    // One rate schedule for all five Delaware filing statuses, and the
+    // deduction table gives status 5 (head of household) $3,250 — the same as
+    // status 1 (single). The $110 personal credit is per person either way.
+    basis: 'single',
+    source: 'https://revenuefiles.delaware.gov/2025/PITForms_Instructions/Instructions/PIT-RES_Instructions_2025-01.pdf',
+    checked: '2026-08-15',
+  },
+  Arkansas: {
+    /*
+     * One rate schedule, and the standard deduction is per TAXPAYER — $2,470
+     * each, which is why the joint figure is exactly double. A head of
+     * household is one taxpayer, so they get $2,470 and the $29 credit, the
+     * same as a single filer.
+     *
+     * ONE THING ARKANSAS DOES DIFFERENTLY IS NOT MODELLED HERE. It publishes
+     * separate low-income tax tables by filing status, and the head-of-
+     * household threshold ($25,300) is higher than the single one ($17,500).
+     * Below those incomes Arkansas charges less than this engine will show.
+     * That is a missing rule rather than a wrong basis, it affects only
+     * salaries far below anything this calculator is used for, and it errs
+     * against the reader. Recorded so it is not mistaken for verified.
+     */
+    basis: 'single',
+    source: 'https://www.dfa.arkansas.gov/income-tax/individual-income-tax/forms/',
     checked: '2026-08-15',
   },
 };
@@ -936,7 +1057,7 @@ const output = {
   states: byCode,
 };
 
-writeFileSync(OUT, `${JSON.stringify(output, null, 2)}\n`);
+writeDataset(OUT, `${JSON.stringify(output, null, 2)}\n`);
 
 // --- report ----------------------------------------------------------------
 

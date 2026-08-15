@@ -30,10 +30,11 @@
  *     convention.
  */
 
-import { readFileSync, writeFileSync } from 'node:fs';
+import { readFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { CURRENT_DATASET_VERSION } from './lib/version.mjs';
+import { writeDataset } from './lib/write-dataset.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 /** Overridable so a new dated release can be built without editing every script. */
@@ -289,12 +290,12 @@ for (const m of entries) {
   if (m.counties.length) counties[m.id] = m.counties;
   delete m.counties;
 }
-writeFileSync(
+writeDataset(
   resolve(DATA_DIR, 'metros-counties.json'),
   `${JSON.stringify({ datasetVersion: VERSION, byMetro: counties }, null, 2)}\n`,
 );
 
-writeFileSync(
+writeDataset(
   OUT,
   `${JSON.stringify(
     {

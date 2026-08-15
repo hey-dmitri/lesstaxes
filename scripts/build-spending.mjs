@@ -60,10 +60,11 @@
  * decomposition can be checked against the published total.
  */
 
-import { readFileSync, writeFileSync } from 'node:fs';
+import { readFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { CURRENT_DATASET_VERSION } from './lib/version.mjs';
+import { writeDataset } from './lib/write-dataset.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 /** Overridable so a new dated release can be built without editing every script. */
@@ -604,7 +605,7 @@ for (let i = 1; i < profiles.length; i++) {
 
 // --- emit -------------------------------------------------------------------
 
-writeFileSync(
+writeDataset(
   OUT,
   `${JSON.stringify(
     {
