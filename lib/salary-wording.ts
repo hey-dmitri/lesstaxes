@@ -43,7 +43,16 @@ export interface SalaryWording {
   combined: boolean;
 }
 
-export function salaryWording(filingStatus: FilingStatus, earners: number): SalaryWording {
+/**
+ * @param splitsAcrossReturns True when either city is in a community property
+ *   state, where one spouse's wages are half the other's income by law and the
+ *   engine therefore computes two half-returns rather than one whole one.
+ */
+export function salaryWording(
+  filingStatus: FilingStatus,
+  earners: number,
+  splitsAcrossReturns = false,
+): SalaryWording {
   const married = filingStatus === 'marriedJointly' || filingStatus === 'marriedSeparately';
   const both = married && Math.max(1, Math.floor(earners)) >= 2;
 
@@ -66,8 +75,28 @@ export function salaryWording(filingStatus: FilingStatus, earners: number): Sala
     // a job offer exists, which for a move that follows a partner or family it
     // does not.
     there: 'Salary there',
+    /*
+     * THE DISCLOSURE WAS HIDDEN FROM THE HOUSEHOLD IT SURPRISES MOST.
+     *
+     * A two-earner couple filing separately is told "we split it in half
+     * across your two returns". A ONE-earner couple filing separately was told
+     * only whose pay it is — and in the nine community property states
+     * (Arizona, California, Idaho, Louisiana, Nevada, New Mexico, Texas,
+     * Washington and Wisconsin) that household is split too, because there
+     * each spouse's wages are half the other's income as a matter of law.
+     *
+     * It is not a technicality. In Austin at $150,000, one earner, filing
+     * separately: federal tax is $15,340, exactly what the couple would pay
+     * filing jointly, because the split undoes the penalty. The identical
+     * household in New York pays $24,734. That is $9,394 of difference sitting
+     * behind a sentence that did not mention it — and the case where a reader
+     * is least likely to expect a split is the case where only one of them
+     * earns anything.
+     */
     whose: married
-      ? "Just the earning spouse's pay, before tax, a year."
+      ? filingStatus === 'marriedSeparately' && splitsAcrossReturns
+        ? "Just the earning spouse's pay, before tax, a year. This is a community property state, so we split it in half across your two returns."
+        : "Just the earning spouse's pay, before tax, a year."
       : 'Your salary, before tax, a year.',
     combined: false,
   };

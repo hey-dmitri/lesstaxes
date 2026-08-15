@@ -348,9 +348,19 @@ export function biggestReason(
         sentence: `Local income tax is ${amount} ${better ? 'lower' : 'higher'} there.`,
       };
     case 'housing':
+      /*
+       * The row's own label, not "rent or mortgage".
+       *
+       * Everywhere else this figure is labelled by `housingLabel()`, which
+       * says "Rent + utilities" or "Mortgage + utilities" — because the reader
+       * should not have to work out which half applies to them, and because
+       * the utility bill is inside the number. The headline card was still
+       * using the retired wording, so it and the row three inches below it
+       * gave the same figure two different names.
+       */
       return {
         delta: row.delta,
-        sentence: `Rent or mortgage is ${amount} ${better ? 'cheaper' : 'dearer'} a year.`,
+        sentence: `${row.label} is ${amount} ${better ? 'cheaper' : 'dearer'} a year.`,
       };
     case 'propertyTax':
       return {

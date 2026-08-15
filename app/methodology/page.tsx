@@ -37,6 +37,16 @@ const COVERAGE = {
   taxing: TAXING.length,
   ratesChecked: TAXING.filter((s) => s.ratesCheckedAgainstState).length,
   headOfHousehold: TAXING.filter((s) => s.headOfHouseholdBasis !== 'assumed-single').length,
+  /*
+   * States where a single parent gets something the single schedule does not.
+   *
+   * Rendered rather than written, because this one drifted twice: it was 17,
+   * was raised to 24, and then Iowa, Wisconsin, Nebraska and Vermont were
+   * added without it moving again. A sentence that UNDERSELLS the fix is still
+   * a wrong sentence, and it is the harder kind to notice, because nobody
+   * re-checks a number that flatters them less than the truth would.
+   */
+  ownHeadOfHousehold: TAXING.filter((s) => s.headOfHouseholdBasis !== 'single').length,
   itemising: TAXING.filter((s) => s.itemizedDeductions).length,
   earnedIncomeCredit: TAXING.filter((s) => s.earnedIncomeCredit).length,
 };
@@ -265,15 +275,20 @@ answer          =  in your pocket THERE  −  in your pocket HERE`}</pre>
             one. California publishes its own schedule and gives them the married standard
             deduction; Maryland puts them on the married table outright; Kansas quietly adds a
             second exemption on top of the first. We have now read the actual form for{' '}
-            <strong>every one of the 42 states that tax wages</strong>, and 24 of them were charging
-            a single parent too much — by $75 to $2,559 a year.
+            <strong>every one of the {COVERAGE.taxing} states that tax wages</strong>, and{' '}
+            {COVERAGE.ownHeadOfHousehold} of them give a single parent something the single
+            schedule does not. Every one of those was being charged too much — from $75 a year in
+            Alabama to $4,046 in Hawaii, and never the other way.
           </li>
           <li>
             <strong>Allowances that shrink as you earn more.</strong> Several states quietly take
             back the deduction or exemption they give you, and we used to hand it out at every
             income. Wisconsin&rsquo;s disappears completely by $136,000. Connecticut&rsquo;s is gone
-            by $44,000. South Carolina, Maine, Minnesota, Maryland, Rhode Island, Alabama and Utah
-            all do a version of it. These now shrink the way the state says they do — which means
+            by $45,000. Colorado&rsquo;s is the harshest shape of the lot &mdash; above $300,000 the
+            standard deduction drops from $16,100 to a $1,000 floor in a single step, worth about
+            $660 a year for a single filer and $1,330 for a couple. South Carolina, Maine,
+            Minnesota, Maryland, Rhode Island and Alabama all do a version of it, and Oregon and
+            Utah do it to a credit rather than to an allowance. These now shrink the way the state says they do — which means
             the tax we show for higher earners went <em>up</em>, and that is the point: the answer
             was flattering places it should not have been.
           </li>
@@ -301,7 +316,7 @@ answer          =  in your pocket THERE  −  in your pocket HERE`}</pre>
           Twenty-four of them were wrong. Ten are on last year&rsquo;s published figures because
           the state has not released this year&rsquo;s, and those are named below. The{' '}
           <Link href="/data">data page</Link> shows, for every location, the date its state was
-          checked and links to the document it was checked against.
+          checked and names the document it was checked against.
         </p>
         <p>
           <strong>{COVERAGE.itemising} states</strong> now let a homeowner claim mortgage interest
@@ -309,7 +324,8 @@ answer          =  in your pocket THERE  −  in your pocket HERE`}</pre>
           something different with the same idea: New Jersey relieves property tax without
           itemising at all — the only relief here a renter can claim, at 18% of rent — Wisconsin
           gives a credit for mortgage interest while ignoring property tax entirely, and Illinois
-          credits 5% of your property tax until your income passes $250,000, when it stops dead.
+          credits 5% of your property tax until your income passes $250,000 &mdash; $500,000 for a
+          couple &mdash; when it stops dead.
         </p>
         <p>
           The &ldquo;What this gets wrong&rdquo; list below names every state with a rule we know
@@ -408,8 +424,8 @@ answer          =  in your pocket THERE  −  in your pocket HERE`}</pre>
         </p>
         <p>
           What is lost by removing it: the basket carries whatever sales tax the surveyed households
-          paid, which is a national blend. So moving from Oregon, which charges none, to Tennessee,
-          which charges the most, no longer shows any sales tax difference at all. Doing that
+          paid, which is a national blend. So moving from Oregon, which charges none, to Louisiana,
+          which charges the most at 10.11%, no longer shows any sales tax difference at all. Doing that
           properly means taking the average out of the basket and putting the local rate back in,
           and the survey does not publish how much is in there per category. A missing difference of
           a few hundred dollars is a smaller error than charging the whole thing twice, so this line
@@ -567,8 +583,13 @@ answer          =  in your pocket THERE  −  in your pocket HERE`}</pre>
         <p>
           States publish their new brackets and allowances on their own timetable, and many do not
           until the tax forms come out — which for 2026 means late this year or early next. This
-          calculator has to answer today, so where a state has not published we use its{' '}
-          <strong>last published figures</strong> and say so here.
+          calculator has to answer today, so where a state has not published in full we fall back
+          to its <strong>last published figures</strong> for whatever is missing, and say so here.
+          It is rarely the whole state: Oklahoma&rsquo;s 2026 rates come from the enacted law and
+          only its allowances are last year&rsquo;s, Oregon&rsquo;s brackets come from its own 2026
+          withholding formulas, and Rhode Island&rsquo;s figures are 2026 but off a form the state
+          published with a draft watermark. Each entry below says exactly which figures are
+          affected.
         </p>
         <p>
           Prices rise, so last year&rsquo;s bands are slightly narrow and last year&rsquo;s
@@ -654,6 +675,15 @@ answer          =  in your pocket THERE  −  in your pocket HERE`}</pre>
           <li>
             <strong>Moving itself is free here.</strong> This is a steady-state annual comparison —
             movers, closing costs and deposits are not counted.
+          </li>
+          <li>
+            <strong>Indiana&rsquo;s county tax is charged from day one, and really is not.</strong>{' '}
+            Indiana fixes which county taxes you on 1 January and does not change it when you move,
+            so somebody moving into Indiana owes no county tax at all in their first year unless
+            they already worked there. That first year is not modelled here, and Indiana&rsquo;s
+            county rates run from 1.21% to 2.35% — so a move to the Indianapolis area is shown
+            roughly $1,200 a year too expensive at the default salary and about $2,700 at $150,000.
+            From the second year on the figure is right.
           </li>
           <li>
             <strong>Upkeep does not scale with what the house is worth.</strong> Repairs and

@@ -178,8 +178,9 @@ export function CityPanel({
           </h2>
           {picker}
           <p className="text-[0.82rem] leading-snug" style={{ color: 'var(--muted)' }}>
-            Any of 438 metro areas, or &ldquo;rest of&rdquo; a state for somewhere rural. Salary,
-            rent and cars fill in with real local figures once you pick.
+            Any of 387 metro areas, or &ldquo;rest of&rdquo; a state for somewhere rural &mdash;
+            438 places in all. Salary, rent and cars fill in with real local figures once you
+            pick.
           </p>
         </div>
       </section>
@@ -309,10 +310,10 @@ export function CityPanel({
               it is not.
             */}
             <span className="text-[0.76rem] leading-snug" style={{ color: 'var(--muted)' }}>
-              This metro crosses a state line, and the two sides are not alike. Your state sets the
-              income tax, any city tax, and the rent and home prices you are quoted &mdash; the New
-              Jersey side of this metro has a median home value near $512,000 against $685,000 on
-              the New York side.
+              This metro crosses a state line, and the two sides are not alike. Your state sets
+              the income tax, any city tax, and the rent and home prices you are quoted. The gap
+              can be large: in the New York metro the two sides differ by more than $170,000 of
+              median home value.
             </span>
           </div>
         )}

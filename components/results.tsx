@@ -198,10 +198,13 @@ function WhatThisMeans({ result }: { result: ComparisonResult }) {
       )}
       <p style={{ color: 'var(--muted-strong)' }}>
         <strong style={{ color: 'var(--ink-soft)' }}>Take-home</strong> is a year&rsquo;s pay less
-        federal income tax, Social Security and Medicare, and any state and local income tax.{' '}
+        federal income tax, Social Security and Medicare, any state and local income tax, and the
+        state disability or paid-leave contribution where there is one.{' '}
         <strong style={{ color: 'var(--ink-soft)' }}>What&rsquo;s left over</strong> is what
-        survives after rent or mortgage, property tax, cars, food, utilities, healthcare and sales
-        tax as well. {to} and {from} are worked out the same way and then compared.{' '}
+        survives after rent or mortgage, property tax, upkeep and insurance for an owner, cars,
+        food, utilities and healthcare. There is no sales tax line: the spending figures already
+        include the tax paid at the till. {to} and {from} are worked out the same way and then
+        compared.{' '}
         <Link href="/methodology" className="underline underline-offset-2" style={{ color: 'var(--accent)' }}>
           How it works
         </Link>

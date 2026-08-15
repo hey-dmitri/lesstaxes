@@ -19,7 +19,9 @@ import {
   defaultRent,
   formatUSD,
   housingAtSalary,
+  metro,
   priceFactor,
+  stateRules,
   type FilingStatus,
 } from '@/engine';
 
@@ -133,6 +135,15 @@ function takeHomeNote(result: CityResult | null) {
   const parts = ['Federal income tax', 'FICA'];
   if (result.tax.state > 0) parts.push(`${state} tax`);
   if (result.tax.local > 0) parts.push('local tax');
+  /*
+   * WASHINGTON IS THE CASE THAT MAKES THIS NECESSARY. Its badge says "no
+   * income tax", both the lines above stay silent, and $807 has still come out
+   * of the pay — so a reader checking the take-home figure against the taxes
+   * named beside it found it short by exactly that, with nothing on the page
+   * to account for it. Eleven states levy one; California's is $1,950 at
+   * $150,000.
+   */
+  if (result.tax.statePayroll > 0) parts.push(`${state} disability and paid leave`);
   const list =
     parts.length > 1 ? `${parts.slice(0, -1).join(', ')} and ${parts.at(-1)}` : parts[0];
   return `${list} paid. Nothing spent yet.`;
@@ -307,7 +318,17 @@ export function Calculator({ initial }: CalculatorProps) {
   // What the salary boxes are asking for. Changes with the household, because
   // "Salary" means one person's pay or two people's added together depending
   // on what was answered in step 1.
-  const salary = salaryWording(filingStatus, earners);
+  /*
+   * Either side counts. A couple filing separately who move from Texas to New
+   * York are split on one side of the comparison and not the other, and the
+   * sentence has to be true of the figure they are typing in — which is used
+   * for both.
+   */
+  const splitsAcrossReturns = [origin, destination].some((city) => {
+    const code = city.stateCode ?? (city.metroId ? metro(city.metroId)?.states[0] : undefined);
+    return code ? stateRules(code, DATASET_VERSION).communityProperty === true : false;
+  });
+  const salary = salaryWording(filingStatus, earners, splitsAcrossReturns);
 
   // The result exists the moment the inputs do — there is nothing to wait for.
   const result = useMemo(() => {

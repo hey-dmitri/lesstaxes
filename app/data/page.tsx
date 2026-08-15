@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Link from 'next/link';
 
 import { DatasetBrowser } from '@/components/dataset-browser';
 import { ReportProblem } from '@/components/report-problem';
@@ -119,8 +120,15 @@ export default function DataPage() {
             altogether. Rural fallbacks cover the former.
           </li>
           <li>
-            <strong>The data lags.</strong> Prices and housing are 2024 figures, the most recent
-            published. Tax rules are for 2026.
+            <strong>The data lags, and this page shows it before the fix.</strong> Prices and
+            housing are 2024 figures, the most recent published; tax rules are for 2026. The
+            figures on THIS page are the published ones, exactly as the agency printed them, which
+            is what makes them checkable against a source. The calculator does not use them raw
+            — it brings each one forward to today&rsquo;s money first, rent by 7.1%, general prices
+            by 6.1% and home prices by 3.0%. So Chicago reads $1,430 of rent here and the
+            calculator starts from $1,532. Neither is wrong; they are the same number in different
+            years&rsquo; dollars. The{' '}
+            <Link href="/methodology">methodology page</Link> explains which measure does which.
           </li>
         </ul>
 

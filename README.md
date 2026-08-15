@@ -83,8 +83,8 @@ Total data cost: **$0**. No paid feeds, no runtime API calls.
 3. **Sales tax differences between states are invisible.** There is no sales
    tax line at all any more: BLS expenditures already include the tax paid at
    the till, so charging it again was a double count. But what the basket
-   carries is a NATIONAL blend, so Oregon (no sales tax) and Tennessee (the
-   highest) now look identical on this line. Modelling the difference means
+   carries is a NATIONAL blend, so Oregon (no sales tax) and Louisiana (the
+   highest, at 10.11%) now look identical on this line. Modelling the difference means
    stripping the embedded average out per category, which the survey does not
    publish. Worth a few hundred a year. The rates stay shipped and visible in
    the data browser, labelled reference-only, for when it can be done.

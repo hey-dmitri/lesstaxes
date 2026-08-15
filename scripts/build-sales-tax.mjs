@@ -182,6 +182,20 @@ if (shareValues.some((v) => v < 0 || v > 1)) throw new Error('taxable share outs
 const foodSplit = TAXABLE_SHARES.food.groceryPortion + TAXABLE_SHARES.food.restaurantPortion;
 if (Math.abs(foodSplit - 1) > 0.001) throw new Error(`food split must sum to 1, got ${foodSplit}`);
 
+/*
+ * WHICH STATE ACTUALLY CHARGES THE MOST, computed rather than recalled.
+ *
+ * Three separate places on this site said Tennessee. Tennessee is second:
+ * Louisiana's combined rate is 10.11% against Tennessee's 9.61%, and on the
+ * state rate alone California's 7.25% beats Tennessee's 7.00%. Tennessee is
+ * the name that comes to mind, which is exactly why it should not be typed by
+ * hand — the data browser prints Louisiana at the top of the table two clicks
+ * from the sentence that got it wrong.
+ */
+const highestCombined = Object.values(states).reduce((a, b) =>
+  b.combinedRate > a.combinedRate ? b : a,
+);
+
 // --- emit --------------------------------------------------------------------
 
 writeDataset(
@@ -221,7 +235,7 @@ writeDataset(
         'Taxable shares by category are informed estimates, not statute. Services and healthcare are broadly untaxed; tangible goods broadly are. Erring low was deliberate.',
         'In Alaska, Colorado, Louisiana and Arizona, local jurisdictions may tax groceries even where the state does not. Not recorded.',
         'Idaho offsets its grocery tax with a credit, which is not reflected in its rate here.',
-        'Because the spending basket carries a NATIONAL blend of sales tax, Oregon (which levies none) and Tennessee (the highest) currently look identical on that line. That gap is worth a few hundred dollars a year and is listed on the methodology page.',
+        `Because the spending basket carries a NATIONAL blend of sales tax, Oregon (which levies none) and ${highestCombined.name} (the highest, at ${(highestCombined.combinedRate * 100).toFixed(2)}%) currently look identical on that line. That gap is worth a few hundred dollars a year and is listed on the methodology page.`,
       ],
       states,
     },

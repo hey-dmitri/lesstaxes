@@ -55,8 +55,9 @@ export function ReportProblem({
       >
         open an issue
       </a>
-      . Every figure here is a median or an average for a whole area, and the people who live
-      there spot a wrong one first.
+      . Most figures here describe a whole area &mdash; some are medians, some averages, some
+      index numbers, some statutory rates &mdash; and the people who live there spot a wrong one
+      first.
     </p>
   );
 }
