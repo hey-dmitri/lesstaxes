@@ -104,9 +104,15 @@ describe('choosing New Jersey actually changes the answer', () => {
     expect(run('NY').origin.salesTax).toBe(0);
   });
 
+  /*
+   * The gap widened when New Jersey's property tax relief went in — up to
+   * $15,000 off taxable income, and 18% of a renter's rent counts toward it.
+   * New York gained itemising in the same release, which pulls the other way,
+   * and New Jersey still comes out further ahead.
+   */
   it('still leaves the two hundreds of dollars apart on income tax', () => {
     const gap = run('NY').origin.tax.state - run('NJ').origin.tax.state;
     expect(gap).toBeGreaterThan(300);
-    expect(gap).toBeLessThan(700);
+    expect(gap).toBeLessThan(1_000);
   });
 });

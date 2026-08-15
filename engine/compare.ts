@@ -191,6 +191,13 @@ export function computeCity(
         mortgageInterest: housing.mortgageInterest * share.deductionShare,
         mortgageDebt: housing.mortgageDebt * share.deductionShare,
         itemisedFederally,
+        /*
+         * New Jersey counts 18% of a renter's rent as property tax. Only a
+         * renter has rent to count — an owner's shelter line is mortgage
+         * principal and interest, which New Jersey does not relieve at all.
+         */
+        annualRent:
+          housing.tenure === 'rent' ? housing.shelter * share.deductionShare : 0,
         // Alabama lets you deduct Social Security and Medicare withheld.
         payrollTaxPaid: computeFica(
           share.wagesEarned,

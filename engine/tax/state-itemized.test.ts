@@ -79,7 +79,10 @@ describe('every other state', () => {
    * form is exactly the regression this guards.
    */
   const ITEMISING_STATES = new Set([
-    'CA', 'KS', 'AL', 'MN', 'NC', 'VA', 'MD', 'MT', 'NM', 'ID', 'OK',
+    'CA', 'KS', 'AL', 'MN', 'NC', 'VA', 'MD', 'MT', 'NM', 'ID', 'OK', 'NY',
+    // New Jersey has no itemising at all, but it does relieve property tax,
+    // so housing figures legitimately move its answer.
+    'NJ',
   ]);
 
   it('keeps the standard deduction until its own rules have been read', () => {
@@ -194,5 +197,104 @@ describe('the whole calculation', () => {
    */
   it('applies no cap to California property tax', () => {
     expect(stateRules('CA').itemizedDeductions?.saltCap).toBeNull();
+  });
+});
+
+/**
+ * New Jersey relieves property tax without itemising at all.
+ *
+ * New Jersey has no standard deduction, no itemised deductions, and no
+ * mortgage interest deduction. What it has is a deduction of up to $15,000 of
+ * property tax off taxable income — and it counts 18% of a renter's rent as
+ * property tax, which makes it the only relief in this engine a renter can
+ * claim. New Jersey has the highest property taxes in the country.
+ */
+describe('New Jersey property tax relief', () => {
+  const nj = stateRules('NJ');
+  const SINGLE = { filingStatus: 'single' as const, children: 0 };
+
+  it('is not itemising, and New Jersey still has none', () => {
+    expect(nj.itemizedDeductions).toBeNull();
+    expect(nj.propertyTaxRelief?.cap).toBe(15_000);
+    expect(nj.propertyTaxRelief?.renterShareOfRent).toBe(0.18);
+  });
+
+  it('gives a renter relief, which nothing else here does', () => {
+    const rent = computeStateTax({ ...SINGLE, grossSalary: 100_000, annualRent: 30_000 }, nj);
+    const nothing = computeStateTax({ ...SINGLE, grossSalary: 100_000 }, nj);
+    // 18% of $30,000 is $5,400 off taxable income.
+    expect(nothing.taxableIncome - rent.taxableIncome).toBeCloseTo(5_400, 2);
+    expect(rent.tax).toBeLessThan(nothing.tax);
+  });
+
+  it('caps the relief at $15,000 however large the bill', () => {
+    const huge = computeStateTax({ ...SINGLE, grossSalary: 200_000, propertyTax: 40_000 }, nj);
+    const atCap = computeStateTax({ ...SINGLE, grossSalary: 200_000, propertyTax: 15_000 }, nj);
+    expect(huge.tax).toBeCloseTo(atCap.tax, 6);
+  });
+
+  /*
+   * Mortgage interest is worth exactly nothing in New Jersey. Getting that
+   * wrong would be easy — every other state in this file relieves it.
+   */
+  it('gives nothing at all for mortgage interest', () => {
+    const withInterest = computeStateTax(
+      { ...SINGLE, grossSalary: 150_000, mortgageInterest: 25_000 },
+      nj,
+    );
+    expect(withInterest.tax).toBeCloseTo(
+      computeStateTax({ ...SINGLE, grossSalary: 150_000 }, nj).tax,
+      6,
+    );
+  });
+
+  /*
+   * The $50 credit is an alternative, not an addition — New Jersey works out
+   * both and takes the better. Below the filing threshold there is no relief
+   * at all.
+   */
+  it('withholds the relief below the filing threshold', () => {
+    const low = computeStateTax({ ...SINGLE, grossSalary: 9_000, propertyTax: 6_000 }, nj);
+    expect(low.taxableIncome).toBeCloseTo(
+      computeStateTax({ ...SINGLE, grossSalary: 9_000 }, nj).taxableIncome,
+      6,
+    );
+  });
+});
+
+/**
+ * New York's two reductions, which are different shapes.
+ */
+describe('New York itemised deductions', () => {
+  const ny = stateRules('NY');
+  const house = { propertyTax: 8_000, mortgageInterest: 18_000, mortgageDebt: 700_000 };
+  const single = (salary: number) =>
+    computeStateTax({ grossSalary: salary, filingStatus: 'single', children: 0, ...house }, ny);
+
+  it('caps mortgage debt at $1,000,000, not the federal $750,000', () => {
+    expect(ny.itemizedDeductions?.mortgageDebtLimit).toBe(1_000_000);
+    // And property tax is uncapped: "not subject to this federal limit".
+    expect(ny.itemizedDeductions?.saltCap).toBeNull();
+  });
+
+  it('gives the whole deduction below the threshold', () => {
+    expect(single(80_000).deductions).toBeCloseTo(26_000, 2);
+  });
+
+  /*
+   * The line 46 cut keeps a SHARE of the deduction, scaled by how far through
+   * a $50,000 band the income sits. A single filer at $150,000 is at the very
+   * top of that band and loses a flat quarter — $19,500 of $26,000, which is
+   * the figure New York's own worked example produces.
+   */
+  it('keeps three quarters at the top of the phase-in band', () => {
+    expect(single(150_000).deductions).toBeCloseTo(19_500, 2);
+    expect(single(300_000).deductions).toBeCloseTo(19_500, 2);
+  });
+
+  it('throws the deduction away above $1,000,000', () => {
+    // Above a million New York allows only a share of charitable giving, which
+    // this engine never asks about — so the standard deduction takes over.
+    expect(single(1_200_000).deductions).toBe(ny.standardDeduction.single);
   });
 });

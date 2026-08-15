@@ -65,6 +65,7 @@
       "allowancePhaseOut": null,
       "lumpSumTax": null,
       "combinedSeparateReturn": false,
+      "propertyTaxRelief": null,
       "modellingGaps": [],
       "priorYearFigures": null,
       "ratesCheckedAgainstState": null,
@@ -175,6 +176,7 @@
       },
       "lumpSumTax": null,
       "combinedSeparateReturn": false,
+      "propertyTaxRelief": null,
       "modellingGaps": [
         "Alabama's itemised deductions here cover property tax, mortgage interest and the Social Security and Medicare tax withheld from your pay. Charitable giving and medical costs are not asked about and are not included, so Alabama tax shown here is higher than the true figure for anyone who has them.",
         "Alabama's dependent exemption steps down with income — $1,000 up to $50,000, $500 to $100,000, $300 above — and never reaches zero. Only the $1,000 figure is modelled, so Alabama tax shown is slightly lower than the true figure above $50,000. Alabama also lets you itemise without having itemised federally, and deduct the Social Security and Medicare tax withheld from your pay, which beats the standard deduction at almost any wage; that is not modelled, so Alabama tax shown is higher than the true figure for most earners."
@@ -195,6 +197,7 @@
         "deductPayrollTax": true,
         "requiresFederalItemising": false,
         "highIncomeReduction": null,
+        "shareKeptCurve": null,
         "source": {
           "url": "https://www.revenue.alabama.gov/wp-content/uploads/2026/01/25f40bk.pdf",
           "checked": "2026-08-15"
@@ -297,6 +300,7 @@
       "allowancePhaseOut": null,
       "lumpSumTax": null,
       "combinedSeparateReturn": true,
+      "propertyTaxRelief": null,
       "modellingGaps": [
         "Arkansas reduces the benefit of its lower brackets across a narrow band of income between about $94,700 and $97,600. That adjustment is not modelled, so tax shown for incomes inside that band is slightly lower than the true figure."
       ],
@@ -369,6 +373,7 @@
       "allowancePhaseOut": null,
       "lumpSumTax": null,
       "combinedSeparateReturn": false,
+      "propertyTaxRelief": null,
       "modellingGaps": [
         "Arizona's dependent credit rose to $125 for a child under 17 for 2026 and we still apply $100, so Arizona tax shown here is $25 a year per young child too much. The same credit shrinks above $200,000 of income ($400,000 for a couple), which is not modelled, so above those incomes the figure shown is slightly low."
       ],
@@ -565,6 +570,7 @@
       "allowancePhaseOut": null,
       "lumpSumTax": null,
       "combinedSeparateReturn": false,
+      "propertyTaxRelief": null,
       "modellingGaps": [
         "California itemised deductions here cover property tax and mortgage interest only — the two figures this site knows. Charitable giving, medical costs and miscellaneous deductions are not asked about and are not included, so California tax shown here is higher than the true figure for anyone who has them.",
         "California's exemption credits shrink above $252,203 of income ($504,411 for a couple, $378,310 for a head of household) and that is not modelled, so California tax shown here is lower than the true figure above those incomes."
@@ -593,6 +599,7 @@
           },
           "maxFractionOfDeductions": 0.8
         },
+        "shareKeptCurve": null,
         "source": {
           "url": "https://www.ftb.ca.gov/file/personal/deductions/index.html",
           "checked": "2026-08-15"
@@ -670,6 +677,7 @@
       "allowancePhaseOut": null,
       "lumpSumTax": null,
       "combinedSeparateReturn": false,
+      "propertyTaxRelief": null,
       "modellingGaps": [],
       "priorYearFigures": null,
       "ratesCheckedAgainstState": {
@@ -857,6 +865,7 @@
       },
       "lumpSumTax": null,
       "combinedSeparateReturn": false,
+      "propertyTaxRelief": null,
       "modellingGaps": [
         "Connecticut also adds a flat charge above $56,500 single / $100,500 joint (up to $250 / $500) and recaptures the benefit of its lower rates above $105,000 / $210,000 (up to $3,400 / $6,800). Neither is modelled, so Connecticut tax shown here is lower than the true figure for higher earners."
       ],
@@ -981,6 +990,7 @@
       "allowancePhaseOut": null,
       "lumpSumTax": null,
       "combinedSeparateReturn": true,
+      "propertyTaxRelief": null,
       "modellingGaps": [],
       "priorYearFigures": null,
       "ratesCheckedAgainstState": {
@@ -1097,6 +1107,7 @@
       "allowancePhaseOut": null,
       "lumpSumTax": null,
       "combinedSeparateReturn": true,
+      "propertyTaxRelief": null,
       "modellingGaps": [],
       "priorYearFigures": null,
       "ratesCheckedAgainstState": {
@@ -1144,6 +1155,7 @@
       "allowancePhaseOut": null,
       "lumpSumTax": null,
       "combinedSeparateReturn": false,
+      "propertyTaxRelief": null,
       "modellingGaps": [],
       "priorYearFigures": null,
       "ratesCheckedAgainstState": null,
@@ -1194,6 +1206,7 @@
       "allowancePhaseOut": null,
       "lumpSumTax": null,
       "combinedSeparateReturn": false,
+      "propertyTaxRelief": null,
       "modellingGaps": [],
       "priorYearFigures": null,
       "ratesCheckedAgainstState": {
@@ -1404,6 +1417,7 @@
       "allowancePhaseOut": null,
       "lumpSumTax": null,
       "combinedSeparateReturn": false,
+      "propertyTaxRelief": null,
       "modellingGaps": [],
       "priorYearFigures": null,
       "ratesCheckedAgainstState": {
@@ -1487,6 +1501,7 @@
       "allowancePhaseOut": null,
       "lumpSumTax": null,
       "combinedSeparateReturn": false,
+      "propertyTaxRelief": null,
       "modellingGaps": [],
       "priorYearFigures": null,
       "ratesCheckedAgainstState": {
@@ -1569,6 +1584,7 @@
       "allowancePhaseOut": null,
       "lumpSumTax": null,
       "combinedSeparateReturn": false,
+      "propertyTaxRelief": null,
       "modellingGaps": [],
       "priorYearFigures": "Idaho's untaxed band of $4,811 for a single filer and $9,622 for a couple is the published 2025 figure; Idaho publishes the 2026 amount around December.",
       "ratesCheckedAgainstState": {
@@ -1586,6 +1602,7 @@
         "deductPayrollTax": false,
         "requiresFederalItemising": true,
         "highIncomeReduction": null,
+        "shareKeptCurve": null,
         "source": {
           "url": "https://legislature.idaho.gov/statutesrules/idstat/title63/t63ch30/sect63-3022/",
           "checked": "2026-08-15"
@@ -1652,6 +1669,7 @@
       "allowancePhaseOut": null,
       "lumpSumTax": null,
       "combinedSeparateReturn": false,
+      "propertyTaxRelief": null,
       "modellingGaps": [],
       "priorYearFigures": null,
       "ratesCheckedAgainstState": {
@@ -1721,6 +1739,7 @@
       "allowancePhaseOut": null,
       "lumpSumTax": null,
       "combinedSeparateReturn": false,
+      "propertyTaxRelief": null,
       "modellingGaps": [],
       "priorYearFigures": null,
       "ratesCheckedAgainstState": {
@@ -1798,6 +1817,7 @@
       "allowancePhaseOut": null,
       "lumpSumTax": null,
       "combinedSeparateReturn": false,
+      "propertyTaxRelief": null,
       "modellingGaps": [],
       "priorYearFigures": null,
       "ratesCheckedAgainstState": {
@@ -1815,6 +1835,7 @@
         "deductPayrollTax": false,
         "requiresFederalItemising": false,
         "highIncomeReduction": null,
+        "shareKeptCurve": null,
         "source": {
           "url": "https://www.ksrevenue.gov/incomebook25.html",
           "checked": "2026-08-15"
@@ -1875,6 +1896,7 @@
       "allowancePhaseOut": null,
       "lumpSumTax": null,
       "combinedSeparateReturn": true,
+      "propertyTaxRelief": null,
       "modellingGaps": [],
       "priorYearFigures": null,
       "ratesCheckedAgainstState": {
@@ -1941,6 +1963,7 @@
       "allowancePhaseOut": null,
       "lumpSumTax": null,
       "combinedSeparateReturn": false,
+      "propertyTaxRelief": null,
       "modellingGaps": [],
       "priorYearFigures": null,
       "ratesCheckedAgainstState": {
@@ -2014,6 +2037,7 @@
       "allowancePhaseOut": null,
       "lumpSumTax": null,
       "combinedSeparateReturn": false,
+      "propertyTaxRelief": null,
       "modellingGaps": [
         "Massachusetts lets every wage earner deduct up to $2,000 each of the Social Security and Medicare tax they paid. That is not modelled here, so Massachusetts tax shown is about $100 a year higher than the true figure for most earners."
       ],
@@ -2193,6 +2217,7 @@
       },
       "lumpSumTax": null,
       "combinedSeparateReturn": false,
+      "propertyTaxRelief": null,
       "modellingGaps": [
         "Maryland lets you itemise if you itemised federally, which we do not model at all, so Maryland tax shown here is higher than the true figure for a homeowner with a mortgage. Maryland separately cuts those itemised deductions by 7.5% of income above $200,000, which would pull the other way."
       ],
@@ -2220,6 +2245,7 @@
           },
           "maxFractionOfDeductions": 1
         },
+        "shareKeptCurve": null,
         "source": {
           "url": "https://mgaleg.maryland.gov/mgawebsite/Laws/StatuteText?article=gtg&section=10-218",
           "checked": "2026-08-15"
@@ -2371,6 +2397,7 @@
       },
       "lumpSumTax": null,
       "combinedSeparateReturn": false,
+      "propertyTaxRelief": null,
       "modellingGaps": [
         "Maine's personal exemption also phases out, from $341,000 of income for a single filer and $409,150 for a couple. That is not modelled, so Maine tax shown above those incomes is slightly lower than the true figure."
       ],
@@ -2444,6 +2471,7 @@
       "allowancePhaseOut": null,
       "lumpSumTax": null,
       "combinedSeparateReturn": false,
+      "propertyTaxRelief": null,
       "modellingGaps": [],
       "priorYearFigures": null,
       "ratesCheckedAgainstState": {
@@ -2600,6 +2628,7 @@
       },
       "lumpSumTax": null,
       "combinedSeparateReturn": false,
+      "propertyTaxRelief": null,
       "modellingGaps": [
         "Minnesota's dependent exemption also phases out, by 2 percentage points for each $2,500 of income above $244,500 single and $366,700 joint. That is not modelled, so Minnesota tax shown above those incomes is slightly lower than the true figure."
       ],
@@ -2619,6 +2648,7 @@
         "deductPayrollTax": false,
         "requiresFederalItemising": false,
         "highIncomeReduction": null,
+        "shareKeptCurve": null,
         "source": {
           "url": "https://www.revisor.mn.gov/statutes/cite/290.0122",
           "checked": "2026-08-15"
@@ -2761,6 +2791,7 @@
       "allowancePhaseOut": null,
       "lumpSumTax": null,
       "combinedSeparateReturn": true,
+      "propertyTaxRelief": null,
       "modellingGaps": [],
       "priorYearFigures": null,
       "ratesCheckedAgainstState": {
@@ -2831,6 +2862,7 @@
       "allowancePhaseOut": null,
       "lumpSumTax": null,
       "combinedSeparateReturn": true,
+      "propertyTaxRelief": null,
       "modellingGaps": [],
       "priorYearFigures": "Only Mississippi's rate is published for 2026. Its standard deduction and exemptions here are the 2025 figures, which are fixed in statute and were not changed by any 2026 law.",
       "ratesCheckedAgainstState": {
@@ -2920,6 +2952,7 @@
       "allowancePhaseOut": null,
       "lumpSumTax": null,
       "combinedSeparateReturn": false,
+      "propertyTaxRelief": null,
       "modellingGaps": [],
       "priorYearFigures": null,
       "ratesCheckedAgainstState": {
@@ -2937,6 +2970,7 @@
         "deductPayrollTax": false,
         "requiresFederalItemising": true,
         "highIncomeReduction": null,
+        "shareKeptCurve": null,
         "source": {
           "url": "https://mca.legmt.gov/bills/mca/title_0150/chapter_0300/part_0210/section_0200/0150-0300-0210-0200.html",
           "checked": "2026-08-15"
@@ -2992,6 +3026,7 @@
       "allowancePhaseOut": null,
       "lumpSumTax": null,
       "combinedSeparateReturn": false,
+      "propertyTaxRelief": null,
       "modellingGaps": [],
       "priorYearFigures": null,
       "ratesCheckedAgainstState": {
@@ -3009,6 +3044,7 @@
         "deductPayrollTax": false,
         "requiresFederalItemising": false,
         "highIncomeReduction": null,
+        "shareKeptCurve": null,
         "source": {
           "url": "https://www.ncdor.gov/taxes-forms/individual-income-tax/filing-topics/north-carolina-standard-deduction-or-north-carolina-itemized-deductions",
           "checked": "2026-08-15"
@@ -3102,6 +3138,7 @@
       "allowancePhaseOut": null,
       "lumpSumTax": null,
       "combinedSeparateReturn": false,
+      "propertyTaxRelief": null,
       "modellingGaps": [],
       "priorYearFigures": null,
       "ratesCheckedAgainstState": {
@@ -3209,6 +3246,7 @@
       "allowancePhaseOut": null,
       "lumpSumTax": null,
       "combinedSeparateReturn": false,
+      "propertyTaxRelief": null,
       "modellingGaps": [],
       "priorYearFigures": null,
       "ratesCheckedAgainstState": {
@@ -3256,6 +3294,7 @@
       "allowancePhaseOut": null,
       "lumpSumTax": null,
       "combinedSeparateReturn": false,
+      "propertyTaxRelief": null,
       "modellingGaps": [],
       "priorYearFigures": null,
       "ratesCheckedAgainstState": null,
@@ -3354,7 +3393,7 @@
         "a"
       ],
       "notes": [
-        "New Jersey lets a homeowner deduct up to $15,000 of property tax, and a renter count 18% of rent as property tax toward the same limit. That is not modelled here, so New Jersey tax shown is higher than the true figure — by roughly $530 a year for a homeowner on $80,000 and $765 on $150,000. New Jersey has the highest property taxes in the country, so this affects nearly every household."
+        "New Jersey allows no mortgage interest deduction and no charitable deduction at all, so a homeowner gets relief for property tax only. The extra exemptions for veterans, for filers over 65 or blind, and for a dependent in full-time education are not modelled, so New Jersey tax shown here is higher than the true figure for anyone entitled to them."
       ],
       "earnedIncomeCredit": {
         "percentOfFederal": 0.4,
@@ -3366,8 +3405,18 @@
       "allowancePhaseOut": null,
       "lumpSumTax": null,
       "combinedSeparateReturn": false,
+      "propertyTaxRelief": {
+        "cap": 15000,
+        "renterShareOfRent": 0.18,
+        "alternativeCredit": 50,
+        "minimumGrossIncome": {
+          "single": 10000,
+          "marriedJointly": 20000,
+          "headOfHousehold": 20000
+        }
+      },
       "modellingGaps": [
-        "New Jersey lets a homeowner deduct up to $15,000 of property tax, and a renter count 18% of rent as property tax toward the same limit. That is not modelled here, so New Jersey tax shown is higher than the true figure — by roughly $530 a year for a homeowner on $80,000 and $765 on $150,000. New Jersey has the highest property taxes in the country, so this affects nearly every household."
+        "New Jersey allows no mortgage interest deduction and no charitable deduction at all, so a homeowner gets relief for property tax only. The extra exemptions for veterans, for filers over 65 or blind, and for a dependent in full-time education are not modelled, so New Jersey tax shown here is higher than the true figure for anyone entitled to them."
       ],
       "priorYearFigures": null,
       "ratesCheckedAgainstState": {
@@ -3500,6 +3549,7 @@
       "allowancePhaseOut": null,
       "lumpSumTax": null,
       "combinedSeparateReturn": false,
+      "propertyTaxRelief": null,
       "modellingGaps": [],
       "priorYearFigures": null,
       "ratesCheckedAgainstState": {
@@ -3517,6 +3567,7 @@
         "deductPayrollTax": false,
         "requiresFederalItemising": true,
         "highIncomeReduction": null,
+        "shareKeptCurve": null,
         "source": {
           "url": "https://www.taxformfinder.org/forms/2025/2025-new-mexico-income-tax-instructions.pdf",
           "checked": "2026-08-15"
@@ -3565,6 +3616,7 @@
       "allowancePhaseOut": null,
       "lumpSumTax": null,
       "combinedSeparateReturn": false,
+      "propertyTaxRelief": null,
       "modellingGaps": [],
       "priorYearFigures": null,
       "ratesCheckedAgainstState": null,
@@ -3716,6 +3768,7 @@
       ],
       "notes": [
         "Connecticut and New York have \"tax benefit recapture,\" by which many high-income taxpayers pay their top tax rate on all income, not just on amounts above the benefit threshold.",
+        "New York itemised deductions here cover property tax and mortgage interest only. Charitable giving, medical costs above 10% of income and the job expenses New York still allows are not asked about and are not included, so New York tax shown here is higher than the true figure for anyone who has them.",
         "New York lets you itemise on the state return whether or not you did federally, on pre-2018 rules — property tax uncapped and mortgage interest on $1,000,000 of debt. That is not modelled, so New York tax shown here is higher than the true figure for a homeowner, by roughly $650 to $770 a year plus more again in New York City. Running the other way, New York recaptures the benefit of its lower rates from high earners, which is also not modelled and is worth about $481 a year at $150,000."
       ],
       "earnedIncomeCredit": {
@@ -3728,7 +3781,9 @@
       "allowancePhaseOut": null,
       "lumpSumTax": null,
       "combinedSeparateReturn": false,
+      "propertyTaxRelief": null,
       "modellingGaps": [
+        "New York itemised deductions here cover property tax and mortgage interest only. Charitable giving, medical costs above 10% of income and the job expenses New York still allows are not asked about and are not included, so New York tax shown here is higher than the true figure for anyone who has them.",
         "New York lets you itemise on the state return whether or not you did federally, on pre-2018 rules — property tax uncapped and mortgage interest on $1,000,000 of debt. That is not modelled, so New York tax shown here is higher than the true figure for a homeowner, by roughly $650 to $770 a year plus more again in New York City. Running the other way, New York recaptures the benefit of its lower rates from high earners, which is also not modelled and is worth about $481 a year at $150,000."
       ],
       "priorYearFigures": null,
@@ -3737,7 +3792,111 @@
         "checked": "2026-08-15",
         "matched": false
       },
-      "itemizedDeductions": null,
+      "itemizedDeductions": {
+        "deductPropertyTax": true,
+        "deductStateIncomeTax": false,
+        "mortgageDebtLimit": 1000000,
+        "saltCap": null,
+        "propertyTaxCap": null,
+        "totalCap": null,
+        "deductPayrollTax": false,
+        "requiresFederalItemising": false,
+        "highIncomeReduction": {
+          "perDollarAbove": 0.03,
+          "threshold": {
+            "single": 340700,
+            "marriedJointly": 408850,
+            "headOfHousehold": 374800
+          },
+          "maxFractionOfDeductions": 0.8
+        },
+        "shareKeptCurve": {
+          "points": {
+            "single": [
+              [
+                100000,
+                1
+              ],
+              [
+                150000,
+                0.75
+              ],
+              [
+                475000,
+                0.75
+              ],
+              [
+                525000,
+                0.5
+              ],
+              [
+                1000000,
+                0.5
+              ],
+              [
+                1000001,
+                0
+              ]
+            ],
+            "headOfHousehold": [
+              [
+                150000,
+                1
+              ],
+              [
+                200000,
+                0.75
+              ],
+              [
+                475000,
+                0.75
+              ],
+              [
+                525000,
+                0.5
+              ],
+              [
+                1000000,
+                0.5
+              ],
+              [
+                1000001,
+                0
+              ]
+            ],
+            "marriedJointly": [
+              [
+                200000,
+                1
+              ],
+              [
+                250000,
+                0.75
+              ],
+              [
+                475000,
+                0.75
+              ],
+              [
+                525000,
+                0.5
+              ],
+              [
+                1000000,
+                0.5
+              ],
+              [
+                1000001,
+                0
+              ]
+            ]
+          }
+        },
+        "source": {
+          "url": "https://www.tax.ny.gov/forms/html-instructions/2025/it/it196i-2025.htm",
+          "checked": "2026-08-15"
+        }
+      },
       "verifiedAgainstState": {
         "url": "https://www.tax.ny.gov/pdf/current_forms/it/it2105i.pdf",
         "checked": "2026-08-15"
@@ -3834,6 +3993,7 @@
         "amount": 332
       },
       "combinedSeparateReturn": false,
+      "propertyTaxRelief": null,
       "modellingGaps": [
         "Ohio's personal exemption steps down with income — $2,400 up to $40,000, $2,150 to $80,000, $1,900 to $749,999 and nothing at all from $750,000 — and only the $2,400 is modelled, so Ohio tax shown here is slightly lower than the true figure above $40,000. Ohio also gives couples where both work a credit worth up to $650, which is not modelled, so their figure is higher than the true one."
       ],
@@ -3933,6 +4093,7 @@
       "allowancePhaseOut": null,
       "lumpSumTax": null,
       "combinedSeparateReturn": false,
+      "propertyTaxRelief": null,
       "modellingGaps": [],
       "priorYearFigures": "Oklahoma's rates for 2026 come from the enacted law, but its standard deduction and exemptions here are the 2025 figures. They are not indexed, so they should carry unchanged.",
       "ratesCheckedAgainstState": {
@@ -3950,6 +4111,7 @@
         "deductPayrollTax": false,
         "requiresFederalItemising": true,
         "highIncomeReduction": null,
+        "shareKeptCurve": null,
         "source": {
           "url": "https://oklahoma.gov/tax/individuals/pay-taxes.html",
           "checked": "2026-08-15"
@@ -4056,6 +4218,7 @@
       "allowancePhaseOut": null,
       "lumpSumTax": null,
       "combinedSeparateReturn": false,
+      "propertyTaxRelief": null,
       "modellingGaps": [
         "Oregon lets you subtract the federal income tax you paid, capped at $8,500 and tapering to nothing by $145,000 of income for a single filer. That is not modelled — the federalTaxDeductible flag has always been a label rather than a calculation — so Oregon tax shown here is higher than the true figure by up to about $743 a year at lower incomes."
       ],
@@ -4129,6 +4292,7 @@
       "allowancePhaseOut": null,
       "lumpSumTax": null,
       "combinedSeparateReturn": false,
+      "propertyTaxRelief": null,
       "modellingGaps": [],
       "priorYearFigures": null,
       "ratesCheckedAgainstState": {
@@ -4234,6 +4398,7 @@
       },
       "lumpSumTax": null,
       "combinedSeparateReturn": false,
+      "propertyTaxRelief": null,
       "modellingGaps": [],
       "priorYearFigures": "Rhode Island's 2026 figures here come from a form the state published carrying a draft watermark. They are internally consistent and are the state's own, but they should be re-checked against the final booklet.",
       "ratesCheckedAgainstState": {
@@ -4359,6 +4524,7 @@
       },
       "lumpSumTax": null,
       "combinedSeparateReturn": false,
+      "propertyTaxRelief": null,
       "modellingGaps": [
         "South Carolina's dependent exemption is shown at the 2025 figure of $4,930. The state indexes it every December and the 2026 amount appears only in the 2026 return instructions, which are not published yet. The real figure will be slightly higher, so this errs against the reader."
       ],
@@ -4412,6 +4578,7 @@
       "allowancePhaseOut": null,
       "lumpSumTax": null,
       "combinedSeparateReturn": false,
+      "propertyTaxRelief": null,
       "modellingGaps": [],
       "priorYearFigures": null,
       "ratesCheckedAgainstState": null,
@@ -4451,6 +4618,7 @@
       "allowancePhaseOut": null,
       "lumpSumTax": null,
       "combinedSeparateReturn": false,
+      "propertyTaxRelief": null,
       "modellingGaps": [],
       "priorYearFigures": null,
       "ratesCheckedAgainstState": null,
@@ -4490,6 +4658,7 @@
       "allowancePhaseOut": null,
       "lumpSumTax": null,
       "combinedSeparateReturn": false,
+      "propertyTaxRelief": null,
       "modellingGaps": [],
       "priorYearFigures": null,
       "ratesCheckedAgainstState": null,
@@ -4562,6 +4731,7 @@
       "allowancePhaseOut": null,
       "lumpSumTax": null,
       "combinedSeparateReturn": false,
+      "propertyTaxRelief": null,
       "modellingGaps": [
         "Utah's taxpayer tax credit phase-out thresholds and dependent exemption are the 2025 figures — the state has not published 2026 amounts. Utah indexes them upward, so the reduction starts slightly early here and the credit comes out slightly small."
       ],
@@ -4653,6 +4823,7 @@
       "allowancePhaseOut": null,
       "lumpSumTax": null,
       "combinedSeparateReturn": false,
+      "propertyTaxRelief": null,
       "modellingGaps": [],
       "priorYearFigures": null,
       "ratesCheckedAgainstState": {
@@ -4678,6 +4849,7 @@
           },
           "maxFractionOfDeductions": 0.8
         },
+        "shareKeptCurve": null,
         "source": {
           "url": "https://www.tax.virginia.gov/sites/default/files/vatax-pdf/2025-sch-a-instructions.pdf",
           "checked": "2026-08-15"
@@ -4783,6 +4955,7 @@
       "allowancePhaseOut": null,
       "lumpSumTax": null,
       "combinedSeparateReturn": false,
+      "propertyTaxRelief": null,
       "modellingGaps": [],
       "priorYearFigures": "Vermont has published no 2026 rate schedule, so its brackets, standard deduction and personal exemption here are the published 2025 figures.",
       "ratesCheckedAgainstState": {
@@ -4837,6 +5010,7 @@
       "allowancePhaseOut": null,
       "lumpSumTax": null,
       "combinedSeparateReturn": false,
+      "propertyTaxRelief": null,
       "modellingGaps": [],
       "priorYearFigures": null,
       "ratesCheckedAgainstState": null,
@@ -4973,6 +5147,7 @@
       },
       "lumpSumTax": null,
       "combinedSeparateReturn": false,
+      "propertyTaxRelief": null,
       "modellingGaps": [],
       "priorYearFigures": null,
       "ratesCheckedAgainstState": {
@@ -5071,6 +5246,7 @@
       "allowancePhaseOut": null,
       "lumpSumTax": null,
       "combinedSeparateReturn": false,
+      "propertyTaxRelief": null,
       "modellingGaps": [],
       "priorYearFigures": null,
       "ratesCheckedAgainstState": {
@@ -5122,6 +5298,7 @@
       "allowancePhaseOut": null,
       "lumpSumTax": null,
       "combinedSeparateReturn": false,
+      "propertyTaxRelief": null,
       "modellingGaps": [],
       "priorYearFigures": null,
       "ratesCheckedAgainstState": null,

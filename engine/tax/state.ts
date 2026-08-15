@@ -162,6 +162,24 @@ export interface StateTaxRules {
    * deduction outright.
    */
   combinedSeparateReturn: boolean;
+  /**
+   * A deduction for property tax that is NOT itemising, where the state has
+   * one.
+   *
+   * NEW JERSEY IS THE ONE, AND IT IS THE ONLY RELIEF IN THIS ENGINE THAT
+   * REACHES A RENTER. New Jersey has no standard deduction, no itemising, and
+   * no mortgage interest deduction at all — but it lets you take up to $15,000
+   * of property tax off your taxable income, and it counts 18% of a renter's
+   * rent as property tax for that purpose. New Jersey has the highest property
+   * taxes in the country, so this touches nearly every household there.
+   *
+   * There is a $50 refundable credit as an alternative, and the return works
+   * out both and takes whichever is worth more.
+   *
+   * It comes off AFTER exemptions and immediately before the rate schedule —
+   * the last thing to leave taxable income.
+   */
+  propertyTaxRelief: PropertyTaxRelief | null;
   /** AL, MO, OR allow a deduction for federal income tax paid. Not yet modelled. */
   federalTaxDeductible: boolean;
   hasLocalIncomeTax: boolean;
@@ -301,6 +319,23 @@ export interface StateItemizedRules {
    */
   highIncomeReduction: ItemizedReduction | null;
   /**
+   * A second reduction that keeps a SHARE of the deductions rather than
+   * subtracting cents per dollar of income.
+   *
+   * NEW YORK NEEDS BOTH AND THEY ARE DIFFERENT SHAPES. Its line 40 is the old
+   * federal Pease rule and fits `highIncomeReduction` exactly. Its line 46
+   * does not: it takes a fraction OF THE DEDUCTION, scaled by how far through
+   * a $50,000 band your income sits, and then steps down again at $475,000,
+   * $525,000 and $1,000,000. There is no cents-per-dollar figure that
+   * expresses it, because the implied rate moves with the size of the
+   * deduction.
+   *
+   * Above $1,000,000 New York throws the whole deduction away and allows only
+   * a fraction of charitable giving — which this engine never asks about, so
+   * the deduction becomes nothing.
+   */
+  shareKeptCurve: ShareKeptCurve | null;
+  /**
    * Whether the state lets you deduct the Social Security and Medicare tax
    * withheld from your pay.
    *
@@ -313,6 +348,21 @@ export interface StateItemizedRules {
    * It is not a state or local tax, so no SALT cap touches it.
    */
   deductPayrollTax: boolean;
+}
+
+/**
+ * How much of the itemised deduction survives, as a share, by income.
+ *
+ * Points are [income, share kept]. Between two points the share moves in a
+ * straight line; below the first and above the last it holds flat. Written as
+ * absolute incomes per filing status rather than offsets, because New York's
+ * first band starts at a different income for each status while every later
+ * step is the same for everyone — offsets would hide that.
+ */
+export interface ShareKeptCurve {
+  points: Partial<Record<PublishedStatus, Array<[number, number]>>> & {
+    single: Array<[number, number]>;
+  };
 }
 
 /** See StateItemizedRules.highIncomeReduction. */
@@ -438,6 +488,17 @@ export type AllowancePhaseOut =
       factors: number[];
     };
 
+/** See StateTaxRules.propertyTaxRelief. */
+export interface PropertyTaxRelief {
+  cap: USD;
+  /** Share of a year's rent that counts as property tax. New Jersey: 18%. */
+  renterShareOfRent: number;
+  /** Taken instead of the deduction where it is worth more. Refundable. */
+  alternativeCredit: USD;
+  /** Below this income the relief is unavailable, by filing status. */
+  minimumGrossIncome: Partial<Record<PublishedStatus, number>> & { single: number };
+}
+
 /** How a state's personal credit shrinks as income rises. See creditPhaseOut. */
 export interface CreditPhaseOut {
   /**
@@ -466,6 +527,11 @@ export interface StateTaxInputs {
    * let you deduct it — Alabama is the one — and ignored everywhere else.
    */
   payrollTaxPaid?: USD;
+  /**
+   * A year's rent. Only used by New Jersey, which counts 18% of it as property
+   * tax — the one relief in this engine that a renter can claim.
+   */
+  annualRent?: USD;
   /**
    * Whether this filer itemised on their federal return. Required by the six
    * states that will not let you itemise for them unless you did.
@@ -574,6 +640,8 @@ export function adultsIn(filingStatus: FilingStatus): 1 | 2 {
 export function computeStateTax(
   inputs: StateTaxInputs,
   rules: StateTaxRules,
+  /** Extra credit carried in when a state's relief is taken as a credit. */
+  creditOverride = 0,
 ): StateTaxResult {
   const schedule = scheduleFor(inputs.filingStatus, rules);
 
@@ -824,6 +892,34 @@ export function computeStateTax(
         reduce.maxFractionOfDeductions * itemizedTotal,
       );
     }
+
+    /*
+     * Then New York's second cut, which keeps a share rather than subtracting
+     * an amount. Applied after the Pease-style one, in the order the form
+     * does it.
+     */
+    const curve = itemizedRules.shareKeptCurve;
+    if (curve && itemizedTotal > 0) {
+      const points =
+        curve.points[allowanceKey] ?? curve.points[otherwise] ?? curve.points.single;
+      let share = points[0][1];
+      for (let i = 0; i < points.length; i++) {
+        const [income, kept] = points[i];
+        if (gross <= income) {
+          if (i === 0) {
+            share = kept;
+          } else {
+            const [prevIncome, prevKept] = points[i - 1];
+            const span = income - prevIncome;
+            const t = span > 0 ? (gross - prevIncome) / span : 1;
+            share = prevKept + (kept - prevKept) * t;
+          }
+          break;
+        }
+        share = kept;
+      }
+      itemizedTotal *= Math.max(0, Math.min(1, share));
+    }
   }
 
   const itemized = itemizedTotal > standardDeduction;
@@ -834,7 +930,26 @@ export function computeStateTax(
     'personalExemption',
   );
 
-  const taxableIncome = Math.max(0, gross - deductions - exemptions);
+  /*
+   * New Jersey's property tax relief, which is not itemising and is the only
+   * relief here a renter can claim. Comes off after exemptions, immediately
+   * before the rate schedule.
+   */
+  const relief = rules.propertyTaxRelief;
+  let propertyTaxDeduction = 0;
+  if (relief) {
+    const floor =
+      relief.minimumGrossIncome[allowanceKey] ??
+      relief.minimumGrossIncome[otherwise] ??
+      relief.minimumGrossIncome.single;
+    if (gross > floor) {
+      const asOwner = Math.max(0, inputs.propertyTax ?? 0);
+      const asRenter = Math.max(0, inputs.annualRent ?? 0) * relief.renterShareOfRent;
+      propertyTaxDeduction = Math.min(Math.max(asOwner, asRenter), relief.cap);
+    }
+  }
+
+  const taxableIncome = Math.max(0, gross - deductions - exemptions - propertyTaxDeduction);
   const lump =
     rules.lumpSumTax && taxableIncome > rules.lumpSumTax.above ? rules.lumpSumTax.amount : 0;
   const taxBeforeCredits =
@@ -902,7 +1017,29 @@ export function computeStateTax(
    * the household is paid the difference. Four states — Missouri, Ohio, South
    * Carolina and Utah — deliberately did not, which is why the flag exists.
    */
-  const afterCredits = Math.max(0, taxBeforeCredits - credits);
+  /*
+   * The $50 credit is an alternative to the deduction, not an addition. New
+   * Jersey's own worksheet computes the tax both ways and takes whichever is
+   * better, so the deduction wins only where it saves more than $50.
+   */
+  let creditsWithRelief = credits;
+  if (relief && propertyTaxDeduction > 0) {
+    const withoutRelief = applyBrackets(
+      Math.max(0, taxableIncome + propertyTaxDeduction),
+      rules.brackets[schedule] ?? rules.brackets[otherwise],
+    );
+    if (withoutRelief - taxBeforeCredits < relief.alternativeCredit) {
+      // Take the credit instead: undo the deduction and add the flat amount.
+      return computeStateTax(
+        { ...inputs, propertyTax: 0, annualRent: 0 },
+        { ...rules, propertyTaxRelief: null },
+        creditOverride + relief.alternativeCredit,
+      );
+    }
+  }
+
+  creditsWithRelief += creditOverride;
+  const afterCredits = Math.max(0, taxBeforeCredits - creditsWithRelief);
   const tax = eitcRules?.refundable
     ? afterCredits - earnedIncomeCredit
     : Math.max(0, afterCredits - earnedIncomeCredit);

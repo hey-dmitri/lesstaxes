@@ -140,6 +140,33 @@ const PRIOR_YEAR_FIGURES = {
  * arrives as a "spouse tax adjustment" credit capped at $259, which is not
  * modelled.
  */
+/**
+ * PROPERTY TAX RELIEF THAT IS NOT ITEMISING.
+ *
+ * New Jersey is the only one, and it is the only relief in this dataset that
+ * reaches a RENTER. New Jersey has no standard deduction, no itemised
+ * deductions and no mortgage interest deduction at all — but it takes up to
+ * $15,000 of property tax off taxable income, and counts 18% of a year's rent
+ * as property tax for the purpose.
+ *
+ * New Jersey has the highest property taxes in the country, so this touches
+ * nearly every household there. We modelled none of it.
+ *
+ * The $50 credit is an ALTERNATIVE, not an addition — the return works both
+ * out and takes whichever is worth more, so the deduction wins only where it
+ * saves more than $50.
+ */
+const PROPERTY_TAX_RELIEF = {
+  'New Jersey': {
+    cap: 15_000,
+    renterShareOfRent: 0.18,
+    alternativeCredit: 50,
+    // Below the filing threshold there is no relief at all, except for people
+    // who are 65 or over, blind or disabled — which this engine never asks.
+    minimumGrossIncome: { single: 10_000, marriedJointly: 20_000, headOfHousehold: 20_000 },
+  },
+};
+
 const COMBINED_SEPARATE_RETURN = new Set([
   'Missouri',
   'Washington DC',
@@ -1803,7 +1830,7 @@ const STATE_OVERRIDES = {
     },
     source: 'https://www.nj.gov/treasury/taxation/pdf/current/1040esi.pdf',
     checked: '2026-08-15',
-    note: 'New Jersey lets a homeowner deduct up to $15,000 of property tax, and a renter count 18% of rent as property tax toward the same limit. That is not modelled here, so New Jersey tax shown is higher than the true figure — by roughly $530 a year for a homeowner on $80,000 and $765 on $150,000. New Jersey has the highest property taxes in the country, so this affects nearly every household.',
+    note: 'New Jersey allows no mortgage interest deduction and no charitable deduction at all, so a homeowner gets relief for property tax only. The extra exemptions for veterans, for filers over 65 or blind, and for a dependent in full-time education are not modelled, so New Jersey tax shown here is higher than the true figure for anyone entitled to them.',
   },
   Massachusetts: {
     // The surtax threshold is indexed and we shipped the 2025 figure. It only
@@ -2224,6 +2251,74 @@ const ITEMIZED_DEDUCTIONS = {
     source: 'https://oklahoma.gov/tax/individuals/pay-taxes.html',
     checked: '2026-08-15',
   },
+  'New York': {
+    /*
+     * NEW YORK IS THE MOST GENEROUS OF THE LOT AND WE MODELLED NONE OF IT.
+     * You may itemise for New York whether or not you did federally, on
+     * PRE-2018 rules: property tax with no cap at all — "your New York State
+     * itemized deduction for state and local taxes you paid is not subject to
+     * this federal limit" — and mortgage interest on $1,000,000 of acquisition
+     * debt rather than $750,000.
+     *
+     * Against a New York standard deduction of $8,000, a homeowner with a
+     * mortgage was being overcharged $650 to $770 a year in state tax, and
+     * more again in city tax on top.
+     *
+     * TWO REDUCTIONS, AND THEY ARE DIFFERENT SHAPES. Line 40 is the old
+     * federal Pease rule — 3% of income above the threshold, capped at 80% —
+     * and fits the ordinary field. Line 46 does not: it keeps a FRACTION of
+     * the deduction, scaled by how far through a $50,000 band your income
+     * sits. At $150,000 a single filer is at the very top of that band and
+     * loses a flat quarter.
+     *
+     * Above $1,000,000 New York discards the deduction entirely and allows
+     * only a share of charitable giving, which this engine never asks about —
+     * so the curve ends at zero, which is the honest answer for what we know.
+     */
+    deductPropertyTax: true,
+    deductStateIncomeTax: false,
+    mortgageDebtLimit: 1_000_000,
+    saltCap: null,
+    highIncomeReduction: {
+      perDollarAbove: 0.03,
+      threshold: { single: 340_700, marriedJointly: 408_850, headOfHousehold: 374_800 },
+      maxFractionOfDeductions: 0.8,
+    },
+    shareKeptCurve: {
+      points: {
+        // Full deduction to the threshold, then a quarter of it goes over the
+        // next $50,000; a second quarter between $475,000 and $525,000; half
+        // held to $1,000,000; nothing above.
+        single: [
+          [100_000, 1],
+          [150_000, 0.75],
+          [475_000, 0.75],
+          [525_000, 0.5],
+          [1_000_000, 0.5],
+          [1_000_001, 0],
+        ],
+        headOfHousehold: [
+          [150_000, 1],
+          [200_000, 0.75],
+          [475_000, 0.75],
+          [525_000, 0.5],
+          [1_000_000, 0.5],
+          [1_000_001, 0],
+        ],
+        marriedJointly: [
+          [200_000, 1],
+          [250_000, 0.75],
+          [475_000, 0.75],
+          [525_000, 0.5],
+          [1_000_000, 0.5],
+          [1_000_001, 0],
+        ],
+      },
+    },
+    source: 'https://www.tax.ny.gov/forms/html-instructions/2025/it/it196i-2025.htm',
+    checked: '2026-08-15',
+    note: 'New York itemised deductions here cover property tax and mortgage interest only. Charitable giving, medical costs above 10% of income and the job expenses New York still allows are not asked about and are not included, so New York tax shown here is higher than the true figure for anyone who has them.',
+  },
   California: {
     deductPropertyTax: true,
     deductStateIncomeTax: false,
@@ -2455,6 +2550,7 @@ for (const [name, s] of Object.entries(states)) {
    * two-earner couple takes, because their joint brackets are not doubled.
    */
   s.combinedSeparateReturn = COMBINED_SEPARATE_RETURN.has(name);
+  s.propertyTaxRelief = PROPERTY_TAX_RELIEF[name] ?? null;
   /*
    * Rules we know this state has and do not model, in plain words, each saying
    * which way it runs. Kept apart from `notes` — which carries the source
@@ -2491,6 +2587,7 @@ for (const [name, s] of Object.entries(states)) {
         deductPayrollTax: itemized.deductPayrollTax === true,
         requiresFederalItemising: itemized.requiresFederalItemising === true,
         highIncomeReduction: itemized.highIncomeReduction ?? null,
+        shareKeptCurve: itemized.shareKeptCurve ?? null,
         source: { url: itemized.source, checked: itemized.checked },
       }
     : null;
