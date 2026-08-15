@@ -211,6 +211,33 @@ export interface StateTaxRules {
    */
   itemisedDeductionCredit: { rate: number } | null;
   /**
+   * Whether the personal and dependent credits pay out below zero tax.
+   *
+   * IDAHO'S GROCERY CREDIT IS THE REASON. It is $155 for the filer, the spouse
+   * and every dependent, with no income test at all, and it is REFUNDABLE —
+   * "if taxes due are less than the total credit allowed, the taxpayer shall
+   * be paid a refund". Treating it as an ordinary credit would quietly cap it
+   * at whatever tax was owed, which for a family is most of its value.
+   */
+  personalCreditRefundable: boolean;
+  /**
+   * A credit for property tax paid, where the state gives one on top of — or
+   * instead of — any deduction.
+   *
+   * Illinois gives 5% of the property tax on your main home, killed outright
+   * above $250,000 of income ($500,000 for a couple). A cliff, not a taper.
+   */
+  propertyTaxCredit: PropertyTaxCredit | null;
+  /**
+   * A deduction for the Social Security and Medicare tax withheld from pay,
+   * capped per person.
+   *
+   * Massachusetts gives $2,000 EACH — two lines on the form, one per spouse —
+   * so a two-earner couple gets $4,000. Per person rather than per return is
+   * the whole point, and reading it as per return would halve it.
+   */
+  payrollTaxDeduction: { capPerPerson: USD } | null;
+  /**
    * A deduction for property tax that is NOT itemising, where the state has
    * one.
    *
@@ -569,6 +596,14 @@ export interface TaxCreditFraction {
   bands: Partial<Record<PublishedStatus, Array<[number, number]>>> & {
     single: Array<[number, number]>;
   };
+  /** A ceiling in dollars. Ohio's joint filing credit stops at $650. */
+  max?: USD;
+  /**
+   * Only where BOTH spouses earn. Ohio's joint filing credit needs $500 of
+   * qualifying income each, so a sole earner gets nothing from it — the same
+   * shape as the states that tax a couple as two people.
+   */
+  requiresTwoEarners?: boolean;
 }
 
 /**
@@ -582,6 +617,13 @@ export interface FederalTaxDeduction {
   caps: Partial<Record<PublishedStatus, Array<[number, number]>>> & {
     single: Array<[number, number]>;
   };
+}
+
+/** See StateTaxRules.propertyTaxCredit. */
+export interface PropertyTaxCredit {
+  rate: number;
+  /** Income above which the credit vanishes entirely. A cliff, not a taper. */
+  cliff: Partial<Record<PublishedStatus, number>> & { single: number };
 }
 
 /** See StateTaxRules.propertyTaxRelief. */
@@ -1063,9 +1105,24 @@ export function computeStateTax(
     if (band) federalTaxDeducted = Math.min(band[1], Math.max(0, inputs.federalTaxPaid ?? 0));
   }
 
+  /*
+   * Social Security and Medicare withheld, where the state lets you deduct it
+   * outright rather than through an itemised schedule. Massachusetts gives
+   * $2,000 EACH — two lines on the form, one per spouse — so a two-earner
+   * couple gets $4,000 and reading it as per return would halve it.
+   */
+  let payrollDeducted = 0;
+  if (rules.payrollTaxDeduction) {
+    const people = inputs.filingStatus === 'marriedJointly' ? (inputs.earners ?? 2) : 1;
+    payrollDeducted = Math.min(
+      Math.max(0, inputs.payrollTaxPaid ?? 0),
+      rules.payrollTaxDeduction.capPerPerson * Math.max(1, people),
+    );
+  }
+
   const taxableIncome = Math.max(
     0,
-    gross - deductions - exemptions - propertyTaxDeduction - federalTaxDeducted,
+    gross - deductions - exemptions - propertyTaxDeduction - federalTaxDeducted - payrollDeducted,
   );
   const lump =
     rules.lumpSumTax && taxableIncome > rules.lumpSumTax.above ? rules.lumpSumTax.amount : 0;
@@ -1190,7 +1247,26 @@ export function computeStateTax(
     const bands =
       fraction.bands[allowanceKey] ?? fraction.bands[otherwise] ?? fraction.bands.single;
     const band = bands.find(([upper]) => gross <= upper);
-    if (band) creditsWithRelief += taxBeforeCredits * band[1];
+    const eligible =
+      !fraction.requiresTwoEarners ||
+      (inputs.filingStatus === 'marriedJointly' && (inputs.earners ?? 2) >= 2);
+    if (band && eligible) {
+      const amount = taxBeforeCredits * band[1];
+      creditsWithRelief += fraction.max ? Math.min(amount, fraction.max) : amount;
+    }
+  }
+
+  /*
+   * A credit for property tax paid. Illinois gives 5% of it and takes the
+   * whole thing away above the income cliff — not a taper, an edge.
+   */
+  const ptCredit = rules.propertyTaxCredit;
+  if (ptCredit) {
+    const cliff =
+      ptCredit.cliff[allowanceKey] ?? ptCredit.cliff[otherwise] ?? ptCredit.cliff.single;
+    if (gross <= cliff) {
+      creditsWithRelief += ptCredit.rate * Math.max(0, inputs.propertyTax ?? 0);
+    }
   }
 
   /*
@@ -1205,8 +1281,23 @@ export function computeStateTax(
   }
 
   creditsWithRelief += creditOverride;
-  const afterCredits = Math.max(0, taxBeforeCredits - creditsWithRelief);
-  const tax = eitcRules?.refundable
+  /*
+   * Personal and dependent credits normally stop at zero. Idaho's grocery
+   * credit does not — "if taxes due are less than the total credit allowed,
+   * the taxpayer shall be paid a refund" — and capping it at the tax owed
+   * would take most of its value from exactly the households it is for.
+   */
+  const afterCredits = rules.personalCreditRefundable
+    ? taxBeforeCredits - creditsWithRelief
+    : Math.max(0, taxBeforeCredits - creditsWithRelief);
+  /*
+   * The final floor has to respect BOTH kinds of refundability, and it did
+   * not. Idaho has no earned income credit, so this line clamped its grocery
+   * credit straight back to zero — undoing the refund two lines after granting
+   * it. A floor applied at the end silently overrides every decision before it.
+   */
+  const anythingRefundable = eitcRules?.refundable === true || rules.personalCreditRefundable;
+  const tax = anythingRefundable
     ? afterCredits - earnedIncomeCredit
     : Math.max(0, afterCredits - earnedIncomeCredit);
 

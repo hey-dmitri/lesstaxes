@@ -526,10 +526,29 @@ describe('credit-structured allowances', () => {
 // ---------------------------------------------------------------------------
 
 describe('universal properties', () => {
-  it.each(ALL_STATE_CODES)('%s: tax is never negative', (code) => {
+  /*
+   * NEGATIVE TAX IS CORRECT WHERE A CREDIT IS REFUNDABLE — it is a refund, not
+   * an error. This test asserted otherwise for every state, which was true
+   * only because the refundable credits modelled at the time all keyed off the
+   * federal earned income credit, and nothing here supplies one.
+   *
+   * Idaho broke it honestly: its grocery credit is $155 a head with no income
+   * test and an explicit statutory refund, so a family below the tax threshold
+   * ends the year owed money. The bound now applies where the state genuinely
+   * has no way to pay anything out.
+   */
+  it.each(ALL_STATE_CODES)('%s: tax is never negative without a refundable credit', (code) => {
+    if (stateRules(code).personalCreditRefundable) return;
     for (const salary of [0, 15_000, 60_000, 150_000, 500_000]) {
       expect(tax(code, salary)).toBeGreaterThanOrEqual(0);
     }
+  });
+
+  it('pays out rather than floors where the state says refund', () => {
+    // Idaho, at an income far below its own filing threshold.
+    expect(tax('ID', 0)).toBeLessThan(0);
+    // And the refund is exactly the credit, never more.
+    expect(tax('ID', 0)).toBeCloseTo(-155, 2);
   });
 
   it.each(ALL_STATE_CODES)('%s: tax rises monotonically with salary', (code) => {

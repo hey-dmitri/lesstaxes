@@ -88,6 +88,8 @@ describe('every other state', () => {
   const ITEMISING_STATES = new Set([
     'CA', 'KS', 'AL', 'MN', 'NC', 'VA', 'MD', 'MT', 'NM', 'ID', 'OK', 'NY', 'NE', 'IA',
     'NJ', 'WI',
+    // Illinois credits 5% of property tax, so housing reaches its answer too.
+    'IL',
   ]);
 
   it('keeps the standard deduction until its own rules have been read', () => {

@@ -218,6 +218,32 @@ const TAX_ADD_BACKS = {
  * transcription slip.
  */
 const TAX_CREDIT_FRACTION = {
+  /*
+   * OHIO'S JOINT FILING CREDIT reaches only couples where both work — each
+   * spouse needs $500 of qualifying income — so it is the one credit here with
+   * an earners condition. A percentage of the tax, capped at $650.
+   */
+  /*
+   * Ohio's bands are measured on income AFTER exemptions and this uses gross,
+   * which is slightly higher and so can land a couple in a lower percentage
+   * band than they deserve. That understates the credit and overstates the
+   * tax — the safe direction — and the gap is at most one band near a
+   * boundary.
+   */
+  Ohio: {
+    max: 650,
+    requiresTwoEarners: true,
+    bands: {
+      single: [[0, 0]],
+      marriedJointly: [
+        [25_000, 0.2],
+        [50_000, 0.15],
+        [75_000, 0.1],
+        [749_999, 0.05],
+      ],
+      headOfHousehold: [[0, 0]],
+    },
+  },
   Connecticut: {
     bands: {
       single: [
@@ -358,6 +384,55 @@ const FEDERAL_TAX_DEDUCTION = {
       ],
     },
   },
+};
+
+/**
+ * STATES WHOSE PERSONAL CREDITS PAY OUT BELOW ZERO TAX.
+ *
+ * IDAHO'S GROCERY CREDIT — renamed the food tax credit — is $155 for the
+ * filer, the spouse and every dependent, with NO INCOME TEST AT ALL, and the
+ * statute is explicit: "if taxes due are less than the total credit allowed,
+ * the taxpayer shall be paid a refund equal to the balance". A family of four
+ * gets $620 whether they owe anything or not.
+ *
+ * Treating it as an ordinary credit would silently cap it at the tax owed,
+ * which takes most of its value from exactly the households it exists for.
+ */
+const REFUNDABLE_PERSONAL_CREDIT = new Set(['Idaho']);
+
+/**
+ * CREDITS FOR PROPERTY TAX PAID.
+ *
+ * Illinois gives 5% of the property tax on your principal residence,
+ * nonrefundable, and takes the whole thing away above $250,000 of federal
+ * income ($500,000 for a couple). A cliff, not a taper.
+ *
+ * Connecticut's is deliberately absent: it is capped at $300 and tapers in
+ * seven steps, and it also covers motor vehicle tax, which this engine does
+ * not ask about. Modelling half of it would misstate the other half, so it
+ * stays a recorded gap.
+ */
+const PROPERTY_TAX_CREDIT = {
+  Illinois: {
+    rate: 0.05,
+    cliff: { single: 250_000, marriedJointly: 500_000, headOfHousehold: 250_000 },
+  },
+};
+
+/**
+ * STATES THAT LET YOU DEDUCT THE SOCIAL SECURITY AND MEDICARE TAX WITHHELD.
+ *
+ * Massachusetts gives $2,000 EACH, on two separate lines of the form — one per
+ * spouse — so a two-earner couple gets $4,000. Per person rather than per
+ * return is the whole point of the two lines, and reading it as per return
+ * would halve it for every couple in the state.
+ *
+ * Alabama also allows it and is handled through its itemised schedule instead,
+ * because there it competes with the standard deduction rather than coming off
+ * on top.
+ */
+const PAYROLL_TAX_DEDUCTION = {
+  Massachusetts: { capPerPerson: 2_000 },
 };
 
 const PROPERTY_TAX_RELIEF = {
@@ -1691,6 +1766,22 @@ const STATE_OVERRIDES = {
     checked: '2026-08-15',
     note: "Colorado's add-back is reduced by any state income tax you deducted on your federal return, which this engine does not model — so for someone who itemises federally, Colorado tax shown here above $300,000 is higher than the true figure. Colorado also adds back the federal overtime deduction from 2026, which is not modelled.",
   },
+  Idaho: {
+    /*
+     * THE GROCERY CREDIT, WHICH EVERYONE GETS AND WE GAVE NOBODY. Idaho Code
+     * 63-3024A: "For tax year 2025 and each year thereafter, the credit is one
+     * hundred fifty-five dollars ($155)" — for the filer, the spouse and every
+     * dependent, with no income test of any kind, and refundable.
+     *
+     * A single filer was overcharged $155 a year and a family of four $620,
+     * at every income. Idaho has renamed it the food tax credit and dropped
+     * the old bump for over-65s, so it is a flat $155 for everybody.
+     */
+    personalCredit: { single: 155, marriedJointly: 310, headOfHousehold: 155, dependent: 155 },
+    source: 'https://legislature.idaho.gov/statutesrules/idstat/title63/t63ch30/sect63-3024a/',
+    checked: '2026-08-15',
+    note: "Idaho's grocery credit can instead be claimed on receipts for up to $250 a person rather than the flat $155 used here, so Idaho tax shown is higher than the true figure for anyone who keeps their receipts. It is also reduced for months spent on food stamps, incarcerated or outside Idaho, which is not modelled and runs the other way.",
+  },
   Hawaii: {
     /*
      * A ONE-NUMBER ERROR THAT NEARLY DOUBLED THE ALLOWANCE. Hawaii's 2024 law
@@ -2513,6 +2604,7 @@ const ITEMIZED_DEDUCTIONS = {
     checked: '2026-08-15',
   },
   Idaho: {
+    // See REFUNDABLE_PERSONAL_CREDIT for the grocery credit that rides on top.
     deductPropertyTax: true,
     deductStateIncomeTax: false,
     mortgageDebtLimit: 750_000,
@@ -2842,6 +2934,9 @@ for (const [name, s] of Object.entries(states)) {
   s.taxCreditFraction = TAX_CREDIT_FRACTION[name] ?? null;
   s.federalTaxDeduction = FEDERAL_TAX_DEDUCTION[name] ?? null;
   s.itemisedDeductionCredit = name === 'Wisconsin' ? { rate: 0.05 } : null;
+  s.personalCreditRefundable = REFUNDABLE_PERSONAL_CREDIT.has(name);
+  s.propertyTaxCredit = PROPERTY_TAX_CREDIT[name] ?? null;
+  s.payrollTaxDeduction = PAYROLL_TAX_DEDUCTION[name] ?? null;
   /*
    * Rules we know this state has and do not model, in plain words, each saying
    * which way it runs. Kept apart from `notes` — which carries the source

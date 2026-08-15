@@ -70,6 +70,9 @@
       "taxCreditFraction": null,
       "federalTaxDeduction": null,
       "itemisedDeductionCredit": null,
+      "personalCreditRefundable": false,
+      "propertyTaxCredit": null,
+      "payrollTaxDeduction": null,
       "modellingGaps": [],
       "priorYearFigures": null,
       "ratesCheckedAgainstState": null,
@@ -185,6 +188,9 @@
       "taxCreditFraction": null,
       "federalTaxDeduction": null,
       "itemisedDeductionCredit": null,
+      "personalCreditRefundable": false,
+      "propertyTaxCredit": null,
+      "payrollTaxDeduction": null,
       "modellingGaps": [
         "Alabama's itemised deductions here cover property tax, mortgage interest and the Social Security and Medicare tax withheld from your pay. Charitable giving and medical costs are not asked about and are not included, so Alabama tax shown here is higher than the true figure for anyone who has them.",
         "Alabama's dependent exemption steps down with income — $1,000 up to $50,000, $500 to $100,000, $300 above — and never reaches zero. Only the $1,000 figure is used here, so Alabama tax shown is slightly lower than the true figure above $50,000. Alabama also allows a deduction for the federal income tax you paid, which is not included, so the figure shown is higher than the truth in the other direction."
@@ -313,6 +319,9 @@
       "taxCreditFraction": null,
       "federalTaxDeduction": null,
       "itemisedDeductionCredit": null,
+      "personalCreditRefundable": false,
+      "propertyTaxCredit": null,
+      "payrollTaxDeduction": null,
       "modellingGaps": [
         "Arkansas reduces the benefit of its lower brackets across a narrow band of income between about $94,700 and $97,600. That adjustment is not modelled, so tax shown for incomes inside that band is slightly lower than the true figure."
       ],
@@ -390,6 +399,9 @@
       "taxCreditFraction": null,
       "federalTaxDeduction": null,
       "itemisedDeductionCredit": null,
+      "personalCreditRefundable": false,
+      "propertyTaxCredit": null,
+      "payrollTaxDeduction": null,
       "modellingGaps": [
         "Arizona's dependent credit rose to $125 for a child under 17 for 2026 and we still apply $100, so Arizona tax shown here is $25 a year per young child too much. The same credit shrinks above $200,000 of income ($400,000 for a couple), which is not modelled, so above those incomes the figure shown is slightly low."
       ],
@@ -591,6 +603,9 @@
       "taxCreditFraction": null,
       "federalTaxDeduction": null,
       "itemisedDeductionCredit": null,
+      "personalCreditRefundable": false,
+      "propertyTaxCredit": null,
+      "payrollTaxDeduction": null,
       "modellingGaps": [
         "California itemised deductions here cover property tax and mortgage interest only — the two figures this site knows. Charitable giving, medical costs and miscellaneous deductions are not asked about and are not included, so California tax shown here is higher than the true figure for anyone who has them.",
         "California's exemption credits shrink above $252,203 of income ($504,411 for a couple, $378,310 for a head of household) and that is not modelled, so California tax shown here is lower than the true figure above those incomes."
@@ -736,6 +751,9 @@
       "taxCreditFraction": null,
       "federalTaxDeduction": null,
       "itemisedDeductionCredit": null,
+      "personalCreditRefundable": false,
+      "propertyTaxCredit": null,
+      "payrollTaxDeduction": null,
       "modellingGaps": [
         "Colorado's add-back is reduced by any state income tax you deducted on your federal return, which this engine does not model — so for someone who itemises federally, Colorado tax shown here above $300,000 is higher than the true figure. Colorado also adds back the federal overtime deduction from 2026, which is not modelled."
       ],
@@ -1360,6 +1378,9 @@
       },
       "federalTaxDeduction": null,
       "itemisedDeductionCredit": null,
+      "personalCreditRefundable": false,
+      "propertyTaxCredit": null,
+      "payrollTaxDeduction": null,
       "modellingGaps": [
         "Connecticut allows no itemised deductions and no standard deduction at all — the personal exemption is the only across-the-board subtraction — so a homeowner gets no relief for a mortgage here, and that is Connecticut's rule rather than a gap. Its property tax credit of up to $300 is not modelled, so Connecticut tax shown here is higher than the true figure for anyone who owns a home or a car."
       ],
@@ -1489,6 +1510,9 @@
       "taxCreditFraction": null,
       "federalTaxDeduction": null,
       "itemisedDeductionCredit": null,
+      "personalCreditRefundable": false,
+      "propertyTaxCredit": null,
+      "payrollTaxDeduction": null,
       "modellingGaps": [],
       "priorYearFigures": null,
       "ratesCheckedAgainstState": {
@@ -1610,6 +1634,9 @@
       "taxCreditFraction": null,
       "federalTaxDeduction": null,
       "itemisedDeductionCredit": null,
+      "personalCreditRefundable": false,
+      "propertyTaxCredit": null,
+      "payrollTaxDeduction": null,
       "modellingGaps": [],
       "priorYearFigures": null,
       "ratesCheckedAgainstState": {
@@ -1662,6 +1689,9 @@
       "taxCreditFraction": null,
       "federalTaxDeduction": null,
       "itemisedDeductionCredit": null,
+      "personalCreditRefundable": false,
+      "propertyTaxCredit": null,
+      "payrollTaxDeduction": null,
       "modellingGaps": [],
       "priorYearFigures": null,
       "ratesCheckedAgainstState": null,
@@ -1717,6 +1747,9 @@
       "taxCreditFraction": null,
       "federalTaxDeduction": null,
       "itemisedDeductionCredit": null,
+      "personalCreditRefundable": false,
+      "propertyTaxCredit": null,
+      "payrollTaxDeduction": null,
       "modellingGaps": [],
       "priorYearFigures": null,
       "ratesCheckedAgainstState": {
@@ -1932,6 +1965,9 @@
       "taxCreditFraction": null,
       "federalTaxDeduction": null,
       "itemisedDeductionCredit": null,
+      "personalCreditRefundable": false,
+      "propertyTaxCredit": null,
+      "payrollTaxDeduction": null,
       "modellingGaps": [],
       "priorYearFigures": null,
       "ratesCheckedAgainstState": {
@@ -2020,6 +2056,9 @@
       "taxCreditFraction": null,
       "federalTaxDeduction": null,
       "itemisedDeductionCredit": null,
+      "personalCreditRefundable": false,
+      "propertyTaxCredit": null,
+      "payrollTaxDeduction": null,
       "modellingGaps": [],
       "priorYearFigures": null,
       "ratesCheckedAgainstState": {
@@ -2092,9 +2131,10 @@
         "dependent": 0
       },
       "personalCredit": {
-        "single": 0,
-        "marriedJointly": 0,
-        "dependent": 0
+        "single": 155,
+        "marriedJointly": 310,
+        "dependent": 155,
+        "headOfHousehold": 155
       },
       "federalTaxDeductible": false,
       "hasLocalIncomeTax": false,
@@ -2109,6 +2149,7 @@
         "State provides a state-defined personal exemption amount for each exemption available and/or deductible under the Internal Revenue Code. The Tax Cuts and Jobs Act set the personal exemption to $0 until 2026 but did not eliminate it, and the One Big Beautiful Bill Act permanently set the personal exemption to $0 but did not eliminate it. Because it is still available, these state-defined personal exemptions remain available in some states but are set to $0 in other states.",
         "Colorado, Idaho, Iowa, Montana, New Mexico, North Dakota, and South Carolina include the federal standard deduction in their income starting point.",
         "Deduction and/or exemption tied to federal tax system. Federal deductions are indexed for inflation. Where applicable, the tax year 2026 inflation-adjusted amounts are shown.",
+        "Idaho's grocery credit can instead be claimed on receipts for up to $250 a person rather than the flat $155 used here, so Idaho tax shown is higher than the true figure for anyone who keeps their receipts. It is also reduced for months spent on food stamps, incarcerated or outside Idaho, which is not modelled and runs the other way.",
         "Income below $4,811 (single) is not taxed.",
         "Income below $9,622 (married filing jointly) is not taxed."
       ],
@@ -2122,7 +2163,12 @@
       "taxCreditFraction": null,
       "federalTaxDeduction": null,
       "itemisedDeductionCredit": null,
-      "modellingGaps": [],
+      "personalCreditRefundable": true,
+      "propertyTaxCredit": null,
+      "payrollTaxDeduction": null,
+      "modellingGaps": [
+        "Idaho's grocery credit can instead be claimed on receipts for up to $250 a person rather than the flat $155 used here, so Idaho tax shown is higher than the true figure for anyone who keeps their receipts. It is also reduced for months spent on food stamps, incarcerated or outside Idaho, which is not modelled and runs the other way."
+      ],
       "priorYearFigures": "Idaho's untaxed band of $4,811 for a single filer and $9,622 for a couple is the published 2025 figure; Idaho publishes the 2026 amount around December.",
       "ratesCheckedAgainstState": {
         "url": "https://tax.idaho.gov/wp-content/uploads/forms/EFO00089/EFO00089_03-02-2026.pdf",
@@ -2144,6 +2190,10 @@
           "url": "https://legislature.idaho.gov/statutesrules/idstat/title63/t63ch30/sect63-3022/",
           "checked": "2026-08-15"
         }
+      },
+      "verifiedAgainstState": {
+        "url": "https://legislature.idaho.gov/statutesrules/idstat/title63/t63ch30/sect63-3024a/",
+        "checked": "2026-08-15"
       },
       "communityProperty": true,
       "payrollContributions": [],
@@ -2211,6 +2261,16 @@
       "taxCreditFraction": null,
       "federalTaxDeduction": null,
       "itemisedDeductionCredit": null,
+      "personalCreditRefundable": false,
+      "propertyTaxCredit": {
+        "rate": 0.05,
+        "cliff": {
+          "single": 250000,
+          "marriedJointly": 500000,
+          "headOfHousehold": 250000
+        }
+      },
+      "payrollTaxDeduction": null,
       "modellingGaps": [],
       "priorYearFigures": null,
       "ratesCheckedAgainstState": {
@@ -2285,6 +2345,9 @@
       "taxCreditFraction": null,
       "federalTaxDeduction": null,
       "itemisedDeductionCredit": null,
+      "personalCreditRefundable": false,
+      "propertyTaxCredit": null,
+      "payrollTaxDeduction": null,
       "modellingGaps": [],
       "priorYearFigures": null,
       "ratesCheckedAgainstState": {
@@ -2367,6 +2430,9 @@
       "taxCreditFraction": null,
       "federalTaxDeduction": null,
       "itemisedDeductionCredit": null,
+      "personalCreditRefundable": false,
+      "propertyTaxCredit": null,
+      "payrollTaxDeduction": null,
       "modellingGaps": [],
       "priorYearFigures": null,
       "ratesCheckedAgainstState": {
@@ -2450,6 +2516,9 @@
       "taxCreditFraction": null,
       "federalTaxDeduction": null,
       "itemisedDeductionCredit": null,
+      "personalCreditRefundable": false,
+      "propertyTaxCredit": null,
+      "payrollTaxDeduction": null,
       "modellingGaps": [],
       "priorYearFigures": null,
       "ratesCheckedAgainstState": {
@@ -2521,6 +2590,9 @@
       "taxCreditFraction": null,
       "federalTaxDeduction": null,
       "itemisedDeductionCredit": null,
+      "personalCreditRefundable": false,
+      "propertyTaxCredit": null,
+      "payrollTaxDeduction": null,
       "modellingGaps": [],
       "priorYearFigures": null,
       "ratesCheckedAgainstState": {
@@ -2599,6 +2671,11 @@
       "taxCreditFraction": null,
       "federalTaxDeduction": null,
       "itemisedDeductionCredit": null,
+      "personalCreditRefundable": false,
+      "propertyTaxCredit": null,
+      "payrollTaxDeduction": {
+        "capPerPerson": 2000
+      },
       "modellingGaps": [
         "Massachusetts lets every wage earner deduct up to $2,000 each of the Social Security and Medicare tax they paid. That is not modelled here, so Massachusetts tax shown is about $100 a year higher than the true figure for most earners."
       ],
@@ -2783,6 +2860,9 @@
       "taxCreditFraction": null,
       "federalTaxDeduction": null,
       "itemisedDeductionCredit": null,
+      "personalCreditRefundable": false,
+      "propertyTaxCredit": null,
+      "payrollTaxDeduction": null,
       "modellingGaps": [
         "Maryland's itemised deductions here cover property tax and mortgage interest only. Charitable giving and medical costs are not asked about and are not included, so Maryland tax shown here is higher than the true figure for anyone who has them. Maryland's 2026 standard deduction for couples has not been announced — the legislature's own fiscal note says so — so the 2025 figure is used."
       ],
@@ -2967,6 +3047,9 @@
       "taxCreditFraction": null,
       "federalTaxDeduction": null,
       "itemisedDeductionCredit": null,
+      "personalCreditRefundable": false,
+      "propertyTaxCredit": null,
+      "payrollTaxDeduction": null,
       "modellingGaps": [
         "Maine's personal exemption also phases out, from $341,000 of income for a single filer and $409,150 for a couple. That is not modelled, so Maine tax shown above those incomes is slightly lower than the true figure."
       ],
@@ -3045,6 +3128,9 @@
       "taxCreditFraction": null,
       "federalTaxDeduction": null,
       "itemisedDeductionCredit": null,
+      "personalCreditRefundable": false,
+      "propertyTaxCredit": null,
+      "payrollTaxDeduction": null,
       "modellingGaps": [],
       "priorYearFigures": null,
       "ratesCheckedAgainstState": {
@@ -3206,6 +3292,9 @@
       "taxCreditFraction": null,
       "federalTaxDeduction": null,
       "itemisedDeductionCredit": null,
+      "personalCreditRefundable": false,
+      "propertyTaxCredit": null,
+      "payrollTaxDeduction": null,
       "modellingGaps": [
         "Minnesota's dependent exemption also phases out, by 2 percentage points for each $2,500 of income above $244,500 single and $366,700 joint. That is not modelled, so Minnesota tax shown above those incomes is slightly lower than the true figure."
       ],
@@ -3373,6 +3462,9 @@
       "taxCreditFraction": null,
       "federalTaxDeduction": null,
       "itemisedDeductionCredit": null,
+      "personalCreditRefundable": false,
+      "propertyTaxCredit": null,
+      "payrollTaxDeduction": null,
       "modellingGaps": [],
       "priorYearFigures": null,
       "ratesCheckedAgainstState": {
@@ -3448,6 +3540,9 @@
       "taxCreditFraction": null,
       "federalTaxDeduction": null,
       "itemisedDeductionCredit": null,
+      "personalCreditRefundable": false,
+      "propertyTaxCredit": null,
+      "payrollTaxDeduction": null,
       "modellingGaps": [],
       "priorYearFigures": "Only Mississippi's rate is published for 2026. Its standard deduction and exemptions here are the 2025 figures, which are fixed in statute and were not changed by any 2026 law.",
       "ratesCheckedAgainstState": {
@@ -3542,6 +3637,9 @@
       "taxCreditFraction": null,
       "federalTaxDeduction": null,
       "itemisedDeductionCredit": null,
+      "personalCreditRefundable": false,
+      "propertyTaxCredit": null,
+      "payrollTaxDeduction": null,
       "modellingGaps": [],
       "priorYearFigures": null,
       "ratesCheckedAgainstState": {
@@ -3620,6 +3718,9 @@
       "taxCreditFraction": null,
       "federalTaxDeduction": null,
       "itemisedDeductionCredit": null,
+      "personalCreditRefundable": false,
+      "propertyTaxCredit": null,
+      "payrollTaxDeduction": null,
       "modellingGaps": [],
       "priorYearFigures": null,
       "ratesCheckedAgainstState": {
@@ -3736,6 +3837,9 @@
       "taxCreditFraction": null,
       "federalTaxDeduction": null,
       "itemisedDeductionCredit": null,
+      "personalCreditRefundable": false,
+      "propertyTaxCredit": null,
+      "payrollTaxDeduction": null,
       "modellingGaps": [],
       "priorYearFigures": null,
       "ratesCheckedAgainstState": {
@@ -3849,6 +3953,9 @@
       "taxCreditFraction": null,
       "federalTaxDeduction": null,
       "itemisedDeductionCredit": null,
+      "personalCreditRefundable": false,
+      "propertyTaxCredit": null,
+      "payrollTaxDeduction": null,
       "modellingGaps": [
         "Nebraska subtracts the full pre-cap state and local income tax from the federal itemised total even when the federal cap already reduced it, so a capped filer loses those dollars twice. That double subtraction is not modelled, so Nebraska tax shown here is lower than the true figure for anyone the federal cap reaches."
       ],
@@ -3918,6 +4025,9 @@
       "taxCreditFraction": null,
       "federalTaxDeduction": null,
       "itemisedDeductionCredit": null,
+      "personalCreditRefundable": false,
+      "propertyTaxCredit": null,
+      "payrollTaxDeduction": null,
       "modellingGaps": [],
       "priorYearFigures": null,
       "ratesCheckedAgainstState": null,
@@ -4042,6 +4152,9 @@
       "taxCreditFraction": null,
       "federalTaxDeduction": null,
       "itemisedDeductionCredit": null,
+      "personalCreditRefundable": false,
+      "propertyTaxCredit": null,
+      "payrollTaxDeduction": null,
       "modellingGaps": [
         "New Jersey allows no mortgage interest deduction and no charitable deduction at all, so a homeowner gets relief for property tax only. The extra exemptions for veterans, for filers over 65 or blind, and for a dependent in full-time education are not modelled, so New Jersey tax shown here is higher than the true figure for anyone entitled to them."
       ],
@@ -4181,6 +4294,9 @@
       "taxCreditFraction": null,
       "federalTaxDeduction": null,
       "itemisedDeductionCredit": null,
+      "personalCreditRefundable": false,
+      "propertyTaxCredit": null,
+      "payrollTaxDeduction": null,
       "modellingGaps": [],
       "priorYearFigures": null,
       "ratesCheckedAgainstState": {
@@ -4252,6 +4368,9 @@
       "taxCreditFraction": null,
       "federalTaxDeduction": null,
       "itemisedDeductionCredit": null,
+      "personalCreditRefundable": false,
+      "propertyTaxCredit": null,
+      "payrollTaxDeduction": null,
       "modellingGaps": [],
       "priorYearFigures": null,
       "ratesCheckedAgainstState": null,
@@ -4421,6 +4540,9 @@
       "taxCreditFraction": null,
       "federalTaxDeduction": null,
       "itemisedDeductionCredit": null,
+      "personalCreditRefundable": false,
+      "propertyTaxCredit": null,
+      "payrollTaxDeduction": null,
       "modellingGaps": [
         "New York itemised deductions here cover property tax and mortgage interest only. Charitable giving, medical costs above 10% of income and the job expenses New York still allows are not asked about and are not included, so New York tax shown here is higher than the true figure for anyone who has them.",
         "New York recaptures the benefit of its lower brackets from higher earners, so that above about $107,650 they pay their top rate on all their income rather than only the part above each threshold. That is not modelled, so New York tax shown here is lower than the true figure above that income — by roughly $481 a year at $150,000. New York City's school tax credit is not modelled either, which pulls the other way for city residents by $221 to $380 a year."
@@ -4634,9 +4756,47 @@
       "combinedSeparateReturn": false,
       "propertyTaxRelief": null,
       "taxAddBacks": [],
-      "taxCreditFraction": null,
+      "taxCreditFraction": {
+        "max": 650,
+        "requiresTwoEarners": true,
+        "bands": {
+          "single": [
+            [
+              0,
+              0
+            ]
+          ],
+          "marriedJointly": [
+            [
+              25000,
+              0.2
+            ],
+            [
+              50000,
+              0.15
+            ],
+            [
+              75000,
+              0.1
+            ],
+            [
+              749999,
+              0.05
+            ]
+          ],
+          "headOfHousehold": [
+            [
+              0,
+              0
+            ]
+          ]
+        }
+      },
       "federalTaxDeduction": null,
       "itemisedDeductionCredit": null,
+      "personalCreditRefundable": false,
+      "propertyTaxCredit": null,
+      "payrollTaxDeduction": null,
       "modellingGaps": [
         "Ohio's personal exemption steps down with income — $2,400 up to $40,000, $2,150 to $80,000, $1,900 to $749,999 and nothing at all from $750,000 — and only the $2,400 is modelled, so Ohio tax shown here is slightly lower than the true figure above $40,000. Ohio also gives couples where both work a credit worth up to $650, which is not modelled, so their figure is higher than the true one."
       ],
@@ -4741,6 +4901,9 @@
       "taxCreditFraction": null,
       "federalTaxDeduction": null,
       "itemisedDeductionCredit": null,
+      "personalCreditRefundable": false,
+      "propertyTaxCredit": null,
+      "payrollTaxDeduction": null,
       "modellingGaps": [],
       "priorYearFigures": "Oklahoma's rates for 2026 come from the enacted law, but its standard deduction and exemptions here are the 2025 figures. They are not indexed, so they should carry unchanged.",
       "ratesCheckedAgainstState": {
@@ -4939,6 +5102,9 @@
         }
       },
       "itemisedDeductionCredit": null,
+      "personalCreditRefundable": false,
+      "propertyTaxCredit": null,
+      "payrollTaxDeduction": null,
       "modellingGaps": [
         "Oregon's subtraction for federal income tax is measured against a federal bill computed without deducting any state tax, which is exact for anyone taking the federal standard deduction and slightly high for anyone who itemises. Oregon caps the subtraction at $8,500 and a single filer clears that cap by about $70,000 of income, so for almost everyone the approximation never reaches the answer."
       ],
@@ -5017,6 +5183,9 @@
       "taxCreditFraction": null,
       "federalTaxDeduction": null,
       "itemisedDeductionCredit": null,
+      "personalCreditRefundable": false,
+      "propertyTaxCredit": null,
+      "payrollTaxDeduction": null,
       "modellingGaps": [],
       "priorYearFigures": null,
       "ratesCheckedAgainstState": {
@@ -5127,6 +5296,9 @@
       "taxCreditFraction": null,
       "federalTaxDeduction": null,
       "itemisedDeductionCredit": null,
+      "personalCreditRefundable": false,
+      "propertyTaxCredit": null,
+      "payrollTaxDeduction": null,
       "modellingGaps": [],
       "priorYearFigures": "Rhode Island's 2026 figures here come from a form the state published carrying a draft watermark. They are internally consistent and are the state's own, but they should be re-checked against the final booklet.",
       "ratesCheckedAgainstState": {
@@ -5257,6 +5429,9 @@
       "taxCreditFraction": null,
       "federalTaxDeduction": null,
       "itemisedDeductionCredit": null,
+      "personalCreditRefundable": false,
+      "propertyTaxCredit": null,
+      "payrollTaxDeduction": null,
       "modellingGaps": [
         "South Carolina's dependent exemption is shown at the 2025 figure of $4,930. The state indexes it every December and the 2026 amount appears only in the 2026 return instructions, which are not published yet. The real figure will be slightly higher, so this errs against the reader."
       ],
@@ -5315,6 +5490,9 @@
       "taxCreditFraction": null,
       "federalTaxDeduction": null,
       "itemisedDeductionCredit": null,
+      "personalCreditRefundable": false,
+      "propertyTaxCredit": null,
+      "payrollTaxDeduction": null,
       "modellingGaps": [],
       "priorYearFigures": null,
       "ratesCheckedAgainstState": null,
@@ -5359,6 +5537,9 @@
       "taxCreditFraction": null,
       "federalTaxDeduction": null,
       "itemisedDeductionCredit": null,
+      "personalCreditRefundable": false,
+      "propertyTaxCredit": null,
+      "payrollTaxDeduction": null,
       "modellingGaps": [],
       "priorYearFigures": null,
       "ratesCheckedAgainstState": null,
@@ -5403,6 +5584,9 @@
       "taxCreditFraction": null,
       "federalTaxDeduction": null,
       "itemisedDeductionCredit": null,
+      "personalCreditRefundable": false,
+      "propertyTaxCredit": null,
+      "payrollTaxDeduction": null,
       "modellingGaps": [],
       "priorYearFigures": null,
       "ratesCheckedAgainstState": null,
@@ -5480,6 +5664,9 @@
       "taxCreditFraction": null,
       "federalTaxDeduction": null,
       "itemisedDeductionCredit": null,
+      "personalCreditRefundable": false,
+      "propertyTaxCredit": null,
+      "payrollTaxDeduction": null,
       "modellingGaps": [
         "Utah's taxpayer tax credit phase-out thresholds and dependent exemption are the 2025 figures — the state has not published 2026 amounts. Utah indexes them upward, so the reduction starts slightly early here and the credit comes out slightly small."
       ],
@@ -5576,6 +5763,9 @@
       "taxCreditFraction": null,
       "federalTaxDeduction": null,
       "itemisedDeductionCredit": null,
+      "personalCreditRefundable": false,
+      "propertyTaxCredit": null,
+      "payrollTaxDeduction": null,
       "modellingGaps": [],
       "priorYearFigures": null,
       "ratesCheckedAgainstState": {
@@ -5712,6 +5902,9 @@
       "taxCreditFraction": null,
       "federalTaxDeduction": null,
       "itemisedDeductionCredit": null,
+      "personalCreditRefundable": false,
+      "propertyTaxCredit": null,
+      "payrollTaxDeduction": null,
       "modellingGaps": [],
       "priorYearFigures": "Vermont has published no 2026 rate schedule, so its brackets, standard deduction and personal exemption here are the published 2025 figures.",
       "ratesCheckedAgainstState": {
@@ -5771,6 +5964,9 @@
       "taxCreditFraction": null,
       "federalTaxDeduction": null,
       "itemisedDeductionCredit": null,
+      "personalCreditRefundable": false,
+      "propertyTaxCredit": null,
+      "payrollTaxDeduction": null,
       "modellingGaps": [],
       "priorYearFigures": null,
       "ratesCheckedAgainstState": null,
@@ -5915,6 +6111,9 @@
       "itemisedDeductionCredit": {
         "rate": 0.05
       },
+      "personalCreditRefundable": false,
+      "propertyTaxCredit": null,
+      "payrollTaxDeduction": null,
       "modellingGaps": [
         "Wisconsin's itemised deduction credit is 5% of qualifying deductions above the standard deduction, and it deliberately excludes every state and local tax — so a Wisconsin homeowner's property tax counts for nothing here, which is Wisconsin's rule rather than a gap. Charitable giving, medical costs and casualty losses also qualify and are not asked about, so Wisconsin tax shown here is higher than the true figure for anyone who has them."
       ],
@@ -6020,6 +6219,9 @@
       "taxCreditFraction": null,
       "federalTaxDeduction": null,
       "itemisedDeductionCredit": null,
+      "personalCreditRefundable": false,
+      "propertyTaxCredit": null,
+      "payrollTaxDeduction": null,
       "modellingGaps": [],
       "priorYearFigures": null,
       "ratesCheckedAgainstState": {
@@ -6076,6 +6278,9 @@
       "taxCreditFraction": null,
       "federalTaxDeduction": null,
       "itemisedDeductionCredit": null,
+      "personalCreditRefundable": false,
+      "propertyTaxCredit": null,
+      "payrollTaxDeduction": null,
       "modellingGaps": [],
       "priorYearFigures": null,
       "ratesCheckedAgainstState": null,
