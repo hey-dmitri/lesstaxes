@@ -148,6 +148,25 @@ const VEHICLE_COST_ROWS = [...VEHICLE_GOODS_ROWS, ...VEHICLE_SERVICE_ROWS];
 const CASH_CONTRIBUTIONS_ROW = 'Cash contributions';
 
 /**
+ * Hotels on trips, and second homes.
+ *
+ * BLS files these under shelter, and this engine throws the whole shelter block
+ * away because housing is the reader's own input. Rent, mortgage, property tax,
+ * utilities and upkeep have all been put back. This never was, so nobody's
+ * living costs included a single night in a hotel: $1,572 a year at $100,000 of
+ * income and $4,156 above $200,000.
+ *
+ * PRICED NATIONALLY, no local parity. A hotel on a trip is bought wherever the
+ * trip goes, not where the traveller lives, so scaling it by the price level of
+ * the home city would be wrong in both directions at once. It does scale with
+ * household size, because more people need more rooms.
+ *
+ * It falls on both cities equally, so it barely moves a verdict. What it moves
+ * is the money-left-over figure, which was too generous for everybody.
+ */
+const OTHER_LODGING_ROW = 'Other lodging';
+
+/**
  * Restating 2024 dollars in today's money.
  *
  * Every dollar figure behind this site was measured in 2024 — the Census rent
@@ -277,7 +296,6 @@ const UTILITIES_TELEPHONE = ['Telephone services'];
  */
 const OWNER_UPKEEP_ROW = 'Maintenance repairs insurance other expenses for owned dwelling';
 const OWNED_DWELLINGS_ROW = 'Owned dwellings';
-const OTHER_LODGING_ROW = 'Other lodging';
 const HOMEOWNER_PERCENT_ROW = 'Percent homeowner';
 
 /**
@@ -379,10 +397,14 @@ for (const bracket of incomeBrackets) {
    * the parity it scales with.
    */
   const cashContributions = Math.round(value(CASH_CONTRIBUTIONS_ROW, bracket));
+  const otherLodging = Math.round(value(OTHER_LODGING_ROW, bracket));
   const livingTotal =
-    Object.values(categories).reduce((a, b) => a + b, 0) + cashContributions;
+    Object.values(categories).reduce((a, b) => a + b, 0) + cashContributions + otherLodging;
   const publishedTotal = value('Average annual expenditures', bracket);
-  const reconstructed = livingTotal + Object.values(excluded).reduce((a, b) => a + b, 0);
+  // Other lodging has moved OUT of the excluded shelter block and into the
+  // living total, so it is subtracted from shelter here or it counts twice.
+  const reconstructed =
+    livingTotal + Object.values(excluded).reduce((a, b) => a + b, 0) - otherLodging;
 
   const vehiclesPerHousehold = value('Average vehicles per consumer unit', bracket);
   const vehicleSpending = sumRows(VEHICLE_COST_ROWS, bracket);
@@ -429,6 +451,8 @@ for (const bracket of incomeBrackets) {
     livingTotal,
     /* Priced nationally, not at local service prices. See CASH_CONTRIBUTIONS_ROW. */
     cashContributions,
+    /* Hotels and second homes, also priced nationally. See OTHER_LODGING_ROW. */
+    otherLodging: Math.round(value(OTHER_LODGING_ROW, bracket)),
     transport: {
       vehiclesPerHousehold,
       vehicleSpending: Math.round(vehicleSpending),

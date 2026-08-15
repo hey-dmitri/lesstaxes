@@ -46,7 +46,7 @@ import {
 } from './dataset';
 import { computeHousing } from './housing';
 import { computeLiving, computeSalesTax, defaultCarCount } from './living';
-import { computeFederal, type FederalInputs } from './tax/federal';
+import { computeFederal, earnedIncomeCreditFor, type FederalInputs } from './tax/federal';
 import { computeFica } from './tax/fica';
 import { computeLocalTax, type LocalTaxRules } from './tax/local';
 import { federalRules, ficaRules, stateRules } from './tax/rules';
@@ -170,6 +170,18 @@ export function computeCity(
         propertyTax: housing.propertyTax * share.deductionShare,
         mortgageInterest: housing.mortgageInterest * share.deductionShare,
         mortgageDebt: housing.mortgageDebt * share.deductionShare,
+        /*
+         * Most states set their earned income credit as a share of the federal
+         * one, so the federal figure has to exist before the state step. It
+         * depends only on earnings, filing status and children — never on any
+         * state figure — so computing it here breaks no ordering.
+         */
+        federalEarnedIncomeCredit: earnedIncomeCreditFor(
+          share.grossSalary,
+          household.filingStatus,
+          share.children,
+          fedRules.earnedIncomeCredit,
+        ),
       },
       stateTaxRules,
     );

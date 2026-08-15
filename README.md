@@ -18,7 +18,7 @@ index, statutory rate or state average — on the [data page](https://packorstay
 
 ## Status
 
-**Live** at [packorstay.com](https://packorstay.com). Current dataset: **2026.16**.
+**Live** at [packorstay.com](https://packorstay.com). Current dataset: **2026.17**.
 
 | Component | State |
 |---|---|
@@ -48,7 +48,7 @@ index, statutory rate or state average — on the [data page](https://packorstay
 | Social Security capped per worker, not per household | ✅ |
 | Name and domain — **Pack or Stay**, live at `packorstay.com` | ✅ |
 
-**866 tests**, including 24 golden values reproduced exactly from the IRS rate tables.
+**874 tests**, including 24 golden values reproduced exactly from the IRS rate tables.
 Total data cost: **$0**. No paid feeds, no runtime API calls.
 
 ### Known gaps, in priority order
@@ -67,9 +67,14 @@ Total data cost: **$0**. No paid feeds, no runtime API calls.
    along with the repairs beside it. OPEN-5 was hunting per-state premium data
    that does not exist for free, while the figure containing it sat unused in a
    source already committed to this repo.
-2. **No state Earned Income Credits.** The federal EITC is modelled; the ~30
-   states (and NYC) that add their own on top are not, so low-income households
-   in those states are still understated.
+2. **State Earned Income Credits cover 23 states, not all ~30.** Where two
+   independent sources agreed on the match it is modelled, refundability
+   included. Left out: California, Minnesota and Washington, which use their own
+   formulas rather than a share of the federal credit; Delaware, where the
+   taxpayer chooses between two credits; Massachusetts, Vermont, Virginia and DC,
+   where sources disagree or the credit is mid-change; Oregon, whose higher rate
+   depends on a child's age this site never asks for. New York City's own credit
+   is not modelled.
 3. **Sales tax differences between states are invisible.** There is no sales
    tax line at all any more: BLS expenditures already include the tax paid at
    the till, so charging it again was a double count. But what the basket

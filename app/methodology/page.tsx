@@ -496,9 +496,12 @@ answer          =  in your pocket THERE  −  in your pocket HERE`}</pre>
             Worth a few hundred dollars a year at most.
           </li>
           <li>
-            <strong>No state Earned Income Credits.</strong> Around thirty states, and New York
-            City, add their own on top of the federal one, usually as a percentage of it. None are
-            modelled, so low-income households in those states are understated further.
+            <strong>State low-income credits are modelled in 23 states, not all of them.</strong>{' '}
+            Around thirty states add their own on top of the federal credit, usually as a share of
+            it. Where two independent sources agreed on the figure it is now counted; where they
+            disagreed, or the state uses its own formula rather than a share — California,
+            Minnesota and Washington all do — it is still missing. New York City&rsquo;s own credit
+            is not counted either.
           </li>
           <li>
             <strong>Children are assumed to qualify.</strong> The form asks how many are under 17
@@ -542,12 +545,9 @@ answer          =  in your pocket THERE  −  in your pocket HERE`}</pre>
             do not — and the field is yours to change, but it is worth knowing the edge is there.
           </li>
           <li>
-            <strong>Hotels and second homes are missing.</strong> The national statistics count
-            them as housing, and this site drops the whole housing figure and rebuilds it from your
-            own numbers, so they never come back. Worth $1,572 a year at $100,000 of income and
-            $4,156 above $200,000 — for renters and buyers alike. It affects both cities equally,
-            so it barely touches the comparison, but it makes the money-left-over figure a little
-            too generous for everybody.
+            <strong>Hotels are priced nationally.</strong> A hotel on a trip is bought wherever the
+            trip goes, not where you live, so no local price level is applied to it. Second homes
+            are in the same figure and that reasoning suits them less well.
           </li>
           <li>
             <strong>The top income band is open-ended.</strong> The Census publishes rent burden

@@ -215,6 +215,14 @@ export function computeLiving(inputs: LivingInputs): LivingResult {
   const cashContributions = (profile.cashContributions ?? 0) * sizeFactor * inflation;
 
   /*
+   * Hotels on trips and second homes, also at NATIONAL prices — a hotel is
+   * bought wherever the trip goes, not where the traveller lives, so the home
+   * city's price level says nothing about it. It does scale with household
+   * size, because more people need more rooms.
+   */
+  const otherLodging = (profile.otherLodging ?? 0) * sizeFactor * inflation;
+
+  /*
    * SPLIT THE UTILITIES LINE, because most of it is already paid for.
    *
    * The rent this site quotes is Census median GROSS rent, which Census defines
@@ -259,7 +267,8 @@ export function computeLiving(inputs: LivingInputs): LivingResult {
   // Map internal categories onto the breakdown the results page shows.
   const food = scaledCategories.food;
   const healthcare = scaledCategories.healthcare;
-  const other = scaledCategories.otherGoods + scaledCategories.otherServices + cashContributions;
+  const other =
+    scaledCategories.otherGoods + scaledCategories.otherServices + cashContributions + otherLodging;
 
   return {
     food,

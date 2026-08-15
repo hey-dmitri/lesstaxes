@@ -471,6 +471,73 @@ const ITEMIZED_DEDUCTIONS = {
   },
 };
 
+
+/**
+ * STATE EARNED INCOME CREDITS.
+ *
+ * The federal EITC is modelled; the states that add their own on top were not,
+ * so the households least able to absorb a wrong answer were the ones getting
+ * one. Most states set theirs as a flat percentage of the federal credit, which
+ * makes it straightforward once the federal figure exists.
+ *
+ * ONLY WHERE SOURCES AGREE. NCSL (May 2026), the IRS's own list and ITEP's 2025
+ * appendix disagree on several states — Massachusetts reads 30% or 40%
+ * depending which you open, Vermont and Virginia and DC are all mid-change.
+ * Anything where two independent sources do not match is left out rather than
+ * guessed, which is the same rule the head-of-household table follows.
+ *
+ * DELIBERATELY ABSENT and why:
+ *   CA, MN, WA   own formulas, not a percentage of the federal credit at all
+ *   DE           taxpayer chooses between a refundable and a larger
+ *                nonrefundable credit, and this engine cannot make that choice
+ *   MA, VT, VA   sources disagree or the credit is mid-change
+ *   DC           85% in 2025 rising to 100%, and the sources differ on when
+ *   OR           9%, or 12% with a child under three; this site never asks a
+ *                child's age, so the lower figure would be a guess either way
+ *
+ * REFUNDABILITY MATTERS MORE THAN THE PERCENTAGE for this audience. A
+ * refundable credit pays out below zero tax; a nonrefundable one stops at zero
+ * and is worth nothing to a household that already owes nothing, which is
+ * exactly the household it is aimed at.
+ *
+ * Sources: NCSL "Earned Income Tax Credit Overview" table 2 (May 2026); IRS
+ * "States and local governments with Earned Income Tax Credit"; ITEP "State
+ * Earned Income Tax Credits in 2025".
+ */
+const STATE_EITC = {
+  Colorado: { percent: 0.5, refundable: true },
+  Connecticut: { percent: 0.4, refundable: true },
+  Hawaii: { percent: 0.4, refundable: true },
+  Illinois: { percent: 0.2, refundable: true },
+  Indiana: { percent: 0.1, refundable: true },
+  Iowa: { percent: 0.15, refundable: true },
+  Kansas: { percent: 0.17, refundable: true },
+  Louisiana: { percent: 0.05, refundable: true },
+  Michigan: { percent: 0.3, refundable: true },
+  Missouri: { percent: 0.1, refundable: false },
+  Montana: { percent: 0.2, refundable: true },
+  Nebraska: { percent: 0.1, refundable: true },
+  'New Jersey': { percent: 0.4, refundable: true },
+  'New Mexico': { percent: 0.25, refundable: true },
+  'New York': { percent: 0.3, refundable: true },
+  Ohio: { percent: 0.3, refundable: false },
+  Oklahoma: { percent: 0.05, refundable: true },
+  'Rhode Island': { percent: 0.16, refundable: true },
+  'South Carolina': { percent: 1.25, refundable: false },
+  Utah: { percent: 0.2, refundable: false },
+
+  // These vary with the number of children, which the engine knows.
+  Maine: { byChildren: { 0: 0.5, 1: 0.25, 2: 0.25, 3: 0.25 }, refundable: true },
+  Maryland: { byChildren: { 0: 1.0, 1: 0.5, 2: 0.5, 3: 0.5 }, refundable: true },
+  Wisconsin: { byChildren: { 0: 0, 1: 0.04, 2: 0.11, 3: 0.34 }, refundable: true },
+};
+
+const STATE_EITC_SOURCE = {
+  citation: 'NCSL "Earned Income Tax Credit Overview" (May 2026), cross-checked against the IRS list of states with an EITC and ITEP "State Earned Income Tax Credits in 2025"',
+  url: 'https://www.ncsl.org/human-services/earned-income-tax-credit-overview',
+  checked: '2026-08-15',
+};
+
 // --- post-process ----------------------------------------------------------
 
 const warnings = [];
@@ -517,6 +584,21 @@ function applyBracketsLocal(income, brackets) {
 
 for (const [name, s] of Object.entries(states)) {
   s.notes = s.footnotes.map((f) => footnoteText[f]).filter(Boolean);
+
+  const eitc = STATE_EITC[name];
+  s.earnedIncomeCredit = eitc
+    ? {
+        percentOfFederal: eitc.percent ?? null,
+        byChildren: eitc.byChildren ?? null,
+        refundable: eitc.refundable,
+      }
+    : null;
+  if (eitc) {
+    const rates = eitc.byChildren ? Object.values(eitc.byChildren) : [eitc.percent];
+    for (const r of rates) {
+      if (!(r >= 0 && r <= 1.5)) throw new Error(`${name}: implausible EITC match ${r}`);
+    }
+  }
 
   const itemized = ITEMIZED_DEDUCTIONS[name];
   s.itemizedDeductions = itemized
@@ -638,6 +720,7 @@ const output = {
     confidence: 'secondary — reputable aggregator of state statutes; high-population states spot-verified against state revenue departments',
   },
   payrollContributionSource: PAYROLL_SOURCE,
+  earnedIncomeCreditSource: STATE_EITC_SOURCE,
   filingStatusMapping: {
     single: 'single',
     marriedJointly: 'marriedJointly',

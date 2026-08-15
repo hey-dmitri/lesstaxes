@@ -441,6 +441,18 @@ export interface SpendingProfile {
    * local services index — so a donation grew because local dentists did.
    */
   cashContributions?: USD;
+  /**
+   * Hotels on trips and second homes.
+   *
+   * BLS files these under shelter, and this engine discards the shelter block
+   * because housing is the reader's own input. Everything else in that block
+   * has been put back; this had not been, so nobody's living costs included a
+   * single night in a hotel.
+   *
+   * Priced nationally — a hotel is bought where the trip goes, not where the
+   * traveller lives. Absent on releases before it was restored.
+   */
+  otherLodging?: USD;
   ownerUpkeep?: {
     /** As published: averaged over owners and renters together. */
     perConsumerUnit: USD;
@@ -640,6 +652,10 @@ export function spendingProfile(householdIncome: USD, version?: string): Spendin
     cashContributions:
       lower.cashContributions !== undefined && upper.cashContributions !== undefined
         ? lerp(lower.cashContributions, upper.cashContributions, t)
+        : undefined,
+    otherLodging:
+      lower.otherLodging !== undefined && upper.otherLodging !== undefined
+        ? lerp(lower.otherLodging, upper.otherLodging, t)
         : undefined,
     ownerUpkeep:
       lower.ownerUpkeep && upper.ownerUpkeep

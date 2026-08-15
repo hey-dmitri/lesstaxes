@@ -76,6 +76,16 @@ export interface StateTaxRules {
    * of debt rather than $750,000.
    */
   itemizedDeductions: StateItemizedRules | null;
+  /**
+   * The state's own earned income credit, where it has one and where two
+   * independent sources agreed on it. Null otherwise.
+   *
+   * REFUNDABILITY MATTERS MORE THAN THE PERCENTAGE for the households this
+   * reaches. A refundable credit pays out below zero tax; a nonrefundable one
+   * stops at zero and is worth nothing to a family that already owes nothing —
+   * which is exactly the family it is aimed at.
+   */
+  earnedIncomeCredit: StateEitcRules | null;
   /** AL, MO, OR allow a deduction for federal income tax paid. Not yet modelled. */
   federalTaxDeductible: boolean;
   hasLocalIncomeTax: boolean;
@@ -146,6 +156,14 @@ export interface StateItemizedRules {
   mortgageDebtLimit: USD | null;
 }
 
+export interface StateEitcRules {
+  /** Flat share of the federal credit, or null when it varies with children. */
+  percentOfFederal: number | null;
+  /** Share by number of children, indexed 0..3 where 3 means three or more. */
+  byChildren: Record<number, number> | null;
+  refundable: boolean;
+}
+
 export interface StateTaxInputs {
   grossSalary: USD;
   filingStatus: FilingStatus;
@@ -158,6 +176,14 @@ export interface StateTaxInputs {
   mortgageInterest?: USD;
   /** Average first-year loan balance, for the state's own debt limit. */
   mortgageDebt?: USD;
+  /**
+   * The federal earned income credit already computed for this household.
+   *
+   * Passed in rather than recomputed because most states set theirs as a flat
+   * share of it. It depends only on earnings, filing status and children — not
+   * on any state figure — so there is no circularity in computing it first.
+   */
+  federalEarnedIncomeCredit?: USD;
 }
 
 export interface StateTaxResult {
@@ -171,6 +197,8 @@ export interface StateTaxResult {
   taxableIncome: USD;
   taxBeforeCredits: USD;
   credits: USD;
+  /** The state's own earned income credit, if it has one. */
+  earnedIncomeCredit: USD;
   tax: USD;
 }
 
@@ -244,6 +272,7 @@ export function computeStateTax(
       taxableIncome: 0,
       taxBeforeCredits: 0,
       credits: 0,
+      earnedIncomeCredit: 0,
       tax: 0,
     };
   }
@@ -301,6 +330,34 @@ export function computeStateTax(
     (rules.personalCredit[schedule] ?? rules.personalCredit[otherwise]) +
     rules.personalCredit.dependent * children;
 
+  /*
+   * The state's own earned income credit, as a share of the federal one.
+   *
+   * Kept separate from the credits above because refundability differs: these
+   * personal and dependent credits stop at zero, and a REFUNDABLE state EITC
+   * does not — it pays out. Lumping them together would quietly cap the one
+   * credit whose whole purpose is to reach below zero.
+   */
+  const eitcRules = rules.earnedIncomeCredit;
+  const federalEitc = Math.max(0, inputs.federalEarnedIncomeCredit ?? 0);
+  const match = !eitcRules
+    ? 0
+    : eitcRules.byChildren !== null
+      ? (eitcRules.byChildren[Math.min(3, Math.floor(children))] ?? 0)
+      : (eitcRules.percentOfFederal ?? 0);
+  const earnedIncomeCredit = federalEitc * match;
+
+  /*
+   * Personal and dependent credits stop at zero. The state EITC stops at zero
+   * too UNLESS the state made it refundable, in which case it keeps going and
+   * the household is paid the difference. Four states — Missouri, Ohio, South
+   * Carolina and Utah — deliberately did not, which is why the flag exists.
+   */
+  const afterCredits = Math.max(0, taxBeforeCredits - credits);
+  const tax = eitcRules?.refundable
+    ? afterCredits - earnedIncomeCredit
+    : Math.max(0, afterCredits - earnedIncomeCredit);
+
   return {
     stateCode: rules.code,
     scheduleUsed: schedule,
@@ -310,7 +367,7 @@ export function computeStateTax(
     taxableIncome,
     taxBeforeCredits,
     credits,
-    // Credits are treated as non-refundable: they can zero out tax, not go below.
-    tax: Math.max(0, taxBeforeCredits - credits),
+    earnedIncomeCredit,
+    tax,
   };
 }
