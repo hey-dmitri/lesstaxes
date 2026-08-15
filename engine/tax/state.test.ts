@@ -148,10 +148,20 @@ describe('head of household', () => {
     // "assumed-single" is deliberately not spelled "single". The difference is
     // the difference between a decision and an oversight, and every graduated
     // state used to be the second one.
+    /*
+     * EVERY taxing state, not just the ones with more than one bracket.
+     *
+     * This test used to filter to graduated states, matching a coverage report
+     * that did the same, because the question began as "which rate schedule
+     * does a head of household use". Twelve flat-rate states were therefore
+     * never asked — and five of them give a head of household a different
+     * ALLOWANCE, Louisiana the entire joint amount. Being flat says nothing
+     * about the deduction.
+     */
     const graduated = ALL_STATE_CODES.map((code) => stateRules(code)).filter(
-      (s) => s.hasWageIncomeTax && s.brackets.single.length > 1,
+      (s) => s.hasWageIncomeTax,
     );
-    expect(graduated.length).toBeGreaterThan(25);
+    expect(graduated.length).toBeGreaterThan(40);
     for (const s of graduated) {
       expect(['own', 'marriedJointly', 'single', 'assumed-single']).toContain(
         s.headOfHouseholdBasis,
@@ -160,19 +170,63 @@ describe('head of household', () => {
     // The verified ones must stay verified: silently dropping back to an
     // assumption is exactly the regression this whole change is about.
     for (const code of [
-      'AL', 'AR', 'CA', 'CT', 'DC', 'DE', 'HI', 'ID', 'KS', 'MA', 'MD', 'ME',
-      'MN', 'MO', 'MS', 'MT', 'ND', 'NE', 'NJ', 'NM', 'NY', 'OH', 'OK', 'OR',
-      'RI', 'SC', 'VA', 'WI', 'WV',
+      'AL', 'AR', 'AZ', 'CA', 'CO', 'CT', 'DC', 'DE', 'GA', 'HI', 'IA', 'ID',
+      'IL', 'IN', 'KS', 'KY', 'LA', 'MA', 'MD', 'ME', 'MI', 'MN', 'MO', 'MS',
+      'MT', 'NC', 'ND', 'NE', 'NJ', 'NM', 'NY', 'OH', 'OK', 'OR', 'PA', 'RI',
+      'SC', 'VA', 'WI', 'WV',
     ]) {
       expect(stateRules(code).headOfHouseholdBasis).not.toBe('assumed-single');
     }
-    // Vermont is the only one left, and it is blocked on the state publishing
-    // 2026 figures rather than on nobody having looked.
+    // Two left, and neither is unexamined. Vermont is waiting on the state to
+    // publish 2026 figures; Utah is waiting on the engine to learn credits
+    // that phase out, which is the only way to model its allowance at all.
     expect(
       graduated
         .filter((s) => s.headOfHouseholdBasis === 'assumed-single')
-        .map((s) => s.code),
-    ).toEqual(['VT']);
+        .map((s) => s.code)
+        .sort(),
+    ).toEqual(['UT', 'VT']);
+  });
+
+  /*
+   * FLAT-RATE STATES DIFFER IN THE ALLOWANCE, which is the finding that made
+   * the coverage report widen. Louisiana is the extreme case: one rate for
+   * everybody and the full JOINT standard deduction for a head of household.
+   */
+  it('gives a head of household the joint deduction in flat-rate Louisiana', () => {
+    const la = stateRules('LA');
+    expect(la.brackets.single).toHaveLength(1);
+    expect(la.headOfHouseholdBasis).toBe('marriedJointly');
+    expect(computeStateTax(HOH, la).deductions).toBe(la.standardDeduction.marriedJointly);
+  });
+
+  it('reads the flat-rate states that publish their own head-of-household figure', () => {
+    // North Carolina: 1.5x, from NCDOR's own chart.
+    expect(stateRules('NC').standardDeduction.headOfHousehold).toBe(19_125);
+    // Colorado and Iowa carry the FEDERAL figure, because the federal
+    // deduction is already inside the income they start from.
+    expect(stateRules('CO').standardDeduction.headOfHousehold).toBe(24_150);
+    expect(stateRules('IA').standardDeduction.headOfHousehold).toBe(24_150);
+    expect(stateRules('AZ').standardDeduction.headOfHousehold).toBe(24_150);
+
+    for (const code of ['NC', 'CO', 'IA', 'AZ']) {
+      const rules = stateRules(code);
+      expect(computeStateTax(HOH, rules).tax, code).toBeLessThan(
+        computeStateTax({ ...HOH, filingStatus: 'single' }, rules).tax,
+      );
+    }
+  });
+
+  /*
+   * Minnesota was half-done: its own rate schedule was read and its own
+   * standard deduction was not, so it looked finished while throwing away
+   * $7,700 of deduction. Having own brackets is not a reason to stop looking.
+   */
+  it('takes the Minnesota head-of-household deduction as well as its brackets', () => {
+    const mn = stateRules('MN');
+    expect(mn.brackets.headOfHousehold?.[1]?.from).toBe(41_010);
+    expect(mn.standardDeduction.headOfHousehold).toBe(23_000);
+    expect(computeStateTax(HOH, mn).deductions).toBe(23_000);
   });
 
   /*

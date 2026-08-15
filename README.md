@@ -83,8 +83,8 @@ Total data cost: **$0**. No paid feeds, no runtime API calls.
    stripping the embedded average out per category, which the survey does not
    publish. Worth a few hundred a year. The rates stay shipped and visible in
    the data browser, labelled reference-only, for when it can be done.
-4. **29 of 30 graduated states have been checked against their own publication
-   for head of household.** Nothing checked this before, and 18 of the 29 were
+4. **40 of 42 taxing states have been checked against their own publication
+   for head of household.** Nothing checked this before, and 23 of the 40 were
    wrong — always against a single parent, by $75 to $2,559 a year. Six
    different shapes turned up: the state's own rate schedule, the joint
    schedule, the joint schedule with its own deduction, a shared schedule with
@@ -92,7 +92,24 @@ Total data cost: **$0**. No paid feeds, no runtime API calls.
    single schedule with its own deduction. There is no pattern to guess from,
    which is why each one had to be read.
 
-   Vermont is the one left, and it is blocked rather than unexamined. Its
+   **This count used to say "of 30 graduated states", and that was the wrong
+   denominator.** The question started as "which rate schedule does a head of
+   household use", so the twelve flat-rate states were never asked — with one
+   rate there is no schedule to get wrong. But the ALLOWANCE differs in flat
+   states too, and five of the twelve turned out to differ: Louisiana gives a
+   head of household the entire joint standard deduction, North Carolina 1.5x
+   the single one, and Arizona, Colorado and Iowa carry the federal figure
+   because the federal deduction sits inside the income they start from. A
+   coverage report that silently excludes a category reads as "all clear" for
+   states it never looked at, so it now counts every taxing state.
+
+   Utah is the second one still open, and it is a different problem: its whole
+   allowance is a credit worth 6% of the federal deduction that phases out as
+   income rises, and this engine has no way to express a credit that phases
+   out. It is being dropped entirely today, which overcharges Utah filers below
+   roughly $92,000 and is exactly right above it.
+
+   Vermont is the other, and it is blocked rather than unexamined. Its
    schedule was transcribed from the statute and rejected by the build guard:
    the statutory table is a base Vermont indexes every year, and the base sits
    about 28% below the 2026 brackets shipped here, so a head of household came
@@ -117,6 +134,26 @@ Total data cost: **$0**. No paid feeds, no runtime API calls.
    reader.
 5. **Local income tax outside the 13 named cities** is still each state's
    average, which is fair where rates are uniform and wrong where they are not.
+6. **The bracket table is a February 2026 snapshot, and states legislate after
+   February.** Committing the snapshot is what makes this dataset reproducible,
+   but reproducible is not current, and three states had moved underneath it:
+
+   - **Georgia** cut its rate from 5.19% to 4.99%, raised the standard
+     deduction from $12,000/$24,000 to $15,000/$30,000 and the dependent
+     deduction from $4,000 to $5,000 — one law, signed 11 May 2026, applying to
+     2026. Worth $285 a year to a single filer and $635 to a couple with two
+     children.
+   - **Arizona** conformed to the post-OBBBA federal standard deduction,
+     retroactively, in June 2026. The snapshot had it at the pre-TCJA $8,350.
+   - **Maine** never conformed at all. Its own statute sets a $12,000 base from
+     2026, and Maine Revenue Services publishes the indexed result: $15,700
+     rather than $8,350. A Maine couple was being overcharged about $880 a year.
+
+   All three ran the same way — against the reader. They are corrected by hand
+   in `STATE_OVERRIDES`, with the state's own publication as the source, and
+   the build now warns when an override matches the source again so the
+   hand-typed figures get deleted rather than quietly outliving their purpose.
+   The real fix is refreshing the snapshot, which is a quarterly job.
 
 ### Rebuilding the dataset
 

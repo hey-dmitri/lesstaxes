@@ -246,18 +246,152 @@ const HEAD_OF_HOUSEHOLD = {
       { from: 164_800, rate: 0.0785 },
       { from: 270_060, rate: 0.0985 },
     ],
-    source: 'https://www.revenue.state.mn.us/minnesota-income-tax-rates-and-brackets',
+    /*
+     * THE BRACKETS WERE READ AND THE DEDUCTION WAS NOT, which left Minnesota
+     * half-fixed and looking finished. The same Department of Revenue
+     * announcement that carries the 2026 brackets above also gives the 2026
+     * standard deduction: single $15,300, HEAD OF HOUSEHOLD $23,000, joint
+     * $30,600. Falling back to the single figure was $7,700 of deduction
+     * thrown away, about $450 a year.
+     *
+     * A state having its own rate schedule is not a reason to stop looking for
+     * its own allowance. Six states so far differ in the allowance alone.
+     */
+    standardDeduction: 23_000,
+    source: 'https://www.revenue.state.mn.us/mndor-pp/21641',
     checked: '2026-08-15',
   },
   Maine: {
+    /*
+     * These were the 2025 figures — $40,200 and $95,150 — against 2026 single
+     * brackets, the exact mistake that kept Nebraska and Vermont out of this
+     * table. Maine's own 2026 schedule, revised 5 May 2026, has $41,100 and
+     * $97,300, plus a new 9.15% band over $1.5M that arrived for 2026.
+     */
     basis: 'own',
     brackets: [
       { from: 0, rate: 0.058 },
-      { from: 40_200, rate: 0.0675 },
-      { from: 95_150, rate: 0.0715 },
+      { from: 41_100, rate: 0.0675 },
+      { from: 97_300, rate: 0.0715 },
+      { from: 1_500_000, rate: 0.0915 },
     ],
-    standardDeduction: 22_500,
-    source: 'https://www.maine.gov/revenue/sites/maine.gov.revenue/files/inline-files/ind_tax_rate_sched_2025.pdf',
+    standardDeduction: 23_550,
+    source: 'https://www.maine.gov/revenue/sites/maine.gov.revenue/files/inline-files/ind_tax_rate_sched_2026.pdf',
+    checked: '2026-08-15',
+  },
+  /*
+   * FLAT-RATE STATES WERE A BLIND SPOT IN THIS WHOLE EXERCISE.
+   *
+   * The coverage report below counts only states with more than one bracket,
+   * because the question started as "which rate schedule does a head of
+   * household use". With one rate there is no schedule to get wrong, so twelve
+   * states were quietly never asked the question at all.
+   *
+   * That was the wrong question. The ALLOWANCE differs by filing status in flat
+   * states just as much, and five of the twelve turned out to differ — one of
+   * them, Louisiana, by the full joint amount. Being flat says nothing about
+   * the deduction.
+   */
+  Arizona: {
+    // Sets its standard deduction to the federal one, so a head of household
+    // gets $24,150 against $16,100. See STATE_OVERRIDES for why those are the
+    // right federal figures for Arizona and the shipped table's are not.
+    basis: 'own',
+    standardDeduction: 24_150,
+    source: 'https://www.azleg.gov/legtext/57leg/2R/summary/H.HB2785_012926_WM.DOCX.htm',
+    checked: '2026-08-15',
+  },
+  Louisiana: {
+    /*
+     * The biggest of the flat-state findings. La. R.S. 47:294(A) sets the
+     * standard deduction at $12,500 for "Single Individual and
+     * Married-Separate" and "200% of the [amount] provided for Single
+     * Individuals" for "Married-Joint Return, a Qualified Surviving Spouse, and
+     * HEAD OF HOUSEHOLD" — a head of household gets the full joint figure.
+     *
+     * The withholding tables say the same in plainer words: those claiming "2"
+     * "must use the Married-Joint, Qualifying Surviving Spouse, or Head of
+     * Household withholding formulas". Worth $386 a year at Louisiana's 3%.
+     */
+    basis: 'marriedJointly',
+    source: 'https://www.legis.la.gov/Legis/Law.aspx?d=101761',
+    checked: '2026-08-15',
+  },
+  'North Carolina': {
+    // NCDOR's own chart: single $12,750, head of household $19,125, joint
+    // $25,500. Exactly 1.5x, and worth about $271 a year.
+    basis: 'own',
+    standardDeduction: 19_125,
+    source: 'https://www.ncdor.gov/taxes-forms/individual-income-tax/filing-topics/north-carolina-standard-deduction-or-north-carolina-itemized-deductions',
+    checked: '2026-08-15',
+  },
+  Colorado: {
+    // Colorado starts from FEDERAL TAXABLE INCOME, so the federal standard
+    // deduction is already inside the number it taxes — including the
+    // head-of-household one, $24,150 against $16,100.
+    basis: 'own',
+    standardDeduction: 24_150,
+    source: 'https://tax.colorado.gov/sites/tax/files/documents/DR0104_book_2024.pdf',
+    checked: '2026-08-15',
+  },
+  Iowa: {
+    // Same shape as Colorado: Iowa conforms to the federal standard deduction,
+    // so a head of household carries the federal $24,150.
+    basis: 'own',
+    standardDeduction: 24_150,
+    source: 'https://revenue.iowa.gov/taxes/tax-guidance/individual-income-tax',
+    checked: '2026-08-15',
+  },
+  Georgia: {
+    // "Georgia standard deductions have increased to $30,000 for taxpayers
+    // filing Married Filing Jointly and $15,000 for Single, HEAD OF HOUSEHOLD,
+    // and Married Filing Separate" — the 2026 Employer's Tax Guide, naming
+    // heads of household in the single group outright.
+    basis: 'single',
+    source: 'https://dor.georgia.gov/document/document/2026-employers-tax-guide/download',
+    checked: '2026-08-15',
+  },
+  /*
+   * The remaining four give every filer the same allowance per PERSON, so a
+   * head of household genuinely lands where a single filer does. Recorded
+   * rather than assumed, because "checked and identical" and "never looked"
+   * produce the same numbers and only a record tells them apart.
+   */
+  Illinois: {
+    // The exemption chart's own footnote: "Single filing status includes
+    // Single, HEAD OF HOUSEHOLD, Widowed, and Married filing separately."
+    basis: 'single',
+    source: 'https://tax.illinois.gov/content/dam/soi/en/web/tax/forms/incometax/documents/currentyear/individual/il-1040-exemption-allowance-chart.pdf',
+    checked: '2026-08-15',
+  },
+  Kentucky: {
+    // One standard deduction for everybody, set by KRS 141.081 and announced
+    // annually: $3,360 for 2026, against a flat 3.5%.
+    basis: 'single',
+    source: 'https://revenue.ky.gov/News/Pages/Kentucky-DOR-Announces-2026-Standard-Deduction.aspx',
+    checked: '2026-08-15',
+  },
+  Indiana: {
+    // "$1,000 for you, $1,000 for your spouse if filing jointly, $1,000 per
+    // dependent" — per person, with no filing-status variant.
+    basis: 'single',
+    source: 'https://www.in.gov/dor/files/ib117.pdf',
+    checked: '2026-08-15',
+  },
+  Pennsylvania: {
+    // "The Pennsylvania personal income tax does not provide for a standard
+    // deduction or personal exemption." Nothing to differ.
+    basis: 'single',
+    source: 'https://www.pa.gov/agencies/revenue/resources/tax-types-and-information/personal-income-tax',
+    checked: '2026-08-15',
+  },
+  Michigan: {
+    // The strongest "same as single" of the lot: Michigan has no head-of-
+    // household status to be different. Form MI-1040 line 7 offers exactly
+    // three — "a. Single  b. Married filing jointly  c. Married filing
+    // separately" — and the allowance is a flat per-exemption amount anyway.
+    basis: 'single',
+    source: 'https://www.michigan.gov/taxes/iit/file-your-income-taxes/filingdetermination',
     checked: '2026-08-15',
   },
   'New York': {
@@ -771,6 +905,109 @@ const STATE_OVERRIDES = {
     checked: '2026-08-15',
     note: 'Exemption credits phase out above $252,203 single / $504,411 joint / $378,310 head of household. Not modelled.',
   },
+
+  /*
+   * THE NEXT TWO ARE THE SAME STORY, and it is worth telling once.
+   *
+   * The bracket table this project ships was published in February 2026, and
+   * it says so about five states: they had not yet updated their conformity to
+   * the federal code after OBBBA, so their standard deduction had fallen back
+   * to the PRE-TCJA amount — $8,350 single, $16,700 joint — rather than the
+   * $16,100 and $32,200 the federal figure actually reached. The table's own
+   * footnote flags this as pending: "states in this situation may pass
+   * legislation this year to update their conformity dates".
+   *
+   * Two of them have since done exactly that, or never applied in the first
+   * place. A snapshot is reproducible, which is the point of committing it,
+   * but reproducible is not the same as current, and a $7,750 hole in a
+   * standard deduction is real money in the wrong direction — it OVERCHARGES
+   * every filer in the state.
+   */
+  Maine: {
+    /*
+     * Maine does not conform to the federal standard deduction at all any more.
+     * 36 M.R.S. § 5124-C sub-§ 1-B, which takes effect for tax years beginning
+     * on or after 1 January 2026, gives Maine its own base of $12,000 for a
+     * single filer, 1.5x that for a head of household and 2x for a couple,
+     * indexed. So the pre-OBBBA federal figure never applied to Maine.
+     *
+     * Maine Revenue Services publishes the indexed result. Its 2026 schedule,
+     * revised 5 May 2026: single $15,700, joint $31,400, head of household
+     * $23,550. Against the $8,350 shipped, a single filer was being charged
+     * about $430 a year too much and a couple about $880.
+     *
+     * An earlier MRS release, from September 2025, had $15,300 / $30,600 /
+     * $22,950. The May 2026 revision supersedes it and is used here; the
+     * difference is worth about $25 a year.
+     */
+    standardDeduction: { single: 15_700, marriedJointly: 31_400, headOfHousehold: 23_550 },
+    /*
+     * Maine also added a 2% surcharge for 2026 on taxable income above $1M
+     * single, $1.5M joint and head of household, taking the top rate to 9.15%.
+     * The shipped table stops at 7.15%, which understates the very largest
+     * incomes.
+     */
+    brackets: {
+      single: [
+        { from: 0, rate: 0.058 },
+        { from: 27_400, rate: 0.0675 },
+        { from: 64_850, rate: 0.0715 },
+        { from: 1_000_000, rate: 0.0915 },
+      ],
+      marriedJointly: [
+        { from: 0, rate: 0.058 },
+        { from: 54_850, rate: 0.0675 },
+        { from: 129_750, rate: 0.0715 },
+        { from: 1_500_000, rate: 0.0915 },
+      ],
+    },
+    source: 'https://www.maine.gov/revenue/sites/maine.gov.revenue/files/inline-files/ind_tax_rate_sched_2026.pdf',
+    checked: '2026-08-15',
+    note: "Maine's standard deduction and personal exemption phase out above $100,000 of Maine income for a single filer and $150,000 for a couple, reaching zero $75,000 later. That phase-out is not modelled, so above those incomes this figure is too generous.",
+  },
+  Arizona: {
+    /*
+     * Arizona DID update. HB 4168, signed June 2026, aligns Title 43 with
+     * OBBBA and sets the standard deduction base to $15,750 single / $23,625
+     * head of household / $31,500 joint, RETROACTIVE to tax years after
+     * 31 December 2024 — which indexed for 2026 is $16,100 / $24,150 /
+     * $32,200. HB 2785 moves the conformity date to 1 January 2026 and
+     * redefines the standard deduction as the federal basic amount outright.
+     *
+     * At Arizona's flat 2.5% the $8,350 shipped was overcharging a single
+     * filer about $194 a year and a couple about $388.
+     */
+    standardDeduction: { single: 16_100, marriedJointly: 32_200, headOfHousehold: 24_150 },
+    source: 'https://www.azleg.gov/legtext/57leg/2R/summary/H.HB2785_012926_WM.DOCX.htm',
+    checked: '2026-08-15',
+  },
+  Georgia: {
+    /*
+     * Not a conformity story — Georgia simply legislated after the snapshot.
+     * The law was signed 11 May 2026 and applies to tax years beginning in
+     * 2026, and it moved three things at once, all of them the reader's way:
+     *
+     *   rate                5.19%   ->  4.99%
+     *   standard deduction  $12,000 ->  $15,000  (single, HoH and separate)
+     *                       $24,000 ->  $30,000  (joint)
+     *   per dependent       $4,000  ->  $5,000
+     *
+     * Missing all three together was costing a Georgia single filer about $285
+     * a year and a couple with two children about $635.
+     *
+     * Georgia's own Employer's Tax Guide names heads of household explicitly in
+     * the $15,000 group, so the head-of-household entry is a genuine "same as
+     * single" rather than an assumption.
+     */
+    brackets: {
+      single: [{ from: 0, rate: 0.0499 }],
+      marriedJointly: [{ from: 0, rate: 0.0499 }],
+    },
+    standardDeduction: { single: 15_000, marriedJointly: 30_000, headOfHousehold: 15_000 },
+    personalExemption: { dependent: 5_000 },
+    source: 'https://dor.georgia.gov/document/document/2026-employers-tax-guide/download',
+    checked: '2026-08-15',
+  },
 };
 
 
@@ -969,9 +1206,52 @@ for (const [name, s] of Object.entries(states)) {
 
   const override = STATE_OVERRIDES[name];
   if (override) {
+    /*
+     * AN OVERRIDE THAT MATCHES THE SOURCE IS DEAD WEIGHT, and worse than that:
+     * it looks like a verified correction while doing nothing, so the next
+     * person trusts a hand-typed figure that the source now supplies anyway.
+     *
+     * Most of these exist because the committed snapshot predates a state's
+     * legislation. When the snapshot is refreshed the state's own numbers
+     * arrive and the override should go. This says so out loud rather than
+     * letting it sit there.
+     */
+    for (const [status, value] of Object.entries(override.standardDeduction ?? {})) {
+      if (s.standardDeduction[status] === value) {
+        warnings.push(
+          `${name}: standard deduction override for ${status} ($${value.toLocaleString()}) now matches the source — delete it`,
+        );
+      }
+    }
     if (override.standardDeduction) Object.assign(s.standardDeduction, override.standardDeduction);
     if (override.personalCredit) Object.assign(s.personalCredit, override.personalCredit);
     if (override.personalExemption) Object.assign(s.personalExemption, override.personalExemption);
+    /*
+     * Brackets may be replaced too, which the override mechanism could not do
+     * before. Maine needed it: a 2% surcharge arrived for 2026 that the shipped
+     * table stops short of.
+     *
+     * REPLACED WHOLE, never merged. A bracket schedule is a sequence where each
+     * entry only means anything next to the one after it, so patching an entry
+     * into the middle of one is how you get a schedule that looks fine and
+     * charges the wrong rate over a range nobody checked.
+     */
+    if (override.brackets) {
+      for (const [status, replacement] of Object.entries(override.brackets)) {
+        if (!Array.isArray(replacement) || replacement.length === 0) {
+          throw new Error(`${name}: bracket override for ${status} is empty`);
+        }
+        if (replacement[0].from !== 0) {
+          throw new Error(`${name}: bracket override for ${status} does not start at $0`);
+        }
+        for (let i = 1; i < replacement.length; i++) {
+          if (replacement[i].from <= replacement[i - 1].from) {
+            throw new Error(`${name}: bracket override for ${status} is not in ascending order`);
+          }
+        }
+        s.brackets[status] = replacement;
+      }
+    }
     s.verifiedAgainstState = { url: override.source, checked: override.checked };
     if (override.note) s.notes.push(override.note);
   }
@@ -1115,12 +1395,22 @@ console.log(`  top marginal rate:      ${(topRate * 100).toFixed(2)}%`);
  * were invisible before, which is how California went years overcharging a
  * single parent $2,028 on $120,000 while the code called it "conservative".
  */
-const graduated = Object.values(byCode).filter(
-  (s) => s.hasWageIncomeTax && s.brackets.single.length > 1,
-);
-const checked = graduated.filter((s) => s.headOfHouseholdBasis !== 'assumed-single');
-const unchecked = graduated.filter((s) => s.headOfHouseholdBasis === 'assumed-single');
-console.log(`\n  HEAD OF HOUSEHOLD — ${checked.length} of ${graduated.length} graduated states verified`);
+/*
+ * EVERY TAXING STATE, not just the ones with more than one bracket.
+ *
+ * This used to count only graduated states, because the question began as
+ * "which rate schedule does a head of household use" and a flat state has only
+ * one. That let twelve states out of the report entirely — and five of them
+ * turned out to give a head of household a different ALLOWANCE, Louisiana by
+ * the full joint amount. Being flat says nothing about the deduction.
+ *
+ * A coverage report that quietly excludes a category is worse than none: it
+ * reads as "all clear" for states it never looked at.
+ */
+const taxing = Object.values(byCode).filter((s) => s.hasWageIncomeTax);
+const checked = taxing.filter((s) => s.headOfHouseholdBasis !== 'assumed-single');
+const unchecked = taxing.filter((s) => s.headOfHouseholdBasis === 'assumed-single');
+console.log(`\n  HEAD OF HOUSEHOLD — ${checked.length} of ${taxing.length} taxing states verified`);
 for (const s of checked) {
   console.log(`    ${s.code}  ${s.headOfHouseholdBasis.padEnd(15)} ${s.headOfHouseholdSource.url}`);
 }
