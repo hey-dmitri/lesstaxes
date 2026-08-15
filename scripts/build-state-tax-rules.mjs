@@ -285,6 +285,17 @@ const HEAD_OF_HOUSEHOLD = {
     source: 'https://portal.ct.gov/drs/drs-forms/current-year-forms/calculators-and-tables',
     checked: '2026-08-15',
   },
+  'New Jersey': {
+    /*
+     * NJ-1040 Rate Schedules: Table A is "Single / Married filing separate",
+     * Table B is "Married/CU couple filing joint return / HEAD OF HOUSEHOLD /
+     * Qualifying widow(er)". The tax table columns say the same thing more
+     * bluntly: "1 or 3" against "2, 4, or 5", where 4 is head of household.
+     */
+    basis: 'marriedJointly',
+    source: 'https://www.nj.gov/treasury/taxation/pdf/current/njtaxratesch.pdf',
+    checked: '2026-08-15',
+  },
   'North Dakota': {
     basis: 'own',
     brackets: [
