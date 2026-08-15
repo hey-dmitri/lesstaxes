@@ -43,6 +43,7 @@ export {
   rentDefault,
   rentFactorForIncome,
   taxableShares,
+  utilitiesAreSplitOut,
   localJurisdiction,
   allLocalJurisdictions,
   isMultiState,

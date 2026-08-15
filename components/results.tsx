@@ -13,6 +13,7 @@ import {
   metro,
   percentIsMeaningful,
   shortfalls,
+  utilitiesAreSplitOut,
   verdict,
   whyClause,
   whyNarrative,
@@ -500,9 +501,24 @@ function DetailTable({ result }: { result: ComparisonResult }) {
     },
     { key: 'transport', label: 'Cars & transport', a: -result.origin.living.transport, b: -mid.living.transport, c: -result.destination.living.transport },
     { key: 'food', label: 'Food', a: -result.origin.living.food, b: -mid.living.food, c: -result.destination.living.food },
-    // Phone, not "Utilities". Gas, electricity, water and heating now sit in
-    // the housing line, where the rent figure was already paying for them.
-    { key: 'phone', label: 'Phone', a: -result.origin.living.utilities, b: -mid.living.utilities, c: -result.destination.living.utilities },
+    /*
+     * Phone, not "Utilities". Gas, electricity, water and heating now sit in
+     * the housing line, where the rent figure was already paying for them.
+     *
+     * BUT NOT ON AN OLD LINK. Releases before 2026.9 have no split, so this
+     * field is the whole category — $2,661 a year in Chicago against $1,014
+     * after — and a fixed "Phone" label put the entire energy bill under the
+     * wrong name, beside a housing row promising utilities it did not contain.
+     * Share links replay their own release, so the number is right and only
+     * the word was wrong.
+     */
+    {
+      key: 'phone',
+      label: utilitiesAreSplitOut(result.datasetVersion) ? 'Phone' : 'Utilities & phone',
+      a: -result.origin.living.utilities,
+      b: -mid.living.utilities,
+      c: -result.destination.living.utilities,
+    },
     { key: 'healthcare', label: 'Healthcare', a: -result.origin.living.healthcare, b: -mid.living.healthcare, c: -result.destination.living.healthcare },
     { key: 'other', label: 'Everything else', a: -result.origin.living.other, b: -mid.living.other, c: -result.destination.living.other },
     { key: 'salesTax', label: 'Sales tax', a: -result.origin.salesTax, b: -mid.salesTax, c: -result.destination.salesTax },

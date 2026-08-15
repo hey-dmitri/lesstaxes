@@ -662,21 +662,31 @@ outlive any UI decision. If the framework were ever changed, the engine ports ac
 
 ### 16.2 Data pipeline
 
+Fetching and building were planned as separate steps and never separated. Each
+builder reads raw responses committed under the release's own `sources/`
+directory, which is what lets any of them rebuild offline with no API key;
+`refresh-sources.mjs` is the only thing that talks to the network.
+
 ```
-scripts/fetch-census.ts     ─┐
-scripts/fetch-bea.ts         │
-scripts/fetch-bls.ts         ├──►  validate + sanity-check
-scripts/fetch-hud.ts         │           │
-scripts/fetch-tax-rules.ts  ─┘           ▼
-                                data/2026.1/metros.json
-                                data/2026.1/tax-rules.json
-                                data/2026.1/cost-index.json
-                                         │
-                                         ▼
-                                 committed to GitHub
-                                         │
-                                         ▼
-                                  bundled into build
+data/<version>/sources/   ──►  scripts/build-metros.mjs           ──►  metros.json
+      (committed)                                                      metros-counties.json
+           ▲                    scripts/build-housing-transport.mjs ──►  housing.json
+           │                                                            transport.json
+           │                    scripts/build-spending.mjs         ──►  spending.json
+  refresh-sources.mjs           scripts/build-state-tax-rules.mjs  ──►  federal.json
+  (the only network call)                                              states.json
+                                scripts/build-local-income-tax.mjs ──►  local-income-tax.json
+                                scripts/build-sales-tax.mjs        ──►  sales-tax.json
+                                                                        (reference only)
+                                          │
+                                validate + sanity-check
+                                          │  every builder throws rather
+                                          │  than emit a bad number
+                                          ▼
+                                  committed to GitHub
+                                          │
+                                          ▼
+                                   bundled into build
 ```
 
 **Rules:**

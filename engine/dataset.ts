@@ -747,6 +747,29 @@ export function spendingIncludesSalesTax(version?: string): boolean {
   return treatment?.includedInCategories === true;
 }
 
+/**
+ * Whether this release separates the energy bill from the phone bill.
+ *
+ * IT CHANGES WHAT A ROW LABEL MEANS, which is why the interface has to ask.
+ *
+ * Gas, electricity, water and heating are already inside the Census gross rent
+ * figure, so from 2026.9 the utilities category is split: the part inside the
+ * rent moves to the housing line, and what is left on the living side is the
+ * phone bill, which is why that row is labelled "Phone".
+ *
+ * Releases before that have no split. Their `living.utilities` is the WHOLE
+ * category — $2,661 a year in Chicago against $1,014 after — and their
+ * `housing.utilities` is zero. Share links replay the release they were made
+ * against, so those numbers are still computed exactly as they were, and
+ * correctly. What was not correct was the label: a fixed string reading
+ * "Phone" over the entire energy bill, beside a housing row promising
+ * utilities it did not contain.
+ */
+export function utilitiesAreSplitOut(version?: string): boolean {
+  const profiles = datasetBundle(version).spending.profiles as Array<{ utilitiesSplit?: unknown }>;
+  return profiles.every((p) => p.utilitiesSplit != null);
+}
+
 export function taxableShares(version?: string): TaxableShares {
   return datasetBundle(version).salesTax.taxableShares as TaxableShares;
 }
