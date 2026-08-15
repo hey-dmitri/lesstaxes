@@ -29,9 +29,16 @@ export interface BracketedLocalTax {
   id: string;
   name: string;
   stateCode: string;
-  brackets: Record<PublishedStatus, Bracket[]>;
+  /*
+   * Same shape as a state's, and same reason for the Partial: a locality may
+   * publish a head-of-household schedule or may not, and requiring one would
+   * force every caller to invent a schedule the locality does not have.
+   */
+  brackets: Partial<Record<PublishedStatus, Bracket[]>> &
+    Record<'single' | 'marriedJointly', Bracket[]>;
   /** Deducted from gross before the brackets apply. Often zero. */
-  standardDeduction?: Record<PublishedStatus, USD>;
+  standardDeduction?: Partial<Record<PublishedStatus, USD>> &
+    Record<'single' | 'marriedJointly', USD>;
   exemptionPerDependent?: USD;
 }
 
@@ -115,8 +122,19 @@ export function computeLocalTax(
     }
 
     case 'bracketed': {
-      const schedule = scheduleFor(inputs.filingStatus);
-      const deduction = rules.standardDeduction?.[schedule] ?? 0;
+      /*
+       * No locality here publishes a head-of-household schedule, so this asks
+       * for one and falls back to the schedule the filer would otherwise be on.
+       * New York City does publish one; when it is added, this picks it up
+       * without further change.
+       */
+      const schedule = scheduleFor(inputs.filingStatus, {
+        headOfHouseholdBasis: rules.brackets.headOfHousehold ? 'own' : 'single',
+        brackets: rules.brackets,
+      });
+      const otherwise = schedule === 'marriedJointly' ? 'marriedJointly' : 'single';
+      const deduction =
+        rules.standardDeduction?.[schedule] ?? rules.standardDeduction?.[otherwise] ?? 0;
       const exemptions = (rules.exemptionPerDependent ?? 0) * children;
 
       const taxableIncome = Math.max(0, gross - deduction - exemptions);
@@ -124,7 +142,10 @@ export function computeLocalTax(
         jurisdictionId: rules.id,
         name: rules.name,
         taxableIncome,
-        tax: applyBrackets(taxableIncome, rules.brackets[schedule]),
+        tax: applyBrackets(
+          taxableIncome,
+          rules.brackets[schedule] ?? rules.brackets[otherwise],
+        ),
       };
     }
   }

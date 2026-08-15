@@ -189,12 +189,146 @@ for (const cells of rows.slice(1)) {
   }
 }
 
+
+/**
+ * HOW EACH STATE TREATS A HEAD OF HOUSEHOLD.
+ *
+ * Tax Foundation publishes single and married-filing-jointly columns only, so
+ * this cannot come from the source above. It has to be read off each state's
+ * own publication, and until it is, the honest label is "assumed-single" —
+ * NOT "single", which would claim a check nobody performed.
+ *
+ * That distinction is the whole point. Every graduated state was silently
+ * treated as though a head of household files on the single schedule, and in
+ * California that overcharged a single parent $2,028 a year on $120,000 of
+ * taxable income. The state publishes its own Schedule Z. Maryland sends them
+ * to the JOINT schedule outright. Nobody had looked.
+ *
+ * Each entry below was read from the state's own revenue department, and the
+ * URL and date are recorded so the next person can re-check rather than
+ * re-trust. Anything absent from this table stays "assumed-single" and shows
+ * up in the coverage report the build prints.
+ */
+const HEAD_OF_HOUSEHOLD = {
+  California: {
+    basis: 'own',
+    // FTB 2025 Schedule Z. Plus the 1% Mental Health Services surcharge above
+    // $1M, which the schedules omit and which is applied to every status.
+    brackets: [
+      { from: 0, rate: 0.01 },
+      { from: 22_173, rate: 0.02 },
+      { from: 52_530, rate: 0.04 },
+      { from: 67_716, rate: 0.06 },
+      { from: 83_805, rate: 0.08 },
+      { from: 98_990, rate: 0.093 },
+      { from: 505_208, rate: 0.103 },
+      { from: 606_251, rate: 0.113 },
+      { from: 1_000_000, rate: 0.123 },
+      { from: 1_010_417, rate: 0.133 },
+    ],
+    source: 'https://www.ftb.ca.gov/forms/2025/2025-540-tax-rate-schedules.pdf',
+    checked: '2026-08-15',
+  },
+  Maryland: {
+    // "Taxpayers Filing Joint Returns, Head of Household, or Qualifying
+    // Widows/Widowers" — one table, stated in those words.
+    basis: 'marriedJointly',
+    source: 'https://www.marylandtaxes.gov/individual/income/tax-info/tax-rates.php',
+    checked: '2026-08-15',
+  },
+  Minnesota: {
+    basis: 'own',
+    // Minnesota publishes tax year 2026 already, unlike most states.
+    brackets: [
+      { from: 0, rate: 0.0535 },
+      { from: 41_010, rate: 0.068 },
+      { from: 164_800, rate: 0.0785 },
+      { from: 270_060, rate: 0.0985 },
+    ],
+    source: 'https://www.revenue.state.mn.us/minnesota-income-tax-rates-and-brackets',
+    checked: '2026-08-15',
+  },
+  Maine: {
+    basis: 'own',
+    brackets: [
+      { from: 0, rate: 0.058 },
+      { from: 40_200, rate: 0.0675 },
+      { from: 95_150, rate: 0.0715 },
+    ],
+    standardDeduction: 22_500,
+    source: 'https://www.maine.gov/revenue/sites/maine.gov.revenue/files/inline-files/ind_tax_rate_sched_2025.pdf',
+    checked: '2026-08-15',
+  },
+  'North Dakota': {
+    basis: 'own',
+    brackets: [
+      { from: 0, rate: 0 },
+      { from: 64_950, rate: 0.0195 },
+      { from: 271_450, rate: 0.025 },
+    ],
+    source: 'https://www.tax.nd.gov/individual-income-tax',
+    checked: '2026-08-15',
+  },
+};
+
 // --- post-process ----------------------------------------------------------
 
 const warnings = [];
 
+/** Every state must carry an explicit decision, even if it is "not checked". */
+function validateHeadOfHousehold(name, s) {
+  const basis = s.headOfHouseholdBasis;
+  if (!['own', 'marriedJointly', 'single', 'assumed-single'].includes(basis)) {
+    throw new Error(`${name}: unknown headOfHouseholdBasis ${basis}`);
+  }
+  if (basis === 'own' && !(s.brackets.headOfHousehold || []).length) {
+    throw new Error(`${name}: headOfHouseholdBasis is "own" but no schedule was supplied`);
+  }
+  if (basis !== 'own' && s.brackets.headOfHousehold) {
+    throw new Error(`${name}: carries a head-of-household schedule its basis does not use`);
+  }
+  // A head of household is never taxed harder than a single filer on the same
+  // income. If a transcription put a threshold in wrong, this catches it.
+  if (basis === 'own') {
+    for (const income of [30_000, 60_000, 120_000, 250_000]) {
+      const asHoh = applyBracketsLocal(income, s.brackets.headOfHousehold);
+      const asSingle = applyBracketsLocal(income, s.brackets.single);
+      if (asHoh > asSingle + 0.01) {
+        throw new Error(
+          `${name}: head of household pays more than single at $${income} ` +
+            `(${asHoh.toFixed(2)} vs ${asSingle.toFixed(2)}) — check the transcription`,
+        );
+      }
+    }
+  }
+}
+
+/** Local copy so this script stays free of engine imports. */
+function applyBracketsLocal(income, brackets) {
+  let tax = 0;
+  for (let i = 0; i < brackets.length; i++) {
+    const from = brackets[i].from;
+    if (income <= from) break;
+    const to = i + 1 < brackets.length ? Math.min(income, brackets[i + 1].from) : income;
+    tax += (to - from) * brackets[i].rate;
+  }
+  return tax;
+}
+
 for (const [name, s] of Object.entries(states)) {
   s.notes = s.footnotes.map((f) => footnoteText[f]).filter(Boolean);
+
+  const hoh = HEAD_OF_HOUSEHOLD[name];
+  s.headOfHouseholdBasis = hoh ? hoh.basis : 'assumed-single';
+  if (hoh?.brackets) s.brackets.headOfHousehold = hoh.brackets;
+  if (hoh?.standardDeduction !== undefined) {
+    s.standardDeduction.headOfHousehold = hoh.standardDeduction;
+  }
+  if (hoh?.personalExemption !== undefined) {
+    s.personalExemption.headOfHousehold = hoh.personalExemption;
+  }
+  if (hoh) s.headOfHouseholdSource = { url: hoh.source, checked: hoh.checked };
+  validateHeadOfHousehold(name, s);
 
   if (CAPITAL_GAINS_ONLY.has(name)) {
     s.hasWageIncomeTax = false;
@@ -302,6 +436,25 @@ console.log(`  flat tax (1 bracket): ${withTax.filter((s) => s.brackets.single.l
 console.log(`  federal tax deductible: ${Object.values(byCode).filter((s) => s.federalTaxDeductible).map((s) => s.code).join(', ')}`);
 console.log(`  have local income tax:  ${Object.values(byCode).filter((s) => s.hasLocalIncomeTax).map((s) => s.code).join(', ')}`);
 console.log(`  top marginal rate:      ${(topRate * 100).toFixed(2)}%`);
+
+/*
+ * HEAD OF HOUSEHOLD COVERAGE, printed every build.
+ *
+ * The point of printing it is that the unchecked states stay visible. They
+ * were invisible before, which is how California went years overcharging a
+ * single parent $2,028 on $120,000 while the code called it "conservative".
+ */
+const graduated = Object.values(byCode).filter(
+  (s) => s.hasWageIncomeTax && s.brackets.single.length > 1,
+);
+const checked = graduated.filter((s) => s.headOfHouseholdBasis !== 'assumed-single');
+const unchecked = graduated.filter((s) => s.headOfHouseholdBasis === 'assumed-single');
+console.log(`\n  HEAD OF HOUSEHOLD — ${checked.length} of ${graduated.length} graduated states verified`);
+for (const s of checked) {
+  console.log(`    ${s.code}  ${s.headOfHouseholdBasis.padEnd(15)} ${s.headOfHouseholdSource.url}`);
+}
+console.log(`  NOT yet checked against the state's own publication (${unchecked.length}):`);
+console.log(`    ${unchecked.map((s) => s.code).join(' ')}`);
 if (warnings.length) {
   console.log('\nWARNINGS:');
   for (const w of warnings) console.log(`  - ${w}`);

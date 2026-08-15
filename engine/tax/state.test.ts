@@ -77,6 +77,74 @@ describe('scheduleFor', () => {
   });
 });
 
+/**
+ * A head of household is not a single filer, and calling them one cost money.
+ *
+ * scheduleFor mapped every head of household onto the single schedule and the
+ * comment called it "conservative". California publishes its own Schedule Z:
+ * on $120,000 of taxable income California charges $5,570 and this engine
+ * charged $7,599. Maryland puts them on the JOINT table in so many words.
+ * Neither is a rounding, and both land on single parents.
+ */
+describe('head of household', () => {
+  const HOH = { grossSalary: 120_000, filingStatus: 'headOfHousehold' as const, children: 2 };
+
+  it('uses the state schedule the state says to use', () => {
+    expect(computeStateTax(HOH, stateRules('CA')).scheduleUsed).toBe('headOfHousehold');
+    expect(computeStateTax(HOH, stateRules('MD')).scheduleUsed).toBe('marriedJointly');
+  });
+
+  it('never charges a head of household more than a single filer', () => {
+    for (const code of ALL_STATE_CODES) {
+      const rules = stateRules(code);
+      if (!rules.hasWageIncomeTax) continue;
+      for (const salary of [40_000, 80_000, 150_000, 400_000]) {
+        const hoh = computeStateTax({ ...HOH, grossSalary: salary }, rules).tax;
+        const single = computeStateTax(
+          { grossSalary: salary, filingStatus: 'single', children: 2 },
+          rules,
+        ).tax;
+        expect(hoh, `${code} at $${salary}`).toBeLessThanOrEqual(single + 0.01);
+      }
+    }
+  });
+
+  it('records whether each state was actually checked, rather than assuming', () => {
+    // "assumed-single" is deliberately not spelled "single". The difference is
+    // the difference between a decision and an oversight, and every graduated
+    // state used to be the second one.
+    const graduated = ALL_STATE_CODES.map((code) => stateRules(code)).filter(
+      (s) => s.hasWageIncomeTax && s.brackets.single.length > 1,
+    );
+    expect(graduated.length).toBeGreaterThan(25);
+    for (const s of graduated) {
+      expect(['own', 'marriedJointly', 'single', 'assumed-single']).toContain(
+        s.headOfHouseholdBasis,
+      );
+    }
+    // The verified ones must stay verified: silently dropping back to an
+    // assumption is exactly the regression this whole change is about.
+    for (const code of ['CA', 'MD', 'MN', 'ME', 'ND']) {
+      expect(stateRules(code).headOfHouseholdBasis).not.toBe('assumed-single');
+    }
+  });
+
+  it('reproduces California Schedule Z rather than Schedule X', () => {
+    // FTB 2025 Schedule Z: $98,990 of taxable income owes $2,401.65 + 8% over
+    // $83,805 at the start of its range. Checking through computeStateTax means
+    // the standard deduction is in play, so this pins the SAVING instead.
+    const ca = stateRules('CA');
+    const hoh = computeStateTax(HOH, ca).tax;
+    const asSingle = computeStateTax({ ...HOH, filingStatus: 'single' }, ca).tax;
+    expect(asSingle - hoh).toBeGreaterThan(1_900);
+    expect(asSingle - hoh).toBeLessThan(2_200);
+  });
+
+  it('leaves links pinned to an older release on the single schedule', () => {
+    expect(computeStateTax(HOH, stateRules('CA', '2026.11')).scheduleUsed).toBe('single');
+  });
+});
+
 describe('adultsIn', () => {
   it('counts two adults for both married statuses', () => {
     expect(adultsIn('marriedJointly')).toBe(2);

@@ -18,7 +18,7 @@ index, statutory rate or state average — on the [data page](https://packorstay
 
 ## Status
 
-**Live** at [packorstay.com](https://packorstay.com). Current dataset: **2026.11**.
+**Live** at [packorstay.com](https://packorstay.com). Current dataset: **2026.12**.
 
 | Component | State |
 |---|---|
@@ -78,9 +78,15 @@ Total data cost: **$0**. No paid feeds, no runtime API calls.
    stripping the embedded average out per category, which the survey does not
    publish. Worth a few hundred a year. The rates stay shipped and visible in
    the data browser, labelled reference-only, for when it can be done.
-4. **No state-level regression tests against real returns.** 24 federal golden
-   values are reproduced from the IRS tables; no state has an equivalent check
-   against an official worked example or tax table.
+4. **Only 5 of 30 graduated states have been checked against their own
+   publication.** California, Maryland, Minnesota, Maine and North Dakota are
+   verified — including how each treats a head of household, which nothing
+   checked before and which California was getting wrong by $2,028 a year. The
+   other 25 carry `headOfHouseholdBasis: 'assumed-single'`, which is deliberately
+   not spelled `'single'`: it records that nobody has looked, and the build
+   prints the list every time it runs. Tax Foundation, the source for brackets,
+   publishes single and joint columns only, so this can only come from each
+   state's own revenue department.
 5. **Local income tax outside the 13 named cities** is still each state's
    average, which is fair where rates are uniform and wrong where they are not.
 

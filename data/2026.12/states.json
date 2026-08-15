@@ -1,0 +1,3226 @@
+{
+  "taxYear": 2026,
+  "datasetVersion": "2026.12",
+  "source": {
+    "citation": "Tax Foundation, \"State Individual Income Tax Rates and Brackets, 2026\"",
+    "url": "https://taxfoundation.org/data/all/state/state-income-tax-rates-2026/",
+    "licence": "CC BY-NC 4.0 — satisfied because this project is permanently non-commercial",
+    "snapshot": "data/2026.12/sources/taxfoundation-state-income-tax-2026.html",
+    "confidence": "secondary — reputable aggregator of state statutes; high-population states spot-verified against state revenue departments"
+  },
+  "filingStatusMapping": {
+    "single": "single",
+    "marriedJointly": "marriedJointly",
+    "marriedSeparately": "single",
+    "headOfHousehold": "single",
+    "_note": "The source publishes single and joint schedules only. MFS maps to single (correct in most states); head of household maps to single (a documented approximation — some states publish distinct HoH schedules)."
+  },
+  "limitations": [
+    "Income-based phase-outs of standard deductions, personal exemptions and credits are not modelled. They mainly affect high earners; affected states carry the source footnote in `notes`.",
+    "States allowing a deduction for federal income tax paid (AL, MO, OR) are flagged via `federalTaxDeductible` but the circular federal/state dependency is not yet resolved iteratively.",
+    "Local income taxes are excluded here and handled separately; see local.json.",
+    "Alternative minimum taxes, recapture provisions and supplemental high-income surtaxes beyond the published bracket schedule are not modelled."
+  ],
+  "states": {
+    "AK": {
+      "code": "AK",
+      "name": "Alaska",
+      "hasWageIncomeTax": false,
+      "brackets": {
+        "single": [],
+        "marriedJointly": []
+      },
+      "standardDeduction": {
+        "single": 0,
+        "marriedJointly": 0
+      },
+      "personalExemption": {
+        "single": 0,
+        "marriedJointly": 0,
+        "dependent": 0
+      },
+      "personalCredit": {
+        "single": 0,
+        "marriedJointly": 0,
+        "dependent": 0
+      },
+      "federalTaxDeductible": false,
+      "hasLocalIncomeTax": false,
+      "footnotes": [],
+      "notes": [],
+      "headOfHouseholdBasis": "assumed-single"
+    },
+    "AL": {
+      "code": "AL",
+      "name": "Alabama",
+      "hasWageIncomeTax": true,
+      "brackets": {
+        "single": [
+          {
+            "from": 0,
+            "rate": 0.02
+          },
+          {
+            "from": 500,
+            "rate": 0.04
+          },
+          {
+            "from": 3000,
+            "rate": 0.05
+          }
+        ],
+        "marriedJointly": [
+          {
+            "from": 0,
+            "rate": 0.02
+          },
+          {
+            "from": 1000,
+            "rate": 0.04
+          },
+          {
+            "from": 6000,
+            "rate": 0.05
+          }
+        ]
+      },
+      "standardDeduction": {
+        "single": 3000,
+        "marriedJointly": 8500
+      },
+      "personalExemption": {
+        "single": 1500,
+        "marriedJointly": 3000,
+        "dependent": 1000
+      },
+      "personalCredit": {
+        "single": 0,
+        "marriedJointly": 0,
+        "dependent": 0
+      },
+      "federalTaxDeductible": true,
+      "hasLocalIncomeTax": true,
+      "footnotes": [
+        "a",
+        "b",
+        "c",
+        "uu"
+      ],
+      "notes": [
+        "These states allow some or all of federal income tax paid to be deducted from state taxable income.",
+        "Dependent exemption is reduced to $500 for taxpayers with AGI greater than $50,000, and is phased out completely for taxpayers with AGI greater than $100,000."
+      ],
+      "headOfHouseholdBasis": "assumed-single"
+    },
+    "AR": {
+      "code": "AR",
+      "name": "Arkansas",
+      "hasWageIncomeTax": true,
+      "brackets": {
+        "single": [
+          {
+            "from": 0,
+            "rate": 0.02
+          },
+          {
+            "from": 4600,
+            "rate": 0.039
+          }
+        ],
+        "marriedJointly": [
+          {
+            "from": 0,
+            "rate": 0.02
+          },
+          {
+            "from": 4600,
+            "rate": 0.039
+          }
+        ]
+      },
+      "standardDeduction": {
+        "single": 2470,
+        "marriedJointly": 4940
+      },
+      "personalExemption": {
+        "single": 0,
+        "marriedJointly": 0,
+        "dependent": 0
+      },
+      "personalCredit": {
+        "single": 29,
+        "marriedJointly": 58,
+        "dependent": 29
+      },
+      "federalTaxDeductible": false,
+      "hasLocalIncomeTax": false,
+      "footnotes": [
+        "d",
+        "g",
+        "h",
+        "j",
+        "kk"
+      ],
+      "notes": [
+        "Standard deduction and/or personal exemption is adjusted annually for inflation. Inflation-adjusted amounts for tax year 2026 are shown.",
+        "Standard deduction or personal exemption is structured as a tax credit.",
+        "Bracket levels adjusted for inflation each year. Inflation-adjusted bracket widths for 2026 were not available as of publication, so table reflects 2025 inflation-adjusted bracket widths.",
+        "Taxpayers with net income greater than or equal to $89,601 but not greater than $92,700 shall reduce the amount of tax due by deducting a bracket adjustment amount."
+      ],
+      "headOfHouseholdBasis": "assumed-single"
+    },
+    "AZ": {
+      "code": "AZ",
+      "name": "Arizona",
+      "hasWageIncomeTax": true,
+      "brackets": {
+        "single": [
+          {
+            "from": 0,
+            "rate": 0.025
+          }
+        ],
+        "marriedJointly": [
+          {
+            "from": 0,
+            "rate": 0.025
+          }
+        ]
+      },
+      "standardDeduction": {
+        "single": 8350,
+        "marriedJointly": 16700
+      },
+      "personalExemption": {
+        "single": 0,
+        "marriedJointly": 0,
+        "dependent": 0
+      },
+      "personalCredit": {
+        "single": 0,
+        "marriedJointly": 0,
+        "dependent": 100
+      },
+      "federalTaxDeductible": false,
+      "hasLocalIncomeTax": false,
+      "footnotes": [
+        "e",
+        "f",
+        "u",
+        "vv"
+      ],
+      "notes": [
+        "Deduction and/or exemption tied to federal tax system. Federal deductions are indexed for inflation. Where applicable, the tax year 2026 inflation-adjusted amounts are shown."
+      ],
+      "headOfHouseholdBasis": "assumed-single"
+    },
+    "CA": {
+      "code": "CA",
+      "name": "California",
+      "hasWageIncomeTax": true,
+      "brackets": {
+        "single": [
+          {
+            "from": 0,
+            "rate": 0.01
+          },
+          {
+            "from": 11079,
+            "rate": 0.02
+          },
+          {
+            "from": 26264,
+            "rate": 0.04
+          },
+          {
+            "from": 41452,
+            "rate": 0.06
+          },
+          {
+            "from": 57542,
+            "rate": 0.08
+          },
+          {
+            "from": 72724,
+            "rate": 0.093
+          },
+          {
+            "from": 371479,
+            "rate": 0.103
+          },
+          {
+            "from": 445771,
+            "rate": 0.113
+          },
+          {
+            "from": 742953,
+            "rate": 0.123
+          },
+          {
+            "from": 1000000,
+            "rate": 0.133
+          }
+        ],
+        "marriedJointly": [
+          {
+            "from": 0,
+            "rate": 0.01
+          },
+          {
+            "from": 22158,
+            "rate": 0.02
+          },
+          {
+            "from": 52528,
+            "rate": 0.04
+          },
+          {
+            "from": 82904,
+            "rate": 0.06
+          },
+          {
+            "from": 115084,
+            "rate": 0.08
+          },
+          {
+            "from": 145448,
+            "rate": 0.093
+          },
+          {
+            "from": 742958,
+            "rate": 0.103
+          },
+          {
+            "from": 891542,
+            "rate": 0.113
+          },
+          {
+            "from": 1000000,
+            "rate": 0.123
+          },
+          {
+            "from": 1485906,
+            "rate": 0.133
+          }
+        ],
+        "headOfHousehold": [
+          {
+            "from": 0,
+            "rate": 0.01
+          },
+          {
+            "from": 22173,
+            "rate": 0.02
+          },
+          {
+            "from": 52530,
+            "rate": 0.04
+          },
+          {
+            "from": 67716,
+            "rate": 0.06
+          },
+          {
+            "from": 83805,
+            "rate": 0.08
+          },
+          {
+            "from": 98990,
+            "rate": 0.093
+          },
+          {
+            "from": 505208,
+            "rate": 0.103
+          },
+          {
+            "from": 606251,
+            "rate": 0.113
+          },
+          {
+            "from": 1000000,
+            "rate": 0.123
+          },
+          {
+            "from": 1010417,
+            "rate": 0.133
+          }
+        ]
+      },
+      "standardDeduction": {
+        "single": 5540,
+        "marriedJointly": 11080
+      },
+      "personalExemption": {
+        "single": 0,
+        "marriedJointly": 0,
+        "dependent": 0
+      },
+      "personalCredit": {
+        "single": 153,
+        "marriedJointly": 306,
+        "dependent": 153
+      },
+      "federalTaxDeductible": false,
+      "hasLocalIncomeTax": true,
+      "footnotes": [
+        "a",
+        "h",
+        "j",
+        "k",
+        "l",
+        "m",
+        "n",
+        "nn"
+      ],
+      "notes": [
+        "Standard deduction or personal exemption is structured as a tax credit.",
+        "Bracket levels adjusted for inflation each year. Inflation-adjusted bracket widths for 2026 were not available as of publication, so table reflects 2025 inflation-adjusted bracket widths.",
+        "Rates include the additional mental health services tax at the rate of 1 percent on taxable income in excess of $1 million. Rates exclude a payroll tax of 1.3 percent to fund the state’s disability insurance program. Effective as of TY 2024, there is no wage ceiling for this payroll tax, which means that the state’s top individual income tax rate on wage income becomes 14.6 percent.",
+        "State provides a state-defined personal exemption amount for each exemption available and/or deductible under the Internal Revenue Code. The Tax Cuts and Jobs Act set the personal exemption to $0 until 2026 but did not eliminate it, and the One Big Beautiful Bill Act permanently set the personal exemption to $0 but did not eliminate it. Because it is still available, these state-defined personal exemptions remain available in some states but are set to $0 in other states.",
+        "California and Oregon do not fully index their top brackets."
+      ],
+      "headOfHouseholdBasis": "own",
+      "headOfHouseholdSource": {
+        "url": "https://www.ftb.ca.gov/forms/2025/2025-540-tax-rate-schedules.pdf",
+        "checked": "2026-08-15"
+      }
+    },
+    "CO": {
+      "code": "CO",
+      "name": "Colorado",
+      "hasWageIncomeTax": true,
+      "brackets": {
+        "single": [
+          {
+            "from": 0,
+            "rate": 0.044
+          }
+        ],
+        "marriedJointly": [
+          {
+            "from": 0,
+            "rate": 0.044
+          }
+        ]
+      },
+      "standardDeduction": {
+        "single": 16100,
+        "marriedJointly": 32200
+      },
+      "personalExemption": {
+        "single": 0,
+        "marriedJointly": 0,
+        "dependent": 0
+      },
+      "personalCredit": {
+        "single": 0,
+        "marriedJointly": 0,
+        "dependent": 0
+      },
+      "federalTaxDeductible": false,
+      "hasLocalIncomeTax": true,
+      "footnotes": [
+        "a",
+        "o"
+      ],
+      "notes": [
+        "Colorado, Idaho, Iowa, Montana, New Mexico, North Dakota, and South Carolina include the federal standard deduction in their income starting point."
+      ],
+      "headOfHouseholdBasis": "assumed-single"
+    },
+    "CT": {
+      "code": "CT",
+      "name": "Connecticut",
+      "hasWageIncomeTax": true,
+      "brackets": {
+        "single": [
+          {
+            "from": 0,
+            "rate": 0.02
+          },
+          {
+            "from": 10000,
+            "rate": 0.045
+          },
+          {
+            "from": 50000,
+            "rate": 0.055
+          },
+          {
+            "from": 100000,
+            "rate": 0.06
+          },
+          {
+            "from": 200000,
+            "rate": 0.065
+          },
+          {
+            "from": 250000,
+            "rate": 0.069
+          },
+          {
+            "from": 500000,
+            "rate": 0.0699
+          }
+        ],
+        "marriedJointly": [
+          {
+            "from": 0,
+            "rate": 0.02
+          },
+          {
+            "from": 20000,
+            "rate": 0.045
+          },
+          {
+            "from": 100000,
+            "rate": 0.055
+          },
+          {
+            "from": 200000,
+            "rate": 0.06
+          },
+          {
+            "from": 400000,
+            "rate": 0.065
+          },
+          {
+            "from": 500000,
+            "rate": 0.069
+          },
+          {
+            "from": 1000000,
+            "rate": 0.0699
+          }
+        ]
+      },
+      "standardDeduction": {
+        "single": 0,
+        "marriedJointly": 0
+      },
+      "personalExemption": {
+        "single": 15000,
+        "marriedJointly": 24000,
+        "dependent": 0
+      },
+      "personalCredit": {
+        "single": 0,
+        "marriedJointly": 0,
+        "dependent": 0
+      },
+      "federalTaxDeductible": false,
+      "hasLocalIncomeTax": false,
+      "footnotes": [
+        "i",
+        "p",
+        "q",
+        "r"
+      ],
+      "notes": [
+        "Connecticut and New York have \"tax benefit recapture,\" by which many high-income taxpayers pay their top tax rate on all income, not just on amounts above the benefit threshold.",
+        "Connecticut has a complex set of phaseout provisions. For each single taxpayer whose Connecticut AGI exceeds $56,500, the amount of the taxpayer's Connecticut taxable income to which the 2 percent tax rate applies shall be reduced by $1,000 for each $5,000, or fraction thereof, by which the taxpayer's Connecticut AGI exceeds said amount. Any such amount will have a tax rate of 4.5 percent instead of 2 percent. Each single taxpayer whose Connecticut AGI exceeds $105,000 shall pay an amount equal to $25 for each $5,000, or fraction thereof, by which the taxpayer's Connecticut AGI exceeds $105,000, up to a maximum payment of $250. Additionally, each single taxpayer whose Connecticut AGI exceeds $200,000 shall pay an amount equal to $90 for each $5,000, or fraction thereof, by which the taxpayer's Connecticut AGI exceeds $200,000 but is less than $500,000, and by an additional $50 for each $5,000, or fraction thereof, by which the taxpayer’s AGI exceeds $500,000, up to a maximum payment of $3,150. For each MFJ taxpayer whose Connecticut AGI exceeds $100,500, the amount of the taxpayer's Connecticut taxable income to which the 2 percent tax rate applies shall be reduced by $2,000 for each $5,000, or fraction thereof, by which the taxpayer's Connecticut AGI exceeds said amount. Any such amount of Connecticut taxable income to which, as provided in the preceding sentence, the 2 percent tax rate does not apply shall be an amount to which the 4.5 percent tax rate shall apply. Each MFJ filer whose Connecticut AGI exceeds $210,000 shall pay an amount equal to $50 for each $10,000, or fraction thereof, by which the taxpayer's Connecticut AGI exceeds $210,000, up to a maximum payment of $500. Additionally, each MFJ taxpayer whose Connecticut AGI exceeds $400,000 shall pay, in addition to the amount above, an amount equal to $180 for each $10,000, or fraction thereof, by which the taxpayer's Connecticut AGI exceeds $400,000, up to a maximum of $5,400, and a further $100 for each $10,000, or fraction thereof, by which Connecticut AGI exceeds $1 million, up to a combined maximum payment of $6,300.",
+        "Connecticut's personal exemption phases out by $1,000 for each $1,000, or fraction thereof, by which a single filer's Connecticut AGI exceeds $30,000 and a MFJ filer's Connecticut AGI exceeds $48,000."
+      ],
+      "headOfHouseholdBasis": "assumed-single"
+    },
+    "DC": {
+      "code": "DC",
+      "name": "Washington DC",
+      "hasWageIncomeTax": true,
+      "brackets": {
+        "single": [
+          {
+            "from": 0,
+            "rate": 0.04
+          },
+          {
+            "from": 10000,
+            "rate": 0.06
+          },
+          {
+            "from": 40000,
+            "rate": 0.065
+          },
+          {
+            "from": 60000,
+            "rate": 0.085
+          },
+          {
+            "from": 250000,
+            "rate": 0.0925
+          },
+          {
+            "from": 500000,
+            "rate": 0.0975
+          },
+          {
+            "from": 1000000,
+            "rate": 0.1075
+          }
+        ],
+        "marriedJointly": [
+          {
+            "from": 0,
+            "rate": 0.04
+          },
+          {
+            "from": 10000,
+            "rate": 0.06
+          },
+          {
+            "from": 40000,
+            "rate": 0.065
+          },
+          {
+            "from": 60000,
+            "rate": 0.085
+          },
+          {
+            "from": 250000,
+            "rate": 0.0925
+          },
+          {
+            "from": 500000,
+            "rate": 0.0975
+          },
+          {
+            "from": 1000000,
+            "rate": 0.1075
+          }
+        ]
+      },
+      "standardDeduction": {
+        "single": 16100,
+        "marriedJointly": 32200
+      },
+      "personalExemption": {
+        "single": 0,
+        "marriedJointly": 0,
+        "dependent": 0
+      },
+      "personalCredit": {
+        "single": 0,
+        "marriedJointly": 0,
+        "dependent": 0
+      },
+      "federalTaxDeductible": false,
+      "hasLocalIncomeTax": false,
+      "footnotes": [
+        "u"
+      ],
+      "notes": [
+        "Deduction and/or exemption tied to federal tax system. Federal deductions are indexed for inflation. Where applicable, the tax year 2026 inflation-adjusted amounts are shown."
+      ],
+      "headOfHouseholdBasis": "assumed-single"
+    },
+    "DE": {
+      "code": "DE",
+      "name": "Delaware",
+      "hasWageIncomeTax": true,
+      "brackets": {
+        "single": [
+          {
+            "from": 0,
+            "rate": 0
+          },
+          {
+            "from": 2000,
+            "rate": 0.022
+          },
+          {
+            "from": 5000,
+            "rate": 0.039
+          },
+          {
+            "from": 10000,
+            "rate": 0.048
+          },
+          {
+            "from": 20000,
+            "rate": 0.052
+          },
+          {
+            "from": 25000,
+            "rate": 0.0555
+          },
+          {
+            "from": 60000,
+            "rate": 0.066
+          }
+        ],
+        "marriedJointly": [
+          {
+            "from": 0,
+            "rate": 0
+          },
+          {
+            "from": 2000,
+            "rate": 0.022
+          },
+          {
+            "from": 5000,
+            "rate": 0.039
+          },
+          {
+            "from": 10000,
+            "rate": 0.048
+          },
+          {
+            "from": 20000,
+            "rate": 0.052
+          },
+          {
+            "from": 25000,
+            "rate": 0.0555
+          },
+          {
+            "from": 60000,
+            "rate": 0.066
+          }
+        ]
+      },
+      "standardDeduction": {
+        "single": 3250,
+        "marriedJointly": 6500
+      },
+      "personalExemption": {
+        "single": 0,
+        "marriedJointly": 0,
+        "dependent": 0
+      },
+      "personalCredit": {
+        "single": 110,
+        "marriedJointly": 220,
+        "dependent": 110
+      },
+      "federalTaxDeductible": false,
+      "hasLocalIncomeTax": true,
+      "footnotes": [
+        "a",
+        "h",
+        "m",
+        "s"
+      ],
+      "notes": [
+        "Standard deduction or personal exemption is structured as a tax credit.",
+        "State provides a state-defined personal exemption amount for each exemption available and/or deductible under the Internal Revenue Code. The Tax Cuts and Jobs Act set the personal exemption to $0 until 2026 but did not eliminate it, and the One Big Beautiful Bill Act permanently set the personal exemption to $0 but did not eliminate it. Because it is still available, these state-defined personal exemptions remain available in some states but are set to $0 in other states.",
+        "In addition to the individual income tax rates, Delaware imposes a tax on lump-sum distributions.",
+        "Income below $2,000 (single) is not taxed.",
+        "Income below $2,000 (married filing jointly) is not taxed."
+      ],
+      "headOfHouseholdBasis": "assumed-single"
+    },
+    "FL": {
+      "code": "FL",
+      "name": "Florida",
+      "hasWageIncomeTax": false,
+      "brackets": {
+        "single": [],
+        "marriedJointly": []
+      },
+      "standardDeduction": {
+        "single": 0,
+        "marriedJointly": 0
+      },
+      "personalExemption": {
+        "single": 0,
+        "marriedJointly": 0,
+        "dependent": 0
+      },
+      "personalCredit": {
+        "single": 0,
+        "marriedJointly": 0,
+        "dependent": 0
+      },
+      "federalTaxDeductible": false,
+      "hasLocalIncomeTax": false,
+      "footnotes": [],
+      "notes": [],
+      "headOfHouseholdBasis": "assumed-single"
+    },
+    "GA": {
+      "code": "GA",
+      "name": "Georgia",
+      "hasWageIncomeTax": true,
+      "brackets": {
+        "single": [
+          {
+            "from": 0,
+            "rate": 0.0519
+          }
+        ],
+        "marriedJointly": [
+          {
+            "from": 0,
+            "rate": 0.0519
+          }
+        ]
+      },
+      "standardDeduction": {
+        "single": 12000,
+        "marriedJointly": 24000
+      },
+      "personalExemption": {
+        "single": 0,
+        "marriedJointly": 0,
+        "dependent": 4000
+      },
+      "personalCredit": {
+        "single": 0,
+        "marriedJointly": 0,
+        "dependent": 0
+      },
+      "federalTaxDeductible": false,
+      "hasLocalIncomeTax": false,
+      "footnotes": [],
+      "notes": [],
+      "headOfHouseholdBasis": "assumed-single"
+    },
+    "HI": {
+      "code": "HI",
+      "name": "Hawaii",
+      "hasWageIncomeTax": true,
+      "brackets": {
+        "single": [
+          {
+            "from": 0,
+            "rate": 0.014
+          },
+          {
+            "from": 9600,
+            "rate": 0.032
+          },
+          {
+            "from": 14400,
+            "rate": 0.055
+          },
+          {
+            "from": 19200,
+            "rate": 0.064
+          },
+          {
+            "from": 24000,
+            "rate": 0.068
+          },
+          {
+            "from": 36000,
+            "rate": 0.072
+          },
+          {
+            "from": 48000,
+            "rate": 0.076
+          },
+          {
+            "from": 125000,
+            "rate": 0.079
+          },
+          {
+            "from": 175000,
+            "rate": 0.0825
+          },
+          {
+            "from": 225000,
+            "rate": 0.09
+          },
+          {
+            "from": 275000,
+            "rate": 0.1
+          },
+          {
+            "from": 325000,
+            "rate": 0.11
+          }
+        ],
+        "marriedJointly": [
+          {
+            "from": 0,
+            "rate": 0.014
+          },
+          {
+            "from": 19200,
+            "rate": 0.032
+          },
+          {
+            "from": 28800,
+            "rate": 0.055
+          },
+          {
+            "from": 38400,
+            "rate": 0.064
+          },
+          {
+            "from": 48000,
+            "rate": 0.068
+          },
+          {
+            "from": 72000,
+            "rate": 0.072
+          },
+          {
+            "from": 96000,
+            "rate": 0.076
+          },
+          {
+            "from": 250000,
+            "rate": 0.079
+          },
+          {
+            "from": 350000,
+            "rate": 0.0825
+          },
+          {
+            "from": 450000,
+            "rate": 0.09
+          },
+          {
+            "from": 550000,
+            "rate": 0.1
+          },
+          {
+            "from": 650000,
+            "rate": 0.11
+          }
+        ]
+      },
+      "standardDeduction": {
+        "single": 4400,
+        "marriedJointly": 8800
+      },
+      "personalExemption": {
+        "single": 1144,
+        "marriedJointly": 2288,
+        "dependent": 1144
+      },
+      "personalCredit": {
+        "single": 0,
+        "marriedJointly": 0,
+        "dependent": 0
+      },
+      "federalTaxDeductible": false,
+      "hasLocalIncomeTax": false,
+      "footnotes": [
+        "m",
+        "t"
+      ],
+      "notes": [
+        "State provides a state-defined personal exemption amount for each exemption available and/or deductible under the Internal Revenue Code. The Tax Cuts and Jobs Act set the personal exemption to $0 until 2026 but did not eliminate it, and the One Big Beautiful Bill Act permanently set the personal exemption to $0 but did not eliminate it. Because it is still available, these state-defined personal exemptions remain available in some states but are set to $0 in other states."
+      ],
+      "headOfHouseholdBasis": "assumed-single"
+    },
+    "IA": {
+      "code": "IA",
+      "name": "Iowa",
+      "hasWageIncomeTax": true,
+      "brackets": {
+        "single": [
+          {
+            "from": 0,
+            "rate": 0.038
+          }
+        ],
+        "marriedJointly": [
+          {
+            "from": 0,
+            "rate": 0.038
+          }
+        ]
+      },
+      "standardDeduction": {
+        "single": 16100,
+        "marriedJointly": 32200
+      },
+      "personalExemption": {
+        "single": 0,
+        "marriedJointly": 0,
+        "dependent": 0
+      },
+      "personalCredit": {
+        "single": 40,
+        "marriedJointly": 80,
+        "dependent": 40
+      },
+      "federalTaxDeductible": false,
+      "hasLocalIncomeTax": true,
+      "footnotes": [
+        "a",
+        "h",
+        "o"
+      ],
+      "notes": [
+        "Standard deduction or personal exemption is structured as a tax credit.",
+        "Colorado, Idaho, Iowa, Montana, New Mexico, North Dakota, and South Carolina include the federal standard deduction in their income starting point."
+      ],
+      "headOfHouseholdBasis": "assumed-single"
+    },
+    "ID": {
+      "code": "ID",
+      "name": "Idaho",
+      "hasWageIncomeTax": true,
+      "brackets": {
+        "single": [
+          {
+            "from": 0,
+            "rate": 0
+          },
+          {
+            "from": 4811,
+            "rate": 0.053
+          }
+        ],
+        "marriedJointly": [
+          {
+            "from": 0,
+            "rate": 0
+          },
+          {
+            "from": 9622,
+            "rate": 0.053
+          }
+        ]
+      },
+      "standardDeduction": {
+        "single": 16100,
+        "marriedJointly": 32200
+      },
+      "personalExemption": {
+        "single": 0,
+        "marriedJointly": 0,
+        "dependent": 0
+      },
+      "personalCredit": {
+        "single": 0,
+        "marriedJointly": 0,
+        "dependent": 0
+      },
+      "federalTaxDeductible": false,
+      "hasLocalIncomeTax": false,
+      "footnotes": [
+        "j",
+        "m",
+        "o",
+        "u"
+      ],
+      "notes": [
+        "Bracket levels adjusted for inflation each year. Inflation-adjusted bracket widths for 2026 were not available as of publication, so table reflects 2025 inflation-adjusted bracket widths.",
+        "State provides a state-defined personal exemption amount for each exemption available and/or deductible under the Internal Revenue Code. The Tax Cuts and Jobs Act set the personal exemption to $0 until 2026 but did not eliminate it, and the One Big Beautiful Bill Act permanently set the personal exemption to $0 but did not eliminate it. Because it is still available, these state-defined personal exemptions remain available in some states but are set to $0 in other states.",
+        "Colorado, Idaho, Iowa, Montana, New Mexico, North Dakota, and South Carolina include the federal standard deduction in their income starting point.",
+        "Deduction and/or exemption tied to federal tax system. Federal deductions are indexed for inflation. Where applicable, the tax year 2026 inflation-adjusted amounts are shown.",
+        "Income below $4,811 (single) is not taxed.",
+        "Income below $9,622 (married filing jointly) is not taxed."
+      ],
+      "headOfHouseholdBasis": "assumed-single"
+    },
+    "IL": {
+      "code": "IL",
+      "name": "Illinois",
+      "hasWageIncomeTax": true,
+      "brackets": {
+        "single": [
+          {
+            "from": 0,
+            "rate": 0.0495
+          }
+        ],
+        "marriedJointly": [
+          {
+            "from": 0,
+            "rate": 0.0495
+          }
+        ]
+      },
+      "standardDeduction": {
+        "single": 0,
+        "marriedJointly": 0
+      },
+      "personalExemption": {
+        "single": 2925,
+        "marriedJointly": 5850,
+        "dependent": 2925
+      },
+      "personalCredit": {
+        "single": 0,
+        "marriedJointly": 0,
+        "dependent": 0
+      },
+      "federalTaxDeductible": false,
+      "hasLocalIncomeTax": false,
+      "footnotes": [
+        "d",
+        "m",
+        "v"
+      ],
+      "notes": [
+        "Standard deduction and/or personal exemption is adjusted annually for inflation. Inflation-adjusted amounts for tax year 2026 are shown.",
+        "State provides a state-defined personal exemption amount for each exemption available and/or deductible under the Internal Revenue Code. The Tax Cuts and Jobs Act set the personal exemption to $0 until 2026 but did not eliminate it, and the One Big Beautiful Bill Act permanently set the personal exemption to $0 but did not eliminate it. Because it is still available, these state-defined personal exemptions remain available in some states but are set to $0 in other states."
+      ],
+      "headOfHouseholdBasis": "assumed-single"
+    },
+    "IN": {
+      "code": "IN",
+      "name": "Indiana",
+      "hasWageIncomeTax": true,
+      "brackets": {
+        "single": [
+          {
+            "from": 0,
+            "rate": 0.0295
+          }
+        ],
+        "marriedJointly": [
+          {
+            "from": 0,
+            "rate": 0.0295
+          }
+        ]
+      },
+      "standardDeduction": {
+        "single": 0,
+        "marriedJointly": 0
+      },
+      "personalExemption": {
+        "single": 1000,
+        "marriedJointly": 2000,
+        "dependent": 1000
+      },
+      "personalCredit": {
+        "single": 0,
+        "marriedJointly": 0,
+        "dependent": 0
+      },
+      "federalTaxDeductible": false,
+      "hasLocalIncomeTax": true,
+      "footnotes": [
+        "a",
+        "m",
+        "w"
+      ],
+      "notes": [
+        "State provides a state-defined personal exemption amount for each exemption available and/or deductible under the Internal Revenue Code. The Tax Cuts and Jobs Act set the personal exemption to $0 until 2026 but did not eliminate it, and the One Big Beautiful Bill Act permanently set the personal exemption to $0 but did not eliminate it. Because it is still available, these state-defined personal exemptions remain available in some states but are set to $0 in other states.",
+        "$1,000 is a base exemption. If dependents meet certain conditions, filers can take an additional $1,500 exemption for each. If a taxpayer is claiming a child as a dependent for the first taxable year in which the exemption is allowed, the taxpayer is now permitted to claim an amount of $3,000, instead of $1,500."
+      ],
+      "headOfHouseholdBasis": "assumed-single"
+    },
+    "KS": {
+      "code": "KS",
+      "name": "Kansas",
+      "hasWageIncomeTax": true,
+      "brackets": {
+        "single": [
+          {
+            "from": 0,
+            "rate": 0.052
+          },
+          {
+            "from": 23000,
+            "rate": 0.0558
+          }
+        ],
+        "marriedJointly": [
+          {
+            "from": 0,
+            "rate": 0.052
+          },
+          {
+            "from": 46000,
+            "rate": 0.0558
+          }
+        ]
+      },
+      "standardDeduction": {
+        "single": 3605,
+        "marriedJointly": 8240
+      },
+      "personalExemption": {
+        "single": 9160,
+        "marriedJointly": 18320,
+        "dependent": 2320
+      },
+      "personalCredit": {
+        "single": 0,
+        "marriedJointly": 0,
+        "dependent": 0
+      },
+      "federalTaxDeductible": false,
+      "hasLocalIncomeTax": true,
+      "footnotes": [
+        "a",
+        "m"
+      ],
+      "notes": [
+        "State provides a state-defined personal exemption amount for each exemption available and/or deductible under the Internal Revenue Code. The Tax Cuts and Jobs Act set the personal exemption to $0 until 2026 but did not eliminate it, and the One Big Beautiful Bill Act permanently set the personal exemption to $0 but did not eliminate it. Because it is still available, these state-defined personal exemptions remain available in some states but are set to $0 in other states."
+      ],
+      "headOfHouseholdBasis": "assumed-single"
+    },
+    "KY": {
+      "code": "KY",
+      "name": "Kentucky",
+      "hasWageIncomeTax": true,
+      "brackets": {
+        "single": [
+          {
+            "from": 0,
+            "rate": 0.035
+          }
+        ],
+        "marriedJointly": [
+          {
+            "from": 0,
+            "rate": 0.035
+          }
+        ]
+      },
+      "standardDeduction": {
+        "single": 3360,
+        "marriedJointly": 3360
+      },
+      "personalExemption": {
+        "single": 0,
+        "marriedJointly": 0,
+        "dependent": 0
+      },
+      "personalCredit": {
+        "single": 0,
+        "marriedJointly": 0,
+        "dependent": 0
+      },
+      "federalTaxDeductible": false,
+      "hasLocalIncomeTax": true,
+      "footnotes": [
+        "a",
+        "d",
+        "z"
+      ],
+      "notes": [
+        "Standard deduction and/or personal exemption is adjusted annually for inflation. Inflation-adjusted amounts for tax year 2026 are shown."
+      ],
+      "headOfHouseholdBasis": "assumed-single"
+    },
+    "LA": {
+      "code": "LA",
+      "name": "Louisiana",
+      "hasWageIncomeTax": true,
+      "brackets": {
+        "single": [
+          {
+            "from": 0,
+            "rate": 0.03
+          }
+        ],
+        "marriedJointly": [
+          {
+            "from": 0,
+            "rate": 0.03
+          }
+        ]
+      },
+      "standardDeduction": {
+        "single": 12875,
+        "marriedJointly": 25750
+      },
+      "personalExemption": {
+        "single": 0,
+        "marriedJointly": 0,
+        "dependent": 0
+      },
+      "personalCredit": {
+        "single": 0,
+        "marriedJointly": 0,
+        "dependent": 0
+      },
+      "federalTaxDeductible": false,
+      "hasLocalIncomeTax": false,
+      "footnotes": [
+        "d"
+      ],
+      "notes": [
+        "Standard deduction and/or personal exemption is adjusted annually for inflation. Inflation-adjusted amounts for tax year 2026 are shown."
+      ],
+      "headOfHouseholdBasis": "assumed-single"
+    },
+    "MA": {
+      "code": "MA",
+      "name": "Massachusetts",
+      "hasWageIncomeTax": true,
+      "brackets": {
+        "single": [
+          {
+            "from": 0,
+            "rate": 0.05
+          },
+          {
+            "from": 1083150,
+            "rate": 0.09
+          }
+        ],
+        "marriedJointly": [
+          {
+            "from": 0,
+            "rate": 0.05
+          },
+          {
+            "from": 1083150,
+            "rate": 0.09
+          }
+        ]
+      },
+      "standardDeduction": {
+        "single": 0,
+        "marriedJointly": 0
+      },
+      "personalExemption": {
+        "single": 4400,
+        "marriedJointly": 8800,
+        "dependent": 1000
+      },
+      "personalCredit": {
+        "single": 0,
+        "marriedJointly": 0,
+        "dependent": 0
+      },
+      "federalTaxDeductible": false,
+      "hasLocalIncomeTax": false,
+      "footnotes": [
+        "j",
+        "rr"
+      ],
+      "notes": [
+        "Bracket levels adjusted for inflation each year. Inflation-adjusted bracket widths for 2026 were not available as of publication, so table reflects 2025 inflation-adjusted bracket widths.",
+        "In Massachusetts, rates exclude the paid family and medical leave payroll tax. Employers must withhold 0.46 percent of employees' eligible wages. Additionally, employers with 25 or more employees contribute an extra 0.42 percent of eligible wages."
+      ],
+      "headOfHouseholdBasis": "assumed-single"
+    },
+    "MD": {
+      "code": "MD",
+      "name": "Maryland",
+      "hasWageIncomeTax": true,
+      "brackets": {
+        "single": [
+          {
+            "from": 0,
+            "rate": 0.02
+          },
+          {
+            "from": 1000,
+            "rate": 0.03
+          },
+          {
+            "from": 2000,
+            "rate": 0.04
+          },
+          {
+            "from": 3000,
+            "rate": 0.0475
+          },
+          {
+            "from": 100000,
+            "rate": 0.05
+          },
+          {
+            "from": 125000,
+            "rate": 0.0525
+          },
+          {
+            "from": 150000,
+            "rate": 0.055
+          },
+          {
+            "from": 250000,
+            "rate": 0.0575
+          },
+          {
+            "from": 500000,
+            "rate": 0.0625
+          },
+          {
+            "from": 1000000,
+            "rate": 0.065
+          }
+        ],
+        "marriedJointly": [
+          {
+            "from": 0,
+            "rate": 0.02
+          },
+          {
+            "from": 1000,
+            "rate": 0.03
+          },
+          {
+            "from": 2000,
+            "rate": 0.04
+          },
+          {
+            "from": 3000,
+            "rate": 0.0475
+          },
+          {
+            "from": 150000,
+            "rate": 0.05
+          },
+          {
+            "from": 175000,
+            "rate": 0.0525
+          },
+          {
+            "from": 225000,
+            "rate": 0.055
+          },
+          {
+            "from": 300000,
+            "rate": 0.0575
+          },
+          {
+            "from": 600000,
+            "rate": 0.0625
+          },
+          {
+            "from": 1200000,
+            "rate": 0.065
+          }
+        ]
+      },
+      "standardDeduction": {
+        "single": 3350,
+        "marriedJointly": 6700
+      },
+      "personalExemption": {
+        "single": 3200,
+        "marriedJointly": 6400,
+        "dependent": 3200
+      },
+      "personalCredit": {
+        "single": 0,
+        "marriedJointly": 0,
+        "dependent": 0
+      },
+      "federalTaxDeductible": false,
+      "hasLocalIncomeTax": true,
+      "footnotes": [
+        "a",
+        "m",
+        "x",
+        "vv",
+        "aa"
+      ],
+      "notes": [
+        "State provides a state-defined personal exemption amount for each exemption available and/or deductible under the Internal Revenue Code. The Tax Cuts and Jobs Act set the personal exemption to $0 until 2026 but did not eliminate it, and the One Big Beautiful Bill Act permanently set the personal exemption to $0 but did not eliminate it. Because it is still available, these state-defined personal exemptions remain available in some states but are set to $0 in other states.",
+        "Beginning in tax year 2025, Maryland levies an additional 2% surtax A surtax is an additional tax levied on top of an already existing business or individual tax and can have a flat or progressive rate structure. Surtaxes are typically enacted to fund a specific program or initiative, whereas revenue from broader-based taxes, like the individual income tax, typically cover a multitude of programs and services. on capital gains income for filers with AGI exceeding $350,000, regardless of filing status.",
+        "The exemption amount has the following phaseout schedule: If AGI is above $100,000 for single filers and above $150,000 for married filers, the $3,200 exemption begins to be phased out. If AGI is above $150,000 for single filers and above $200,000 for married filers, the exemption is phased out entirely."
+      ],
+      "headOfHouseholdBasis": "marriedJointly",
+      "headOfHouseholdSource": {
+        "url": "https://www.marylandtaxes.gov/individual/income/tax-info/tax-rates.php",
+        "checked": "2026-08-15"
+      }
+    },
+    "ME": {
+      "code": "ME",
+      "name": "Maine",
+      "hasWageIncomeTax": true,
+      "brackets": {
+        "single": [
+          {
+            "from": 0,
+            "rate": 0.058
+          },
+          {
+            "from": 27399,
+            "rate": 0.0675
+          },
+          {
+            "from": 64849,
+            "rate": 0.0715
+          }
+        ],
+        "marriedJointly": [
+          {
+            "from": 0,
+            "rate": 0.058
+          },
+          {
+            "from": 54849,
+            "rate": 0.0675
+          },
+          {
+            "from": 129749,
+            "rate": 0.0715
+          }
+        ],
+        "headOfHousehold": [
+          {
+            "from": 0,
+            "rate": 0.058
+          },
+          {
+            "from": 40200,
+            "rate": 0.0675
+          },
+          {
+            "from": 95150,
+            "rate": 0.0715
+          }
+        ]
+      },
+      "standardDeduction": {
+        "single": 8350,
+        "marriedJointly": 16700,
+        "headOfHousehold": 22500
+      },
+      "personalExemption": {
+        "single": 5300,
+        "marriedJointly": 10600,
+        "dependent": 0
+      },
+      "personalCredit": {
+        "single": 0,
+        "marriedJointly": 0,
+        "dependent": 305
+      },
+      "federalTaxDeductible": false,
+      "hasLocalIncomeTax": false,
+      "footnotes": [
+        "u",
+        "y",
+        "bb",
+        "ll",
+        "vv",
+        "ww"
+      ],
+      "notes": [
+        "Deduction and/or exemption tied to federal tax system. Federal deductions are indexed for inflation. Where applicable, the tax year 2026 inflation-adjusted amounts are shown.",
+        "Bracket levels adjusted for inflation each year. Inflation-adjusted bracket levels for 2026 are shown.",
+        "The dependent deduction/exemption is adjusted annually for inflation, but the 2026 amount was not available at the time of publication, so the 2025 amount is shown."
+      ],
+      "headOfHouseholdBasis": "own",
+      "headOfHouseholdSource": {
+        "url": "https://www.maine.gov/revenue/sites/maine.gov.revenue/files/inline-files/ind_tax_rate_sched_2025.pdf",
+        "checked": "2026-08-15"
+      }
+    },
+    "MI": {
+      "code": "MI",
+      "name": "Michigan",
+      "hasWageIncomeTax": true,
+      "brackets": {
+        "single": [
+          {
+            "from": 0,
+            "rate": 0.0425
+          }
+        ],
+        "marriedJointly": [
+          {
+            "from": 0,
+            "rate": 0.0425
+          }
+        ]
+      },
+      "standardDeduction": {
+        "single": 0,
+        "marriedJointly": 0
+      },
+      "personalExemption": {
+        "single": 5900,
+        "marriedJointly": 11800,
+        "dependent": 5900
+      },
+      "personalCredit": {
+        "single": 0,
+        "marriedJointly": 0,
+        "dependent": 0
+      },
+      "federalTaxDeductible": false,
+      "hasLocalIncomeTax": true,
+      "footnotes": [
+        "a",
+        "d"
+      ],
+      "notes": [
+        "Standard deduction and/or personal exemption is adjusted annually for inflation. Inflation-adjusted amounts for tax year 2026 are shown."
+      ],
+      "headOfHouseholdBasis": "assumed-single"
+    },
+    "MN": {
+      "code": "MN",
+      "name": "Minnesota",
+      "hasWageIncomeTax": true,
+      "brackets": {
+        "single": [
+          {
+            "from": 0,
+            "rate": 0.0535
+          },
+          {
+            "from": 33310,
+            "rate": 0.068
+          },
+          {
+            "from": 109430,
+            "rate": 0.0785
+          },
+          {
+            "from": 203150,
+            "rate": 0.0985
+          }
+        ],
+        "marriedJointly": [
+          {
+            "from": 0,
+            "rate": 0.0535
+          },
+          {
+            "from": 48700,
+            "rate": 0.068
+          },
+          {
+            "from": 193480,
+            "rate": 0.0785
+          },
+          {
+            "from": 337930,
+            "rate": 0.0985
+          }
+        ],
+        "headOfHousehold": [
+          {
+            "from": 0,
+            "rate": 0.0535
+          },
+          {
+            "from": 41010,
+            "rate": 0.068
+          },
+          {
+            "from": 164800,
+            "rate": 0.0785
+          },
+          {
+            "from": 270060,
+            "rate": 0.0985
+          }
+        ]
+      },
+      "standardDeduction": {
+        "single": 15300,
+        "marriedJointly": 30600
+      },
+      "personalExemption": {
+        "single": 0,
+        "marriedJointly": 0,
+        "dependent": 5300
+      },
+      "personalCredit": {
+        "single": 0,
+        "marriedJointly": 0,
+        "dependent": 0
+      },
+      "federalTaxDeductible": false,
+      "hasLocalIncomeTax": false,
+      "footnotes": [
+        "d",
+        "bb",
+        "cc",
+        "oo",
+        "vv"
+      ],
+      "notes": [
+        "Standard deduction and/or personal exemption is adjusted annually for inflation. Inflation-adjusted amounts for tax year 2026 are shown.",
+        "Bracket levels adjusted for inflation each year. Inflation-adjusted bracket levels for 2026 are shown.",
+        "Minnesota has a surtax on individuals, estates, and trusts equal to 1% of net investment income over $1 million."
+      ],
+      "headOfHouseholdBasis": "own",
+      "headOfHouseholdSource": {
+        "url": "https://www.revenue.state.mn.us/minnesota-income-tax-rates-and-brackets",
+        "checked": "2026-08-15"
+      }
+    },
+    "MO": {
+      "code": "MO",
+      "name": "Missouri",
+      "hasWageIncomeTax": true,
+      "brackets": {
+        "single": [
+          {
+            "from": 0,
+            "rate": 0
+          },
+          {
+            "from": 1348,
+            "rate": 0.02
+          },
+          {
+            "from": 2696,
+            "rate": 0.025
+          },
+          {
+            "from": 4044,
+            "rate": 0.03
+          },
+          {
+            "from": 5392,
+            "rate": 0.035
+          },
+          {
+            "from": 6740,
+            "rate": 0.04
+          },
+          {
+            "from": 8088,
+            "rate": 0.045
+          },
+          {
+            "from": 9436,
+            "rate": 0.047
+          }
+        ],
+        "marriedJointly": [
+          {
+            "from": 0,
+            "rate": 0
+          },
+          {
+            "from": 1348,
+            "rate": 0.02
+          },
+          {
+            "from": 2696,
+            "rate": 0.025
+          },
+          {
+            "from": 4044,
+            "rate": 0.03
+          },
+          {
+            "from": 5392,
+            "rate": 0.035
+          },
+          {
+            "from": 6740,
+            "rate": 0.04
+          },
+          {
+            "from": 8088,
+            "rate": 0.045
+          },
+          {
+            "from": 9436,
+            "rate": 0.047
+          }
+        ]
+      },
+      "standardDeduction": {
+        "single": 16100,
+        "marriedJointly": 32200
+      },
+      "personalExemption": {
+        "single": 0,
+        "marriedJointly": 0,
+        "dependent": 0
+      },
+      "personalCredit": {
+        "single": 0,
+        "marriedJointly": 0,
+        "dependent": 0
+      },
+      "federalTaxDeductible": true,
+      "hasLocalIncomeTax": true,
+      "footnotes": [
+        "a",
+        "b",
+        "m",
+        "u",
+        "bb"
+      ],
+      "notes": [
+        "These states allow some or all of federal income tax paid to be deducted from state taxable income.",
+        "State provides a state-defined personal exemption amount for each exemption available and/or deductible under the Internal Revenue Code. The Tax Cuts and Jobs Act set the personal exemption to $0 until 2026 but did not eliminate it, and the One Big Beautiful Bill Act permanently set the personal exemption to $0 but did not eliminate it. Because it is still available, these state-defined personal exemptions remain available in some states but are set to $0 in other states.",
+        "Deduction and/or exemption tied to federal tax system. Federal deductions are indexed for inflation. Where applicable, the tax year 2026 inflation-adjusted amounts are shown.",
+        "Bracket levels adjusted for inflation each year. Inflation-adjusted bracket levels for 2026 are shown.",
+        "Income below $1,348 (single) is not taxed.",
+        "Income below $1,348 (married filing jointly) is not taxed."
+      ],
+      "headOfHouseholdBasis": "assumed-single"
+    },
+    "MS": {
+      "code": "MS",
+      "name": "Mississippi",
+      "hasWageIncomeTax": true,
+      "brackets": {
+        "single": [
+          {
+            "from": 0,
+            "rate": 0
+          },
+          {
+            "from": 10000,
+            "rate": 0.04
+          }
+        ],
+        "marriedJointly": [
+          {
+            "from": 0,
+            "rate": 0
+          },
+          {
+            "from": 10000,
+            "rate": 0.04
+          }
+        ]
+      },
+      "standardDeduction": {
+        "single": 2300,
+        "marriedJointly": 4600
+      },
+      "personalExemption": {
+        "single": 6000,
+        "marriedJointly": 12000,
+        "dependent": 1500
+      },
+      "personalCredit": {
+        "single": 0,
+        "marriedJointly": 0,
+        "dependent": 0
+      },
+      "federalTaxDeductible": false,
+      "hasLocalIncomeTax": false,
+      "footnotes": [],
+      "notes": [
+        "Income below $10,000 (single) is not taxed.",
+        "Income below $10,000 (married filing jointly) is not taxed."
+      ],
+      "headOfHouseholdBasis": "assumed-single"
+    },
+    "MT": {
+      "code": "MT",
+      "name": "Montana",
+      "hasWageIncomeTax": true,
+      "brackets": {
+        "single": [
+          {
+            "from": 0,
+            "rate": 0.047
+          },
+          {
+            "from": 47500,
+            "rate": 0.0565
+          }
+        ],
+        "marriedJointly": [
+          {
+            "from": 0,
+            "rate": 0.047
+          },
+          {
+            "from": 95000,
+            "rate": 0.0565
+          }
+        ]
+      },
+      "standardDeduction": {
+        "single": 16100,
+        "marriedJointly": 32200
+      },
+      "personalExemption": {
+        "single": 0,
+        "marriedJointly": 0,
+        "dependent": 0
+      },
+      "personalCredit": {
+        "single": 0,
+        "marriedJointly": 0,
+        "dependent": 0
+      },
+      "federalTaxDeductible": false,
+      "hasLocalIncomeTax": false,
+      "footnotes": [
+        "o",
+        "u",
+        "bb"
+      ],
+      "notes": [
+        "Colorado, Idaho, Iowa, Montana, New Mexico, North Dakota, and South Carolina include the federal standard deduction in their income starting point.",
+        "Deduction and/or exemption tied to federal tax system. Federal deductions are indexed for inflation. Where applicable, the tax year 2026 inflation-adjusted amounts are shown.",
+        "Bracket levels adjusted for inflation each year. Inflation-adjusted bracket levels for 2026 are shown."
+      ],
+      "headOfHouseholdBasis": "assumed-single"
+    },
+    "NC": {
+      "code": "NC",
+      "name": "North Carolina",
+      "hasWageIncomeTax": true,
+      "brackets": {
+        "single": [
+          {
+            "from": 0,
+            "rate": 0.0399
+          }
+        ],
+        "marriedJointly": [
+          {
+            "from": 0,
+            "rate": 0.0399
+          }
+        ]
+      },
+      "standardDeduction": {
+        "single": 12750,
+        "marriedJointly": 25500
+      },
+      "personalExemption": {
+        "single": 0,
+        "marriedJointly": 0,
+        "dependent": 0
+      },
+      "personalCredit": {
+        "single": 0,
+        "marriedJointly": 0,
+        "dependent": 0
+      },
+      "federalTaxDeductible": false,
+      "hasLocalIncomeTax": false,
+      "footnotes": [],
+      "notes": [],
+      "headOfHouseholdBasis": "assumed-single"
+    },
+    "ND": {
+      "code": "ND",
+      "name": "North Dakota",
+      "hasWageIncomeTax": true,
+      "brackets": {
+        "single": [
+          {
+            "from": 0,
+            "rate": 0
+          },
+          {
+            "from": 48475,
+            "rate": 0.0195
+          },
+          {
+            "from": 244825,
+            "rate": 0.025
+          }
+        ],
+        "marriedJointly": [
+          {
+            "from": 0,
+            "rate": 0
+          },
+          {
+            "from": 80975,
+            "rate": 0.0195
+          },
+          {
+            "from": 298075,
+            "rate": 0.025
+          }
+        ],
+        "headOfHousehold": [
+          {
+            "from": 0,
+            "rate": 0
+          },
+          {
+            "from": 64950,
+            "rate": 0.0195
+          },
+          {
+            "from": 271450,
+            "rate": 0.025
+          }
+        ]
+      },
+      "standardDeduction": {
+        "single": 16100,
+        "marriedJointly": 32200
+      },
+      "personalExemption": {
+        "single": 0,
+        "marriedJointly": 0,
+        "dependent": 0
+      },
+      "personalCredit": {
+        "single": 0,
+        "marriedJointly": 0,
+        "dependent": 0
+      },
+      "federalTaxDeductible": false,
+      "hasLocalIncomeTax": false,
+      "footnotes": [
+        "j",
+        "o",
+        "u"
+      ],
+      "notes": [
+        "Bracket levels adjusted for inflation each year. Inflation-adjusted bracket widths for 2026 were not available as of publication, so table reflects 2025 inflation-adjusted bracket widths.",
+        "Colorado, Idaho, Iowa, Montana, New Mexico, North Dakota, and South Carolina include the federal standard deduction in their income starting point.",
+        "Deduction and/or exemption tied to federal tax system. Federal deductions are indexed for inflation. Where applicable, the tax year 2026 inflation-adjusted amounts are shown.",
+        "Income below $48,475 (single) is not taxed.",
+        "Income below $80,975 (married filing jointly) is not taxed."
+      ],
+      "headOfHouseholdBasis": "own",
+      "headOfHouseholdSource": {
+        "url": "https://www.tax.nd.gov/individual-income-tax",
+        "checked": "2026-08-15"
+      }
+    },
+    "NE": {
+      "code": "NE",
+      "name": "Nebraska",
+      "hasWageIncomeTax": true,
+      "brackets": {
+        "single": [
+          {
+            "from": 0,
+            "rate": 0.0246
+          },
+          {
+            "from": 4130,
+            "rate": 0.0351
+          },
+          {
+            "from": 24760,
+            "rate": 0.0455
+          }
+        ],
+        "marriedJointly": [
+          {
+            "from": 0,
+            "rate": 0.0246
+          },
+          {
+            "from": 8250,
+            "rate": 0.0351
+          },
+          {
+            "from": 49530,
+            "rate": 0.0455
+          }
+        ]
+      },
+      "standardDeduction": {
+        "single": 8850,
+        "marriedJointly": 17700
+      },
+      "personalExemption": {
+        "single": 0,
+        "marriedJointly": 0,
+        "dependent": 0
+      },
+      "personalCredit": {
+        "single": 176,
+        "marriedJointly": 352,
+        "dependent": 176
+      },
+      "federalTaxDeductible": false,
+      "hasLocalIncomeTax": false,
+      "footnotes": [
+        "d",
+        "h",
+        "m",
+        "bb"
+      ],
+      "notes": [
+        "Standard deduction and/or personal exemption is adjusted annually for inflation. Inflation-adjusted amounts for tax year 2026 are shown.",
+        "Standard deduction or personal exemption is structured as a tax credit.",
+        "State provides a state-defined personal exemption amount for each exemption available and/or deductible under the Internal Revenue Code. The Tax Cuts and Jobs Act set the personal exemption to $0 until 2026 but did not eliminate it, and the One Big Beautiful Bill Act permanently set the personal exemption to $0 but did not eliminate it. Because it is still available, these state-defined personal exemptions remain available in some states but are set to $0 in other states.",
+        "Bracket levels adjusted for inflation each year. Inflation-adjusted bracket levels for 2026 are shown."
+      ],
+      "headOfHouseholdBasis": "assumed-single"
+    },
+    "NH": {
+      "code": "NH",
+      "name": "New Hampshire",
+      "hasWageIncomeTax": false,
+      "brackets": {
+        "single": [],
+        "marriedJointly": []
+      },
+      "standardDeduction": {
+        "single": 0,
+        "marriedJointly": 0
+      },
+      "personalExemption": {
+        "single": 0,
+        "marriedJointly": 0,
+        "dependent": 0
+      },
+      "personalCredit": {
+        "single": 0,
+        "marriedJointly": 0,
+        "dependent": 0
+      },
+      "federalTaxDeductible": false,
+      "hasLocalIncomeTax": false,
+      "footnotes": [],
+      "notes": [],
+      "headOfHouseholdBasis": "assumed-single"
+    },
+    "NJ": {
+      "code": "NJ",
+      "name": "New Jersey",
+      "hasWageIncomeTax": true,
+      "brackets": {
+        "single": [
+          {
+            "from": 0,
+            "rate": 0.014
+          },
+          {
+            "from": 20000,
+            "rate": 0.0175
+          },
+          {
+            "from": 35000,
+            "rate": 0.035
+          },
+          {
+            "from": 40000,
+            "rate": 0.0553
+          },
+          {
+            "from": 75000,
+            "rate": 0.0637
+          },
+          {
+            "from": 500000,
+            "rate": 0.0897
+          },
+          {
+            "from": 1000000,
+            "rate": 0.1075
+          }
+        ],
+        "marriedJointly": [
+          {
+            "from": 0,
+            "rate": 0.014
+          },
+          {
+            "from": 20000,
+            "rate": 0.0175
+          },
+          {
+            "from": 50000,
+            "rate": 0.0245
+          },
+          {
+            "from": 70000,
+            "rate": 0.035
+          },
+          {
+            "from": 80000,
+            "rate": 0.0553
+          },
+          {
+            "from": 150000,
+            "rate": 0.0637
+          },
+          {
+            "from": 500000,
+            "rate": 0.0897
+          },
+          {
+            "from": 1000000,
+            "rate": 0.1075
+          }
+        ]
+      },
+      "standardDeduction": {
+        "single": 0,
+        "marriedJointly": 0
+      },
+      "personalExemption": {
+        "single": 1000,
+        "marriedJointly": 2000,
+        "dependent": 1500
+      },
+      "personalCredit": {
+        "single": 0,
+        "marriedJointly": 0,
+        "dependent": 0
+      },
+      "federalTaxDeductible": false,
+      "hasLocalIncomeTax": true,
+      "footnotes": [
+        "a"
+      ],
+      "notes": [],
+      "headOfHouseholdBasis": "assumed-single"
+    },
+    "NM": {
+      "code": "NM",
+      "name": "New Mexico",
+      "hasWageIncomeTax": true,
+      "brackets": {
+        "single": [
+          {
+            "from": 0,
+            "rate": 0.015
+          },
+          {
+            "from": 5500,
+            "rate": 0.032
+          },
+          {
+            "from": 16500,
+            "rate": 0.043
+          },
+          {
+            "from": 33500,
+            "rate": 0.047
+          },
+          {
+            "from": 66500,
+            "rate": 0.049
+          },
+          {
+            "from": 210000,
+            "rate": 0.059
+          }
+        ],
+        "marriedJointly": [
+          {
+            "from": 0,
+            "rate": 0.015
+          },
+          {
+            "from": 8000,
+            "rate": 0.032
+          },
+          {
+            "from": 25000,
+            "rate": 0.043
+          },
+          {
+            "from": 50000,
+            "rate": 0.047
+          },
+          {
+            "from": 100000,
+            "rate": 0.049
+          },
+          {
+            "from": 315000,
+            "rate": 0.059
+          }
+        ]
+      },
+      "standardDeduction": {
+        "single": 16100,
+        "marriedJointly": 32200
+      },
+      "personalExemption": {
+        "single": 0,
+        "marriedJointly": 0,
+        "dependent": 4000
+      },
+      "personalCredit": {
+        "single": 0,
+        "marriedJointly": 0,
+        "dependent": 0
+      },
+      "federalTaxDeductible": false,
+      "hasLocalIncomeTax": false,
+      "footnotes": [
+        "m",
+        "o",
+        "u",
+        "jj"
+      ],
+      "notes": [
+        "State provides a state-defined personal exemption amount for each exemption available and/or deductible under the Internal Revenue Code. The Tax Cuts and Jobs Act set the personal exemption to $0 until 2026 but did not eliminate it, and the One Big Beautiful Bill Act permanently set the personal exemption to $0 but did not eliminate it. Because it is still available, these state-defined personal exemptions remain available in some states but are set to $0 in other states.",
+        "Colorado, Idaho, Iowa, Montana, New Mexico, North Dakota, and South Carolina include the federal standard deduction in their income starting point.",
+        "Deduction and/or exemption tied to federal tax system. Federal deductions are indexed for inflation. Where applicable, the tax year 2026 inflation-adjusted amounts are shown.",
+        "In lieu of the suspended personal exemption, New Mexico offers a deduction of $4,000 for all but one of a taxpayer’s dependents."
+      ],
+      "headOfHouseholdBasis": "assumed-single"
+    },
+    "NV": {
+      "code": "NV",
+      "name": "Nevada",
+      "hasWageIncomeTax": false,
+      "brackets": {
+        "single": [],
+        "marriedJointly": []
+      },
+      "standardDeduction": {
+        "single": 0,
+        "marriedJointly": 0
+      },
+      "personalExemption": {
+        "single": 0,
+        "marriedJointly": 0,
+        "dependent": 0
+      },
+      "personalCredit": {
+        "single": 0,
+        "marriedJointly": 0,
+        "dependent": 0
+      },
+      "federalTaxDeductible": false,
+      "hasLocalIncomeTax": false,
+      "footnotes": [],
+      "notes": [],
+      "headOfHouseholdBasis": "assumed-single"
+    },
+    "NY": {
+      "code": "NY",
+      "name": "New York",
+      "hasWageIncomeTax": true,
+      "brackets": {
+        "single": [
+          {
+            "from": 0,
+            "rate": 0.039
+          },
+          {
+            "from": 8500,
+            "rate": 0.044
+          },
+          {
+            "from": 11700,
+            "rate": 0.0515
+          },
+          {
+            "from": 13900,
+            "rate": 0.054
+          },
+          {
+            "from": 80650,
+            "rate": 0.059
+          },
+          {
+            "from": 215400,
+            "rate": 0.0685
+          },
+          {
+            "from": 1077550,
+            "rate": 0.0965
+          },
+          {
+            "from": 5000000,
+            "rate": 0.103
+          },
+          {
+            "from": 25000000,
+            "rate": 0.109
+          }
+        ],
+        "marriedJointly": [
+          {
+            "from": 0,
+            "rate": 0.039
+          },
+          {
+            "from": 17150,
+            "rate": 0.044
+          },
+          {
+            "from": 23600,
+            "rate": 0.0515
+          },
+          {
+            "from": 27900,
+            "rate": 0.054
+          },
+          {
+            "from": 161550,
+            "rate": 0.059
+          },
+          {
+            "from": 323200,
+            "rate": 0.0685
+          },
+          {
+            "from": 2155350,
+            "rate": 0.0965
+          },
+          {
+            "from": 5000000,
+            "rate": 0.103
+          },
+          {
+            "from": 25000000,
+            "rate": 0.109
+          }
+        ]
+      },
+      "standardDeduction": {
+        "single": 8000,
+        "marriedJointly": 16050
+      },
+      "personalExemption": {
+        "single": 0,
+        "marriedJointly": 0,
+        "dependent": 1000
+      },
+      "personalCredit": {
+        "single": 0,
+        "marriedJointly": 0,
+        "dependent": 0
+      },
+      "federalTaxDeductible": false,
+      "hasLocalIncomeTax": true,
+      "footnotes": [
+        "a",
+        "i"
+      ],
+      "notes": [
+        "Connecticut and New York have \"tax benefit recapture,\" by which many high-income taxpayers pay their top tax rate on all income, not just on amounts above the benefit threshold."
+      ],
+      "headOfHouseholdBasis": "assumed-single"
+    },
+    "OH": {
+      "code": "OH",
+      "name": "Ohio",
+      "hasWageIncomeTax": true,
+      "brackets": {
+        "single": [
+          {
+            "from": 0,
+            "rate": 0
+          },
+          {
+            "from": 26050,
+            "rate": 0.0275
+          }
+        ],
+        "marriedJointly": [
+          {
+            "from": 0,
+            "rate": 0
+          },
+          {
+            "from": 26050,
+            "rate": 0.0275
+          }
+        ]
+      },
+      "standardDeduction": {
+        "single": 0,
+        "marriedJointly": 0
+      },
+      "personalExemption": {
+        "single": 2400,
+        "marriedJointly": 4800,
+        "dependent": 2400
+      },
+      "personalCredit": {
+        "single": 0,
+        "marriedJointly": 0,
+        "dependent": 0
+      },
+      "federalTaxDeductible": false,
+      "hasLocalIncomeTax": true,
+      "footnotes": [
+        "a",
+        "bb",
+        "dd",
+        "pp"
+      ],
+      "notes": [
+        "Bracket levels adjusted for inflation each year. Inflation-adjusted bracket levels for 2026 are shown.",
+        "Ohio's personal exemption is $2,400 for an AGI of $40,000 or less, $2,150 if AGI is more than $40,000 but less than or equal to $80,000, and $1,900 if AGI is greater than $80,000 but less than $500,000. For AGI above $500,000, there is no exemption.",
+        "Ohio's personal exemption is adjusted periodically based on changes in the GDP deflator.",
+        "Income below $26,050 (single) is not taxed.",
+        "Income below $26,050 (married filing jointly) is not taxed."
+      ],
+      "headOfHouseholdBasis": "assumed-single"
+    },
+    "OK": {
+      "code": "OK",
+      "name": "Oklahoma",
+      "hasWageIncomeTax": true,
+      "brackets": {
+        "single": [
+          {
+            "from": 0,
+            "rate": 0
+          },
+          {
+            "from": 3750,
+            "rate": 0.025
+          },
+          {
+            "from": 4900,
+            "rate": 0.035
+          },
+          {
+            "from": 7200,
+            "rate": 0.045
+          }
+        ],
+        "marriedJointly": [
+          {
+            "from": 0,
+            "rate": 0
+          },
+          {
+            "from": 7500,
+            "rate": 0.025
+          },
+          {
+            "from": 9800,
+            "rate": 0.035
+          },
+          {
+            "from": 14400,
+            "rate": 0.045
+          }
+        ]
+      },
+      "standardDeduction": {
+        "single": 6350,
+        "marriedJointly": 12700
+      },
+      "personalExemption": {
+        "single": 1000,
+        "marriedJointly": 2000,
+        "dependent": 1000
+      },
+      "personalCredit": {
+        "single": 0,
+        "marriedJointly": 0,
+        "dependent": 0
+      },
+      "federalTaxDeductible": false,
+      "hasLocalIncomeTax": false,
+      "footnotes": [
+        "m"
+      ],
+      "notes": [
+        "State provides a state-defined personal exemption amount for each exemption available and/or deductible under the Internal Revenue Code. The Tax Cuts and Jobs Act set the personal exemption to $0 until 2026 but did not eliminate it, and the One Big Beautiful Bill Act permanently set the personal exemption to $0 but did not eliminate it. Because it is still available, these state-defined personal exemptions remain available in some states but are set to $0 in other states.",
+        "Income below $3,750 (single) is not taxed.",
+        "Income below $7,500 (married filing jointly) is not taxed."
+      ],
+      "headOfHouseholdBasis": "assumed-single"
+    },
+    "OR": {
+      "code": "OR",
+      "name": "Oregon",
+      "hasWageIncomeTax": true,
+      "brackets": {
+        "single": [
+          {
+            "from": 0,
+            "rate": 0.0475
+          },
+          {
+            "from": 4550,
+            "rate": 0.0675
+          },
+          {
+            "from": 11400,
+            "rate": 0.0875
+          },
+          {
+            "from": 125000,
+            "rate": 0.099
+          }
+        ],
+        "marriedJointly": [
+          {
+            "from": 0,
+            "rate": 0.0475
+          },
+          {
+            "from": 9100,
+            "rate": 0.0675
+          },
+          {
+            "from": 22800,
+            "rate": 0.0875
+          },
+          {
+            "from": 250000,
+            "rate": 0.099
+          }
+        ]
+      },
+      "standardDeduction": {
+        "single": 2910,
+        "marriedJointly": 5820
+      },
+      "personalExemption": {
+        "single": 0,
+        "marriedJointly": 0,
+        "dependent": 0
+      },
+      "personalCredit": {
+        "single": 256,
+        "marriedJointly": 512,
+        "dependent": 256
+      },
+      "federalTaxDeductible": true,
+      "hasLocalIncomeTax": true,
+      "footnotes": [
+        "a",
+        "b",
+        "d",
+        "h",
+        "m",
+        "bb",
+        "ee",
+        "nn"
+      ],
+      "notes": [
+        "These states allow some or all of federal income tax paid to be deducted from state taxable income.",
+        "Standard deduction and/or personal exemption is adjusted annually for inflation. Inflation-adjusted amounts for tax year 2026 are shown.",
+        "Standard deduction or personal exemption is structured as a tax credit.",
+        "State provides a state-defined personal exemption amount for each exemption available and/or deductible under the Internal Revenue Code. The Tax Cuts and Jobs Act set the personal exemption to $0 until 2026 but did not eliminate it, and the One Big Beautiful Bill Act permanently set the personal exemption to $0 but did not eliminate it. Because it is still available, these state-defined personal exemptions remain available in some states but are set to $0 in other states.",
+        "Bracket levels adjusted for inflation each year. Inflation-adjusted bracket levels for 2026 are shown.",
+        "The personal exemption credit is not allowed if federal AGI exceeds $100,000 for single filers or $200,000 for MFJ.",
+        "California and Oregon do not fully index their top brackets."
+      ],
+      "headOfHouseholdBasis": "assumed-single"
+    },
+    "PA": {
+      "code": "PA",
+      "name": "Pennsylvania",
+      "hasWageIncomeTax": true,
+      "brackets": {
+        "single": [
+          {
+            "from": 0,
+            "rate": 0.0307
+          }
+        ],
+        "marriedJointly": [
+          {
+            "from": 0,
+            "rate": 0.0307
+          }
+        ]
+      },
+      "standardDeduction": {
+        "single": 0,
+        "marriedJointly": 0
+      },
+      "personalExemption": {
+        "single": 0,
+        "marriedJointly": 0,
+        "dependent": 0
+      },
+      "personalCredit": {
+        "single": 0,
+        "marriedJointly": 0,
+        "dependent": 0
+      },
+      "federalTaxDeductible": false,
+      "hasLocalIncomeTax": true,
+      "footnotes": [
+        "a"
+      ],
+      "notes": [],
+      "headOfHouseholdBasis": "assumed-single"
+    },
+    "RI": {
+      "code": "RI",
+      "name": "Rhode Island",
+      "hasWageIncomeTax": true,
+      "brackets": {
+        "single": [
+          {
+            "from": 0,
+            "rate": 0.0375
+          },
+          {
+            "from": 82050,
+            "rate": 0.0475
+          },
+          {
+            "from": 186450,
+            "rate": 0.0599
+          }
+        ],
+        "marriedJointly": [
+          {
+            "from": 0,
+            "rate": 0.0375
+          },
+          {
+            "from": 82050,
+            "rate": 0.0475
+          },
+          {
+            "from": 186450,
+            "rate": 0.0599
+          }
+        ]
+      },
+      "standardDeduction": {
+        "single": 11200,
+        "marriedJointly": 22400
+      },
+      "personalExemption": {
+        "single": 5250,
+        "marriedJointly": 10500,
+        "dependent": 5250
+      },
+      "personalCredit": {
+        "single": 0,
+        "marriedJointly": 0,
+        "dependent": 0
+      },
+      "federalTaxDeductible": false,
+      "hasLocalIncomeTax": false,
+      "footnotes": [
+        "d",
+        "bb",
+        "ff"
+      ],
+      "notes": [
+        "Standard deduction and/or personal exemption is adjusted annually for inflation. Inflation-adjusted amounts for tax year 2026 are shown.",
+        "Bracket levels adjusted for inflation each year. Inflation-adjusted bracket levels for 2026 are shown.",
+        "The phaseout range for the standard deduction, personal exemption, and dependency exemption is $261,000 to $290,800. For taxpayers with modified Federal AGI exceeding $290,800, no standard deduction, personal exemption, or dependency exemption is available."
+      ],
+      "headOfHouseholdBasis": "assumed-single"
+    },
+    "SC": {
+      "code": "SC",
+      "name": "South Carolina",
+      "hasWageIncomeTax": true,
+      "brackets": {
+        "single": [
+          {
+            "from": 0,
+            "rate": 0
+          },
+          {
+            "from": 3640,
+            "rate": 0.03
+          },
+          {
+            "from": 18230,
+            "rate": 0.06
+          }
+        ],
+        "marriedJointly": [
+          {
+            "from": 0,
+            "rate": 0
+          },
+          {
+            "from": 3640,
+            "rate": 0.03
+          },
+          {
+            "from": 18230,
+            "rate": 0.06
+          }
+        ]
+      },
+      "standardDeduction": {
+        "single": 8350,
+        "marriedJointly": 16700
+      },
+      "personalExemption": {
+        "single": 0,
+        "marriedJointly": 0,
+        "dependent": 4930
+      },
+      "personalCredit": {
+        "single": 0,
+        "marriedJointly": 0,
+        "dependent": 0
+      },
+      "federalTaxDeductible": false,
+      "hasLocalIncomeTax": false,
+      "footnotes": [
+        "d",
+        "o",
+        "u",
+        "bb",
+        "qq",
+        "vv",
+        "ww"
+      ],
+      "notes": [
+        "Standard deduction and/or personal exemption is adjusted annually for inflation. Inflation-adjusted amounts for tax year 2026 are shown.",
+        "Colorado, Idaho, Iowa, Montana, New Mexico, North Dakota, and South Carolina include the federal standard deduction in their income starting point.",
+        "Deduction and/or exemption tied to federal tax system. Federal deductions are indexed for inflation. Where applicable, the tax year 2026 inflation-adjusted amounts are shown.",
+        "Bracket levels adjusted for inflation each year. Inflation-adjusted bracket levels for 2026 are shown.",
+        "South Carolina's top marginal rate is scheduled to revert to 6.2% on July 1, 2026."
+      ],
+      "headOfHouseholdBasis": "assumed-single"
+    },
+    "SD": {
+      "code": "SD",
+      "name": "South Dakota",
+      "hasWageIncomeTax": false,
+      "brackets": {
+        "single": [],
+        "marriedJointly": []
+      },
+      "standardDeduction": {
+        "single": 0,
+        "marriedJointly": 0
+      },
+      "personalExemption": {
+        "single": 0,
+        "marriedJointly": 0,
+        "dependent": 0
+      },
+      "personalCredit": {
+        "single": 0,
+        "marriedJointly": 0,
+        "dependent": 0
+      },
+      "federalTaxDeductible": false,
+      "hasLocalIncomeTax": false,
+      "footnotes": [],
+      "notes": [],
+      "headOfHouseholdBasis": "assumed-single"
+    },
+    "TN": {
+      "code": "TN",
+      "name": "Tennessee",
+      "hasWageIncomeTax": false,
+      "brackets": {
+        "single": [],
+        "marriedJointly": []
+      },
+      "standardDeduction": {
+        "single": 0,
+        "marriedJointly": 0
+      },
+      "personalExemption": {
+        "single": 0,
+        "marriedJointly": 0,
+        "dependent": 0
+      },
+      "personalCredit": {
+        "single": 0,
+        "marriedJointly": 0,
+        "dependent": 0
+      },
+      "federalTaxDeductible": false,
+      "hasLocalIncomeTax": false,
+      "footnotes": [],
+      "notes": [],
+      "headOfHouseholdBasis": "assumed-single"
+    },
+    "TX": {
+      "code": "TX",
+      "name": "Texas",
+      "hasWageIncomeTax": false,
+      "brackets": {
+        "single": [],
+        "marriedJointly": []
+      },
+      "standardDeduction": {
+        "single": 0,
+        "marriedJointly": 0
+      },
+      "personalExemption": {
+        "single": 0,
+        "marriedJointly": 0,
+        "dependent": 0
+      },
+      "personalCredit": {
+        "single": 0,
+        "marriedJointly": 0,
+        "dependent": 0
+      },
+      "federalTaxDeductible": false,
+      "hasLocalIncomeTax": false,
+      "footnotes": [],
+      "notes": [],
+      "headOfHouseholdBasis": "assumed-single"
+    },
+    "UT": {
+      "code": "UT",
+      "name": "Utah",
+      "hasWageIncomeTax": true,
+      "brackets": {
+        "single": [
+          {
+            "from": 0,
+            "rate": 0.045
+          }
+        ],
+        "marriedJointly": [
+          {
+            "from": 0,
+            "rate": 0.045
+          }
+        ]
+      },
+      "standardDeduction": {
+        "single": 0,
+        "marriedJointly": 0
+      },
+      "personalExemption": {
+        "single": 0,
+        "marriedJointly": 0,
+        "dependent": 2111
+      },
+      "personalCredit": {
+        "single": 0,
+        "marriedJointly": 0,
+        "dependent": 0
+      },
+      "federalTaxDeductible": false,
+      "hasLocalIncomeTax": false,
+      "footnotes": [
+        "d",
+        "h",
+        "gg",
+        "ll"
+      ],
+      "notes": [
+        "Standard deduction and/or personal exemption is adjusted annually for inflation. Inflation-adjusted amounts for tax year 2026 are shown.",
+        "Standard deduction or personal exemption is structured as a tax credit.",
+        "The dependent deduction/exemption is adjusted annually for inflation, but the 2026 amount was not available at the time of publication, so the 2025 amount is shown."
+      ],
+      "headOfHouseholdBasis": "assumed-single"
+    },
+    "VA": {
+      "code": "VA",
+      "name": "Virginia",
+      "hasWageIncomeTax": true,
+      "brackets": {
+        "single": [
+          {
+            "from": 0,
+            "rate": 0.02
+          },
+          {
+            "from": 3000,
+            "rate": 0.03
+          },
+          {
+            "from": 5000,
+            "rate": 0.05
+          },
+          {
+            "from": 17000,
+            "rate": 0.0575
+          }
+        ],
+        "marriedJointly": [
+          {
+            "from": 0,
+            "rate": 0.02
+          },
+          {
+            "from": 3000,
+            "rate": 0.03
+          },
+          {
+            "from": 5000,
+            "rate": 0.05
+          },
+          {
+            "from": 17000,
+            "rate": 0.0575
+          }
+        ]
+      },
+      "standardDeduction": {
+        "single": 8750,
+        "marriedJointly": 17500
+      },
+      "personalExemption": {
+        "single": 930,
+        "marriedJointly": 1860,
+        "dependent": 930
+      },
+      "personalCredit": {
+        "single": 0,
+        "marriedJointly": 0,
+        "dependent": 0
+      },
+      "federalTaxDeductible": false,
+      "hasLocalIncomeTax": false,
+      "footnotes": [
+        "m"
+      ],
+      "notes": [
+        "State provides a state-defined personal exemption amount for each exemption available and/or deductible under the Internal Revenue Code. The Tax Cuts and Jobs Act set the personal exemption to $0 until 2026 but did not eliminate it, and the One Big Beautiful Bill Act permanently set the personal exemption to $0 but did not eliminate it. Because it is still available, these state-defined personal exemptions remain available in some states but are set to $0 in other states."
+      ],
+      "headOfHouseholdBasis": "assumed-single"
+    },
+    "VT": {
+      "code": "VT",
+      "name": "Vermont",
+      "hasWageIncomeTax": true,
+      "brackets": {
+        "single": [
+          {
+            "from": 0,
+            "rate": 0.0335
+          },
+          {
+            "from": 49400,
+            "rate": 0.066
+          },
+          {
+            "from": 119700,
+            "rate": 0.076
+          },
+          {
+            "from": 249700,
+            "rate": 0.0875
+          }
+        ],
+        "marriedJointly": [
+          {
+            "from": 0,
+            "rate": 0.0335
+          },
+          {
+            "from": 82500,
+            "rate": 0.066
+          },
+          {
+            "from": 199450,
+            "rate": 0.076
+          },
+          {
+            "from": 304000,
+            "rate": 0.0875
+          }
+        ]
+      },
+      "standardDeduction": {
+        "single": 7650,
+        "marriedJointly": 15300
+      },
+      "personalExemption": {
+        "single": 5300,
+        "marriedJointly": 10600,
+        "dependent": 5300
+      },
+      "personalCredit": {
+        "single": 0,
+        "marriedJointly": 0,
+        "dependent": 0
+      },
+      "federalTaxDeductible": false,
+      "hasLocalIncomeTax": false,
+      "footnotes": [
+        "j",
+        "n",
+        "hh",
+        "mm"
+      ],
+      "notes": [
+        "Bracket levels adjusted for inflation each year. Inflation-adjusted bracket widths for 2026 were not available as of publication, so table reflects 2025 inflation-adjusted bracket widths.",
+        "For taxpayers with federal AGI that exceeds $150,000, the taxpayer will pay the greater of state income tax or 3 percent of federal AGI."
+      ],
+      "headOfHouseholdBasis": "assumed-single"
+    },
+    "WA": {
+      "code": "WA",
+      "name": "Washington",
+      "hasWageIncomeTax": false,
+      "brackets": {
+        "single": [],
+        "marriedJointly": []
+      },
+      "standardDeduction": {
+        "single": 0,
+        "marriedJointly": 0
+      },
+      "personalExemption": {
+        "single": 0,
+        "marriedJointly": 0,
+        "dependent": 0
+      },
+      "personalCredit": {
+        "single": 0,
+        "marriedJointly": 0,
+        "dependent": 0
+      },
+      "federalTaxDeductible": false,
+      "hasLocalIncomeTax": false,
+      "footnotes": [
+        "n",
+        "ss",
+        "tt"
+      ],
+      "notes": [
+        "Levies a tax on capital gains income only. There is no tax on wage income, so this calculator treats the state income tax on salary as zero.",
+        "Tax applies to capital gains income only."
+      ],
+      "headOfHouseholdBasis": "assumed-single"
+    },
+    "WI": {
+      "code": "WI",
+      "name": "Wisconsin",
+      "hasWageIncomeTax": true,
+      "brackets": {
+        "single": [
+          {
+            "from": 0,
+            "rate": 0.035
+          },
+          {
+            "from": 15110,
+            "rate": 0.044
+          },
+          {
+            "from": 51950,
+            "rate": 0.053
+          },
+          {
+            "from": 332720,
+            "rate": 0.0765
+          }
+        ],
+        "marriedJointly": [
+          {
+            "from": 0,
+            "rate": 0.035
+          },
+          {
+            "from": 20150,
+            "rate": 0.044
+          },
+          {
+            "from": 69260,
+            "rate": 0.053
+          },
+          {
+            "from": 443630,
+            "rate": 0.0765
+          }
+        ]
+      },
+      "standardDeduction": {
+        "single": 13960,
+        "marriedJointly": 25840
+      },
+      "personalExemption": {
+        "single": 700,
+        "marriedJointly": 1400,
+        "dependent": 700
+      },
+      "personalCredit": {
+        "single": 0,
+        "marriedJointly": 0,
+        "dependent": 0
+      },
+      "federalTaxDeductible": false,
+      "hasLocalIncomeTax": false,
+      "footnotes": [
+        "d",
+        "m",
+        "bb",
+        "ii"
+      ],
+      "notes": [
+        "Standard deduction and/or personal exemption is adjusted annually for inflation. Inflation-adjusted amounts for tax year 2026 are shown.",
+        "State provides a state-defined personal exemption amount for each exemption available and/or deductible under the Internal Revenue Code. The Tax Cuts and Jobs Act set the personal exemption to $0 until 2026 but did not eliminate it, and the One Big Beautiful Bill Act permanently set the personal exemption to $0 but did not eliminate it. Because it is still available, these state-defined personal exemptions remain available in some states but are set to $0 in other states.",
+        "Bracket levels adjusted for inflation each year. Inflation-adjusted bracket levels for 2026 are shown.",
+        "The standard deduction begins to phase out at $20,119 in income for single filers and $29,039 in income for joint filers. The standard deduction phases out to zero at $136,453 for single filers and $159,690 for joint filers."
+      ],
+      "headOfHouseholdBasis": "assumed-single"
+    },
+    "WV": {
+      "code": "WV",
+      "name": "West Virginia",
+      "hasWageIncomeTax": true,
+      "brackets": {
+        "single": [
+          {
+            "from": 0,
+            "rate": 0.0222
+          },
+          {
+            "from": 10000,
+            "rate": 0.0296
+          },
+          {
+            "from": 25000,
+            "rate": 0.0333
+          },
+          {
+            "from": 40000,
+            "rate": 0.0444
+          },
+          {
+            "from": 60000,
+            "rate": 0.0482
+          }
+        ],
+        "marriedJointly": [
+          {
+            "from": 0,
+            "rate": 0.0222
+          },
+          {
+            "from": 10000,
+            "rate": 0.0296
+          },
+          {
+            "from": 25000,
+            "rate": 0.0333
+          },
+          {
+            "from": 40000,
+            "rate": 0.0444
+          },
+          {
+            "from": 60000,
+            "rate": 0.0482
+          }
+        ]
+      },
+      "standardDeduction": {
+        "single": 0,
+        "marriedJointly": 0
+      },
+      "personalExemption": {
+        "single": 2000,
+        "marriedJointly": 4000,
+        "dependent": 2000
+      },
+      "personalCredit": {
+        "single": 0,
+        "marriedJointly": 0,
+        "dependent": 0
+      },
+      "federalTaxDeductible": false,
+      "hasLocalIncomeTax": true,
+      "footnotes": [
+        "a",
+        "m"
+      ],
+      "notes": [
+        "State provides a state-defined personal exemption amount for each exemption available and/or deductible under the Internal Revenue Code. The Tax Cuts and Jobs Act set the personal exemption to $0 until 2026 but did not eliminate it, and the One Big Beautiful Bill Act permanently set the personal exemption to $0 but did not eliminate it. Because it is still available, these state-defined personal exemptions remain available in some states but are set to $0 in other states."
+      ],
+      "headOfHouseholdBasis": "assumed-single"
+    },
+    "WY": {
+      "code": "WY",
+      "name": "Wyoming",
+      "hasWageIncomeTax": false,
+      "brackets": {
+        "single": [],
+        "marriedJointly": []
+      },
+      "standardDeduction": {
+        "single": 0,
+        "marriedJointly": 0
+      },
+      "personalExemption": {
+        "single": 0,
+        "marriedJointly": 0,
+        "dependent": 0
+      },
+      "personalCredit": {
+        "single": 0,
+        "marriedJointly": 0,
+        "dependent": 0
+      },
+      "federalTaxDeductible": false,
+      "hasLocalIncomeTax": false,
+      "footnotes": [],
+      "notes": [],
+      "headOfHouseholdBasis": "assumed-single"
+    }
+  }
+}
