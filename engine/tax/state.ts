@@ -227,9 +227,14 @@ export function scheduleFor(
 
   switch (rules?.headOfHouseholdBasis) {
     case 'own':
-      // Only if the schedule is actually there. A basis of 'own' with no
-      // brackets would silently fall back rather than throw, so check.
-      return rules.brackets.headOfHousehold ? 'headOfHousehold' : 'single';
+      /*
+       * Returned even where no head-of-household BRACKETS exist, because a
+       * state can publish its own deduction without its own schedule. New York
+       * is exactly that: $11,200 against a single filer's $8,000, on the same
+       * rate schedule. The field-by-field fallback below picks up whichever
+       * pieces the state actually publishes and takes the rest from single.
+       */
+      return 'headOfHousehold';
     case 'marriedJointly':
       return 'marriedJointly';
     default:

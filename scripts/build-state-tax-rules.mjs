@@ -259,6 +259,32 @@ const HEAD_OF_HOUSEHOLD = {
     source: 'https://www.maine.gov/revenue/sites/maine.gov.revenue/files/inline-files/ind_tax_rate_sched_2025.pdf',
     checked: '2026-08-15',
   },
+  'New York': {
+    // New York publishes no separate head-of-household RATE schedule — the
+    // brackets are shared with single filers — but it does publish its own
+    // standard deduction, and $11,200 against $8,000 is real money that this
+    // engine was throwing away.
+    basis: 'own',
+    standardDeduction: 11_200,
+    source: 'https://www.tax.ny.gov/forms/html-instructions/2025/it/it201i-2025.htm',
+    checked: '2026-08-15',
+  },
+  Connecticut: {
+    basis: 'own',
+    // Every threshold sits between the single and joint ones rather than
+    // matching either, so neither fallback would have been right.
+    brackets: [
+      { from: 0, rate: 0.02 },
+      { from: 16_000, rate: 0.045 },
+      { from: 80_000, rate: 0.055 },
+      { from: 160_000, rate: 0.06 },
+      { from: 320_000, rate: 0.065 },
+      { from: 400_000, rate: 0.069 },
+      { from: 800_000, rate: 0.0699 },
+    ],
+    source: 'https://portal.ct.gov/drs/drs-forms/current-year-forms/calculators-and-tables',
+    checked: '2026-08-15',
+  },
   'North Dakota': {
     basis: 'own',
     brackets: [
@@ -548,15 +574,22 @@ function validateHeadOfHousehold(name, s) {
   if (!['own', 'marriedJointly', 'single', 'assumed-single'].includes(basis)) {
     throw new Error(`${name}: unknown headOfHouseholdBasis ${basis}`);
   }
-  if (basis === 'own' && !(s.brackets.headOfHousehold || []).length) {
-    throw new Error(`${name}: headOfHouseholdBasis is "own" but no schedule was supplied`);
+  // A basis of "own" must bring SOMETHING of its own, but it need not be
+  // brackets — New York publishes its own deduction on the shared schedule.
+  if (
+    basis === 'own' &&
+    !(s.brackets.headOfHousehold || []).length &&
+    s.standardDeduction.headOfHousehold === undefined &&
+    s.personalExemption.headOfHousehold === undefined
+  ) {
+    throw new Error(`${name}: headOfHouseholdBasis is "own" but nothing of its own was supplied`);
   }
   if (basis !== 'own' && s.brackets.headOfHousehold) {
     throw new Error(`${name}: carries a head-of-household schedule its basis does not use`);
   }
   // A head of household is never taxed harder than a single filer on the same
   // income. If a transcription put a threshold in wrong, this catches it.
-  if (basis === 'own') {
+  if (basis === 'own' && (s.brackets.headOfHousehold || []).length) {
     for (const income of [30_000, 60_000, 120_000, 250_000]) {
       const asHoh = applyBracketsLocal(income, s.brackets.headOfHousehold);
       const asSingle = applyBracketsLocal(income, s.brackets.single);

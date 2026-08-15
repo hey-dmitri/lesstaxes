@@ -94,6 +94,25 @@ describe('head of household', () => {
     expect(computeStateTax(HOH, stateRules('MD')).scheduleUsed).toBe('marriedJointly');
   });
 
+  /*
+   * A state can publish its own head-of-household DEDUCTION without its own
+   * rate schedule. New York is exactly that — $11,200 against a single filer's
+   * $8,000, on brackets shared with single filers — and an earlier version of
+   * scheduleFor would not select the head-of-household schedule at all unless
+   * brackets existed, so the deduction was unreachable.
+   */
+  it('takes a state deduction even where the brackets are shared', () => {
+    const ny = stateRules('NY');
+    expect(ny.brackets.headOfHousehold).toBeUndefined();
+    expect(ny.standardDeduction.headOfHousehold).toBe(11_200);
+
+    const asHoh = computeStateTax(HOH, ny);
+    const asSingle = computeStateTax({ ...HOH, filingStatus: 'single' }, ny);
+    expect(asHoh.deductions).toBe(11_200);
+    expect(asSingle.deductions).toBe(ny.standardDeduction.single);
+    expect(asHoh.tax).toBeLessThan(asSingle.tax);
+  });
+
   it('never charges a head of household more than a single filer', () => {
     for (const code of ALL_STATE_CODES) {
       const rules = stateRules(code);
@@ -124,7 +143,7 @@ describe('head of household', () => {
     }
     // The verified ones must stay verified: silently dropping back to an
     // assumption is exactly the regression this whole change is about.
-    for (const code of ['CA', 'MD', 'MN', 'ME', 'ND']) {
+    for (const code of ['CA', 'MD', 'MN', 'ME', 'ND', 'NY', 'CT']) {
       expect(stateRules(code).headOfHouseholdBasis).not.toBe('assumed-single');
     }
   });

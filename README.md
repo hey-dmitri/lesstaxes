@@ -18,7 +18,7 @@ index, statutory rate or state average — on the [data page](https://packorstay
 
 ## Status
 
-**Live** at [packorstay.com](https://packorstay.com). Current dataset: **2026.17**.
+**Live** at [packorstay.com](https://packorstay.com). Current dataset: **2026.18**.
 
 | Component | State |
 |---|---|
@@ -48,7 +48,7 @@ index, statutory rate or state average — on the [data page](https://packorstay
 | Social Security capped per worker, not per household | ✅ |
 | Name and domain — **Pack or Stay**, live at `packorstay.com` | ✅ |
 
-**874 tests**, including 24 golden values reproduced exactly from the IRS rate tables.
+**875 tests**, including 24 golden values reproduced exactly from the IRS rate tables.
 Total data cost: **$0**. No paid feeds, no runtime API calls.
 
 ### Known gaps, in priority order
