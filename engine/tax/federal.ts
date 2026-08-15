@@ -49,6 +49,17 @@ export interface FederalRules {
   childTaxCredit: ChildTaxCreditRules;
   /** Absent on releases cut before the EITC was modelled. */
   earnedIncomeCredit?: EitcRules;
+  /** Absent on releases cut before the acquisition debt limit was modelled. */
+  mortgageInterest?: MortgageInterestRules;
+}
+
+export interface MortgageInterestRules {
+  /**
+   * How much of a mortgage the interest deduction reaches — $750,000, or
+   * $375,000 filing separately. Interest on the balance above it is not
+   * deductible at all.
+   */
+  acquisitionDebtLimit: Record<FilingStatus, USD>;
 }
 
 export interface FederalInputs {
@@ -61,6 +72,14 @@ export interface FederalInputs {
   propertyTax: USD;
   /** First-year mortgage interest. Zero for renters. */
   mortgageInterest: USD;
+  /**
+   * Average first-year loan balance. Zero for renters.
+   *
+   * Needed because the deduction is capped by how much is OWED, not by the
+   * interest. Absent means "no debt figure available", which switches the cap
+   * off — the behaviour of every release before it was modelled.
+   */
+  mortgageDebt?: USD;
 }
 
 export interface FederalResult {
@@ -68,6 +87,8 @@ export interface FederalResult {
   saltCapApplied: USD;
   /** State + local + property tax actually deductible, after the cap. */
   saltDeducted: USD;
+  /** Mortgage interest actually deductible, after the acquisition debt limit. */
+  mortgageInterestDeducted: USD;
   itemizedTotal: USD;
   standardDeduction: USD;
   /** Whichever of the two was larger. */
@@ -80,6 +101,54 @@ export interface FederalResult {
   earnedIncomeCredit: USD;
   /** Negative means a net refund. */
   tax: USD;
+}
+
+/**
+ * Mortgage interest actually deductible, after the acquisition debt limit.
+ *
+ * THE LIMIT IS ON THE LOAN, NOT ON THE INTEREST. Only the interest attributable
+ * to the first $750,000 of the mortgage counts — $375,000 filing separately —
+ * so a bigger loan at the same rate deducts a smaller SHARE of what it costs.
+ * The engine used to deduct every dollar of first-year interest, which in
+ * expensive metros was thousands of dollars of tax:
+ *
+ *   San Jose, single, $300,000 salary, the site's own default home price:
+ *   a $1.30M mortgage deducting $88,197 of interest instead of $50,756, and
+ *   federal tax understated by $9,998. At $500,000 it was $18,356.
+ *
+ * The limit is per RETURN, which is why the separate figure is half the joint
+ * one. A couple filing separately gets $375,000 each against half the loan
+ * each, and lands in exactly the same place as filing jointly.
+ *
+ * Only the post-2017 limit is modelled, and after this tax year that is the
+ * only one there is: IRC 163(h)(3)(F)(ii) as amended applies the $750,000 cap
+ * to all acquisition debt "without regard to the taxable year in which the
+ * indebtedness was incurred", retiring the $1,000,000 grandfather for loans
+ * taken out before 2018. This engine models a fresh purchase anyway.
+ *
+ * Home equity debt is not modelled. Interest on it has not been deductible
+ * since 2017 unless the money went into the home, in which case it is
+ * acquisition debt and belongs in this figure already.
+ *
+ * Sources: IRC 163(h)(3)(F), as amended by OBBBA (PL 119-21);
+ * IRS Publication 936.
+ */
+export function deductibleMortgageInterest(
+  interest: USD,
+  debt: USD | undefined,
+  filingStatus: FilingStatus,
+  rules: MortgageInterestRules | undefined,
+): USD {
+  // No rules means a release cut before this was modelled; no debt figure
+  // means a caller that cannot supply one. Either way, deduct it all, which
+  // is what those releases did.
+  if (!rules || debt === undefined) return interest;
+
+  const owed = Math.max(0, debt);
+  const limit = rules.acquisitionDebtLimit[filingStatus];
+  if (owed <= limit) return interest;
+
+  return interest * (limit / owed);
 }
 
 /**
@@ -202,7 +271,14 @@ export function computeFederal(
   );
   const saltDeducted = Math.min(saltPaid, saltCapApplied);
 
-  const itemizedTotal = saltDeducted + Math.max(0, inputs.mortgageInterest);
+  const mortgageInterestDeducted = deductibleMortgageInterest(
+    Math.max(0, inputs.mortgageInterest),
+    inputs.mortgageDebt,
+    filingStatus,
+    rules.mortgageInterest,
+  );
+
+  const itemizedTotal = saltDeducted + mortgageInterestDeducted;
   const standardDeduction = rules.standardDeduction[filingStatus];
 
   const itemized = itemizedTotal > standardDeduction;
@@ -251,6 +327,7 @@ export function computeFederal(
   return {
     saltCapApplied,
     saltDeducted,
+    mortgageInterestDeducted,
     itemizedTotal,
     standardDeduction,
     deductionTaken,

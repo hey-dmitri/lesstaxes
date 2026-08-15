@@ -18,7 +18,7 @@ index, statutory rate or state average — on the [data page](https://packorstay
 
 ## Status
 
-**Live** at [packorstay.com](https://packorstay.com). Current dataset: **2026.8**.
+**Live** at [packorstay.com](https://packorstay.com). Current dataset: **2026.9**.
 
 | Component | State |
 |---|---|

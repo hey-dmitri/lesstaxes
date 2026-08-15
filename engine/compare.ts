@@ -188,6 +188,10 @@ export function computeCity(
         stateAndLocalIncomeTax: state.tax + local,
         propertyTax: housing.propertyTax * share.deductionShare,
         mortgageInterest: housing.mortgageInterest * share.deductionShare,
+        // The debt splits with the interest, and the separate filer's limit is
+        // half the joint one, so two separate returns reach the same answer as
+        // one joint return on the same loan.
+        mortgageDebt: housing.mortgageDebt * share.deductionShare,
       },
       fedRules,
     );

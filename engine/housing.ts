@@ -38,19 +38,15 @@ export function monthlyMortgagePayment(
 }
 
 /**
- * Interest paid during the first twelve months.
- *
- * Computed month by month rather than as `principal * rate`, because the
- * balance falls a little each month. Only the FIRST year is used: it is the
- * year the comparison is about, and it is the most interest the borrower will
- * ever pay, so using it is the least favourable assumption for itemising.
+ * Walk the first twelve payments, month by month rather than as
+ * `principal * rate`, because the balance falls a little each month.
  */
-export function firstYearInterest(
+function amortiseFirstYear(
   principal: USD,
   annualRate: Rate,
-  years: number = DEFAULT_TERM_YEARS,
-): USD {
-  if (principal <= 0 || annualRate <= 0) return 0;
+  years: number,
+): { interest: USD; endBalance: USD } {
+  if (principal <= 0) return { interest: 0, endBalance: 0 };
 
   const payment = monthlyMortgagePayment(principal, annualRate, years);
   const r = annualRate / MONTHS_PER_YEAR;
@@ -64,7 +60,42 @@ export function firstYearInterest(
     balance -= payment - monthInterest;
   }
 
-  return interest;
+  return { interest, endBalance: Math.max(0, balance) };
+}
+
+/**
+ * Interest paid during the first twelve months.
+ *
+ * Only the FIRST year is used: it is the year the comparison is about, and it
+ * is the most interest the borrower will ever pay, so using it is the least
+ * favourable assumption for itemising.
+ */
+export function firstYearInterest(
+  principal: USD,
+  annualRate: Rate,
+  years: number = DEFAULT_TERM_YEARS,
+): USD {
+  if (principal <= 0 || annualRate <= 0) return 0;
+  return amortiseFirstYear(principal, annualRate, years).interest;
+}
+
+/**
+ * Average loan balance across the first year.
+ *
+ * The mortgage interest deduction is capped by DEBT, not by interest, so the
+ * engine has to know how much was owed as well as what it cost. Publication 936
+ * offers several ways to average a balance that falls every month; this is the
+ * "average of first and last balance" method, which it permits for an
+ * amortising loan paid at least monthly.
+ */
+export function firstYearAverageBalance(
+  principal: USD,
+  annualRate: Rate,
+  years: number = DEFAULT_TERM_YEARS,
+): USD {
+  if (principal <= 0) return 0;
+  const { endBalance } = amortiseFirstYear(principal, annualRate, years);
+  return (principal + endBalance) / 2;
 }
 
 export interface HousingInputs {
@@ -106,6 +137,7 @@ export function computeHousing(inputs: HousingInputs): HousingBreakdown {
       utilities: 0,
       total: shelter + insurance,
       mortgageInterest: 0,
+      mortgageDebt: 0,
     };
   }
 
@@ -119,6 +151,7 @@ export function computeHousing(inputs: HousingInputs): HousingBreakdown {
   const shelter = monthlyMortgagePayment(principal, h.mortgageRate, term) * MONTHS_PER_YEAR;
   const propertyTax = homePrice * Math.max(0, h.propertyTaxRate);
   const mortgageInterest = firstYearInterest(principal, h.mortgageRate, term);
+  const mortgageDebt = firstYearAverageBalance(principal, h.mortgageRate, term);
 
   return {
     tenure: 'own',
@@ -128,5 +161,6 @@ export function computeHousing(inputs: HousingInputs): HousingBreakdown {
     utilities,
     total: shelter + propertyTax + insurance + utilities,
     mortgageInterest,
+    mortgageDebt,
   };
 }

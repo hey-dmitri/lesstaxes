@@ -13,7 +13,7 @@
 import { datasetBundle } from '../datasets';
 import type { FilingStatus, USD } from '../types';
 import type { Bracket } from './brackets';
-import type { EitcRules, FederalRules } from './federal';
+import type { EitcRules, FederalRules, MortgageInterestRules } from './federal';
 import type { FicaRules } from './fica';
 import type { StateTaxRules } from './state';
 
@@ -28,6 +28,10 @@ export function federalRules(version?: string): FederalRules {
     // treats that as "no credit" so those links keep reproducing exactly what
     // they showed when they were shared.
     earnedIncomeCredit: (federal as { earnedIncomeCredit?: EitcRules }).earnedIncomeCredit,
+    // Likewise absent before the acquisition debt limit was modelled, which the
+    // engine reads as "no limit" — every dollar of interest deductible, as
+    // those releases computed it.
+    mortgageInterest: (federal as { mortgageInterest?: MortgageInterestRules }).mortgageInterest,
   };
 }
 

@@ -129,6 +129,13 @@ export interface HousingBreakdown {
    * Zero for renters.
    */
   mortgageInterest: USD;
+  /**
+   * Average loan balance across the first year.
+   *
+   * The interest deduction is capped by how much is OWED, not by how much the
+   * interest costs, so the federal step needs both. Zero for renters.
+   */
+  mortgageDebt: USD;
 }
 
 export interface LivingBreakdown {

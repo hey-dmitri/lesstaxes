@@ -99,6 +99,16 @@ answer          =  in your pocket THERE  −  in your pocket HERE`}</pre>
           compute first-year interest for the itemisation test.
         </p>
         <p>
+          <strong>Only part of a big mortgage earns a deduction.</strong> The interest write-off
+          reaches the first <strong>$750,000</strong> of a loan, half that if you are married and
+          filing separately. Borrow more and the extra interest is simply not deductible. This site
+          used to deduct all of it, which in the expensive metros was a large error in the reader&rsquo;s
+          favour: a single buyer in San Jose on $300,000 borrows about $1.3M at our default home
+          price, and was being shown roughly $10,000 a year too little federal tax. At $500,000 it
+          was around $18,000. Nothing changes for a normal home in a normal city — a Chicago buyer
+          stays under the limit at every salary this site is built for.
+        </p>
+        <p>
           The rent we start you with is <strong>sized to your household and scaled to your
           income</strong>, and both parts matter more than they sound.
         </p>
