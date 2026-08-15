@@ -63,6 +63,7 @@
       "earnedIncomeCredit": null,
       "creditPhaseOut": null,
       "allowancePhaseOut": null,
+      "modellingGaps": [],
       "ratesCheckedAgainstState": null,
       "itemizedDeductions": null,
       "communityProperty": false,
@@ -168,6 +169,9 @@
           ]
         }
       },
+      "modellingGaps": [
+        "Alabama's dependent exemption steps down with income — $1,000 up to $50,000, $500 to $100,000, $300 above — and never reaches zero. Only the $1,000 figure is modelled, so Alabama tax shown is slightly lower than the true figure above $50,000. Alabama also lets you itemise without having itemised federally, and deduct the Social Security and Medicare tax withheld from your pay, which beats the standard deduction at almost any wage; that is not modelled, so Alabama tax shown is higher than the true figure for most earners."
+      ],
       "ratesCheckedAgainstState": {
         "url": "https://www.revenue.alabama.gov/wp-content/uploads/2026/01/25f40bk.pdf",
         "checked": "2026-08-15",
@@ -269,6 +273,9 @@
       "earnedIncomeCredit": null,
       "creditPhaseOut": null,
       "allowancePhaseOut": null,
+      "modellingGaps": [
+        "Arkansas reduces the benefit of its lower brackets across a narrow band of income between about $94,700 and $97,600. That adjustment is not modelled, so tax shown for incomes inside that band is slightly lower than the true figure."
+      ],
       "ratesCheckedAgainstState": {
         "url": "https://www.dfa.arkansas.gov/wp-content/uploads/Withholding-Tax-Formula.pdf",
         "checked": "2026-08-15",
@@ -330,11 +337,14 @@
       ],
       "notes": [
         "Deduction and/or exemption tied to federal tax system. Federal deductions are indexed for inflation. Where applicable, the tax year 2026 inflation-adjusted amounts are shown.",
-        "Arizona's dependent credit rose to $125 for a child under 17 for 2026 and shrinks above $200,000 of income ($400,000 for a couple). Neither is modelled. Arizona also caps its state and local tax deduction at $10,000 rather than following the federal figure."
+        "Arizona's dependent credit rose to $125 for a child under 17 for 2026 and we still apply $100, so Arizona tax shown here is $25 a year per young child too much. The same credit shrinks above $200,000 of income ($400,000 for a couple), which is not modelled, so above those incomes the figure shown is slightly low."
       ],
       "earnedIncomeCredit": null,
       "creditPhaseOut": null,
       "allowancePhaseOut": null,
+      "modellingGaps": [
+        "Arizona's dependent credit rose to $125 for a child under 17 for 2026 and we still apply $100, so Arizona tax shown here is $25 a year per young child too much. The same credit shrinks above $200,000 of income ($400,000 for a couple), which is not modelled, so above those incomes the figure shown is slightly low."
+      ],
       "ratesCheckedAgainstState": {
         "url": "https://www.azleg.gov/legtext/57leg/2R/laws/0140.htm",
         "checked": "2026-08-15",
@@ -519,12 +529,16 @@
         "Rates include the additional mental health services tax at the rate of 1 percent on taxable income in excess of $1 million. Rates exclude a payroll tax of 1.3 percent to fund the state’s disability insurance program. Effective as of TY 2024, there is no wage ceiling for this payroll tax, which means that the state’s top individual income tax rate on wage income becomes 14.6 percent.",
         "State provides a state-defined personal exemption amount for each exemption available and/or deductible under the Internal Revenue Code. The Tax Cuts and Jobs Act set the personal exemption to $0 until 2026 but did not eliminate it, and the One Big Beautiful Bill Act permanently set the personal exemption to $0 but did not eliminate it. Because it is still available, these state-defined personal exemptions remain available in some states but are set to $0 in other states.",
         "California and Oregon do not fully index their top brackets.",
-        "California itemised deductions here cover property tax and mortgage interest only — the two figures this site knows. Charitable giving, medical costs and miscellaneous deductions are not asked about and are not included.",
-        "Exemption credits phase out above $252,203 single / $504,411 joint / $378,310 head of household. Not modelled."
+        "California itemised deductions here cover property tax and mortgage interest only — the two figures this site knows. Charitable giving, medical costs and miscellaneous deductions are not asked about and are not included, so California tax shown here is higher than the true figure for anyone who has them.",
+        "California's exemption credits shrink above $252,203 of income ($504,411 for a couple, $378,310 for a head of household) and that is not modelled, so California tax shown here is lower than the true figure above those incomes."
       ],
       "earnedIncomeCredit": null,
       "creditPhaseOut": null,
       "allowancePhaseOut": null,
+      "modellingGaps": [
+        "California itemised deductions here cover property tax and mortgage interest only — the two figures this site knows. Charitable giving, medical costs and miscellaneous deductions are not asked about and are not included, so California tax shown here is higher than the true figure for anyone who has them.",
+        "California's exemption credits shrink above $252,203 of income ($504,411 for a couple, $378,310 for a head of household) and that is not modelled, so California tax shown here is lower than the true figure above those incomes."
+      ],
       "ratesCheckedAgainstState": {
         "url": "https://www.ftb.ca.gov/about-ftb/newsroom/tax-news/2025/10.html",
         "checked": "2026-08-15",
@@ -619,6 +633,7 @@
       },
       "creditPhaseOut": null,
       "allowancePhaseOut": null,
+      "modellingGaps": [],
       "ratesCheckedAgainstState": {
         "url": "https://tax.colorado.gov/income-tax-topics-earned-income-tax-credit",
         "checked": "2026-08-15",
@@ -802,6 +817,9 @@
           ]
         }
       },
+      "modellingGaps": [
+        "Connecticut also adds a flat charge above $56,500 single / $100,500 joint (up to $250 / $500) and recaptures the benefit of its lower rates above $105,000 / $210,000 (up to $3,400 / $6,800). Neither is modelled, so Connecticut tax shown here is lower than the true figure for higher earners."
+      ],
       "ratesCheckedAgainstState": {
         "url": "https://codes.findlaw.com/ct/title-12-taxation/ct-gen-st-sect-12-702/",
         "checked": "2026-08-15",
@@ -920,6 +938,7 @@
       "earnedIncomeCredit": null,
       "creditPhaseOut": null,
       "allowancePhaseOut": null,
+      "modellingGaps": [],
       "ratesCheckedAgainstState": {
         "url": "https://otr.cfo.dc.gov/page/district-columbia-tax-rates-individual-income-and-business-franchise-taxes",
         "checked": "2026-08-15",
@@ -1032,6 +1051,7 @@
       "earnedIncomeCredit": null,
       "creditPhaseOut": null,
       "allowancePhaseOut": null,
+      "modellingGaps": [],
       "ratesCheckedAgainstState": {
         "url": "https://revenuefiles.delaware.gov/2025/PITForms_Instructions/Instructions/PIT-RES_Instructions_2025-01.pdf",
         "checked": "2026-08-15",
@@ -1075,6 +1095,7 @@
       "earnedIncomeCredit": null,
       "creditPhaseOut": null,
       "allowancePhaseOut": null,
+      "modellingGaps": [],
       "ratesCheckedAgainstState": null,
       "itemizedDeductions": null,
       "communityProperty": false,
@@ -1121,6 +1142,7 @@
       "earnedIncomeCredit": null,
       "creditPhaseOut": null,
       "allowancePhaseOut": null,
+      "modellingGaps": [],
       "ratesCheckedAgainstState": {
         "url": "https://dor.georgia.gov/document/document/2026-employers-tax-guide/download",
         "checked": "2026-08-15",
@@ -1327,6 +1349,7 @@
       },
       "creditPhaseOut": null,
       "allowancePhaseOut": null,
+      "modellingGaps": [],
       "ratesCheckedAgainstState": {
         "url": "https://www.capitol.hawaii.gov/hrscurrent/Vol04_Ch0201-0257/HRS0235/HRS_0235-0002_0004.htm",
         "checked": "2026-08-15",
@@ -1406,6 +1429,7 @@
       },
       "creditPhaseOut": null,
       "allowancePhaseOut": null,
+      "modellingGaps": [],
       "ratesCheckedAgainstState": {
         "url": "https://revenue.iowa.gov/taxes/tax-guidance/individual-income-tax",
         "checked": "2026-08-15",
@@ -1484,6 +1508,7 @@
       "earnedIncomeCredit": null,
       "creditPhaseOut": null,
       "allowancePhaseOut": null,
+      "modellingGaps": [],
       "ratesCheckedAgainstState": {
         "url": "https://tax.idaho.gov/wp-content/uploads/forms/EFO00089/EFO00089_03-02-2026.pdf",
         "checked": "2026-08-15",
@@ -1549,6 +1574,7 @@
       },
       "creditPhaseOut": null,
       "allowancePhaseOut": null,
+      "modellingGaps": [],
       "ratesCheckedAgainstState": {
         "url": "https://tax.illinois.gov/content/dam/soi/en/web/tax/forms/incometax/documents/currentyear/individual/il-1040-exemption-allowance-chart.pdf",
         "checked": "2026-08-15",
@@ -1614,6 +1640,7 @@
       },
       "creditPhaseOut": null,
       "allowancePhaseOut": null,
+      "modellingGaps": [],
       "ratesCheckedAgainstState": {
         "url": "https://www.in.gov/dor/files/dn01.pdf",
         "checked": "2026-08-15",
@@ -1687,6 +1714,7 @@
       },
       "creditPhaseOut": null,
       "allowancePhaseOut": null,
+      "modellingGaps": [],
       "ratesCheckedAgainstState": {
         "url": "https://www.ksrevenue.gov/incomebook25.html",
         "checked": "2026-08-15",
@@ -1746,6 +1774,7 @@
       "earnedIncomeCredit": null,
       "creditPhaseOut": null,
       "allowancePhaseOut": null,
+      "modellingGaps": [],
       "ratesCheckedAgainstState": {
         "url": "https://revenue.ky.gov/News/Pages/Kentucky-DOR-Announces-2026-Standard-Deduction.aspx",
         "checked": "2026-08-15",
@@ -1808,6 +1837,7 @@
       },
       "creditPhaseOut": null,
       "allowancePhaseOut": null,
+      "modellingGaps": [],
       "ratesCheckedAgainstState": {
         "url": "https://dam.ldr.la.gov/taxforms/1306-1-26.pdf",
         "checked": "2026-08-15",
@@ -1877,6 +1907,9 @@
       "earnedIncomeCredit": null,
       "creditPhaseOut": null,
       "allowancePhaseOut": null,
+      "modellingGaps": [
+        "Massachusetts lets every wage earner deduct up to $2,000 each of the Social Security and Medicare tax they paid. That is not modelled here, so Massachusetts tax shown is about $100 a year higher than the true figure for most earners."
+      ],
       "ratesCheckedAgainstState": {
         "url": "https://www.mass.gov/info-details/massachusetts-tax-rates",
         "checked": "2026-08-15",
@@ -2020,7 +2053,7 @@
         "State provides a state-defined personal exemption amount for each exemption available and/or deductible under the Internal Revenue Code. The Tax Cuts and Jobs Act set the personal exemption to $0 until 2026 but did not eliminate it, and the One Big Beautiful Bill Act permanently set the personal exemption to $0 but did not eliminate it. Because it is still available, these state-defined personal exemptions remain available in some states but are set to $0 in other states.",
         "Beginning in tax year 2025, Maryland levies an additional 2% surtax A surtax is an additional tax levied on top of an already existing business or individual tax and can have a flat or progressive rate structure. Surtaxes are typically enacted to fund a specific program or initiative, whereas revenue from broader-based taxes, like the individual income tax, typically cover a multitude of programs and services. on capital gains income for filers with AGI exceeding $350,000, regardless of filing status.",
         "The exemption amount has the following phaseout schedule: If AGI is above $100,000 for single filers and above $150,000 for married filers, the $3,200 exemption begins to be phased out. If AGI is above $150,000 for single filers and above $200,000 for married filers, the exemption is phased out entirely.",
-        "Maryland also reduces itemised deductions by 7.5% of federal income above $200,000 from 2025. Itemising is not modelled for Maryland at all, so this does not apply yet."
+        "Maryland lets you itemise if you itemised federally, which we do not model at all, so Maryland tax shown here is higher than the true figure for a homeowner with a mortgage. Maryland separately cuts those itemised deductions by 7.5% of income above $200,000, which would pull the other way."
       ],
       "earnedIncomeCredit": {
         "percentOfFederal": null,
@@ -2050,6 +2083,9 @@
           0.25
         ]
       },
+      "modellingGaps": [
+        "Maryland lets you itemise if you itemised federally, which we do not model at all, so Maryland tax shown here is higher than the true figure for a homeowner with a mortgage. Maryland separately cuts those itemised deductions by 7.5% of income above $200,000, which would pull the other way."
+      ],
       "ratesCheckedAgainstState": {
         "url": "https://www.marylandcomptroller.gov/content/dam/mdcomp/tax/instructions/withholding/2026/withholding-guide.pdf",
         "checked": "2026-08-15",
@@ -2200,6 +2236,9 @@
           ]
         }
       },
+      "modellingGaps": [
+        "Maine's personal exemption also phases out, from $341,000 of income for a single filer and $409,150 for a couple. That is not modelled, so Maine tax shown above those incomes is slightly lower than the true figure."
+      ],
       "ratesCheckedAgainstState": {
         "url": "https://www.maine.gov/revenue/sites/maine.gov.revenue/files/2026-05/ind_tax_rate_sched_2026_rev.pdf",
         "checked": "2026-08-15",
@@ -2267,6 +2306,7 @@
       },
       "creditPhaseOut": null,
       "allowancePhaseOut": null,
+      "modellingGaps": [],
       "ratesCheckedAgainstState": {
         "url": "https://www.michigan.gov/treasury/news/2026/04/15/state-individual-income-tax-rate-for-2026-tax-year-determined",
         "checked": "2026-08-15",
@@ -2419,6 +2459,9 @@
           ]
         }
       },
+      "modellingGaps": [
+        "Minnesota's dependent exemption also phases out, by 2 percentage points for each $2,500 of income above $244,500 single and $366,700 joint. That is not modelled, so Minnesota tax shown above those incomes is slightly lower than the true figure."
+      ],
       "ratesCheckedAgainstState": {
         "url": "https://www.revenue.state.mn.us/sites/default/files/2025-12/inflation-adjusted-amounts-2026.pdf",
         "checked": "2026-08-15",
@@ -2560,6 +2603,7 @@
       },
       "creditPhaseOut": null,
       "allowancePhaseOut": null,
+      "modellingGaps": [],
       "ratesCheckedAgainstState": {
         "url": "https://dor.mo.gov/forms/4282_2026.pdf",
         "checked": "2026-08-15",
@@ -2626,6 +2670,7 @@
       "earnedIncomeCredit": null,
       "creditPhaseOut": null,
       "allowancePhaseOut": null,
+      "modellingGaps": [],
       "ratesCheckedAgainstState": {
         "url": "https://www.dor.ms.gov/general-information",
         "checked": "2026-08-15",
@@ -2711,6 +2756,7 @@
       },
       "creditPhaseOut": null,
       "allowancePhaseOut": null,
+      "modellingGaps": [],
       "ratesCheckedAgainstState": {
         "url": "https://revenue.mt.gov/news/recent-news/HB-337",
         "checked": "2026-08-15",
@@ -2765,6 +2811,7 @@
       "earnedIncomeCredit": null,
       "creditPhaseOut": null,
       "allowancePhaseOut": null,
+      "modellingGaps": [],
       "ratesCheckedAgainstState": {
         "url": "https://www.ncdor.gov/taxes-forms/individual-income-tax/tax-rate-schedules",
         "checked": "2026-08-15",
@@ -2857,6 +2904,7 @@
       "earnedIncomeCredit": null,
       "creditPhaseOut": null,
       "allowancePhaseOut": null,
+      "modellingGaps": [],
       "ratesCheckedAgainstState": {
         "url": "https://www.tax.nd.gov/sites/www/files/documents/forms/software-developer/individual-income-forms/28709-form-nd-1es-2026%20final.pdf",
         "checked": "2026-08-15",
@@ -2960,6 +3008,7 @@
       },
       "creditPhaseOut": null,
       "allowancePhaseOut": null,
+      "modellingGaps": [],
       "ratesCheckedAgainstState": {
         "url": "https://revenue.nebraska.gov/sites/default/files/doc/tax-forms/2025/f_1040N-ES.pdf",
         "checked": "2026-08-15",
@@ -3003,6 +3052,7 @@
       "earnedIncomeCredit": null,
       "creditPhaseOut": null,
       "allowancePhaseOut": null,
+      "modellingGaps": [],
       "ratesCheckedAgainstState": null,
       "itemizedDeductions": null,
       "communityProperty": false,
@@ -3109,6 +3159,9 @@
       },
       "creditPhaseOut": null,
       "allowancePhaseOut": null,
+      "modellingGaps": [
+        "New Jersey lets a homeowner deduct up to $15,000 of property tax, and a renter count 18% of rent as property tax toward the same limit. That is not modelled here, so New Jersey tax shown is higher than the true figure — by roughly $530 a year for a homeowner on $80,000 and $765 on $150,000. New Jersey has the highest property taxes in the country, so this affects nearly every household."
+      ],
       "ratesCheckedAgainstState": {
         "url": "https://www.nj.gov/treasury/taxation/pdf/current/1040esi.pdf",
         "checked": "2026-08-15",
@@ -3237,6 +3290,7 @@
       },
       "creditPhaseOut": null,
       "allowancePhaseOut": null,
+      "modellingGaps": [],
       "ratesCheckedAgainstState": {
         "url": "https://www.taxformfinder.org/forms/2025/2025-new-mexico-income-tax-instructions.pdf",
         "checked": "2026-08-15",
@@ -3284,6 +3338,7 @@
       "earnedIncomeCredit": null,
       "creditPhaseOut": null,
       "allowancePhaseOut": null,
+      "modellingGaps": [],
       "ratesCheckedAgainstState": null,
       "itemizedDeductions": null,
       "communityProperty": true,
@@ -3443,6 +3498,9 @@
       },
       "creditPhaseOut": null,
       "allowancePhaseOut": null,
+      "modellingGaps": [
+        "New York lets you itemise on the state return whether or not you did federally, on pre-2018 rules — property tax uncapped and mortgage interest on $1,000,000 of debt. That is not modelled, so New York tax shown here is higher than the true figure for a homeowner, by roughly $650 to $770 a year plus more again in New York City. Running the other way, New York recaptures the benefit of its lower rates from high earners, which is also not modelled and is worth about $481 a year at $150,000."
+      ],
       "ratesCheckedAgainstState": {
         "url": "https://www.tax.ny.gov/pdf/current_forms/it/it2105i.pdf",
         "checked": "2026-08-15",
@@ -3539,6 +3597,7 @@
       },
       "creditPhaseOut": null,
       "allowancePhaseOut": null,
+      "modellingGaps": [],
       "ratesCheckedAgainstState": null,
       "itemizedDeductions": null,
       "communityProperty": false,
@@ -3624,6 +3683,7 @@
       },
       "creditPhaseOut": null,
       "allowancePhaseOut": null,
+      "modellingGaps": [],
       "ratesCheckedAgainstState": {
         "url": "https://www.oklegislature.gov/cf_pdf/2025-26%20ENR/hB/HB2764%20ENR.PDF",
         "checked": "2026-08-15",
@@ -3728,6 +3788,9 @@
         }
       },
       "allowancePhaseOut": null,
+      "modellingGaps": [
+        "Oregon lets you subtract the federal income tax you paid, capped at $8,500 and tapering to nothing by $145,000 of income for a single filer. That is not modelled — the federalTaxDeductible flag has always been a label rather than a calculation — so Oregon tax shown here is higher than the true figure by up to about $743 a year at lower incomes. Oregon's head-of-household standard deduction is also the unchanged 2025 figure; the state has not published 2026."
+      ],
       "ratesCheckedAgainstState": null,
       "itemizedDeductions": null,
       "verifiedAgainstState": {
@@ -3791,6 +3854,7 @@
       "earnedIncomeCredit": null,
       "creditPhaseOut": null,
       "allowancePhaseOut": null,
+      "modellingGaps": [],
       "ratesCheckedAgainstState": {
         "url": "https://www.pa.gov/agencies/revenue/resources/tax-types-and-information/personal-income-tax.html",
         "checked": "2026-08-15",
@@ -3892,6 +3956,7 @@
           0.2
         ]
       },
+      "modellingGaps": [],
       "ratesCheckedAgainstState": {
         "url": "https://tax.ri.gov/sites/g/files/xkgbur541/files/2025-10/2026%20RI-1040ES_bd.pdf",
         "checked": "2026-08-15",
@@ -4013,6 +4078,9 @@
         },
         "roundReductionDownTo": 10
       },
+      "modellingGaps": [
+        "South Carolina's dependent exemption is shown at the 2025 figure of $4,930. The state indexes it every December and the 2026 amount appears only in the 2026 return instructions, which are not published yet. The real figure will be slightly higher, so this errs against the reader."
+      ],
       "ratesCheckedAgainstState": {
         "url": "https://www.scstatehouse.gov/sess126_2025-2026/prever/4216_20260224.htm",
         "checked": "2026-08-15",
@@ -4060,6 +4128,7 @@
       "earnedIncomeCredit": null,
       "creditPhaseOut": null,
       "allowancePhaseOut": null,
+      "modellingGaps": [],
       "ratesCheckedAgainstState": null,
       "itemizedDeductions": null,
       "communityProperty": false,
@@ -4095,6 +4164,7 @@
       "earnedIncomeCredit": null,
       "creditPhaseOut": null,
       "allowancePhaseOut": null,
+      "modellingGaps": [],
       "ratesCheckedAgainstState": null,
       "itemizedDeductions": null,
       "communityProperty": false,
@@ -4130,6 +4200,7 @@
       "earnedIncomeCredit": null,
       "creditPhaseOut": null,
       "allowancePhaseOut": null,
+      "modellingGaps": [],
       "ratesCheckedAgainstState": null,
       "itemizedDeductions": null,
       "communityProperty": true,
@@ -4198,6 +4269,9 @@
         }
       },
       "allowancePhaseOut": null,
+      "modellingGaps": [
+        "Utah's taxpayer tax credit phase-out thresholds and dependent exemption are the 2025 figures — the state has not published 2026 amounts. Utah indexes them upward, so the reduction starts slightly early here and the credit comes out slightly small."
+      ],
       "ratesCheckedAgainstState": {
         "url": "https://le.utah.gov/~2026/bills/sbillenr/SB0060.pdf",
         "checked": "2026-08-15",
@@ -4283,6 +4357,7 @@
       "earnedIncomeCredit": null,
       "creditPhaseOut": null,
       "allowancePhaseOut": null,
+      "modellingGaps": [],
       "ratesCheckedAgainstState": {
         "url": "https://www.tax.virginia.gov/news/new-virginia-tax-laws",
         "checked": "2026-08-15",
@@ -4387,6 +4462,7 @@
       "earnedIncomeCredit": null,
       "creditPhaseOut": null,
       "allowancePhaseOut": null,
+      "modellingGaps": [],
       "ratesCheckedAgainstState": {
         "url": "https://tax.vermont.gov/sites/tax/files/documents/TaxRateSched-2025.pdf",
         "checked": "2026-08-15",
@@ -4437,6 +4513,7 @@
       "earnedIncomeCredit": null,
       "creditPhaseOut": null,
       "allowancePhaseOut": null,
+      "modellingGaps": [],
       "ratesCheckedAgainstState": null,
       "itemizedDeductions": null,
       "communityProperty": true,
@@ -4569,6 +4646,7 @@
           ]
         }
       },
+      "modellingGaps": [],
       "ratesCheckedAgainstState": {
         "url": "https://www.revenue.wi.gov/TaxForms2026/2026-Form1-ES-Inst.pdf",
         "checked": "2026-08-15",
@@ -4663,6 +4741,7 @@
       "earnedIncomeCredit": null,
       "creditPhaseOut": null,
       "allowancePhaseOut": null,
+      "modellingGaps": [],
       "ratesCheckedAgainstState": {
         "url": "https://tax.wv.gov/Individuals/Pages/PersonalIncomeTaxReductionBill.aspx",
         "checked": "2026-08-15",
@@ -4710,6 +4789,7 @@
       "earnedIncomeCredit": null,
       "creditPhaseOut": null,
       "allowancePhaseOut": null,
+      "modellingGaps": [],
       "ratesCheckedAgainstState": null,
       "itemizedDeductions": null,
       "communityProperty": false,

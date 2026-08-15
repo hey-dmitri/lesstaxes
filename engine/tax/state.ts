@@ -125,6 +125,15 @@ export interface StateTaxRules {
   federalTaxDeductible: boolean;
   hasLocalIncomeTax: boolean;
   notes: string[];
+  /**
+   * Rules this state has that we do NOT model, in plain words, each saying
+   * which way the error runs.
+   *
+   * Separate from `notes`, which carries the source table's own footnotes.
+   * These are our own admissions, and the methodology page renders them
+   * straight from here so the published list cannot drift from the data.
+   */
+  modellingGaps: string[];
 }
 
 export interface PayrollContribution {

@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 
 import { PageShell, Prose } from '@/components/page-shell';
+import { ALL_STATE_CODES, stateRules } from '@/engine';
 import { ReportProblem } from '@/components/report-problem';
 import { DATASET_VERSION } from '@/engine';
 import { SITE_NAME } from '@/lib/site';
@@ -11,6 +12,17 @@ export const metadata: Metadata = {
   description:
     'The formula, the order of operations, every assumption, and everything this calculator gets wrong.',
 };
+
+/*
+ * Built from the dataset, not typed out here. A hand-written list of what we
+ * get wrong is a list that goes stale the first time somebody fixes one of
+ * them, and a stale admission is worse than none — it claims an error that is
+ * no longer there, or worse, stays silent about one that is.
+ */
+const STATES_WITH_GAPS = ALL_STATE_CODES.map((code) => stateRules(code))
+  .filter((s) => s.modellingGaps.length > 0)
+  .map((s) => ({ code: s.code, name: s.name, gaps: s.modellingGaps }))
+  .sort((a, b) => a.name.localeCompare(b.name));
 
 export default function MethodologyPage() {
   return (
@@ -225,9 +237,26 @@ answer          =  in your pocket THERE  −  in your pocket HERE`}</pre>
             <strong>A head of household is not a single person.</strong> We used to tax them as
             one. California publishes its own schedule and gives them the married standard
             deduction; Maryland puts them on the married table outright; Kansas quietly adds a
-            second exemption on top of the first. We have now read the actual form for 41 of the 42
-            states that tax wages, and 24 of them were charging a single parent too much — by $75
-            to $2,559 a year. Vermont is the last one.
+            second exemption on top of the first. We have now read the actual form for{' '}
+            <strong>every one of the 42 states that tax wages</strong>, and 24 of them were charging
+            a single parent too much — by $75 to $2,559 a year.
+          </li>
+          <li>
+            <strong>Allowances that shrink as you earn more.</strong> Several states quietly take
+            back the deduction or exemption they give you, and we used to hand it out at every
+            income. Wisconsin&rsquo;s disappears completely by $136,000. Connecticut&rsquo;s is gone
+            by $44,000. South Carolina, Maine, Minnesota, Maryland, Rhode Island, Alabama and Utah
+            all do a version of it. These now shrink the way the state says they do — which means
+            the tax we show for higher earners went <em>up</em>, and that is the point: the answer
+            was flattering places it should not have been.
+          </li>
+          <li>
+            <strong>Seven states changed the law after our tax table was printed.</strong> The
+            table comes out once a year, in February, and states pass laws all spring. South
+            Carolina rewrote its income tax outright. Arkansas, West Virginia and Utah cut their
+            rates back to January. Georgia moved three things at once. Every one of them left us
+            charging too much, and every one was found only by opening the state&rsquo;s own
+            publication and comparing it line by line.
           </li>
           <li>
             <strong>California lets you itemise on the state return</strong> whether or not you did
@@ -238,9 +267,21 @@ answer          =  in your pocket THERE  −  in your pocket HERE`}</pre>
           </li>
         </ul>
         <p>
-          Only California has been checked line by line. Every other state still uses its standard
-          deduction, and the &ldquo;What this gets wrong&rdquo; list below says which states have
-          been verified and which have not.
+          <strong>
+            Every state&rsquo;s rates and allowances have now been read off that state&rsquo;s own
+            2026 publication — 40 of the 42 that tax wages.
+          </strong>{' '}
+          Twenty-two of them were wrong. The two left out are Ohio and Oregon, and neither is
+          unexamined: neither state has published anything for 2026 yet. The{' '}
+          <Link href="/data">data page</Link> shows, for every location, the date its state was
+          checked and links to the document it was checked against.
+        </p>
+        <p>
+          Only California is modelled for <em>itemising</em> — the deduction a homeowner gets for
+          mortgage interest and property tax on the state return. About a dozen states allow some
+          version of it, and where we miss it we charge too much. The
+          &ldquo;What this gets wrong&rdquo; list below names every state with a rule we know about
+          and do not yet model, and says which way each one runs.
         </p>
 
         <h2>What year the dollars are in</h2>
@@ -462,6 +503,25 @@ answer          =  in your pocket THERE  −  in your pocket HERE`}</pre>
         <h2 id="limitations">What this gets wrong</h2>
         <p>
           Every model is wrong somewhere. These are the places this one is wrong that we know about.
+        </p>
+
+        <h3>State by state</h3>
+        <p>
+          Each of these is a rule the state really has that we do not calculate. They are written
+          out here rather than summarised, and each one says which way it runs — whether it means
+          we are charging you too much or too little. This list is generated from the same data the
+          calculator uses, so it cannot quietly fall out of date.
+        </p>
+        <ul>
+          {STATES_WITH_GAPS.map(({ code, name, gaps }) => (
+            <li key={code}>
+              <strong>{name}.</strong> {gaps.join(' ')}
+            </li>
+          ))}
+        </ul>
+        <p>
+          Every other state has been read off its own 2026 publication with nothing left
+          outstanding, except Ohio and Oregon, which have not published anything for 2026 at all.
         </p>
         <ul>
           <li>

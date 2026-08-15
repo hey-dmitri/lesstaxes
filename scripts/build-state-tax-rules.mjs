@@ -1269,7 +1269,7 @@ const STATE_OVERRIDES = {
     },
     source: 'https://www.ftb.ca.gov/about-ftb/newsroom/tax-news/2025/10.html',
     checked: '2026-08-15',
-    note: 'Exemption credits phase out above $252,203 single / $504,411 joint / $378,310 head of household. Not modelled.',
+    note: "California's exemption credits shrink above $252,203 of income ($504,411 for a couple, $378,310 for a head of household) and that is not modelled, so California tax shown here is lower than the true figure above those incomes.",
   },
 
   /*
@@ -1357,7 +1357,7 @@ const STATE_OVERRIDES = {
      */
     source: 'https://www.azleg.gov/legtext/57leg/2R/laws/0140.htm',
     checked: '2026-08-15',
-    note: "Arizona's dependent credit rose to $125 for a child under 17 for 2026 and shrinks above $200,000 of income ($400,000 for a couple). Neither is modelled. Arizona also caps its state and local tax deduction at $10,000 rather than following the federal figure.",
+    note: "Arizona's dependent credit rose to $125 for a child under 17 for 2026 and we still apply $100, so Arizona tax shown here is $25 a year per young child too much. The same credit shrinks above $200,000 of income ($400,000 for a couple), which is not modelled, so above those incomes the figure shown is slightly low.",
   },
   Georgia: {
     /*
@@ -1781,7 +1781,7 @@ const STATE_OVERRIDES = {
     },
     source: 'https://www.marylandcomptroller.gov/content/dam/mdcomp/tax/instructions/withholding/2026/withholding-guide.pdf',
     checked: '2026-08-15',
-    note: 'Maryland also reduces itemised deductions by 7.5% of federal income above $200,000 from 2025. Itemising is not modelled for Maryland at all, so this does not apply yet.',
+    note: 'Maryland lets you itemise if you itemised federally, which we do not model at all, so Maryland tax shown here is higher than the true figure for a homeowner with a mortgage. Maryland separately cuts those itemised deductions by 7.5% of income above $200,000, which would pull the other way.',
   },
   Maine: {
     /*
@@ -2011,7 +2011,7 @@ const ITEMIZED_DEDUCTIONS = {
     },
     source: 'https://www.ftb.ca.gov/file/personal/deductions/index.html',
     checked: '2026-08-15',
-    note: 'California itemised deductions here cover property tax and mortgage interest only — the two figures this site knows. Charitable giving, medical costs and miscellaneous deductions are not asked about and are not included.',
+    note: 'California itemised deductions here cover property tax and mortgage interest only — the two figures this site knows. Charitable giving, medical costs and miscellaneous deductions are not asked about and are not included, so California tax shown here is higher than the true figure for anyone who has them.',
   },
 };
 
@@ -2172,6 +2172,13 @@ for (const [name, s] of Object.entries(states)) {
 
   s.creditPhaseOut = null;
   s.allowancePhaseOut = null;
+  /*
+   * Rules we know this state has and do not model, in plain words, each saying
+   * which way it runs. Kept apart from `notes` — which carries the source
+   * table's own footnotes — so the site can render OUR admissions without
+   * mixing them into somebody else's annotations.
+   */
+  s.modellingGaps = [];
 
   /*
    * Whether anyone has opened this state's own 2026 publication and compared
@@ -2207,7 +2214,10 @@ for (const [name, s] of Object.entries(states)) {
       throw new Error(`${name}: itemised reduction needs a single threshold`);
     }
   }
-  if (itemized?.note) s.notes.push(itemized.note);
+  if (itemized?.note) {
+    s.notes.push(itemized.note);
+    s.modellingGaps.push(itemized.note);
+  }
 
   const override = STATE_OVERRIDES[name];
   if (override) {
@@ -2325,7 +2335,10 @@ for (const [name, s] of Object.entries(states)) {
       s.creditPhaseOut = override.creditPhaseOut;
     }
     s.verifiedAgainstState = { url: override.source, checked: override.checked };
-    if (override.note) s.notes.push(override.note);
+    if (override.note) {
+      s.notes.push(override.note);
+      s.modellingGaps.push(override.note);
+    }
   }
 
   s.communityProperty = COMMUNITY_PROPERTY.has(name);

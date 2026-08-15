@@ -18,12 +18,13 @@ index, statutory rate or state average — on the [data page](https://packorstay
 
 ## Status
 
-**Live** at [packorstay.com](https://packorstay.com). Current dataset: **2026.23**.
+**Live** at [packorstay.com](https://packorstay.com). Current dataset: **2026.26**.
 
 | Component | State |
 |---|---|
 | Bracket arithmetic, FICA, federal income tax, CTC, EITC | ✅ |
 | State income tax — all 50 states + DC | ✅ |
+| Every taxing state read off its own 2026 publication | 40 of 42 — OH and OR have published nothing |
 | Local income tax — 13 named cities, state averages elsewhere | ✅ |
 | 387 metros + 51 rural fallbacks, price parities | ✅ |
 | Rent and home price scaled to household and income, effective property tax | ✅ |
@@ -48,7 +49,7 @@ index, statutory rate or state average — on the [data page](https://packorstay
 | Social Security capped per worker, not per household | ✅ |
 | Name and domain — **Pack or Stay**, live at `packorstay.com` | ✅ |
 
-**875 tests**, including 24 golden values reproduced exactly from the IRS rate tables.
+**901 tests**, including 24 golden values reproduced exactly from the IRS rate tables.
 Total data cost: **$0**. No paid feeds, no runtime API calls.
 
 ### Known gaps, in priority order
@@ -83,87 +84,77 @@ Total data cost: **$0**. No paid feeds, no runtime API calls.
    stripping the embedded average out per category, which the survey does not
    publish. Worth a few hundred a year. The rates stay shipped and visible in
    the data browser, labelled reference-only, for when it can be done.
-4. **41 of 42 taxing states have been checked against their own publication
-   for head of household.** Nothing checked this before, and 24 of the 41 were
-   wrong — always against a single parent, by $75 to $2,559 a year. Six
-   different shapes turned up: the state's own rate schedule, the joint
-   schedule, the joint schedule with its own deduction, a shared schedule with
-   its own deduction, the single schedule with the joint exemption, and the
-   single schedule with its own deduction. There is no pattern to guess from,
-   which is why each one had to be read.
+4. **Every state that taxes wages has now been read off its own 2026
+   publication — 40 of 42, and the two left are waiting on the states.**
 
-   **This count used to say "of 30 graduated states", and that was the wrong
-   denominator.** The question started as "which rate schedule does a head of
-   household use", so the twelve flat-rate states were never asked — with one
-   rate there is no schedule to get wrong. But the ALLOWANCE differs in flat
-   states too, and five of the twelve turned out to differ: Louisiana gives a
-   head of household the entire joint standard deduction, North Carolina 1.5x
-   the single one, and Arizona, Colorado and Iowa carry the federal figure
-   because the federal deduction sits inside the income they start from. A
-   coverage report that silently excludes a category reads as "all clear" for
-   states it never looked at, so it now counts every taxing state.
+   Two separate checks, kept separate because they answer different questions.
 
-   **Utah's entire allowance was being dropped on the floor.** Utah has no
-   standard deduction and no personal exemption; the whole thing is a credit
-   worth 6% of the federal deduction, shrinking by 1.3 cents per dollar of
-   income above a threshold. The source table prints it in the standard
-   deduction column as "$966 credit" — Utah is the only state that does, every
-   other credit sits in the exemption columns — so it parsed as a $0 deduction
-   and was never picked up as a credit either. A Utah family on $40,000 was
-   being charged $1,610 of tax they do not owe.
+   *Head of household: 42 of 42.* Nothing checked this before, and 24 states
+   were wrong — always against a single parent, by $75 to $2,559 a year. Six
+   different shapes turned up and there is no pattern to guess from, which is
+   why each one had to be read. Vermont was the last and was closed by noticing
+   something about our own data rather than by Vermont publishing anything: the
+   brackets shipped here are 2025 figures, so Vermont's 2025 head-of-household
+   schedule is exactly in step with them.
 
-   Fixing it meant teaching the engine credits that shrink with income, because
-   half a fix is worse than none here: granting the $966 flat would understate
-   Utah tax for most people who use this site, and dropping it overcharges
-   everyone below the threshold. Utah's phase-out thresholds are the 2025 ones,
-   the only published figures, which starts the reduction slightly early and so
-   errs against the reader.
+   *Rates and allowances: 40 of 42, and 22 were wrong.* This is the stronger
+   claim — every bracket and every allowance compared against the state's own
+   2026 rate schedule, withholding guide or statute. **Ohio and Oregon are the
+   two outstanding, and neither is unexamined: neither state has published
+   anything for 2026 at all.**
 
-   Vermont is the one still open, and it is blocked rather than unexamined. Its
-   schedule was transcribed from the statute and rejected by the build guard:
-   the statutory table is a base Vermont indexes every year, and the base sits
-   about 28% below the 2026 brackets shipped here, so a head of household came
-   out paying more than a single filer. Deriving 2026 from it is not available
-   either — no single inflation factor reproduces both the 2026 single and joint
-   brackets already shipped, so any derived schedule would be invented. Vermont
-   has published a document called "2026 VT Rate Schedules" and it is
-   withholding charts with two columns, single and married, and no head of
-   household in it at all. Until the 2026 return forms arrive, Vermont stays on
-   the single schedule, which is the narrowest and therefore charges the most.
+   Each state now carries the date it was checked and the document it was
+   checked against, and the data browser shows both.
 
-   Anything unchecked carries `headOfHouseholdBasis: 'assumed-single'`, which is
-   deliberately not spelled `'single'`: it records that nobody has looked, and
-   the build prints the list every time it runs. Tax Foundation, the source for
-   brackets, publishes single and joint columns only, so this can only come from
-   each state's own revenue department.
+5. **Seven states changed the law after our bracket table was published, and
+   the table is published once a year.** That is the failure this whole audit
+   existed to find. February's table cannot know about a law signed in May.
 
-   One narrower gap remains inside a checked state: Arkansas publishes separate
-   low-income tax tables by filing status, with a higher threshold for a head of
-   household. That is a rule this engine does not model at all. It bites only
-   well below the salaries this calculator is used for, and it errs against the
-   reader.
-5. **Local income tax outside the 13 named cities** is still each state's
+   | State | What moved | Direction |
+   |---|---|---|
+   | South Carolina | rewrote the entire income tax | overcharging |
+   | Arkansas | top rate 3.9% → 3.7%, retroactive | overcharging |
+   | Georgia | rate, deduction and dependent, all at once | overcharging |
+   | West Virginia | every rate cut 5%, retroactive | overcharging |
+   | Arizona | conformed to the bigger federal deduction | overcharging |
+   | Utah | 4.50% → 4.45%, retroactive | overcharging |
+   | Maine | never conformed; its own figure is far higher | overcharging |
+
+   The build now records when the table was published and refuses to stay
+   quiet about it: it warns until every state has been read off its own
+   publication, and names the ones that have not been.
+
+6. **Errors ran BOTH ways, and the ones that flattered are the ones that
+   mattered.** Ten states were charging too little, because we handed out
+   allowances the state takes away as income rises. Wisconsin's standard
+   deduction reaches zero by $136,000 and we gave it in full — a Wisconsin
+   couple on $150,000 was being shown a bill $1,268 too low. Connecticut's
+   personal exemption is gone by $44,000 and we were still deducting $24,000.
+
+   A verdict that is too rosy is the one that actually moves somebody across
+   the country, so those are now modelled: allowances that taper, allowances
+   that fall in steps, allowances that stop at a floor, and credits that vanish
+   at a cliff.
+
+7. **What is still not modelled is written on the state, not buried here.**
+   Ten states carry a note saying which rule is missing and which way it runs —
+   New Jersey's $15,000 property tax deduction, New York's itemising and its
+   recapture, Oregon's federal tax subtraction, Connecticut's add-back and
+   recapture, Alabama's payroll-tax deduction, Colorado's high-income add-back,
+   and more. Those notes appear on the methodology page.
+
+   The largest single gap is **state itemising**: only California is modelled,
+   and a dozen states let a homeowner deduct mortgage interest and property tax
+   on the state return. Where that is missing we charge too much.
+
+8. **California's figures are tax year 2025.** California indexes in the autumn
+   and has not published 2026. Rather than invent a number, the 2025 figures
+   ship and this says so.
+9. **Local income tax outside the 13 named cities** is still each state's
    average, which is fair where rates are uniform and wrong where they are not.
-6. **The bracket table is a February 2026 snapshot, and states legislate after
-   February.** Committing the snapshot is what makes this dataset reproducible,
-   but reproducible is not current, and three states had moved underneath it:
-
-   - **Georgia** cut its rate from 5.19% to 4.99%, raised the standard
-     deduction from $12,000/$24,000 to $15,000/$30,000 and the dependent
-     deduction from $4,000 to $5,000 — one law, signed 11 May 2026, applying to
-     2026. Worth $285 a year to a single filer and $635 to a couple with two
-     children.
-   - **Arizona** conformed to the post-OBBBA federal standard deduction,
-     retroactively, in June 2026. The snapshot had it at the pre-TCJA $8,350.
-   - **Maine** never conformed at all. Its own statute sets a $12,000 base from
-     2026, and Maine Revenue Services publishes the indexed result: $15,700
-     rather than $8,350. A Maine couple was being overcharged about $880 a year.
-
-   All three ran the same way — against the reader. They are corrected by hand
-   in `STATE_OVERRIDES`, with the state's own publication as the source, and
-   the build now warns when an override matches the source again so the
-   hand-typed figures get deleted rather than quietly outliving their purpose.
-   The real fix is refreshing the snapshot, which is a quarterly job.
+   Indiana is the known bad case: we apply 0.35% statewide when real county
+   rates run from 0.50% to 3.00%, which understates Indiana tax by over a
+   thousand dollars a year.
 
 ### Rebuilding the dataset
 
