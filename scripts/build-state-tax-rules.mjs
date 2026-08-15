@@ -1685,7 +1685,9 @@ const STATE_OVERRIDES = {
      * said it "phased out completely above $100,000", which was wrong in both
      * directions at once. The steps are not modelled; the note is corrected.
      */
-    standardDeduction: { single: 3_000, marriedJointly: 8_500, headOfHousehold: 5_200 },
+    // Only the head-of-household figure — the source already carries the other
+    // two, and the build warns when an override merely repeats it.
+    standardDeduction: { headOfHousehold: 5_200 },
     allowancePhaseOut: {
       kind: 'linear',
       appliesTo: ['standardDeduction'],
