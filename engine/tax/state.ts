@@ -194,6 +194,23 @@ export interface StateTaxRules {
    */
   federalTaxDeduction: FederalTaxDeduction | null;
   /**
+   * A CREDIT for itemised deductions, rather than a deduction.
+   *
+   * WISCONSIN IS THE ONE AND IT IS NOT A DEDUCTION AT ALL: 5% of the amount by
+   * which qualifying federal itemised deductions exceed the Wisconsin standard
+   * deduction, taken off the tax itself and capped at what is owed.
+   *
+   * "Qualifying" excludes every section 164 tax — no state income tax, no
+   * property tax, no sales tax. Schedule 1 has lines only for medical,
+   * interest, charity and casualty losses. So of the two figures this engine
+   * knows, only mortgage interest counts, and a Wisconsin homeowner's property
+   * tax is worth nothing here.
+   *
+   * It interacts with the phase-out: as the standard deduction shrinks toward
+   * zero the credit base grows, so the two move together.
+   */
+  itemisedDeductionCredit: { rate: number } | null;
+  /**
    * A deduction for property tax that is NOT itemising, where the state has
    * one.
    *
@@ -1174,6 +1191,17 @@ export function computeStateTax(
       fraction.bands[allowanceKey] ?? fraction.bands[otherwise] ?? fraction.bands.single;
     const band = bands.find(([upper]) => gross <= upper);
     if (band) creditsWithRelief += taxBeforeCredits * band[1];
+  }
+
+  /*
+   * Wisconsin's itemised deduction credit. Measured against the standard
+   * deduction AFTER its phase-out, because that is the figure the form uses —
+   * and it means the credit grows as the deduction shrinks.
+   */
+  const itemisedCredit = rules.itemisedDeductionCredit;
+  if (itemisedCredit) {
+    const qualifying = Math.max(0, inputs.mortgageInterest ?? 0);
+    creditsWithRelief += itemisedCredit.rate * Math.max(0, qualifying - standardDeduction);
   }
 
   creditsWithRelief += creditOverride;

@@ -78,11 +78,16 @@ describe('every other state', () => {
    * — a state that quietly grows an itemising block without anyone reading its
    * form is exactly the regression this guards.
    */
+  /*
+   * States where a housing figure legitimately moves the answer. Not all of
+   * them itemise: New Jersey relieves property tax without itemising at all,
+   * and Wisconsin gives a CREDIT for mortgage interest while ignoring property
+   * tax entirely. The test below is about housing reaching the answer, not
+   * about the mechanism it reaches through.
+   */
   const ITEMISING_STATES = new Set([
-    'CA', 'KS', 'AL', 'MN', 'NC', 'VA', 'MD', 'MT', 'NM', 'ID', 'OK', 'NY', 'NE',
-    // New Jersey has no itemising at all, but it does relieve property tax,
-    // so housing figures legitimately move its answer.
-    'NJ',
+    'CA', 'KS', 'AL', 'MN', 'NC', 'VA', 'MD', 'MT', 'NM', 'ID', 'OK', 'NY', 'NE', 'IA',
+    'NJ', 'WI',
   ]);
 
   it('keeps the standard deduction until its own rules have been read', () => {
@@ -296,5 +301,67 @@ describe('New York itemised deductions', () => {
     // Above a million New York allows only a share of charitable giving, which
     // this engine never asks about — so the standard deduction takes over.
     expect(single(1_200_000).deductions).toBe(ny.standardDeduction.single);
+  });
+});
+
+/**
+ * Iowa and Wisconsin, the two that do not fit the pattern.
+ */
+describe('the two odd ones', () => {
+  const SINGLE = { filingStatus: 'single' as const, children: 0 };
+
+  /*
+   * IOWA KEEPS ITS OWN INCOME TAX INSIDE THE DEDUCTION, which is what exposed
+   * `deductStateIncomeTax` as a flag nothing read. Every other state adds it
+   * back, so the deduction collapses to property tax plus interest — exactly
+   * what the engine computed by ignoring the flag. Iowa gutted its add-back.
+   */
+  it('leaves the state income tax inside the Iowa deduction', () => {
+    const ia = stateRules('IA');
+    expect(ia.itemizedDeductions?.deductStateIncomeTax).toBe(true);
+
+    const base = { ...SINGLE, grossSalary: 150_000, propertyTax: 8_000, mortgageInterest: 18_000, itemisedFederally: true };
+    const without = computeStateTax(base, ia);
+    const with5k = computeStateTax({ ...base, stateIncomeTaxPaid: 5_000 }, ia);
+    expect(without.deductions - with5k.deductions).toBeCloseTo(-5_000, 2);
+  });
+
+  /*
+   * WISCONSIN IS NOT A DEDUCTION AT ALL — a 5% credit on qualifying
+   * deductions above the standard deduction, and "qualifying" excludes every
+   * state and local tax. So of the two figures this engine knows, only the
+   * mortgage interest counts and a Wisconsin homeowner's property tax is worth
+   * nothing. Treating it as an ordinary deduction would have been generous in
+   * exactly the wrong place.
+   */
+  it('credits Wisconsin mortgage interest and ignores its property tax', () => {
+    const wi = stateRules('WI');
+    expect(wi.itemizedDeductions).toBeNull();
+    expect(wi.itemisedDeductionCredit?.rate).toBe(0.05);
+
+    const base = { ...SINGLE, grossSalary: 150_000 };
+    const noHouse = computeStateTax(base, wi).tax;
+    const propertyOnly = computeStateTax({ ...base, propertyTax: 20_000 }, wi).tax;
+    const interestOnly = computeStateTax({ ...base, mortgageInterest: 20_000 }, wi).tax;
+
+    expect(propertyOnly).toBeCloseTo(noHouse, 6);
+    expect(interestOnly).toBeLessThan(noHouse);
+  });
+
+  /*
+   * The credit is measured against the standard deduction AFTER its phase-out,
+   * so as Wisconsin's deduction shrinks toward zero the credit base grows. The
+   * two move together, which is easy to get backwards.
+   */
+  it('grows the Wisconsin credit as its standard deduction disappears', () => {
+    const wi = stateRules('WI');
+    const creditAt = (salary: number) => {
+      const withHouse = computeStateTax({ ...SINGLE, grossSalary: salary, mortgageInterest: 20_000 }, wi).tax;
+      const without = computeStateTax({ ...SINGLE, grossSalary: salary }, wi).tax;
+      return without - withHouse;
+    };
+    // At $140,000 the standard deduction is gone, so the whole $20,000 counts.
+    expect(creditAt(140_000)).toBeGreaterThan(creditAt(40_000));
+    expect(creditAt(140_000)).toBeCloseTo(20_000 * 0.05, 0);
   });
 });

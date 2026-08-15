@@ -1790,6 +1790,7 @@ const STATE_OVERRIDES = {
     checked: '2026-08-15',
   },
   Wisconsin: {
+    note: "Wisconsin's itemised deduction credit is 5% of qualifying deductions above the standard deduction, and it deliberately excludes every state and local tax — so a Wisconsin homeowner's property tax counts for nothing here, which is Wisconsin's rule rather than a gap. Charitable giving, medical costs and casualty losses also qualify and are not asked about, so Wisconsin tax shown here is higher than the true figure for anyone who has them.",
     /*
      * THE LARGEST UNDERCHARGE FOUND ANYWHERE — a Wisconsin couple on $150,000
      * was being shown a bill $1,268 too low, which makes Wisconsin look better
@@ -2326,6 +2327,26 @@ const ITEMIZED_DEDUCTIONS = {
    * `deductStateIncomeTax` could sit unread in the engine for months without
    * anything looking wrong. Iowa is the exception that exposed it.
    */
+  Iowa: {
+    /*
+     * IOWA IS THE ONE THAT KEEPS ITS OWN INCOME TAX INSIDE THE DEDUCTION, and
+     * that is what exposed `deductStateIncomeTax` as a flag nothing ever read.
+     *
+     * Every other state that allows itemising makes you add the state tax back
+     * out, so the deduction collapses to property tax plus mortgage interest.
+     * Iowa gutted its add-back — Iowa Code 422.9 now contains only a loss
+     * carryover — and its Schedule 1, the complete list of Iowa modifications,
+     * has no state income tax line at all. So the federal deduction flows
+     * through with the state tax still in it.
+     */
+    deductPropertyTax: true,
+    deductStateIncomeTax: true,
+    mortgageDebtLimit: 750_000,
+    saltCap: null,
+    requiresFederalItemising: true,
+    source: 'https://www.legis.iowa.gov/docs/code/422.9.pdf',
+    checked: '2026-08-15',
+  },
   Nebraska: {
     /*
      * Nebraska has no schedule of its own: Form 1040N takes the federal
@@ -2820,6 +2841,7 @@ for (const [name, s] of Object.entries(states)) {
   s.taxAddBacks = TAX_ADD_BACKS[name] ?? [];
   s.taxCreditFraction = TAX_CREDIT_FRACTION[name] ?? null;
   s.federalTaxDeduction = FEDERAL_TAX_DEDUCTION[name] ?? null;
+  s.itemisedDeductionCredit = name === 'Wisconsin' ? { rate: 0.05 } : null;
   /*
    * Rules we know this state has and do not model, in plain words, each saying
    * which way it runs. Kept apart from `notes` — which carries the source

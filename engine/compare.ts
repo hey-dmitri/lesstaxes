@@ -208,9 +208,19 @@ export function computeCity(
         ).tax
       : 0;
 
-    // 3. State income tax
-    const state = computeStateTax(
-      {
+    /*
+     * IOWA'S DEDUCTION CONTAINS THE TAX WE ARE COMPUTING, which is the only
+     * genuine circle in the state step. Iowa abolished its add-back, so the
+     * federal itemised total flows through with Iowa's own income tax still
+     * inside it — and that tax depends on the deduction.
+     *
+     * Solved by running the state calculation twice: once with nothing, then
+     * again with the first answer as the tax paid. The loop shrinks by a
+     * factor of Iowa's rate each pass, so one extra pass leaves an error
+     * under a fifth of one percent of the tax — far below a dollar — and a
+     * second would be arithmetic theatre.
+     */
+    const stateInputs = (stateIncomeTaxPaid: number) => ({
         grossSalary: share.grossSalary,
         filingStatus: household.filingStatus,
         children: share.children,
@@ -247,9 +257,12 @@ export function computeCity(
           share.children,
           fedRules.earnedIncomeCredit,
         ),
-      },
-      stateTaxRules,
-    );
+      stateIncomeTaxPaid,
+    });
+
+    const state = stateTaxRules.itemizedDeductions?.deductStateIncomeTax
+      ? computeStateTax(stateInputs(computeStateTax(stateInputs(0), stateTaxRules).tax), stateTaxRules)
+      : computeStateTax(stateInputs(0), stateTaxRules);
     stateTotal += state.tax;
 
     /*
