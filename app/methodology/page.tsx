@@ -208,6 +208,39 @@ answer          =  in your pocket THERE  −  in your pocket HERE`}</pre>
           level.
         </p>
 
+        <h2>State tax is not a small version of federal tax</h2>
+        <p>
+          States write their own rules and they are not always harsher. Three things this site
+          used to get wrong, all of them in the same direction — against the reader:
+        </p>
+        <ul>
+          <li>
+            <strong>Eleven states take a disability or paid-leave contribution</strong> straight off
+            the payslip, and none of it was counted. California&rsquo;s is the big one: 1.3% of
+            every dollar you earn with <em>no ceiling at all</em>, which is $3,900 a year on
+            $300,000. It is now charged, and where the IRS treats it as a state tax it reduces your
+            federal bill too.
+          </li>
+          <li>
+            <strong>A head of household is not a single person.</strong> We used to tax them as
+            one. California publishes its own schedule and gives them the married standard
+            deduction; Maryland puts them on the married table outright. Five states are checked so
+            far and it was worth up to $2,559 a year.
+          </li>
+          <li>
+            <strong>California lets you itemise on the state return</strong> whether or not you did
+            federally, with no cap on property tax and a mortgage limit of $1,000,000 rather than
+            $750,000. For a San Jose buyer that is around $6,800 a year. We only count the two
+            things this site knows — property tax and mortgage interest — so if you also give to
+            charity or have large medical bills, you will do better than this says.
+          </li>
+        </ul>
+        <p>
+          Only California has been checked line by line. Every other state still uses its standard
+          deduction, and the &ldquo;What this gets wrong&rdquo; list below says which states have
+          been verified and which have not.
+        </p>
+
         <h2>What year the dollars are in</h2>
         <p>
           Today&rsquo;s. Every cost figure behind this site was measured in <strong>2024</strong>,

@@ -65,6 +65,17 @@ export interface StateTaxRules {
    * the combined wages, whoever earned them. IRS Publication 555.
    */
   communityProperty: boolean;
+  /**
+   * How this state treats itemising, where its own rules have been read.
+   *
+   * Null means the standard deduction is always applied — which is what this
+   * engine did everywhere, even though it already knew the reader's property
+   * tax and mortgage interest. California and New York both allow itemising on
+   * the state return regardless of the federal choice, and California's rules
+   * are markedly more generous: no SALT cap, and mortgage interest on $1,000,000
+   * of debt rather than $750,000.
+   */
+  itemizedDeductions: StateItemizedRules | null;
   /** AL, MO, OR allow a deduction for federal income tax paid. Not yet modelled. */
   federalTaxDeductible: boolean;
   hasLocalIncomeTax: boolean;
@@ -127,16 +138,34 @@ export function computeStatePayroll(
   return { total, deductible, lines };
 }
 
+export interface StateItemizedRules {
+  deductPropertyTax: boolean;
+  /** False in California: you cannot deduct California tax from California income. */
+  deductStateIncomeTax: boolean;
+  /** California allows $1,000,000 where the federal limit is $750,000. */
+  mortgageDebtLimit: USD | null;
+}
+
 export interface StateTaxInputs {
   grossSalary: USD;
   filingStatus: FilingStatus;
   children: number;
+  /**
+   * Housing costs, for states that let you itemise. Absent means the standard
+   * deduction, which is what every caller did before this existed.
+   */
+  propertyTax?: USD;
+  mortgageInterest?: USD;
+  /** Average first-year loan balance, for the state's own debt limit. */
+  mortgageDebt?: USD;
 }
 
 export interface StateTaxResult {
   stateCode: string;
   /** Which published schedule was actually used. */
   scheduleUsed: PublishedStatus;
+  /** True when the state's itemised total beat its standard deduction. */
+  itemized: boolean;
   deductions: USD;
   exemptions: USD;
   taxableIncome: USD;
@@ -209,6 +238,7 @@ export function computeStateTax(
     return {
       stateCode: rules.code,
       scheduleUsed: schedule,
+      itemized: false,
       deductions: 0,
       exemptions: 0,
       taxableIncome: 0,
@@ -232,7 +262,31 @@ export function computeStateTax(
   const otherwise: 'single' | 'marriedJointly' =
     schedule === 'marriedJointly' ? 'marriedJointly' : 'single';
 
-  const deductions = rules.standardDeduction[schedule] ?? rules.standardDeduction[otherwise];
+  const standardDeduction = rules.standardDeduction[schedule] ?? rules.standardDeduction[otherwise];
+
+  /*
+   * Itemise where the state allows it and it beats the standard deduction.
+   *
+   * Only property tax and mortgage interest, because they are the only two
+   * figures this engine knows. A real return also carries charitable giving,
+   * medical costs and the rest, so this is a floor — a reader with those does
+   * better than it says, never worse.
+   */
+  const itemizedRules = rules.itemizedDeductions;
+  let itemizedTotal = 0;
+  if (itemizedRules) {
+    if (itemizedRules.deductPropertyTax) itemizedTotal += Math.max(0, inputs.propertyTax ?? 0);
+    const interest = Math.max(0, inputs.mortgageInterest ?? 0);
+    const debt = inputs.mortgageDebt;
+    const limit = itemizedRules.mortgageDebtLimit;
+    itemizedTotal +=
+      limit !== null && debt !== undefined && debt > limit
+        ? interest * (limit / debt)
+        : interest;
+  }
+
+  const itemized = itemizedTotal > standardDeduction;
+  const deductions = itemized ? itemizedTotal : standardDeduction;
   const exemptions =
     (rules.personalExemption[schedule] ?? rules.personalExemption[otherwise]) +
     rules.personalExemption.dependent * children;
@@ -250,6 +304,7 @@ export function computeStateTax(
   return {
     stateCode: rules.code,
     scheduleUsed: schedule,
+    itemized,
     deductions,
     exemptions,
     taxableIncome,

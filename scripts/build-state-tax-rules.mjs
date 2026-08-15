@@ -424,6 +424,53 @@ const STATE_OVERRIDES = {
   },
 };
 
+
+/**
+ * STATE ITEMISED DEDUCTIONS.
+ *
+ * The engine always applied the state STANDARD deduction, even though it
+ * already knew the reader's property tax and mortgage interest. California and
+ * New York both let you itemise on the state return whether or not you itemised
+ * federally, and California's rules are far more generous than the federal ones:
+ *
+ *   - No SALT cap. California explicitly does not conform to OBBBA's
+ *     "increased limitation on individual deductions for certain state and
+ *     local taxes" — Schedule CA (540) instructions, "What's New".
+ *   - Mortgage interest on acquisition debt up to $1,000,000, not $750,000.
+ *     FTB's own deductions page states both figures side by side.
+ *
+ * On a San Jose buyer at $300,000 the two together are worth roughly $6,600 of
+ * California tax.
+ *
+ * WHAT IS DEDUCTED HERE is only what this engine actually knows: property tax
+ * and mortgage interest. A real Schedule CA also carries charitable giving,
+ * medical costs above 7.5% of income and miscellaneous deductions above 2% —
+ * none of which this site asks about. So the figure is a floor, and a reader
+ * with those will do better than it says.
+ *
+ * STATE INCOME TAX IS NOT DEDUCTED. California requires it subtracted on
+ * Schedule CA; you cannot deduct California tax from California income.
+ *
+ * NOT MODELLED, and it runs the reader's way: California reduces itemised
+ * deductions for high earners, by the lesser of 6% of income above roughly
+ * $252,000 or 80% of the deductions. Above that income this figure is a little
+ * too generous.
+ *
+ * Only California is populated. Every other state keeps the standard deduction
+ * until its own rules have been read, which is the same honesty rule the
+ * head-of-household table uses.
+ */
+const ITEMIZED_DEDUCTIONS = {
+  California: {
+    deductPropertyTax: true,
+    deductStateIncomeTax: false,
+    mortgageDebtLimit: 1_000_000,
+    source: 'https://www.ftb.ca.gov/file/personal/deductions/index.html',
+    checked: '2026-08-15',
+    note: 'California itemised deductions here cover property tax and mortgage interest only — the two figures this site knows. Charitable giving, medical costs and miscellaneous deductions are not asked about and are not included. The high-income reduction of itemised deductions is not modelled.',
+  },
+};
+
 // --- post-process ----------------------------------------------------------
 
 const warnings = [];
@@ -470,6 +517,17 @@ function applyBracketsLocal(income, brackets) {
 
 for (const [name, s] of Object.entries(states)) {
   s.notes = s.footnotes.map((f) => footnoteText[f]).filter(Boolean);
+
+  const itemized = ITEMIZED_DEDUCTIONS[name];
+  s.itemizedDeductions = itemized
+    ? {
+        deductPropertyTax: itemized.deductPropertyTax,
+        deductStateIncomeTax: itemized.deductStateIncomeTax,
+        mortgageDebtLimit: itemized.mortgageDebtLimit,
+        source: { url: itemized.source, checked: itemized.checked },
+      }
+    : null;
+  if (itemized?.note) s.notes.push(itemized.note);
 
   const override = STATE_OVERRIDES[name];
   if (override) {

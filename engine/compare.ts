@@ -165,6 +165,11 @@ export function computeCity(
         grossSalary: share.grossSalary,
         filingStatus: household.filingStatus,
         children: share.children,
+        // For the states that allow itemising. Same per-return share as the
+        // federal step uses, so a separate filer does not deduct twice.
+        propertyTax: housing.propertyTax * share.deductionShare,
+        mortgageInterest: housing.mortgageInterest * share.deductionShare,
+        mortgageDebt: housing.mortgageDebt * share.deductionShare,
       },
       stateTaxRules,
     );
