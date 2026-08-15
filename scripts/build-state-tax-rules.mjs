@@ -394,6 +394,17 @@ const HEAD_OF_HOUSEHOLD = {
     source: 'https://www.michigan.gov/taxes/iit/file-your-income-taxes/filingdetermination',
     checked: '2026-08-15',
   },
+  Utah: {
+    /*
+     * Utah differs in BOTH halves of a credit that has two halves. The credit
+     * itself is 6% of the federal deduction, so $1,449 for a head of household
+     * against $966 single; and the income at which it starts shrinking is
+     * $27,320 against $18,213. See STATE_OVERRIDES for the mechanism.
+     */
+    basis: 'own',
+    source: 'https://incometax.utah.gov/credits/taxpayer-tax-credit',
+    checked: '2026-08-15',
+  },
   'New York': {
     // New York publishes no separate head-of-household RATE schedule — the
     // brackets are shared with single filers — but it does publish its own
@@ -1008,6 +1019,46 @@ const STATE_OVERRIDES = {
     source: 'https://dor.georgia.gov/document/document/2026-employers-tax-guide/download',
     checked: '2026-08-15',
   },
+  Utah: {
+    /*
+     * UTAH'S ALLOWANCE WAS BEING DROPPED ON THE FLOOR, all of it.
+     *
+     * Utah has no standard deduction and no personal exemption. Instead the
+     * whole thing is the "taxpayer tax credit": 6% of the federal deduction
+     * plus 6% of Utah's dependent exemption, reduced by 1.3 cents per dollar
+     * of taxable income above a threshold. TC-40 lines 15 to 20.
+     *
+     * The source table prints this in the standard-deduction column as
+     * "$966 credit" / "$1,932 credit". Utah is the only state that does that —
+     * every other credit in the table sits in the personal-exemption columns —
+     * and the parser only ever looks for the word "credit" there. So the
+     * string failed to parse as money, became a $0 standard deduction, and the
+     * credit was never picked up from anywhere. Utah filers lost the lot.
+     *
+     * The amounts are 6% of the 2026 federal deduction: $16,100 single,
+     * $24,150 head of household, $32,200 joint, and $2,111 per dependent.
+     *
+     * THE PHASE-OUT THRESHOLDS ARE THE 2025 ONES, because Utah has not
+     * published 2026 yet. Utah indexes them upward, so using last year's
+     * starts the reduction slightly too early and makes the credit slightly
+     * too small — against the reader, the same trade Oregon and Rhode Island
+     * make. Shipping the credit without any phase-out was the alternative, and
+     * that would have understated Utah tax for most people who use this site.
+     */
+    personalExemption: { dependent: 0 },
+    personalCredit: {
+      single: 966,
+      marriedJointly: 1_932,
+      headOfHousehold: 1_449,
+      dependent: 127,
+    },
+    creditPhaseOut: {
+      perDollar: 0.013,
+      threshold: { single: 18_213, marriedJointly: 36_426, headOfHousehold: 27_320 },
+    },
+    source: 'https://incometax.utah.gov/credits/taxpayer-tax-credit',
+    checked: '2026-08-15',
+  },
 };
 
 
@@ -1140,7 +1191,10 @@ function validateHeadOfHousehold(name, s) {
     basis === 'own' &&
     !(s.brackets.headOfHousehold || []).length &&
     s.standardDeduction.headOfHousehold === undefined &&
-    s.personalExemption.headOfHousehold === undefined
+    s.personalExemption.headOfHousehold === undefined &&
+    // Utah's entire allowance is a credit, so that is the only thing it can
+    // bring of its own — $1,449 against a single filer's $966.
+    s.personalCredit.headOfHousehold === undefined
   ) {
     throw new Error(`${name}: headOfHouseholdBasis is "own" but nothing of its own was supplied`);
   }
@@ -1192,6 +1246,8 @@ for (const [name, s] of Object.entries(states)) {
       if (!(r >= 0 && r <= 1.5)) throw new Error(`${name}: implausible EITC match ${r}`);
     }
   }
+
+  s.creditPhaseOut = null;
 
   const itemized = ITEMIZED_DEDUCTIONS[name];
   s.itemizedDeductions = itemized
@@ -1251,6 +1307,16 @@ for (const [name, s] of Object.entries(states)) {
         }
         s.brackets[status] = replacement;
       }
+    }
+    if (override.creditPhaseOut) {
+      const { perDollar, threshold } = override.creditPhaseOut;
+      if (!(perDollar > 0 && perDollar < 0.5)) {
+        throw new Error(`${name}: implausible credit phase-out rate ${perDollar}`);
+      }
+      if (!(threshold.single > 0)) {
+        throw new Error(`${name}: credit phase-out needs a single threshold`);
+      }
+      s.creditPhaseOut = override.creditPhaseOut;
     }
     s.verifiedAgainstState = { url: override.source, checked: override.checked };
     if (override.note) s.notes.push(override.note);

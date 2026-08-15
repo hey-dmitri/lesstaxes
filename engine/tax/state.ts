@@ -86,6 +86,21 @@ export interface StateTaxRules {
    * which is exactly the family it is aimed at.
    */
   earnedIncomeCredit: StateEitcRules | null;
+  /**
+   * A personal credit that shrinks as income rises, where the state has one.
+   *
+   * UTAH IS THE WHOLE REASON THIS EXISTS, and it could not be modelled without
+   * it. Utah has no standard deduction at all: the allowance is a credit worth
+   * 6% of the federal deduction, reduced by 1.3 cents for every dollar of
+   * income above a threshold that depends on filing status. So the credit is
+   * $966 for a single filer at low income, and exactly nothing above $92,521.
+   *
+   * A flat credit could not express that. Shipping the $966 unconditionally
+   * would have understated Utah tax for most people this site is used by,
+   * which is the dangerous direction; dropping it — what happened before —
+   * overcharges everyone below the threshold.
+   */
+  creditPhaseOut: CreditPhaseOut | null;
   /** AL, MO, OR allow a deduction for federal income tax paid. Not yet modelled. */
   federalTaxDeductible: boolean;
   hasLocalIncomeTax: boolean;
@@ -162,6 +177,14 @@ export interface StateEitcRules {
   /** Share by number of children, indexed 0..3 where 3 means three or more. */
   byChildren: Record<number, number> | null;
   refundable: boolean;
+}
+
+/** How a state's personal credit shrinks as income rises. See creditPhaseOut. */
+export interface CreditPhaseOut {
+  /** Cents of credit lost per dollar of taxable income above the threshold. */
+  perDollar: number;
+  /** Where the reduction starts, by published filing status. */
+  threshold: Partial<Record<PublishedStatus, number>> & { single: number };
 }
 
 export interface StateTaxInputs {
@@ -350,9 +373,42 @@ export function computeStateTax(
     rules.brackets[schedule] ?? rules.brackets[otherwise],
   );
 
-  const credits =
+  const creditsBeforePhaseOut =
     (rules.personalCredit[allowanceKey] ?? rules.personalCredit[otherwise]) +
     rules.personalCredit.dependent * children;
+
+  /*
+   * Reduce the credit for income above the state's threshold, where the state
+   * does that. Utah is the only one so far.
+   *
+   * The threshold is looked up by ALLOWANCE, not by bracket schedule, for the
+   * same reason the deduction is: a state can put a head of household on one
+   * schedule and give them their own figure for everything else. Utah's is
+   * $27,320, between the single $18,213 and the joint $36,426, so neither
+   * fallback would be right.
+   *
+   * Measured against TAXABLE income because that is what Utah's own form does
+   * — TC-40 line 18 subtracts the threshold from line 9, the state taxable
+   * income, not from gross pay.
+   */
+  const phaseOut = rules.creditPhaseOut;
+  const credits = !phaseOut
+    ? creditsBeforePhaseOut
+    : Math.max(
+        0,
+        creditsBeforePhaseOut -
+          phaseOut.perDollar *
+            Math.max(
+              0,
+              taxableIncome -
+                (phaseOut.threshold[allowanceKey] ??
+                  phaseOut.threshold[otherwise] ??
+                  // `single` is required on the type precisely so this cannot
+                  // silently become a zero threshold, which would wipe out the
+                  // whole credit at any income.
+                  phaseOut.threshold.single),
+            ),
+      );
 
   /*
    * The state's own earned income credit, as a share of the federal one.

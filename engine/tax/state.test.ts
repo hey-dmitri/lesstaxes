@@ -177,15 +177,53 @@ describe('head of household', () => {
     ]) {
       expect(stateRules(code).headOfHouseholdBasis).not.toBe('assumed-single');
     }
-    // Two left, and neither is unexamined. Vermont is waiting on the state to
-    // publish 2026 figures; Utah is waiting on the engine to learn credits
-    // that phase out, which is the only way to model its allowance at all.
+    // Vermont is the only one left, and it is waiting on the state to publish
+    // 2026 figures rather than on nobody having looked.
     expect(
       graduated
         .filter((s) => s.headOfHouseholdBasis === 'assumed-single')
-        .map((s) => s.code)
-        .sort(),
-    ).toEqual(['UT', 'VT']);
+        .map((s) => s.code),
+    ).toEqual(['VT']);
+  });
+
+  /*
+   * UTAH HAS NO DEDUCTION AT ALL — the whole allowance is a credit worth 6% of
+   * the federal deduction, shrinking by 1.3 cents per dollar of income above a
+   * threshold. It was being dropped entirely, because Utah is the only state
+   * whose credit is printed in the standard-deduction column of the source.
+   *
+   * The phase-out is the point. A flat $966 would have understated Utah tax
+   * for most people who use this site; nothing at all overcharged everyone
+   * below the threshold. Both halves have to be modelled or neither works.
+   */
+  it('phases out the Utah credit instead of granting or dropping it whole', () => {
+    const ut = stateRules('UT');
+    expect(ut.personalCredit.single).toBe(966);
+    expect(ut.creditPhaseOut?.perDollar).toBe(0.013);
+
+    const at = (salary: number) =>
+      computeStateTax({ grossSalary: salary, filingStatus: 'single', children: 0 }, ut).tax;
+
+    // Below the threshold the credit is whole: 4.5% of $18,000 is $810, and
+    // the $966 credit wipes it out completely.
+    expect(at(18_000)).toBe(0);
+
+    // Above $92,521 it is gone entirely — $966 / 1.3 cents past $18,213 — so
+    // the tax is the flat 4.5% with no relief at all.
+    expect(at(150_000)).toBeCloseTo(150_000 * 0.045, 2);
+
+    // In between, partial. At $80,000 the reduction is 1.3% of the $61,787
+    // above the threshold, or $803.23, leaving $162.77 of the $966.
+    expect(at(80_000)).toBeCloseTo(80_000 * 0.045 - 162.77, 1);
+  });
+
+  it('gives a Utah head of household a bigger credit and a later phase-out', () => {
+    const ut = stateRules('UT');
+    expect(ut.personalCredit.headOfHousehold).toBe(1_449);
+    expect(ut.creditPhaseOut?.threshold.headOfHousehold).toBe(27_320);
+    expect(computeStateTax(HOH, ut).tax).toBeLessThan(
+      computeStateTax({ ...HOH, filingStatus: 'single' }, ut).tax,
+    );
   });
 
   /*

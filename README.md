@@ -83,8 +83,8 @@ Total data cost: **$0**. No paid feeds, no runtime API calls.
    stripping the embedded average out per category, which the survey does not
    publish. Worth a few hundred a year. The rates stay shipped and visible in
    the data browser, labelled reference-only, for when it can be done.
-4. **40 of 42 taxing states have been checked against their own publication
-   for head of household.** Nothing checked this before, and 23 of the 40 were
+4. **41 of 42 taxing states have been checked against their own publication
+   for head of household.** Nothing checked this before, and 24 of the 41 were
    wrong — always against a single parent, by $75 to $2,559 a year. Six
    different shapes turned up: the state's own rate schedule, the joint
    schedule, the joint schedule with its own deduction, a shared schedule with
@@ -103,13 +103,23 @@ Total data cost: **$0**. No paid feeds, no runtime API calls.
    coverage report that silently excludes a category reads as "all clear" for
    states it never looked at, so it now counts every taxing state.
 
-   Utah is the second one still open, and it is a different problem: its whole
-   allowance is a credit worth 6% of the federal deduction that phases out as
-   income rises, and this engine has no way to express a credit that phases
-   out. It is being dropped entirely today, which overcharges Utah filers below
-   roughly $92,000 and is exactly right above it.
+   **Utah's entire allowance was being dropped on the floor.** Utah has no
+   standard deduction and no personal exemption; the whole thing is a credit
+   worth 6% of the federal deduction, shrinking by 1.3 cents per dollar of
+   income above a threshold. The source table prints it in the standard
+   deduction column as "$966 credit" — Utah is the only state that does, every
+   other credit sits in the exemption columns — so it parsed as a $0 deduction
+   and was never picked up as a credit either. A Utah family on $40,000 was
+   being charged $1,610 of tax they do not owe.
 
-   Vermont is the other, and it is blocked rather than unexamined. Its
+   Fixing it meant teaching the engine credits that shrink with income, because
+   half a fix is worse than none here: granting the $966 flat would understate
+   Utah tax for most people who use this site, and dropping it overcharges
+   everyone below the threshold. Utah's phase-out thresholds are the 2025 ones,
+   the only published figures, which starts the reduction slightly early and so
+   errs against the reader.
+
+   Vermont is the one still open, and it is blocked rather than unexamined. Its
    schedule was transcribed from the statute and rejected by the build guard:
    the statutory table is a base Vermont indexes every year, and the base sits
    about 28% below the 2026 brackets shipped here, so a head of household came
