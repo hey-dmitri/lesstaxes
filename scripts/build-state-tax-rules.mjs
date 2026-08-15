@@ -114,6 +114,41 @@ const PRIOR_YEAR_FIGURES = {
  * result, and it is recorded precisely because "checked and agreed" is
  * indistinguishable from "never looked" unless somebody writes it down.
  */
+/**
+ * STATES THAT TAX A MARRIED COUPLE AS TWO SINGLE FILERS on half the income
+ * each, rather than as one joint return.
+ *
+ * MISSOURI IS THE REASON THIS IS A CORRECTNESS FIX RATHER THAN AN
+ * OPTIMISATION: "Missouri law requires a combined return for married couples
+ * filing together." It never performs a joint computation at all, so a
+ * one-pass engine overcharged every two-earner couple in the state.
+ *
+ * Elsewhere it is an election, and one nearly every two-earner couple makes.
+ * Delaware, Washington DC and Arkansas each run ONE rate ladder for every
+ * filing status, so a couple climbs it twice as fast unless they split.
+ * Kentucky's reason is different: its standard deduction is not doubled on a
+ * joint return, so splitting is the only way to get two of them. Mississippi's
+ * is different again — each spouse gets their own $10,000 band at 0%.
+ *
+ * Saving at $150,000 split evenly, per the states' own forms:
+ *   DC $1,600 · DE $1,017 · AR $749 · MS $400 · MO $176 · KY $118
+ *
+ * DELIBERATELY ABSENT, each checked: Iowa, Montana, Georgia, Ohio and Alabama
+ * all require the state status to match the federal one and double every
+ * bracket and allowance, so splitting gains nothing. Virginia's version is not
+ * a filing status at all — its Form 760 dropped status 4, and the same benefit
+ * arrives as a "spouse tax adjustment" credit capped at $259, which is not
+ * modelled.
+ */
+const COMBINED_SEPARATE_RETURN = new Set([
+  'Missouri',
+  'Washington DC',
+  'Delaware',
+  'Arkansas',
+  'Mississippi',
+  'Kentucky',
+]);
+
 const RATES_CHECKED = {
   // --- read and found WRONG -------------------------------------------------
   'South Carolina': {
@@ -2375,6 +2410,7 @@ for (const [label, table] of [
   ['STATE_OVERRIDES', 'const STATE_OVERRIDES = {'],
   ['HEAD_OF_HOUSEHOLD', 'const HEAD_OF_HOUSEHOLD = {'],
   ['RATES_CHECKED', 'const RATES_CHECKED = {'],
+
   ['ITEMIZED_DEDUCTIONS', 'const ITEMIZED_DEDUCTIONS = {'],
   ['STATE_EITC', 'const STATE_EITC = {'],
 ]) {
@@ -2411,6 +2447,12 @@ for (const [name, s] of Object.entries(states)) {
   s.creditPhaseOut = null;
   s.allowancePhaseOut = null;
   s.lumpSumTax = null;
+  /*
+   * States that tax a married couple as two single filers on half the income.
+   * Missouri REQUIRES it; the rest make it an election that nearly every
+   * two-earner couple takes, because their joint brackets are not doubled.
+   */
+  s.combinedSeparateReturn = COMBINED_SEPARATE_RETURN.has(name);
   /*
    * Rules we know this state has and do not model, in plain words, each saying
    * which way it runs. Kept apart from `notes` — which carries the source

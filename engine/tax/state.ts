@@ -137,6 +137,31 @@ export interface StateTaxRules {
    * We had no lump at all, which understated every Ohio bill by about $332.
    */
   lumpSumTax: { above: USD; amount: USD } | null;
+  /**
+   * Whether a married couple may — or must — be taxed as two single filers on
+   * half the income each, rather than as one joint return.
+   *
+   * MISSOURI IS THE ONE THAT MAKES THIS A CORRECTNESS PROBLEM RATHER THAN AN
+   * OPTIMISATION. "Missouri law requires a combined return for married couples
+   * filing together." It never does a single joint computation at all, so a
+   * one-pass engine overcharges every two-earner couple in the state.
+   *
+   * Elsewhere it is an election, and one nearly every two-earner couple makes,
+   * because in these states the joint brackets are NOT doubled — Delaware,
+   * Washington DC and Arkansas all run one rate ladder for every filing status,
+   * so a couple climbs it twice as fast unless they split. Kentucky's benefit
+   * is different again: the standard deduction is not doubled for a joint
+   * return, so splitting is the only way to get two of them.
+   *
+   * Modelled as two single returns on half the income each, which reproduces
+   * every one of them: their single allowances are exactly half the joint ones
+   * except in Kentucky, where they are the whole point.
+   *
+   * Only for couples where BOTH earn. A sole earner gains nothing — the second
+   * half has no income to shelter — and in Delaware would lose the joint
+   * deduction outright.
+   */
+  combinedSeparateReturn: boolean;
   /** AL, MO, OR allow a deduction for federal income tax paid. Not yet modelled. */
   federalTaxDeductible: boolean;
   hasLocalIncomeTax: boolean;
@@ -431,6 +456,12 @@ export interface CreditPhaseOut {
 export interface StateTaxInputs {
   grossSalary: USD;
   /**
+   * Workers on this return. Only consulted by the states that tax a couple as
+   * two single filers, where a sole earner gains nothing. Defaults to two for
+   * a joint return, which is the case those states exist for.
+   */
+  earners?: number;
+  /**
    * Social Security and Medicare actually withheld. Only used by states that
    * let you deduct it — Alabama is the one — and ignored everywhere else.
    */
@@ -545,6 +576,49 @@ export function computeStateTax(
   rules: StateTaxRules,
 ): StateTaxResult {
   const schedule = scheduleFor(inputs.filingStatus, rules);
+
+  /*
+   * Some states tax a married couple as two single filers on half the income
+   * each. Compute it both ways and take the lower, which is right for the
+   * states where it is an election and equally right for Missouri, where it is
+   * compulsory and never worse.
+   *
+   * Guarded against recursing forever by handing the halves 'single', which
+   * cannot re-enter this branch.
+   */
+  if (
+    rules.combinedSeparateReturn &&
+    inputs.filingStatus === 'marriedJointly' &&
+    (inputs.earners ?? 2) >= 2
+  ) {
+    const half: StateTaxInputs = {
+      ...inputs,
+      filingStatus: 'single',
+      grossSalary: Math.max(0, inputs.grossSalary) / 2,
+      propertyTax: (inputs.propertyTax ?? 0) / 2,
+      mortgageInterest: (inputs.mortgageInterest ?? 0) / 2,
+      mortgageDebt: inputs.mortgageDebt === undefined ? undefined : inputs.mortgageDebt / 2,
+      payrollTaxPaid: (inputs.payrollTaxPaid ?? 0) / 2,
+      // Children ride on one return, exactly as they do federally: you cannot
+      // claim half a child, and doubling them would invent an exemption.
+      children: 0,
+    };
+    const first = computeStateTax({ ...half, children: inputs.children }, rules);
+    const second = computeStateTax(half, rules);
+    const combined = first.tax + second.tax;
+
+    const joint = computeStateTax({ ...inputs, earners: 1 }, rules);
+    if (combined < joint.tax) {
+      return {
+        ...joint,
+        deductions: first.deductions + second.deductions,
+        exemptions: first.exemptions + second.exemptions,
+        taxableIncome: first.taxableIncome + second.taxableIncome,
+        tax: combined,
+      };
+    }
+    return joint;
+  }
 
   if (!rules.hasWageIncomeTax) {
     return {
