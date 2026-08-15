@@ -2008,6 +2008,185 @@ const STATE_OVERRIDES = {
  * head-of-household table uses.
  */
 const ITEMIZED_DEDUCTIONS = {
+  /*
+   * NINE MORE STATES LET A HOMEOWNER DEDUCT THEIR MORTGAGE, and we gave every
+   * one of them the plain standard deduction. That overcharges, by $200 to
+   * $1,750 a year each.
+   *
+   * A USEFUL INVARIANT RUNS THROUGH MOST OF THEM: nearly every state that
+   * allows itemising makes you subtract its own income tax back out, so the
+   * deduction collapses to property tax plus mortgage interest. That is why
+   * `deductStateIncomeTax` could sit unread in the engine for months without
+   * anything looking wrong. Iowa is the exception that exposed it.
+   */
+  Kansas: {
+    /*
+     * The cleanest of them, and one of the most valuable, because Kansas pairs
+     * generous itemising with a $3,605 standard deduction that almost any
+     * homeowner beats.
+     *
+     * Its own words: "The $40,000 federal cap on the itemized deduction for
+     * state and local taxes does not apply for Kansas purposes. Taxpayers may
+     * deduct all state and local real estate and property taxes paid,
+     * independent of the federal dollar limitation." And you need not have
+     * itemised federally: "If you did not itemize your deductions on your
+     * federal return, you may choose to itemize your deductions or claim the
+     * standard deduction on your Kansas return whichever is to your
+     * advantage."
+     */
+    deductPropertyTax: true,
+    deductStateIncomeTax: false,
+    mortgageDebtLimit: 750_000,
+    saltCap: null,
+    source: 'https://www.ksrevenue.gov/incomebook25.html',
+    checked: '2026-08-15',
+  },
+  Alabama: {
+    /*
+     * THE LARGEST LINE ON ALABAMA'S SCHEDULE A IS NOT HOUSING AT ALL. Line 6
+     * is "FICA Tax (Social Security and Medicare) and Federal Self-Employment
+     * Tax" — $11,475 at $150,000, more than the mortgage interest and property
+     * tax together.
+     *
+     * Against an Alabama standard deduction that bottoms out at $2,500, that
+     * means almost every wage earner in the state should itemise, and we had
+     * none of them doing it. Worth about $1,750 a year at $150,000, the
+     * biggest single itemising gap found.
+     *
+     * Alabama's income tax is not deductible, so the federal cap it points at
+     * can only ever touch property tax and will not bind for anyone here.
+     */
+    deductPropertyTax: true,
+    deductStateIncomeTax: false,
+    deductPayrollTax: true,
+    mortgageDebtLimit: 750_000,
+    saltCap: null,
+    source: 'https://www.revenue.alabama.gov/wp-content/uploads/2026/01/25f40bk.pdf',
+    checked: '2026-08-15',
+    note: "Alabama's itemised deductions here cover property tax, mortgage interest and the Social Security and Medicare tax withheld from your pay. Charitable giving and medical costs are not asked about and are not included, so Alabama tax shown here is higher than the true figure for anyone who has them.",
+  },
+  Minnesota: {
+    /*
+     * Minnesota runs its own schedule, independent of the federal choice, and
+     * its own $10,000 cap on property tax — a plain figure in Minn. Stat.
+     * 290.0122 subd. 3, not federal conformity, so it does not move when the
+     * federal cap moves. State income tax is not on the list at all.
+     *
+     * Worth noting for the reader: this filer has very likely taken the
+     * FEDERAL standard deduction, because federal counts state income tax
+     * toward SALT and Minnesota does not. Minnesota's "itemise anyway" rule
+     * exists for exactly them.
+     */
+    deductPropertyTax: true,
+    deductStateIncomeTax: false,
+    mortgageDebtLimit: 750_000,
+    saltCap: 10_000,
+    source: 'https://www.revisor.mn.gov/statutes/cite/290.0122',
+    checked: '2026-08-15',
+  },
+  'North Carolina': {
+    /*
+     * TWO CAPS, ONE INSIDE THE OTHER. Real estate tax is capped at $10,000 on
+     * its own, and then mortgage interest plus that capped property figure are
+     * capped at $20,000 combined. So $25,000 of property tax and $2,000 of
+     * interest gives $12,000, not $20,000.
+     *
+     * No federal itemising required, which is what makes it reachable.
+     */
+    deductPropertyTax: true,
+    deductStateIncomeTax: false,
+    mortgageDebtLimit: 750_000,
+    saltCap: null,
+    propertyTaxCap: 10_000,
+    totalCap: 20_000,
+    source: 'https://www.ncdor.gov/taxes-forms/individual-income-tax/filing-topics/north-carolina-standard-deduction-or-north-carolina-itemized-deductions',
+    checked: '2026-08-15',
+  },
+  Virginia: {
+    /*
+     * Virginia's high-income cut looked dead and is not. Searching the statute
+     * finds nothing, because the limitation lives in Virginia's DECONFORMITY
+     * from the federal suspension rather than in its own code: "Virginia
+     * deconforms from the suspension of the overall limitation on itemized
+     * deductions, commonly known as the Pease limitation." So the pre-2018
+     * federal formula keeps running — 3% of income above the threshold, capped
+     * at 80% of the reducible deductions.
+     */
+    deductPropertyTax: true,
+    deductStateIncomeTax: false,
+    mortgageDebtLimit: 750_000,
+    saltCap: null,
+    requiresFederalItemising: true,
+    highIncomeReduction: {
+      perDollarAbove: 0.03,
+      threshold: { single: 332_700, marriedJointly: 399_200, headOfHousehold: 365_950 },
+      maxFractionOfDeductions: 0.8,
+    },
+    source: 'https://www.tax.virginia.gov/sites/default/files/vatax-pdf/2025-sch-a-instructions.pdf',
+    checked: '2026-08-15',
+  },
+  Maryland: {
+    deductPropertyTax: true,
+    deductStateIncomeTax: false,
+    mortgageDebtLimit: 750_000,
+    saltCap: null,
+    requiresFederalItemising: true,
+    // 7.5% of federal income above $200,000, from tax year 2025.
+    highIncomeReduction: {
+      perDollarAbove: 0.075,
+      threshold: { single: 200_000, marriedJointly: 200_000, headOfHousehold: 200_000 },
+      maxFractionOfDeductions: 1,
+    },
+    source: 'https://mgaleg.maryland.gov/mgawebsite/Laws/StatuteText?article=gtg&section=10-218',
+    checked: '2026-08-15',
+  },
+  Montana: {
+    // Starts from federal taxable income, so the federal deduction flows
+    // straight through; the state income tax add-back is floored so it can
+    // never push the deduction below the federal standard deduction.
+    deductPropertyTax: true,
+    deductStateIncomeTax: false,
+    mortgageDebtLimit: 750_000,
+    saltCap: null,
+    requiresFederalItemising: true,
+    source: 'https://mca.legmt.gov/bills/mca/title_0150/chapter_0300/part_0210/section_0200/0150-0300-0210-0200.html',
+    checked: '2026-08-15',
+  },
+  'New Mexico': {
+    deductPropertyTax: true,
+    deductStateIncomeTax: false,
+    mortgageDebtLimit: 750_000,
+    saltCap: null,
+    requiresFederalItemising: true,
+    source: 'https://www.taxformfinder.org/forms/2025/2025-new-mexico-income-tax-instructions.pdf',
+    checked: '2026-08-15',
+  },
+  Idaho: {
+    deductPropertyTax: true,
+    deductStateIncomeTax: false,
+    mortgageDebtLimit: 750_000,
+    saltCap: null,
+    requiresFederalItemising: true,
+    source: 'https://legislature.idaho.gov/statutesrules/idstat/title63/t63ch30/sect63-3022/',
+    checked: '2026-08-15',
+  },
+  Oklahoma: {
+    /*
+     * Everything capped at $17,000, with charity and medical sitting outside
+     * the cap — neither of which this engine asks about, so the cap here binds
+     * on housing alone. The federal-itemising lock is two-way: taking the
+     * federal standard deduction forces the Oklahoma standard deduction even
+     * when that costs you money.
+     */
+    deductPropertyTax: true,
+    deductStateIncomeTax: false,
+    mortgageDebtLimit: 750_000,
+    saltCap: null,
+    totalCap: 17_000,
+    requiresFederalItemising: true,
+    source: 'https://oklahoma.gov/tax/individuals/pay-taxes.html',
+    checked: '2026-08-15',
+  },
   California: {
     deductPropertyTax: true,
     deductStateIncomeTax: false,
@@ -2263,6 +2442,10 @@ for (const [name, s] of Object.entries(states)) {
         mortgageDebtLimit: itemized.mortgageDebtLimit,
         // Null means uncapped, which is a real answer and not a missing one.
         saltCap: itemized.saltCap ?? null,
+        propertyTaxCap: itemized.propertyTaxCap ?? null,
+        totalCap: itemized.totalCap ?? null,
+        deductPayrollTax: itemized.deductPayrollTax === true,
+        requiresFederalItemising: itemized.requiresFederalItemising === true,
         highIncomeReduction: itemized.highIncomeReduction ?? null,
         source: { url: itemized.source, checked: itemized.checked },
       }

@@ -219,8 +219,37 @@ export function computeStatePayroll(
 
 export interface StateItemizedRules {
   deductPropertyTax: boolean;
-  /** False in California: you cannot deduct California tax from California income. */
+  /**
+   * Whether the state's own income tax stays in the deduction.
+   *
+   * THIS FLAG WAS DECLARED AND NEVER READ, which went unnoticed because it was
+   * accidentally right nearly everywhere. Most states that let you itemise
+   * make you subtract their own income tax back out, so the deduction collapses
+   * to property tax plus mortgage interest — exactly what this engine computed
+   * by ignoring the flag entirely. Idaho, Montana, New Mexico, Maryland,
+   * Virginia and Maine all behave that way.
+   *
+   * Iowa does not, and that is what exposed it: Iowa abolished its add-back, so
+   * the federal deduction flows through with the state income tax still inside.
+   */
   deductStateIncomeTax: boolean;
+  /** A ceiling on the property tax line alone. North Carolina caps it at $10,000. */
+  propertyTaxCap: USD | null;
+  /**
+   * A ceiling on the whole itemised total. Oklahoma sets $17,000 and Maine
+   * $37,100, both with categories that sit outside the cap — charity and
+   * medical — which this engine does not ask about and so never adds.
+   */
+  totalCap: USD | null;
+  /**
+   * Whether itemising for the state requires having itemised on the federal
+   * return.
+   *
+   * Six states lock the two together and two explicitly do not. It is the
+   * difference between a $26,000 deduction and a $3,605 one, decided by a
+   * choice made on a different return.
+   */
+  requiresFederalItemising: boolean;
   /** California allows $1,000,000 where the federal limit is $750,000. */
   mortgageDebtLimit: USD | null;
   /**
@@ -246,6 +275,19 @@ export interface StateItemizedRules {
    * itself no matter how high income goes.
    */
   highIncomeReduction: ItemizedReduction | null;
+  /**
+   * Whether the state lets you deduct the Social Security and Medicare tax
+   * withheld from your pay.
+   *
+   * ALABAMA DOES, AND IT IS THE LARGEST LINE ON ITS SCHEDULE A. At $150,000 it
+   * is $11,475 — more than the mortgage interest and the property tax put
+   * together — and against an Alabama standard deduction of $2,500 it means
+   * almost every wage earner in the state should itemise and almost none of
+   * them were.
+   *
+   * It is not a state or local tax, so no SALT cap touches it.
+   */
+  deductPayrollTax: boolean;
 }
 
 /** See StateItemizedRules.highIncomeReduction. */
@@ -388,6 +430,21 @@ export interface CreditPhaseOut {
 
 export interface StateTaxInputs {
   grossSalary: USD;
+  /**
+   * Social Security and Medicare actually withheld. Only used by states that
+   * let you deduct it — Alabama is the one — and ignored everywhere else.
+   */
+  payrollTaxPaid?: USD;
+  /**
+   * Whether this filer itemised on their federal return. Required by the six
+   * states that will not let you itemise for them unless you did.
+   */
+  itemisedFederally?: boolean;
+  /**
+   * State income tax paid, for the one state that leaves it inside the
+   * deduction. Iowa.
+   */
+  stateIncomeTaxPaid?: USD;
   filingStatus: FilingStatus;
   children: number;
   /**
@@ -615,7 +672,16 @@ export function computeStateTax(
    * medical costs and the rest, so this is a floor — a reader with those does
    * better than it says, never worse.
    */
-  const itemizedRules = rules.itemizedDeductions;
+  /*
+   * Where the state requires you to have itemised federally, the state
+   * deduction is simply unavailable to a federal standard-deduction filer.
+   * Unknown counts as "did not", which withholds the deduction and charges
+   * more — the safe direction for a missing input.
+   */
+  const itemizedRules =
+    rules.itemizedDeductions?.requiresFederalItemising && inputs.itemisedFederally !== true
+      ? null
+      : rules.itemizedDeductions;
   let itemizedTotal = 0;
   if (itemizedRules) {
     /*
@@ -626,10 +692,33 @@ export function computeStateTax(
     let stateAndLocal = itemizedRules.deductPropertyTax
       ? Math.max(0, inputs.propertyTax ?? 0)
       : 0;
+    // North Carolina caps the property line on its own, before anything else.
+    if (itemizedRules.propertyTaxCap !== null) {
+      stateAndLocal = Math.min(stateAndLocal, itemizedRules.propertyTaxCap);
+    }
     if (itemizedRules.saltCap !== null) {
       stateAndLocal = Math.min(stateAndLocal, itemizedRules.saltCap);
     }
+    /*
+     * Iowa alone leaves its own income tax inside the deduction, because it
+     * abolished the add-back every other state applies. Everywhere else the
+     * tax is subtracted back out and the deduction collapses to property tax
+     * plus interest, which is why ignoring this flag was invisible for so long.
+     */
+    if (itemizedRules.deductStateIncomeTax) {
+      stateAndLocal += Math.max(0, inputs.stateIncomeTaxPaid ?? 0);
+    }
     itemizedTotal += stateAndLocal;
+
+    /*
+     * Social Security and Medicare, where the state allows it. Computed from
+     * wages rather than taken as an input, because it is a fixed function of
+     * pay and asking for it would be asking the reader something they would
+     * have to look up.
+     */
+    if (itemizedRules.deductPayrollTax) {
+      itemizedTotal += Math.max(0, inputs.payrollTaxPaid ?? 0);
+    }
 
     const interest = Math.max(0, inputs.mortgageInterest ?? 0);
     const debt = inputs.mortgageDebt;
@@ -645,6 +734,11 @@ export function computeStateTax(
      * a fixed share of the deductions, so it grows with income but never
      * consumes the whole deduction.
      */
+    // Oklahoma's $17,000 and Maine's $37,100 bite before the high-income cut.
+    if (itemizedRules.totalCap !== null) {
+      itemizedTotal = Math.min(itemizedTotal, itemizedRules.totalCap);
+    }
+
     const reduce = itemizedRules.highIncomeReduction;
     if (reduce && itemizedTotal > 0) {
       const over = Math.max(

@@ -133,6 +133,7 @@
       "notes": [
         "These states allow some or all of federal income tax paid to be deducted from state taxable income.",
         "Dependent exemption is reduced to $500 for taxpayers with AGI greater than $50,000, and is phased out completely for taxpayers with AGI greater than $100,000.",
+        "Alabama's itemised deductions here cover property tax, mortgage interest and the Social Security and Medicare tax withheld from your pay. Charitable giving and medical costs are not asked about and are not included, so Alabama tax shown here is higher than the true figure for anyone who has them.",
         "Alabama's dependent exemption steps down with income — $1,000 up to $50,000, $500 to $100,000, $300 above — and never reaches zero. Only the $1,000 figure is modelled, so Alabama tax shown is slightly lower than the true figure above $50,000. Alabama also lets you itemise without having itemised federally, and deduct the Social Security and Medicare tax withheld from your pay, which beats the standard deduction at almost any wage; that is not modelled, so Alabama tax shown is higher than the true figure for most earners."
       ],
       "earnedIncomeCredit": null,
@@ -173,6 +174,7 @@
       },
       "lumpSumTax": null,
       "modellingGaps": [
+        "Alabama's itemised deductions here cover property tax, mortgage interest and the Social Security and Medicare tax withheld from your pay. Charitable giving and medical costs are not asked about and are not included, so Alabama tax shown here is higher than the true figure for anyone who has them.",
         "Alabama's dependent exemption steps down with income — $1,000 up to $50,000, $500 to $100,000, $300 above — and never reaches zero. Only the $1,000 figure is modelled, so Alabama tax shown is slightly lower than the true figure above $50,000. Alabama also lets you itemise without having itemised federally, and deduct the Social Security and Medicare tax withheld from your pay, which beats the standard deduction at almost any wage; that is not modelled, so Alabama tax shown is higher than the true figure for most earners."
       ],
       "priorYearFigures": "Alabama has published nothing for 2026. Its rates, exemptions and deduction charts here are the 2025 figures, all of which are fixed in statute rather than indexed.",
@@ -181,7 +183,21 @@
         "checked": "2026-08-15",
         "matched": false
       },
-      "itemizedDeductions": null,
+      "itemizedDeductions": {
+        "deductPropertyTax": true,
+        "deductStateIncomeTax": false,
+        "mortgageDebtLimit": 750000,
+        "saltCap": null,
+        "propertyTaxCap": null,
+        "totalCap": null,
+        "deductPayrollTax": true,
+        "requiresFederalItemising": false,
+        "highIncomeReduction": null,
+        "source": {
+          "url": "https://www.revenue.alabama.gov/wp-content/uploads/2026/01/25f40bk.pdf",
+          "checked": "2026-08-15"
+        }
+      },
       "verifiedAgainstState": {
         "url": "https://www.revenue.alabama.gov/wp-content/uploads/2026/01/25f40bk.pdf",
         "checked": "2026-08-15"
@@ -559,6 +575,10 @@
         "deductStateIncomeTax": false,
         "mortgageDebtLimit": 1000000,
         "saltCap": null,
+        "propertyTaxCap": null,
+        "totalCap": null,
+        "deductPayrollTax": false,
+        "requiresFederalItemising": false,
         "highIncomeReduction": {
           "perDollarAbove": 0.06,
           "threshold": {
@@ -1542,7 +1562,21 @@
         "checked": "2026-08-15",
         "matched": true
       },
-      "itemizedDeductions": null,
+      "itemizedDeductions": {
+        "deductPropertyTax": true,
+        "deductStateIncomeTax": false,
+        "mortgageDebtLimit": 750000,
+        "saltCap": null,
+        "propertyTaxCap": null,
+        "totalCap": null,
+        "deductPayrollTax": false,
+        "requiresFederalItemising": true,
+        "highIncomeReduction": null,
+        "source": {
+          "url": "https://legislature.idaho.gov/statutesrules/idstat/title63/t63ch30/sect63-3022/",
+          "checked": "2026-08-15"
+        }
+      },
       "communityProperty": true,
       "payrollContributions": [],
       "headOfHouseholdBasis": "marriedJointly",
@@ -1754,7 +1788,21 @@
         "checked": "2026-08-15",
         "matched": true
       },
-      "itemizedDeductions": null,
+      "itemizedDeductions": {
+        "deductPropertyTax": true,
+        "deductStateIncomeTax": false,
+        "mortgageDebtLimit": 750000,
+        "saltCap": null,
+        "propertyTaxCap": null,
+        "totalCap": null,
+        "deductPayrollTax": false,
+        "requiresFederalItemising": false,
+        "highIncomeReduction": null,
+        "source": {
+          "url": "https://www.ksrevenue.gov/incomebook25.html",
+          "checked": "2026-08-15"
+        }
+      },
       "communityProperty": false,
       "payrollContributions": [],
       "headOfHouseholdBasis": "own",
@@ -2133,7 +2181,29 @@
         "checked": "2026-08-15",
         "matched": false
       },
-      "itemizedDeductions": null,
+      "itemizedDeductions": {
+        "deductPropertyTax": true,
+        "deductStateIncomeTax": false,
+        "mortgageDebtLimit": 750000,
+        "saltCap": null,
+        "propertyTaxCap": null,
+        "totalCap": null,
+        "deductPayrollTax": false,
+        "requiresFederalItemising": true,
+        "highIncomeReduction": {
+          "perDollarAbove": 0.075,
+          "threshold": {
+            "single": 200000,
+            "marriedJointly": 200000,
+            "headOfHousehold": 200000
+          },
+          "maxFractionOfDeductions": 1
+        },
+        "source": {
+          "url": "https://mgaleg.maryland.gov/mgawebsite/Laws/StatuteText?article=gtg&section=10-218",
+          "checked": "2026-08-15"
+        }
+      },
       "verifiedAgainstState": {
         "url": "https://www.marylandcomptroller.gov/content/dam/mdcomp/tax/instructions/withholding/2026/withholding-guide.pdf",
         "checked": "2026-08-15"
@@ -2515,7 +2585,21 @@
         "checked": "2026-08-15",
         "matched": false
       },
-      "itemizedDeductions": null,
+      "itemizedDeductions": {
+        "deductPropertyTax": true,
+        "deductStateIncomeTax": false,
+        "mortgageDebtLimit": 750000,
+        "saltCap": 10000,
+        "propertyTaxCap": null,
+        "totalCap": null,
+        "deductPayrollTax": false,
+        "requiresFederalItemising": false,
+        "highIncomeReduction": null,
+        "source": {
+          "url": "https://www.revisor.mn.gov/statutes/cite/290.0122",
+          "checked": "2026-08-15"
+        }
+      },
       "verifiedAgainstState": {
         "url": "https://www.revisor.mn.gov/statutes/cite/290.0123",
         "checked": "2026-08-15"
@@ -2816,7 +2900,21 @@
         "checked": "2026-08-15",
         "matched": true
       },
-      "itemizedDeductions": null,
+      "itemizedDeductions": {
+        "deductPropertyTax": true,
+        "deductStateIncomeTax": false,
+        "mortgageDebtLimit": 750000,
+        "saltCap": null,
+        "propertyTaxCap": null,
+        "totalCap": null,
+        "deductPayrollTax": false,
+        "requiresFederalItemising": true,
+        "highIncomeReduction": null,
+        "source": {
+          "url": "https://mca.legmt.gov/bills/mca/title_0150/chapter_0300/part_0210/section_0200/0150-0300-0210-0200.html",
+          "checked": "2026-08-15"
+        }
+      },
       "communityProperty": false,
       "payrollContributions": [],
       "headOfHouseholdBasis": "own",
@@ -2873,7 +2971,21 @@
         "checked": "2026-08-15",
         "matched": true
       },
-      "itemizedDeductions": null,
+      "itemizedDeductions": {
+        "deductPropertyTax": true,
+        "deductStateIncomeTax": false,
+        "mortgageDebtLimit": 750000,
+        "saltCap": null,
+        "propertyTaxCap": 10000,
+        "totalCap": 20000,
+        "deductPayrollTax": false,
+        "requiresFederalItemising": false,
+        "highIncomeReduction": null,
+        "source": {
+          "url": "https://www.ncdor.gov/taxes-forms/individual-income-tax/filing-topics/north-carolina-standard-deduction-or-north-carolina-itemized-deductions",
+          "checked": "2026-08-15"
+        }
+      },
       "communityProperty": false,
       "payrollContributions": [],
       "headOfHouseholdBasis": "own",
@@ -3362,7 +3474,21 @@
         "checked": "2026-08-15",
         "matched": false
       },
-      "itemizedDeductions": null,
+      "itemizedDeductions": {
+        "deductPropertyTax": true,
+        "deductStateIncomeTax": false,
+        "mortgageDebtLimit": 750000,
+        "saltCap": null,
+        "propertyTaxCap": null,
+        "totalCap": null,
+        "deductPayrollTax": false,
+        "requiresFederalItemising": true,
+        "highIncomeReduction": null,
+        "source": {
+          "url": "https://www.taxformfinder.org/forms/2025/2025-new-mexico-income-tax-instructions.pdf",
+          "checked": "2026-08-15"
+        }
+      },
       "verifiedAgainstState": {
         "url": "https://www.taxformfinder.org/forms/2025/2025-new-mexico-income-tax-instructions.pdf",
         "checked": "2026-08-15"
@@ -3777,7 +3903,21 @@
         "checked": "2026-08-15",
         "matched": true
       },
-      "itemizedDeductions": null,
+      "itemizedDeductions": {
+        "deductPropertyTax": true,
+        "deductStateIncomeTax": false,
+        "mortgageDebtLimit": 750000,
+        "saltCap": null,
+        "propertyTaxCap": null,
+        "totalCap": 17000,
+        "deductPayrollTax": false,
+        "requiresFederalItemising": true,
+        "highIncomeReduction": null,
+        "source": {
+          "url": "https://oklahoma.gov/tax/individuals/pay-taxes.html",
+          "checked": "2026-08-15"
+        }
+      },
       "communityProperty": false,
       "payrollContributions": [],
       "headOfHouseholdBasis": "marriedJointly",
@@ -4474,7 +4614,29 @@
         "checked": "2026-08-15",
         "matched": true
       },
-      "itemizedDeductions": null,
+      "itemizedDeductions": {
+        "deductPropertyTax": true,
+        "deductStateIncomeTax": false,
+        "mortgageDebtLimit": 750000,
+        "saltCap": null,
+        "propertyTaxCap": null,
+        "totalCap": null,
+        "deductPayrollTax": false,
+        "requiresFederalItemising": true,
+        "highIncomeReduction": {
+          "perDollarAbove": 0.03,
+          "threshold": {
+            "single": 332700,
+            "marriedJointly": 399200,
+            "headOfHousehold": 365950
+          },
+          "maxFractionOfDeductions": 0.8
+        },
+        "source": {
+          "url": "https://www.tax.virginia.gov/sites/default/files/vatax-pdf/2025-sch-a-instructions.pdf",
+          "checked": "2026-08-15"
+        }
+      },
       "communityProperty": false,
       "payrollContributions": [],
       "headOfHouseholdBasis": "single",

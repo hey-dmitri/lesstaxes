@@ -72,9 +72,19 @@ describe('California itemised deductions', () => {
 });
 
 describe('every other state', () => {
+  /*
+   * TEN STATES NOW ALLOW ITEMISING, not one. Every other state still keeps the
+   * standard deduction until its own rules have been read, and this pins that
+   * — a state that quietly grows an itemising block without anyone reading its
+   * form is exactly the regression this guards.
+   */
+  const ITEMISING_STATES = new Set([
+    'CA', 'KS', 'AL', 'MN', 'NC', 'VA', 'MD', 'MT', 'NM', 'ID', 'OK',
+  ]);
+
   it('keeps the standard deduction until its own rules have been read', () => {
     for (const code of ALL_STATE_CODES) {
-      if (code === 'CA') continue;
+      if (ITEMISING_STATES.has(code)) continue;
       const rules = stateRules(code);
       expect(rules.itemizedDeductions, code).toBeNull();
       // And housing figures must change nothing where the rules are absent.

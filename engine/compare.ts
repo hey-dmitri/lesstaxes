@@ -48,6 +48,7 @@ import { computeHousing } from './housing';
 import { computeLiving, computeSalesTax, defaultCarCount } from './living';
 import { computeFederal, earnedIncomeCreditFor, type FederalInputs } from './tax/federal';
 import { computeFica } from './tax/fica';
+import { saltCapFor } from './tax/federal';
 import { computeLocalTax, type LocalTaxRules } from './tax/local';
 import { federalRules, ficaRules, stateRules } from './tax/rules';
 import { taxReturnsFor } from './tax/returns';
@@ -159,6 +160,25 @@ export function computeCity(
       share.earners,
     ).total;
 
+    /*
+     * Would this filer itemise on their FEDERAL return? Six states will not
+     * let you itemise for them unless you did.
+     *
+     * Measured on property tax and mortgage interest alone, deliberately
+     * leaving out the state income tax that would also count toward the
+     * federal SALT line. Including it would be circular — state tax is what we
+     * are about to compute — and leaving it out only ever UNDERSTATES the
+     * federal total, so this withholds the state deduction slightly more often
+     * than it should. That charges more, never less.
+     */
+    const federalSalt = Math.min(
+      housing.propertyTax * share.deductionShare,
+      saltCapFor(share.grossSalary, household.filingStatus, fedRules.saltCap),
+    );
+    const itemisedFederally =
+      federalSalt + housing.mortgageInterest * share.deductionShare >
+      fedRules.standardDeduction[household.filingStatus];
+
     // 3. State income tax
     const state = computeStateTax(
       {
@@ -170,6 +190,14 @@ export function computeCity(
         propertyTax: housing.propertyTax * share.deductionShare,
         mortgageInterest: housing.mortgageInterest * share.deductionShare,
         mortgageDebt: housing.mortgageDebt * share.deductionShare,
+        itemisedFederally,
+        // Alabama lets you deduct Social Security and Medicare withheld.
+        payrollTaxPaid: computeFica(
+          share.wagesEarned,
+          household.filingStatus,
+          payrollRules,
+          share.earners,
+        ).total,
         /*
          * Most states set their earned income credit as a share of the federal
          * one, so the federal figure has to exist before the state step. It
