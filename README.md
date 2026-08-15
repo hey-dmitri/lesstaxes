@@ -70,12 +70,14 @@ Total data cost: **$0**. No paid feeds, no runtime API calls.
 2. **No state Earned Income Credits.** The federal EITC is modelled; the ~30
    states (and NYC) that add their own on top are not, so low-income households
    in those states are still understated.
-3. **Sales tax still uses state-average local rates.** Chicago's real 10.25%
-   against Austin's 8.25% is a 2.00pp gap; the model sees about 0.8pp. There is
-   no single free machine-readable national source for city-level rates — the
-   Tax Foundation's major-cities table is no longer published separately — so
-   fixing this means per-state rate files or per-metro transcription from
-   revenue departments. Not started.
+3. **Sales tax differences between states are invisible.** There is no sales
+   tax line at all any more: BLS expenditures already include the tax paid at
+   the till, so charging it again was a double count. But what the basket
+   carries is a NATIONAL blend, so Oregon (no sales tax) and Tennessee (the
+   highest) now look identical on this line. Modelling the difference means
+   stripping the embedded average out per category, which the survey does not
+   publish. Worth a few hundred a year. The rates stay shipped and visible in
+   the data browser, labelled reference-only, for when it can be done.
 4. **No state-level regression tests against real returns.** 24 federal golden
    values are reproduced from the IRS tables; no state has an equivalent check
    against an official worked example or tax table.

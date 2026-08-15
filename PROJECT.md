@@ -516,16 +516,27 @@ Two related defects were found and fixed at the same time:
   `scripts/cut-dataset-version.mjs` first, so a refresh always lands in a new
   dated directory and the previous one stays readable forever.
 
-### OPEN-6 — Sales tax uses state-average local rates
+### OPEN-6 — Sales tax differences between states are invisible
 
-Added 2026-08-13. §15 lists "local sales tax dominates (Chicago 10.25% vs Austin
-8.25% on identical 6.25% state bases)" as a gotcha the engine must get right,
-and it does not: it applies each state's AVERAGE local rate, so the Chicago to
-Austin gap is modelled at 0.76pp where the real one is 2.00pp.
+Added 2026-08-13 as "uses state-average local rates". REFRAMED 2026-08-15,
+because the premise changed underneath it.
 
-Small in dollars — sales tax is a few hundred a year — but it is a documented
-promise the code does not keep, and Tax Foundation publishes city-level rates
-under the CC BY-NC terms §7 already accepts.
+There is no sales tax line at all now. BLS defines an expenditure as the
+transaction cost INCLUDING sales and excise tax, so the spending basket already
+contains it and the separate line was charging it twice — $917 a year in
+Chicago, $1,187 in Nashville. See the "Stop charging sales tax twice" commit.
+
+What remains open is the reverse of the original complaint. The basket carries
+whatever sales tax its surveyed households paid, which is a NATIONAL blend, so
+Oregon at zero and Tennessee at the top of the table are now identical on this
+line. Modelling the difference means stripping the embedded average out of the
+basket per category and applying the local rate instead, and CE does not publish
+the embedded amount. Until it can be done properly, an unmodelled difference of
+a few hundred dollars beats a doubled charge.
+
+The city-level rate hunt described in the original entry is still the thing that
+would improve it, and the rates remain shipped and visible in the data browser,
+labelled reference-only.
 
 ### OPEN-5 — Owner upkeep and insurance do not scale with the house
 
