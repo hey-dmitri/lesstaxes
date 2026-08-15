@@ -466,7 +466,14 @@ export function Calculator({ initial }: CalculatorProps) {
             takeHomeNote={takeHomeNote(result?.origin ?? null)}
           />
           <CityPanel
-            title="The offer"
+            /*
+              Not "The offer". Plenty of people run this before anyone has
+              offered them anything — moving for a partner, for family, for
+              the weather — and a column headed "The offer" tells them the
+              tool is for somebody else. The place is the thing they always
+              have; the job is not.
+            */
+            title="Moving to"
             step={3}
             emptyPrompt="Where are you thinking of going?"
             state={destination}

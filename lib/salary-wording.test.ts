@@ -12,6 +12,9 @@ describe('what the salary box is asking for', () => {
       const w = salaryWording(status, 1);
       expect(w.combined).toBe(false);
       expect(w.here).toBe('Salary here');
+      // "here" and "there" are a pair. They stopped being one when the second
+      // column was called "the offer" and this label said "Salary offered".
+      expect(w.there).toBe('Salary there');
       expect(w.whose).toContain('Your salary');
     }
   });

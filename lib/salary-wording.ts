@@ -32,7 +32,7 @@ import type { FilingStatus } from '@/engine';
 export interface SalaryWording {
   /** Label above the box in the "living now" column. */
   here: string;
-  /** Label above the box in the "the offer" column. */
+  /** Label above the box in the "moving to" column. */
   there: string;
   /**
    * Whose pay this is, and what happens to it. Sits under both boxes, and is a
@@ -61,7 +61,11 @@ export function salaryWording(filingStatus: FilingStatus, earners: number): Sala
 
   return {
     here: 'Salary here',
-    there: 'Salary offered',
+    // "Salary there", not "Salary offered". The two-earner label was already
+    // "Both salaries there", so "offered" was the odd one out — and it assumes
+    // a job offer exists, which for a move that follows a partner or family it
+    // does not.
+    there: 'Salary there',
     whose: married
       ? "Just the earning spouse's pay, before tax, a year."
       : 'Your salary, before tax, a year.',
