@@ -181,6 +181,56 @@ describe('what a recorded source actually is', () => {
     for (const s of republished) expect(s.code).toBe('NM');
   });
 
+  /*
+   * A YEAR IN A FILENAME IS NOT EVIDENCE OF THE YEAR INSIDE.
+   *
+   * Three states were counted as "checked against a 2026 document" with source
+   * URLs in a /2025/ folder. Opening them settled it and the filenames had
+   * been useless in both directions: Nebraska's really is the 2026 schedule,
+   * sitting in a 2025 folder under a 2025 revision stamp, while Connecticut's
+   * is headed "2025 Tax Calculation Schedule" and Delaware's "RESIDENT
+   * INSTRUCTIONS 2025".
+   *
+   * So this does not test the filename — that would encode the mistake. It
+   * tests the thing the filenames made everyone doubt: that any state whose
+   * source URL carries a year OTHER than the tax year has been consciously
+   * classified, either as a 2026 document or as one of the prior-year states.
+   * A state cannot sit in the gap.
+   */
+  it('has classified every state whose source URL names an older year', () => {
+    const olderYearInUrl = taxing.filter((s) => {
+      const url = s.ratesCheckedAgainstState?.url ?? '';
+      return /20(1\d|2[0-5])/.test(url);
+    });
+
+    // If this ever drops to zero the test has stopped checking anything.
+    expect(olderYearInUrl.length).toBeGreaterThan(0);
+
+    for (const s of olderYearInUrl) {
+      const classified = Boolean(s.priorYearFigures) || s.ratesCheckedAgainstState?.matched != null;
+      expect(classified, `${s.code}: source URL names an older year and nobody decided which`).toBe(
+        true,
+      );
+    }
+  });
+
+  /*
+   * Where a document settles less than the whole state, say so on the state.
+   * Delaware's resident instructions carry its allowances and no rate table at
+   * all, so "checked against the state's own publication" was a stronger claim
+   * than the paper supported.
+   */
+  it('says so where a source confirms only part of a state', () => {
+    for (const s of taxing) {
+      const confirms = s.ratesCheckedAgainstState?.confirms;
+      if (!confirms) continue;
+      expect(confirms.length, s.code).toBeGreaterThan(10);
+      // A partial source has to be admitted in prose the reader can see, not
+      // only in a field.
+      expect(s.priorYearFigures ?? s.notes.join(' '), s.code).toMatch(/not in that document|no rate table|rest on the annual compilation|rather than on/i);
+    }
+  });
+
   it('does not describe prior-year figures as this year\'s document', () => {
     // Ten states ship last year's figures; the coverage sentence must not
     // call all 42 a 2026 publication.

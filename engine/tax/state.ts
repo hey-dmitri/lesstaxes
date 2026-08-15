@@ -52,7 +52,23 @@ export interface StateTaxRules {
    * changing. Recorded on purpose: "checked and agreed" and "never looked"
    * produce identical numbers, and only a written record tells them apart.
    */
-  ratesCheckedAgainstState: { url: string; checked: string; matched: boolean } | null;
+  ratesCheckedAgainstState: {
+    url: string;
+    checked: string;
+    matched: boolean;
+    /**
+     * Present only where the document settles LESS than the whole state, and
+     * saying what it does settle.
+     *
+     * Delaware is the case that made this necessary: its resident instructions
+     * carry the standard deduction and the personal credit and no rate table
+     * at all — they send you to a separate tax table — so recording a plain
+     * "checked" made a stronger claim than the paper supports. Delaware's
+     * brackets are still the annual compilation's, and are the only figures
+     * here in that position.
+     */
+    confirms?: string;
+  } | null;
   /**
    * The document this state's head-of-household treatment was read from, and
    * when. Separate from the rates check because it answers a narrower
