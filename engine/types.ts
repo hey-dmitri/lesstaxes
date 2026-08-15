@@ -101,6 +101,12 @@ export interface TaxBreakdown {
   /** NYC, Yonkers, and PA/OH/MD localities. Zero nearly everywhere. */
   local: USD;
   fica: USD;
+  /**
+   * Mandatory state disability and paid-leave deductions. Eleven states levy
+   * one; California's is 1.3% of every dollar with no ceiling. Zero everywhere
+   * else, and zero on releases cut before it was modelled.
+   */
+  statePayroll: USD;
   total: USD;
   /** True when itemized deductions beat the standard deduction. */
   itemized: boolean;
@@ -196,6 +202,7 @@ export type CategoryKey =
   | 'stateTax'
   | 'localTax'
   | 'fica'
+  | 'statePayroll'
   | 'housing'
   | 'propertyTax'
   | 'maintenance'

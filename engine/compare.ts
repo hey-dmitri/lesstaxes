@@ -51,7 +51,7 @@ import { computeFica } from './tax/fica';
 import { computeLocalTax, type LocalTaxRules } from './tax/local';
 import { federalRules, ficaRules, stateRules } from './tax/rules';
 import { taxReturnsFor } from './tax/returns';
-import { adultsIn, computeStateTax } from './tax/state';
+import { adultsIn, computeStatePayroll, computeStateTax } from './tax/state';
 import type {
   CategoryDelta,
   CategoryKey,
@@ -139,6 +139,7 @@ export function computeCity(
   //      two when a couple files separately and both of them earn.
   let ficaTotal = 0;
   let stateTotal = 0;
+  let statePayrollTotal = 0;
   let localTotal = 0;
   let federalTotal = 0;
   let deductionTaken = 0;
@@ -164,6 +165,19 @@ export function computeCity(
     );
     stateTotal += state.tax;
 
+    /*
+     * Disability and paid-leave contributions the state takes off the payslip.
+     * Not income tax and not FICA, and modelled by nothing until now: in
+     * California it is 1.3% of every dollar with no ceiling, $3,900 a year on
+     * $300,000, and it was being counted as money the reader had left.
+     *
+     * Per worker, because every one of these caps against an individual's own
+     * wages. The deductible ones join state income tax in the SALT deduction
+     * below, which is what the IRS does with them.
+     */
+    const payroll = computeStatePayroll(share.grossSalary, stateTaxRules, share.earners);
+    statePayrollTotal += payroll.total;
+
     // 4. Local income tax — may be a surcharge on THIS return's state liability
     let local = 0;
     for (const j of jurisdictions) {
@@ -186,7 +200,7 @@ export function computeCity(
         grossSalary: share.grossSalary,
         filingStatus: household.filingStatus,
         children: share.children,
-        stateAndLocalIncomeTax: state.tax + local,
+        stateAndLocalIncomeTax: state.tax + local + payroll.deductible,
         propertyTax: housing.propertyTax * share.deductionShare,
         mortgageInterest: housing.mortgageInterest * share.deductionShare,
         // The debt splits with the interest, and the separate filer's limit is
@@ -234,7 +248,7 @@ export function computeCity(
       }).tax;
 
   // 7. Leftover
-  const taxTotal = federalTotal + stateTotal + localTotal + ficaTotal;
+  const taxTotal = federalTotal + stateTotal + localTotal + ficaTotal + statePayrollTotal;
   const takeHome = gross - taxTotal;
   const leftover = takeHome - housing.total - living.total - salesTax;
 
@@ -247,6 +261,7 @@ export function computeCity(
       state: stateTotal,
       local: localTotal,
       fica: ficaTotal,
+      statePayroll: statePayrollTotal,
       total: taxTotal,
       itemized,
       deductionTaken,
@@ -389,6 +404,7 @@ const CATEGORY_GROUPS: Record<CategoryKey, 'payAndTax' | 'living'> = {
   stateTax: 'payAndTax',
   localTax: 'payAndTax',
   fica: 'payAndTax',
+  statePayroll: 'payAndTax',
   housing: 'living',
   propertyTax: 'living',
   maintenance: 'living',
@@ -403,6 +419,7 @@ const CATEGORY_LABELS: Record<CategoryKey, string> = {
   stateTax: 'State income tax',
   localTax: 'Local income tax',
   fica: 'Social Security & Medicare',
+  statePayroll: 'State disability & paid leave',
   // Replaced per comparison by housingLabel — the reader either rents or buys,
   // and "rent or mortgage" makes them work out which half applies to them.
   housing: 'Rent or mortgage',
@@ -440,6 +457,12 @@ function buildBreakdown(origin: CityResult, destination: CityResult): CategoryDe
     ['stateTax', origin.tax.state - destination.tax.state],
     ['localTax', origin.tax.local - destination.tax.local],
     ['fica', origin.tax.fica - destination.tax.fica],
+    /*
+     * Its own row, or it would vanish from the reasons while staying in
+     * leftover and every Californian's breakdown would stop adding up. That
+     * has been the trap in every one of these additions.
+     */
+    ['statePayroll', origin.tax.statePayroll - destination.tax.statePayroll],
     /*
      * Shelter AND the utility bill, because the label says so and because the
      * breakdown has to reconcile to the headline. A renter's gross rent already

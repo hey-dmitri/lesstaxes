@@ -190,6 +190,13 @@ describe('links pinned to an older release', () => {
       origin: defaultCityInputs(SAN_JOSE, 300_000, SINGLE, 'own'),
       destination: defaultCityInputs(AUSTIN, 300_000, SINGLE, 'own'),
     }).origin;
-    expect(current.tax.federal - older.tax.federal).toBeGreaterThan(9_000);
+    /*
+     * $9,912 when the debt limit landed, $8,623 now. The narrowing is not the
+     * limit weakening: California's disability contribution was added since,
+     * the IRS treats it as a state income tax, and San Jose at $300,000 is
+     * still under the SALT cap — so it enlarges the deduction and takes some
+     * federal tax back off. Two real changes pulling opposite ways.
+     */
+    expect(current.tax.federal - older.tax.federal).toBeGreaterThan(8_000);
   });
 });

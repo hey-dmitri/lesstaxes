@@ -6,7 +6,7 @@
  * fall out naturally rather than being special-cased.
  */
 
-import type { FilingStatus, USD } from '../types';
+import type { FilingStatus, Rate, USD } from '../types';
 import { applyBrackets, type Bracket } from './brackets';
 
 /** The schedules states actually publish. */
@@ -52,10 +52,74 @@ export interface StateTaxRules {
     headOfHousehold?: USD;
     dependent: USD;
   };
+  /**
+   * Mandatory employee payroll deductions this state levies — disability and
+   * paid-leave contributions. Not income tax and not FICA, and modelled by
+   * nothing before: California takes 1.3% of ALL wages with no ceiling, which
+   * is $3,900 a year at $300,000 and was being shown to Californians as money
+   * they had left to spend.
+   */
+  payrollContributions: PayrollContribution[];
   /** AL, MO, OR allow a deduction for federal income tax paid. Not yet modelled. */
   federalTaxDeductible: boolean;
   hasLocalIncomeTax: boolean;
   notes: string[];
+}
+
+export interface PayrollContribution {
+  id: string;
+  name: string;
+  rate: Rate;
+  /** Null means the rate applies to every dollar. California is the one. */
+  wageCap: USD | null;
+  /**
+   * True where the IRS treats this as a state income tax on Schedule A, which
+   * it does for the California, New Jersey and New York disability funds, Rhode
+   * Island's temporary disability fund and Washington's supplemental fund.
+   * The newer paid-leave programmes have no such ruling and are left out of
+   * the deduction — understating a deduction is the safe direction to be wrong.
+   */
+  deductible: boolean;
+}
+
+export interface PayrollContributionResult {
+  total: USD;
+  /** The part that counts toward the federal SALT deduction. */
+  deductible: USD;
+  lines: Array<{ id: string; name: string; amount: USD }>;
+}
+
+/**
+ * What this state takes off the payslip on top of income tax.
+ *
+ * PER WORKER, not per household. Every one of these is capped against an
+ * individual's own wages, so a couple earning $200,000 between them pay two
+ * lots of a cap that a single earner on $200,000 hits once. Handing this the
+ * household total would have made the same mistake the Social Security wage
+ * base used to make here.
+ */
+export function computeStatePayroll(
+  wages: USD,
+  rules: Pick<StateTaxRules, 'payrollContributions'>,
+  earners = 1,
+): PayrollContributionResult {
+  const workers = Math.max(1, Math.floor(earners));
+  const perWorker = Math.max(0, wages) / workers;
+
+  let total = 0;
+  let deductible = 0;
+  const lines: PayrollContributionResult['lines'] = [];
+
+  for (const c of rules.payrollContributions ?? []) {
+    const base = c.wageCap === null ? perWorker : Math.min(perWorker, c.wageCap);
+    const amount = base * c.rate * workers;
+    if (amount <= 0) continue;
+    total += amount;
+    if (c.deductible) deductible += amount;
+    lines.push({ id: c.id, name: c.name, amount });
+  }
+
+  return { total, deductible, lines };
 }
 
 export interface StateTaxInputs {

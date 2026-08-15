@@ -72,7 +72,7 @@ describe('structural invariants', () => {
   it('the tax total equals its own parts', () => {
     const c = computeCity(defaultCityInputs(NEW_YORK, 200_000, SINGLE), SINGLE);
     expect(c.tax.total).toBeCloseTo(
-      c.tax.federal + c.tax.state + c.tax.local + c.tax.fica,
+      c.tax.federal + c.tax.state + c.tax.local + c.tax.fica + c.tax.statePayroll,
       6,
     );
   });

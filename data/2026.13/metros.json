@@ -1,0 +1,7577 @@
+{
+  "datasetVersion": "2026.13",
+  "vintage": {
+    "cbsaDelineation": 2023,
+    "beaPriceParities": 2024
+  },
+  "sources": [
+    {
+      "name": "Census Bureau, Core Based Statistical Area delineation files",
+      "url": "https://www2.census.gov/programs-surveys/metro-micro/geographies/reference-files/2023/delineation-files/list1_2023.xlsx",
+      "licence": "US Government work — public domain",
+      "snapshot": "data/2026.5/sources/census-cbsa-delineation-2023.csv"
+    },
+    {
+      "name": "Bureau of Economic Analysis, Regional Price Parities (metro and state)",
+      "url": "https://apps.bea.gov/regional/downloadzip.htm",
+      "licence": "US Government work — public domain",
+      "snapshot": "data/2026.5/sources/bea-rpp-metro-2024.csv"
+    }
+  ],
+  "limitations": [
+    "Micropolitan statistical areas are excluded because BEA publishes no price parities for them. Their residents are served by the \"rest of <state>\" entries.",
+    "BEA publishes no rural-only price parity, so \"rest of <state>\" uses statewide figures, which blend that state's metros back in.",
+    "Price parities are 2024 data, the latest published.",
+    "US territories (Puerto Rico and others) are excluded: they have separate income tax systems and no BEA price parities."
+  ],
+  "metros": {
+    "10180": {
+      "id": "10180",
+      "name": "Abilene, TX",
+      "shortName": "Abilene, TX",
+      "type": "metro",
+      "states": [
+        "TX"
+      ],
+      "primaryState": "TX",
+      "priceParity": {
+        "allItems": 0.9036,
+        "goods": 0.9376,
+        "housing": 0.7379,
+        "utilities": 0.8116,
+        "otherServices": 0.9624
+      }
+    },
+    "10420": {
+      "id": "10420",
+      "name": "Akron, OH",
+      "shortName": "Akron, OH",
+      "type": "metro",
+      "states": [
+        "OH"
+      ],
+      "primaryState": "OH",
+      "priceParity": {
+        "allItems": 0.9337,
+        "goods": 0.9363,
+        "housing": 0.7678,
+        "utilities": 0.9645,
+        "otherServices": 0.9894
+      }
+    },
+    "10500": {
+      "id": "10500",
+      "name": "Albany, GA",
+      "shortName": "Albany, GA",
+      "type": "metro",
+      "states": [
+        "GA"
+      ],
+      "primaryState": "GA",
+      "priceParity": {
+        "allItems": 0.8767,
+        "goods": 0.9627,
+        "housing": 0.5463,
+        "utilities": 0.8827,
+        "otherServices": 0.9867
+      }
+    },
+    "10540": {
+      "id": "10540",
+      "name": "Albany, OR",
+      "shortName": "Albany, OR",
+      "type": "metro",
+      "states": [
+        "OR"
+      ],
+      "primaryState": "OR",
+      "priceParity": {
+        "allItems": 1.021,
+        "goods": 1.0526,
+        "housing": 1.0106,
+        "utilities": 1.0482,
+        "otherServices": 1.003
+      }
+    },
+    "10580": {
+      "id": "10580",
+      "name": "Albany-Schenectady-Troy, NY",
+      "shortName": "Albany, NY",
+      "type": "metro",
+      "states": [
+        "NY"
+      ],
+      "primaryState": "NY",
+      "priceParity": {
+        "allItems": 0.9957,
+        "goods": 0.9969,
+        "housing": 1.0258,
+        "utilities": 1.3405,
+        "otherServices": 0.9775
+      }
+    },
+    "10740": {
+      "id": "10740",
+      "name": "Albuquerque, NM",
+      "shortName": "Albuquerque, NM",
+      "type": "metro",
+      "states": [
+        "NM"
+      ],
+      "primaryState": "NM",
+      "priceParity": {
+        "allItems": 0.9555,
+        "goods": 0.9614,
+        "housing": 0.8915,
+        "utilities": 0.7785,
+        "otherServices": 0.9854
+      }
+    },
+    "10780": {
+      "id": "10780",
+      "name": "Alexandria, LA",
+      "shortName": "Alexandria, LA",
+      "type": "metro",
+      "states": [
+        "LA"
+      ],
+      "primaryState": "LA",
+      "priceParity": {
+        "allItems": 0.8569,
+        "goods": 0.9369,
+        "housing": 0.5368,
+        "utilities": 0.7108,
+        "otherServices": 0.957
+      }
+    },
+    "10900": {
+      "id": "10900",
+      "name": "Allentown-Bethlehem-Easton, PA-NJ",
+      "shortName": "Allentown, PA",
+      "type": "metro",
+      "states": [
+        "NJ",
+        "PA"
+      ],
+      "primaryState": "PA",
+      "priceParity": {
+        "allItems": 0.9997,
+        "goods": 1.0057,
+        "housing": 1.0552,
+        "utilities": 1.0759,
+        "otherServices": 0.9775
+      }
+    },
+    "11020": {
+      "id": "11020",
+      "name": "Altoona, PA",
+      "shortName": "Altoona, PA",
+      "type": "metro",
+      "states": [
+        "PA"
+      ],
+      "primaryState": "PA",
+      "priceParity": {
+        "allItems": 0.8951,
+        "goods": 1.0068,
+        "housing": 0.5498,
+        "utilities": 1.0767,
+        "otherServices": 0.9773
+      }
+    },
+    "11100": {
+      "id": "11100",
+      "name": "Amarillo, TX",
+      "shortName": "Amarillo, TX",
+      "type": "metro",
+      "states": [
+        "TX"
+      ],
+      "primaryState": "TX",
+      "priceParity": {
+        "allItems": 0.9182,
+        "goods": 0.9376,
+        "housing": 0.7838,
+        "utilities": 0.8347,
+        "otherServices": 0.9624
+      }
+    },
+    "11180": {
+      "id": "11180",
+      "name": "Ames, IA",
+      "shortName": "Ames, IA",
+      "type": "metro",
+      "states": [
+        "IA"
+      ],
+      "primaryState": "IA",
+      "priceParity": {
+        "allItems": 0.8883,
+        "goods": 0.9373,
+        "housing": 0.6916,
+        "utilities": 0.83,
+        "otherServices": 0.9293
+      }
+    },
+    "11200": {
+      "id": "11200",
+      "name": "Amherst Town-Northampton, MA",
+      "shortName": "Amherst Town, MA",
+      "type": "metro",
+      "states": [
+        "MA"
+      ],
+      "primaryState": "MA",
+      "priceParity": {
+        "allItems": 1.0024,
+        "goods": 0.9701,
+        "housing": 0.9754,
+        "utilities": 1.5573,
+        "otherServices": 1.012
+      }
+    },
+    "11260": {
+      "id": "11260",
+      "name": "Anchorage, AK",
+      "shortName": "Anchorage, AK",
+      "type": "metro",
+      "states": [
+        "AK"
+      ],
+      "primaryState": "AK",
+      "priceParity": {
+        "allItems": 1.0542,
+        "goods": 1.0734,
+        "housing": 1.0991,
+        "utilities": 1.1177,
+        "otherServices": 1.0334
+      }
+    },
+    "11460": {
+      "id": "11460",
+      "name": "Ann Arbor, MI",
+      "shortName": "Ann Arbor, MI",
+      "type": "metro",
+      "states": [
+        "MI"
+      ],
+      "primaryState": "MI",
+      "priceParity": {
+        "allItems": 1.0088,
+        "goods": 0.9371,
+        "housing": 1.253,
+        "utilities": 0.9818,
+        "otherServices": 0.9956
+      }
+    },
+    "11500": {
+      "id": "11500",
+      "name": "Anniston-Oxford, AL",
+      "shortName": "Anniston, AL",
+      "type": "metro",
+      "states": [
+        "AL"
+      ],
+      "primaryState": "AL",
+      "priceParity": {
+        "allItems": 0.8595,
+        "goods": 0.964,
+        "housing": 0.5471,
+        "utilities": 0.8713,
+        "otherServices": 0.9669
+      }
+    },
+    "11540": {
+      "id": "11540",
+      "name": "Appleton, WI",
+      "shortName": "Appleton, WI",
+      "type": "metro",
+      "states": [
+        "WI"
+      ],
+      "primaryState": "WI",
+      "priceParity": {
+        "allItems": 0.9242,
+        "goods": 0.9379,
+        "housing": 0.7078,
+        "utilities": 0.9059,
+        "otherServices": 0.9941
+      }
+    },
+    "11700": {
+      "id": "11700",
+      "name": "Asheville, NC",
+      "shortName": "Asheville, NC",
+      "type": "metro",
+      "states": [
+        "NC"
+      ],
+      "primaryState": "NC",
+      "priceParity": {
+        "allItems": 0.9651,
+        "goods": 0.9662,
+        "housing": 0.9337,
+        "utilities": 0.8863,
+        "otherServices": 0.9819
+      }
+    },
+    "12020": {
+      "id": "12020",
+      "name": "Athens-Clarke County, GA",
+      "shortName": "Athens, GA",
+      "type": "metro",
+      "states": [
+        "GA"
+      ],
+      "primaryState": "GA",
+      "priceParity": {
+        "allItems": 0.9334,
+        "goods": 0.9627,
+        "housing": 0.7676,
+        "utilities": 0.8926,
+        "otherServices": 0.9867
+      }
+    },
+    "12060": {
+      "id": "12060",
+      "name": "Atlanta-Sandy Springs-Roswell, GA",
+      "shortName": "Atlanta, GA",
+      "type": "metro",
+      "states": [
+        "GA"
+      ],
+      "primaryState": "GA",
+      "priceParity": {
+        "allItems": 1.0006,
+        "goods": 1.0042,
+        "housing": 1.1102,
+        "utilities": 0.9624,
+        "otherServices": 0.967
+      }
+    },
+    "12100": {
+      "id": "12100",
+      "name": "Atlantic City-Hammonton, NJ",
+      "shortName": "Atlantic City, NJ",
+      "type": "metro",
+      "states": [
+        "NJ"
+      ],
+      "primaryState": "NJ",
+      "priceParity": {
+        "allItems": 0.9886,
+        "goods": 0.9979,
+        "housing": 0.9867,
+        "utilities": 1.092,
+        "otherServices": 0.9792
+      }
+    },
+    "12220": {
+      "id": "12220",
+      "name": "Auburn-Opelika, AL",
+      "shortName": "Auburn, AL",
+      "type": "metro",
+      "states": [
+        "AL"
+      ],
+      "primaryState": "AL",
+      "priceParity": {
+        "allItems": 0.8793,
+        "goods": 0.964,
+        "housing": 0.6208,
+        "utilities": 0.8389,
+        "otherServices": 0.9669
+      }
+    },
+    "12260": {
+      "id": "12260",
+      "name": "Augusta-Richmond County, GA-SC",
+      "shortName": "Augusta, GA",
+      "type": "metro",
+      "states": [
+        "GA",
+        "SC"
+      ],
+      "primaryState": "GA",
+      "priceParity": {
+        "allItems": 0.919,
+        "goods": 0.9629,
+        "housing": 0.706,
+        "utilities": 0.8947,
+        "otherServices": 0.9854
+      }
+    },
+    "12420": {
+      "id": "12420",
+      "name": "Austin-Round Rock-San Marcos, TX",
+      "shortName": "Austin, TX",
+      "type": "metro",
+      "states": [
+        "TX"
+      ],
+      "primaryState": "TX",
+      "priceParity": {
+        "allItems": 0.9807,
+        "goods": 0.9376,
+        "housing": 1.2036,
+        "utilities": 0.8204,
+        "otherServices": 0.9624
+      }
+    },
+    "12540": {
+      "id": "12540",
+      "name": "Bakersfield-Delano, CA",
+      "shortName": "Bakersfield, CA",
+      "type": "metro",
+      "states": [
+        "CA"
+      ],
+      "primaryState": "CA",
+      "priceParity": {
+        "allItems": 1.0089,
+        "goods": 1.0517,
+        "housing": 0.9029,
+        "utilities": 1.5826,
+        "otherServices": 1.0027
+      }
+    },
+    "12580": {
+      "id": "12580",
+      "name": "Baltimore-Columbia-Towson, MD",
+      "shortName": "Baltimore, MD",
+      "type": "metro",
+      "states": [
+        "MD"
+      ],
+      "primaryState": "MD",
+      "priceParity": {
+        "allItems": 1.0449,
+        "goods": 1.0235,
+        "housing": 1.1819,
+        "utilities": 1.1021,
+        "otherServices": 1.015
+      }
+    },
+    "12620": {
+      "id": "12620",
+      "name": "Bangor, ME",
+      "shortName": "Bangor, ME",
+      "type": "metro",
+      "states": [
+        "ME"
+      ],
+      "primaryState": "ME",
+      "priceParity": {
+        "allItems": 0.9651,
+        "goods": 0.9717,
+        "housing": 0.7769,
+        "utilities": 1.3476,
+        "otherServices": 1.0319
+      }
+    },
+    "12700": {
+      "id": "12700",
+      "name": "Barnstable Town, MA",
+      "shortName": "Barnstable Town, MA",
+      "type": "metro",
+      "states": [
+        "MA"
+      ],
+      "primaryState": "MA",
+      "priceParity": {
+        "allItems": 0.9835,
+        "goods": 0.9701,
+        "housing": 0.9001,
+        "utilities": 1.5845,
+        "otherServices": 1.012
+      }
+    },
+    "12940": {
+      "id": "12940",
+      "name": "Baton Rouge, LA",
+      "shortName": "Baton Rouge, LA",
+      "type": "metro",
+      "states": [
+        "LA"
+      ],
+      "primaryState": "LA",
+      "priceParity": {
+        "allItems": 0.9078,
+        "goods": 0.9369,
+        "housing": 0.7418,
+        "utilities": 0.7118,
+        "otherServices": 0.957
+      }
+    },
+    "12980": {
+      "id": "12980",
+      "name": "Battle Creek, MI",
+      "shortName": "Battle Creek, MI",
+      "type": "metro",
+      "states": [
+        "MI"
+      ],
+      "primaryState": "MI",
+      "priceParity": {
+        "allItems": 0.9054,
+        "goods": 0.9371,
+        "housing": 0.6105,
+        "utilities": 0.95,
+        "otherServices": 0.9956
+      }
+    },
+    "13020": {
+      "id": "13020",
+      "name": "Bay City, MI",
+      "shortName": "Bay City, MI",
+      "type": "metro",
+      "states": [
+        "MI"
+      ],
+      "primaryState": "MI",
+      "priceParity": {
+        "allItems": 0.9192,
+        "goods": 0.9371,
+        "housing": 0.6668,
+        "utilities": 0.9522,
+        "otherServices": 0.9956
+      }
+    },
+    "13140": {
+      "id": "13140",
+      "name": "Beaumont-Port Arthur, TX",
+      "shortName": "Beaumont, TX",
+      "type": "metro",
+      "states": [
+        "TX"
+      ],
+      "primaryState": "TX",
+      "priceParity": {
+        "allItems": 0.9005,
+        "goods": 0.9376,
+        "housing": 0.7094,
+        "utilities": 0.831,
+        "otherServices": 0.9624
+      }
+    },
+    "13220": {
+      "id": "13220",
+      "name": "Beckley, WV",
+      "shortName": "Beckley, WV",
+      "type": "metro",
+      "states": [
+        "WV"
+      ],
+      "primaryState": "WV",
+      "priceParity": {
+        "allItems": 0.8837,
+        "goods": 0.9627,
+        "housing": 0.5225,
+        "utilities": 0.9177,
+        "otherServices": 0.9981
+      }
+    },
+    "13380": {
+      "id": "13380",
+      "name": "Bellingham, WA",
+      "shortName": "Bellingham, WA",
+      "type": "metro",
+      "states": [
+        "WA"
+      ],
+      "primaryState": "WA",
+      "priceParity": {
+        "allItems": 1.0333,
+        "goods": 1.0503,
+        "housing": 1.1295,
+        "utilities": 0.9988,
+        "otherServices": 0.9947
+      }
+    },
+    "13460": {
+      "id": "13460",
+      "name": "Bend, OR",
+      "shortName": "Bend, OR",
+      "type": "metro",
+      "states": [
+        "OR"
+      ],
+      "primaryState": "OR",
+      "priceParity": {
+        "allItems": 1.0361,
+        "goods": 1.0526,
+        "housing": 1.0996,
+        "utilities": 1.0499,
+        "otherServices": 1.003
+      }
+    },
+    "13740": {
+      "id": "13740",
+      "name": "Billings, MT",
+      "shortName": "Billings, MT",
+      "type": "metro",
+      "states": [
+        "MT"
+      ],
+      "primaryState": "MT",
+      "priceParity": {
+        "allItems": 0.9353,
+        "goods": 0.9601,
+        "housing": 0.7736,
+        "utilities": 0.7244,
+        "otherServices": 0.9872
+      }
+    },
+    "13780": {
+      "id": "13780",
+      "name": "Binghamton, NY",
+      "shortName": "Binghamton, NY",
+      "type": "metro",
+      "states": [
+        "NY"
+      ],
+      "primaryState": "NY",
+      "priceParity": {
+        "allItems": 0.9286,
+        "goods": 0.9969,
+        "housing": 0.6969,
+        "utilities": 1.3157,
+        "otherServices": 0.9775
+      }
+    },
+    "13820": {
+      "id": "13820",
+      "name": "Birmingham, AL",
+      "shortName": "Birmingham, AL",
+      "type": "metro",
+      "states": [
+        "AL"
+      ],
+      "primaryState": "AL",
+      "priceParity": {
+        "allItems": 0.9164,
+        "goods": 0.964,
+        "housing": 0.7185,
+        "utilities": 0.838,
+        "otherServices": 0.9669
+      }
+    },
+    "13900": {
+      "id": "13900",
+      "name": "Bismarck, ND",
+      "shortName": "Bismarck, ND",
+      "type": "metro",
+      "states": [
+        "ND"
+      ],
+      "primaryState": "ND",
+      "priceParity": {
+        "allItems": 0.9102,
+        "goods": 0.957,
+        "housing": 0.8401,
+        "utilities": 0.75,
+        "otherServices": 0.9116
+      }
+    },
+    "13980": {
+      "id": "13980",
+      "name": "Blacksburg-Christiansburg-Radford, VA",
+      "shortName": "Blacksburg, VA",
+      "type": "metro",
+      "states": [
+        "VA"
+      ],
+      "primaryState": "VA",
+      "priceParity": {
+        "allItems": 0.9271,
+        "goods": 0.9677,
+        "housing": 0.7437,
+        "utilities": 0.881,
+        "otherServices": 0.9861
+      }
+    },
+    "14010": {
+      "id": "14010",
+      "name": "Bloomington, IL",
+      "shortName": "Bloomington, IL",
+      "type": "metro",
+      "states": [
+        "IL"
+      ],
+      "primaryState": "IL",
+      "priceParity": {
+        "allItems": 0.9354,
+        "goods": 0.9364,
+        "housing": 0.7471,
+        "utilities": 0.8959,
+        "otherServices": 0.9959
+      }
+    },
+    "14020": {
+      "id": "14020",
+      "name": "Bloomington, IN",
+      "shortName": "Bloomington, IN",
+      "type": "metro",
+      "states": [
+        "IN"
+      ],
+      "primaryState": "IN",
+      "priceParity": {
+        "allItems": 0.9508,
+        "goods": 0.9432,
+        "housing": 0.8559,
+        "utilities": 0.8652,
+        "otherServices": 0.9914
+      }
+    },
+    "14260": {
+      "id": "14260",
+      "name": "Boise City, ID",
+      "shortName": "Boise City, ID",
+      "type": "metro",
+      "states": [
+        "ID"
+      ],
+      "primaryState": "ID",
+      "priceParity": {
+        "allItems": 0.9839,
+        "goods": 0.9618,
+        "housing": 1.0558,
+        "utilities": 0.7069,
+        "otherServices": 0.9897
+      }
+    },
+    "14460": {
+      "id": "14460",
+      "name": "Boston-Cambridge-Newton, MA-NH",
+      "shortName": "Boston, MA",
+      "type": "metro",
+      "states": [
+        "MA",
+        "NH"
+      ],
+      "primaryState": "MA",
+      "priceParity": {
+        "allItems": 1.0827,
+        "goods": 0.9965,
+        "housing": 1.4842,
+        "utilities": 1.4877,
+        "otherServices": 1.036
+      }
+    },
+    "14500": {
+      "id": "14500",
+      "name": "Boulder, CO",
+      "shortName": "Boulder, CO",
+      "type": "metro",
+      "states": [
+        "CO"
+      ],
+      "primaryState": "CO",
+      "priceParity": {
+        "allItems": 1.052,
+        "goods": 0.9605,
+        "housing": 1.5702,
+        "utilities": 0.8274,
+        "otherServices": 0.9982
+      }
+    },
+    "14540": {
+      "id": "14540",
+      "name": "Bowling Green, KY",
+      "shortName": "Bowling Green, KY",
+      "type": "metro",
+      "states": [
+        "KY"
+      ],
+      "primaryState": "KY",
+      "priceParity": {
+        "allItems": 0.9018,
+        "goods": 0.9625,
+        "housing": 0.634,
+        "utilities": 0.752,
+        "otherServices": 0.9689
+      }
+    },
+    "14580": {
+      "id": "14580",
+      "name": "Bozeman, MT",
+      "shortName": "Bozeman, MT",
+      "type": "metro",
+      "states": [
+        "MT"
+      ],
+      "primaryState": "MT",
+      "priceParity": {
+        "allItems": 1.0251,
+        "goods": 0.9601,
+        "housing": 1.3919,
+        "utilities": 0.7364,
+        "otherServices": 0.9872
+      }
+    },
+    "14740": {
+      "id": "14740",
+      "name": "Bremerton-Silverdale-Port Orchard, WA",
+      "shortName": "Bremerton, WA",
+      "type": "metro",
+      "states": [
+        "WA"
+      ],
+      "primaryState": "WA",
+      "priceParity": {
+        "allItems": 1.0561,
+        "goods": 1.0503,
+        "housing": 1.2964,
+        "utilities": 0.9204,
+        "otherServices": 0.9947
+      }
+    },
+    "14860": {
+      "id": "14860",
+      "name": "Bridgeport-Stamford-Danbury, CT",
+      "shortName": "Bridgeport, CT",
+      "type": "metro",
+      "states": [
+        "CT"
+      ],
+      "primaryState": "CT",
+      "priceParity": {
+        "allItems": 1.0686,
+        "goods": 0.9733,
+        "housing": 1.5045,
+        "utilities": 1.4707,
+        "otherServices": 1.0266
+      }
+    },
+    "15180": {
+      "id": "15180",
+      "name": "Brownsville-Harlingen, TX",
+      "shortName": "Brownsville, TX",
+      "type": "metro",
+      "states": [
+        "TX"
+      ],
+      "primaryState": "TX",
+      "priceParity": {
+        "allItems": 0.8597,
+        "goods": 0.9376,
+        "housing": 0.5772,
+        "utilities": 0.8115,
+        "otherServices": 0.9624
+      }
+    },
+    "15260": {
+      "id": "15260",
+      "name": "Brunswick-St. Simons, GA",
+      "shortName": "Brunswick, GA",
+      "type": "metro",
+      "states": [
+        "GA"
+      ],
+      "primaryState": "GA",
+      "priceParity": {
+        "allItems": 0.8771,
+        "goods": 0.9627,
+        "housing": 0.5634,
+        "utilities": 0.8726,
+        "otherServices": 0.9867
+      }
+    },
+    "15380": {
+      "id": "15380",
+      "name": "Buffalo-Cheektowaga, NY",
+      "shortName": "Buffalo, NY",
+      "type": "metro",
+      "states": [
+        "NY"
+      ],
+      "primaryState": "NY",
+      "priceParity": {
+        "allItems": 0.9584,
+        "goods": 0.9969,
+        "housing": 0.8099,
+        "utilities": 1.2949,
+        "otherServices": 0.9775
+      }
+    },
+    "15500": {
+      "id": "15500",
+      "name": "Burlington, NC",
+      "shortName": "Burlington, NC",
+      "type": "metro",
+      "states": [
+        "NC"
+      ],
+      "primaryState": "NC",
+      "priceParity": {
+        "allItems": 0.932,
+        "goods": 0.9662,
+        "housing": 0.7788,
+        "utilities": 0.8923,
+        "otherServices": 0.9819
+      }
+    },
+    "15540": {
+      "id": "15540",
+      "name": "Burlington-South Burlington, VT",
+      "shortName": "Burlington, VT",
+      "type": "metro",
+      "states": [
+        "VT"
+      ],
+      "primaryState": "VT",
+      "priceParity": {
+        "allItems": 1.0095,
+        "goods": 0.9727,
+        "housing": 1.0384,
+        "utilities": 1.2555,
+        "otherServices": 1.0159
+      }
+    },
+    "15940": {
+      "id": "15940",
+      "name": "Canton-Massillon, OH",
+      "shortName": "Canton, OH",
+      "type": "metro",
+      "states": [
+        "OH"
+      ],
+      "primaryState": "OH",
+      "priceParity": {
+        "allItems": 0.8941,
+        "goods": 0.9363,
+        "housing": 0.5814,
+        "utilities": 0.9694,
+        "otherServices": 0.9894
+      }
+    },
+    "15980": {
+      "id": "15980",
+      "name": "Cape Coral-Fort Myers, FL",
+      "shortName": "Cape Coral, FL",
+      "type": "metro",
+      "states": [
+        "FL"
+      ],
+      "primaryState": "FL",
+      "priceParity": {
+        "allItems": 1.0235,
+        "goods": 0.9624,
+        "housing": 1.2511,
+        "utilities": 0.869,
+        "otherServices": 0.9886
+      }
+    },
+    "16020": {
+      "id": "16020",
+      "name": "Cape Girardeau, MO-IL",
+      "shortName": "Cape Girardeau, MO",
+      "type": "metro",
+      "states": [
+        "IL",
+        "MO"
+      ],
+      "primaryState": "MO",
+      "priceParity": {
+        "allItems": 0.8608,
+        "goods": 0.9422,
+        "housing": 0.5642,
+        "utilities": 0.8561,
+        "otherServices": 0.9309
+      }
+    },
+    "16180": {
+      "id": "16180",
+      "name": "Carson City, NV",
+      "shortName": "Carson City, NV",
+      "type": "metro",
+      "states": [
+        "NV"
+      ],
+      "primaryState": "NV",
+      "priceParity": {
+        "allItems": 0.9813,
+        "goods": 0.9627,
+        "housing": 1.0118,
+        "utilities": 0.9267,
+        "otherServices": 0.9874
+      }
+    },
+    "16220": {
+      "id": "16220",
+      "name": "Casper, WY",
+      "shortName": "Casper, WY",
+      "type": "metro",
+      "states": [
+        "WY"
+      ],
+      "primaryState": "WY",
+      "priceParity": {
+        "allItems": 0.9383,
+        "goods": 0.9537,
+        "housing": 0.7419,
+        "utilities": 0.7888,
+        "otherServices": 1.0043
+      }
+    },
+    "16300": {
+      "id": "16300",
+      "name": "Cedar Rapids, IA",
+      "shortName": "Cedar Rapids, IA",
+      "type": "metro",
+      "states": [
+        "IA"
+      ],
+      "primaryState": "IA",
+      "priceParity": {
+        "allItems": 0.8896,
+        "goods": 0.9373,
+        "housing": 0.7145,
+        "utilities": 0.8398,
+        "otherServices": 0.9293
+      }
+    },
+    "16540": {
+      "id": "16540",
+      "name": "Chambersburg, PA",
+      "shortName": "Chambersburg, PA",
+      "type": "metro",
+      "states": [
+        "PA"
+      ],
+      "primaryState": "PA",
+      "priceParity": {
+        "allItems": 0.9464,
+        "goods": 1.0068,
+        "housing": 0.7191,
+        "utilities": 1.0835,
+        "otherServices": 0.9773
+      }
+    },
+    "16580": {
+      "id": "16580",
+      "name": "Champaign-Urbana, IL",
+      "shortName": "Champaign, IL",
+      "type": "metro",
+      "states": [
+        "IL"
+      ],
+      "primaryState": "IL",
+      "priceParity": {
+        "allItems": 0.927,
+        "goods": 0.9364,
+        "housing": 0.716,
+        "utilities": 0.9047,
+        "otherServices": 0.9959
+      }
+    },
+    "16620": {
+      "id": "16620",
+      "name": "Charleston, WV",
+      "shortName": "Charleston, WV",
+      "type": "metro",
+      "states": [
+        "WV"
+      ],
+      "primaryState": "WV",
+      "priceParity": {
+        "allItems": 0.8872,
+        "goods": 0.9627,
+        "housing": 0.5139,
+        "utilities": 0.9171,
+        "otherServices": 0.9981
+      }
+    },
+    "16700": {
+      "id": "16700",
+      "name": "Charleston-North Charleston, SC",
+      "shortName": "Charleston, SC",
+      "type": "metro",
+      "states": [
+        "SC"
+      ],
+      "primaryState": "SC",
+      "priceParity": {
+        "allItems": 1.0096,
+        "goods": 0.9634,
+        "housing": 1.1977,
+        "utilities": 0.8821,
+        "otherServices": 0.9828
+      }
+    },
+    "16740": {
+      "id": "16740",
+      "name": "Charlotte-Concord-Gastonia, NC-SC",
+      "shortName": "Charlotte, NC",
+      "type": "metro",
+      "states": [
+        "NC",
+        "SC"
+      ],
+      "primaryState": "NC",
+      "priceParity": {
+        "allItems": 0.9735,
+        "goods": 0.9658,
+        "housing": 0.9764,
+        "utilities": 0.8916,
+        "otherServices": 0.982
+      }
+    },
+    "16820": {
+      "id": "16820",
+      "name": "Charlottesville, VA",
+      "shortName": "Charlottesville, VA",
+      "type": "metro",
+      "states": [
+        "VA"
+      ],
+      "primaryState": "VA",
+      "priceParity": {
+        "allItems": 0.9915,
+        "goods": 0.9677,
+        "housing": 1.0704,
+        "utilities": 0.8897,
+        "otherServices": 0.9861
+      }
+    },
+    "16860": {
+      "id": "16860",
+      "name": "Chattanooga, TN-GA",
+      "shortName": "Chattanooga, TN",
+      "type": "metro",
+      "states": [
+        "GA",
+        "TN"
+      ],
+      "primaryState": "TN",
+      "priceParity": {
+        "allItems": 0.9146,
+        "goods": 0.9599,
+        "housing": 0.7655,
+        "utilities": 0.7421,
+        "otherServices": 0.9531
+      }
+    },
+    "16940": {
+      "id": "16940",
+      "name": "Cheyenne, WY",
+      "shortName": "Cheyenne, WY",
+      "type": "metro",
+      "states": [
+        "WY"
+      ],
+      "primaryState": "WY",
+      "priceParity": {
+        "allItems": 0.9649,
+        "goods": 0.9537,
+        "housing": 0.8983,
+        "utilities": 0.7796,
+        "otherServices": 1.0043
+      }
+    },
+    "16980": {
+      "id": "16980",
+      "name": "Chicago-Naperville-Elgin, IL-IN",
+      "shortName": "Chicago, IL",
+      "type": "metro",
+      "states": [
+        "IL",
+        "IN"
+      ],
+      "primaryState": "IL",
+      "priceParity": {
+        "allItems": 1.0359,
+        "goods": 1.0726,
+        "housing": 1.1201,
+        "utilities": 0.8358,
+        "otherServices": 1.0049
+      }
+    },
+    "17020": {
+      "id": "17020",
+      "name": "Chico, CA",
+      "shortName": "Chico, CA",
+      "type": "metro",
+      "states": [
+        "CA"
+      ],
+      "primaryState": "CA",
+      "priceParity": {
+        "allItems": 1.012,
+        "goods": 1.0517,
+        "housing": 0.9195,
+        "utilities": 1.5884,
+        "otherServices": 1.0027
+      }
+    },
+    "17140": {
+      "id": "17140",
+      "name": "Cincinnati, OH-KY-IN",
+      "shortName": "Cincinnati, OH",
+      "type": "metro",
+      "states": [
+        "IN",
+        "KY",
+        "OH"
+      ],
+      "primaryState": "OH",
+      "priceParity": {
+        "allItems": 0.9537,
+        "goods": 0.9375,
+        "housing": 0.8761,
+        "utilities": 0.9095,
+        "otherServices": 0.9904
+      }
+    },
+    "17300": {
+      "id": "17300",
+      "name": "Clarksville, TN-KY",
+      "shortName": "Clarksville, TN",
+      "type": "metro",
+      "states": [
+        "KY",
+        "TN"
+      ],
+      "primaryState": "TN",
+      "priceParity": {
+        "allItems": 0.9095,
+        "goods": 0.9625,
+        "housing": 0.738,
+        "utilities": 0.7255,
+        "otherServices": 0.9552
+      }
+    },
+    "17410": {
+      "id": "17410",
+      "name": "Cleveland, OH",
+      "shortName": "Cleveland, OH",
+      "type": "metro",
+      "states": [
+        "OH"
+      ],
+      "primaryState": "OH",
+      "priceParity": {
+        "allItems": 0.9392,
+        "goods": 0.9363,
+        "housing": 0.7943,
+        "utilities": 0.9597,
+        "otherServices": 0.9894
+      }
+    },
+    "17420": {
+      "id": "17420",
+      "name": "Cleveland, TN",
+      "shortName": "Cleveland, TN",
+      "type": "metro",
+      "states": [
+        "TN"
+      ],
+      "primaryState": "TN",
+      "priceParity": {
+        "allItems": 0.8808,
+        "goods": 0.9625,
+        "housing": 0.6033,
+        "utilities": 0.7232,
+        "otherServices": 0.9514
+      }
+    },
+    "17660": {
+      "id": "17660",
+      "name": "Coeur d'Alene, ID",
+      "shortName": "Coeur d'Alene, ID",
+      "type": "metro",
+      "states": [
+        "ID"
+      ],
+      "primaryState": "ID",
+      "priceParity": {
+        "allItems": 0.9829,
+        "goods": 0.9618,
+        "housing": 1.056,
+        "utilities": 0.7076,
+        "otherServices": 0.9897
+      }
+    },
+    "17780": {
+      "id": "17780",
+      "name": "College Station-Bryan, TX",
+      "shortName": "College Station, TX",
+      "type": "metro",
+      "states": [
+        "TX"
+      ],
+      "primaryState": "TX",
+      "priceParity": {
+        "allItems": 0.9095,
+        "goods": 0.9376,
+        "housing": 0.7509,
+        "utilities": 0.8439,
+        "otherServices": 0.9624
+      }
+    },
+    "17820": {
+      "id": "17820",
+      "name": "Colorado Springs, CO",
+      "shortName": "Colorado Springs, CO",
+      "type": "metro",
+      "states": [
+        "CO"
+      ],
+      "primaryState": "CO",
+      "priceParity": {
+        "allItems": 1.0071,
+        "goods": 0.9605,
+        "housing": 1.1621,
+        "utilities": 0.8319,
+        "otherServices": 0.9982
+      }
+    },
+    "17860": {
+      "id": "17860",
+      "name": "Columbia, MO",
+      "shortName": "Columbia, MO",
+      "type": "metro",
+      "states": [
+        "MO"
+      ],
+      "primaryState": "MO",
+      "priceParity": {
+        "allItems": 0.8944,
+        "goods": 0.9419,
+        "housing": 0.6925,
+        "utilities": 0.8597,
+        "otherServices": 0.9303
+      }
+    },
+    "17900": {
+      "id": "17900",
+      "name": "Columbia, SC",
+      "shortName": "Columbia, SC",
+      "type": "metro",
+      "states": [
+        "SC"
+      ],
+      "primaryState": "SC",
+      "priceParity": {
+        "allItems": 0.9366,
+        "goods": 0.9634,
+        "housing": 0.7945,
+        "utilities": 0.8831,
+        "otherServices": 0.9828
+      }
+    },
+    "17980": {
+      "id": "17980",
+      "name": "Columbus, GA-AL",
+      "shortName": "Columbus, GA",
+      "type": "metro",
+      "states": [
+        "AL",
+        "GA"
+      ],
+      "primaryState": "GA",
+      "priceParity": {
+        "allItems": 0.893,
+        "goods": 0.9633,
+        "housing": 0.6119,
+        "utilities": 0.8967,
+        "otherServices": 0.9858
+      }
+    },
+    "18020": {
+      "id": "18020",
+      "name": "Columbus, IN",
+      "shortName": "Columbus, IN",
+      "type": "metro",
+      "states": [
+        "IN"
+      ],
+      "primaryState": "IN",
+      "priceParity": {
+        "allItems": 0.93,
+        "goods": 0.9432,
+        "housing": 0.7547,
+        "utilities": 0.8658,
+        "otherServices": 0.9914
+      }
+    },
+    "18140": {
+      "id": "18140",
+      "name": "Columbus, OH",
+      "shortName": "Columbus, OH",
+      "type": "metro",
+      "states": [
+        "OH"
+      ],
+      "primaryState": "OH",
+      "priceParity": {
+        "allItems": 0.9547,
+        "goods": 0.9363,
+        "housing": 0.8794,
+        "utilities": 0.9552,
+        "otherServices": 0.9894
+      }
+    },
+    "18580": {
+      "id": "18580",
+      "name": "Corpus Christi, TX",
+      "shortName": "Corpus Christi, TX",
+      "type": "metro",
+      "states": [
+        "TX"
+      ],
+      "primaryState": "TX",
+      "priceParity": {
+        "allItems": 0.9267,
+        "goods": 0.9376,
+        "housing": 0.849,
+        "utilities": 0.8099,
+        "otherServices": 0.9624
+      }
+    },
+    "18700": {
+      "id": "18700",
+      "name": "Corvallis, OR",
+      "shortName": "Corvallis, OR",
+      "type": "metro",
+      "states": [
+        "OR"
+      ],
+      "primaryState": "OR",
+      "priceParity": {
+        "allItems": 1.0402,
+        "goods": 1.0526,
+        "housing": 1.1444,
+        "utilities": 1.0865,
+        "otherServices": 1.003
+      }
+    },
+    "18880": {
+      "id": "18880",
+      "name": "Crestview-Fort Walton Beach-Destin, FL",
+      "shortName": "Crestview, FL",
+      "type": "metro",
+      "states": [
+        "FL"
+      ],
+      "primaryState": "FL",
+      "priceParity": {
+        "allItems": 0.9703,
+        "goods": 0.9624,
+        "housing": 0.9493,
+        "utilities": 0.8905,
+        "otherServices": 0.9886
+      }
+    },
+    "19100": {
+      "id": "19100",
+      "name": "Dallas-Fort Worth-Arlington, TX",
+      "shortName": "Dallas, TX",
+      "type": "metro",
+      "states": [
+        "TX"
+      ],
+      "primaryState": "TX",
+      "priceParity": {
+        "allItems": 1.0309,
+        "goods": 1.0284,
+        "housing": 1.1787,
+        "utilities": 0.9071,
+        "otherServices": 0.9967
+      }
+    },
+    "19140": {
+      "id": "19140",
+      "name": "Dalton, GA",
+      "shortName": "Dalton, GA",
+      "type": "metro",
+      "states": [
+        "GA"
+      ],
+      "primaryState": "GA",
+      "priceParity": {
+        "allItems": 0.8984,
+        "goods": 0.9627,
+        "housing": 0.6334,
+        "utilities": 0.8876,
+        "otherServices": 0.9867
+      }
+    },
+    "19300": {
+      "id": "19300",
+      "name": "Daphne-Fairhope-Foley, AL",
+      "shortName": "Daphne, AL",
+      "type": "metro",
+      "states": [
+        "AL"
+      ],
+      "primaryState": "AL",
+      "priceParity": {
+        "allItems": 0.9469,
+        "goods": 0.964,
+        "housing": 0.8915,
+        "utilities": 0.8329,
+        "otherServices": 0.9669
+      }
+    },
+    "19340": {
+      "id": "19340",
+      "name": "Davenport-Moline-Rock Island, IA-IL",
+      "shortName": "Davenport, IA",
+      "type": "metro",
+      "states": [
+        "IL",
+        "IA"
+      ],
+      "primaryState": "IA",
+      "priceParity": {
+        "allItems": 0.8908,
+        "goods": 0.942,
+        "housing": 0.6835,
+        "utilities": 0.8994,
+        "otherServices": 0.9353
+      }
+    },
+    "19430": {
+      "id": "19430",
+      "name": "Dayton-Kettering-Beavercreek, OH",
+      "shortName": "Dayton, OH",
+      "type": "metro",
+      "states": [
+        "OH"
+      ],
+      "primaryState": "OH",
+      "priceParity": {
+        "allItems": 0.9269,
+        "goods": 0.9363,
+        "housing": 0.7271,
+        "utilities": 0.9539,
+        "otherServices": 0.9894
+      }
+    },
+    "19460": {
+      "id": "19460",
+      "name": "Decatur, AL",
+      "shortName": "Decatur, AL",
+      "type": "metro",
+      "states": [
+        "AL"
+      ],
+      "primaryState": "AL",
+      "priceParity": {
+        "allItems": 0.8721,
+        "goods": 0.964,
+        "housing": 0.5807,
+        "utilities": 0.8475,
+        "otherServices": 0.9669
+      }
+    },
+    "19500": {
+      "id": "19500",
+      "name": "Decatur, IL",
+      "shortName": "Decatur, IL",
+      "type": "metro",
+      "states": [
+        "IL"
+      ],
+      "primaryState": "IL",
+      "priceParity": {
+        "allItems": 0.8842,
+        "goods": 0.9364,
+        "housing": 0.5619,
+        "utilities": 0.911,
+        "otherServices": 0.9959
+      }
+    },
+    "19660": {
+      "id": "19660",
+      "name": "Deltona-Daytona Beach-Ormond Beach, FL",
+      "shortName": "Deltona, FL",
+      "type": "metro",
+      "states": [
+        "FL"
+      ],
+      "primaryState": "FL",
+      "priceParity": {
+        "allItems": 0.9937,
+        "goods": 0.9624,
+        "housing": 1.0837,
+        "utilities": 0.8757,
+        "otherServices": 0.9886
+      }
+    },
+    "19740": {
+      "id": "19740",
+      "name": "Denver-Aurora-Centennial, CO",
+      "shortName": "Denver, CO",
+      "type": "metro",
+      "states": [
+        "CO"
+      ],
+      "primaryState": "CO",
+      "priceParity": {
+        "allItems": 1.0578,
+        "goods": 1.0096,
+        "housing": 1.4692,
+        "utilities": 0.8786,
+        "otherServices": 0.9945
+      }
+    },
+    "19780": {
+      "id": "19780",
+      "name": "Des Moines-West Des Moines, IA",
+      "shortName": "Des Moines, IA",
+      "type": "metro",
+      "states": [
+        "IA"
+      ],
+      "primaryState": "IA",
+      "priceParity": {
+        "allItems": 0.917,
+        "goods": 0.9373,
+        "housing": 0.8474,
+        "utilities": 0.8458,
+        "otherServices": 0.9293
+      }
+    },
+    "19820": {
+      "id": "19820",
+      "name": "Detroit-Warren-Dearborn, MI",
+      "shortName": "Detroit, MI",
+      "type": "metro",
+      "states": [
+        "MI"
+      ],
+      "primaryState": "MI",
+      "priceParity": {
+        "allItems": 1.003,
+        "goods": 0.9882,
+        "housing": 0.9469,
+        "utilities": 1.0699,
+        "otherServices": 1.0259
+      }
+    },
+    "20020": {
+      "id": "20020",
+      "name": "Dothan, AL",
+      "shortName": "Dothan, AL",
+      "type": "metro",
+      "states": [
+        "AL"
+      ],
+      "primaryState": "AL",
+      "priceParity": {
+        "allItems": 0.8383,
+        "goods": 0.964,
+        "housing": 0.4687,
+        "utilities": 0.8432,
+        "otherServices": 0.9669
+      }
+    },
+    "20100": {
+      "id": "20100",
+      "name": "Dover, DE",
+      "shortName": "Dover, DE",
+      "type": "metro",
+      "states": [
+        "DE"
+      ],
+      "primaryState": "DE",
+      "priceParity": {
+        "allItems": 0.9751,
+        "goods": 0.9637,
+        "housing": 0.959,
+        "utilities": 0.9718,
+        "otherServices": 0.9877
+      }
+    },
+    "20220": {
+      "id": "20220",
+      "name": "Dubuque, IA",
+      "shortName": "Dubuque, IA",
+      "type": "metro",
+      "states": [
+        "IA"
+      ],
+      "primaryState": "IA",
+      "priceParity": {
+        "allItems": 0.8733,
+        "goods": 0.9373,
+        "housing": 0.6405,
+        "utilities": 0.812,
+        "otherServices": 0.9293
+      }
+    },
+    "20260": {
+      "id": "20260",
+      "name": "Duluth, MN-WI",
+      "shortName": "Duluth, MN",
+      "type": "metro",
+      "states": [
+        "MN",
+        "WI"
+      ],
+      "primaryState": "MN",
+      "priceParity": {
+        "allItems": 0.8877,
+        "goods": 0.953,
+        "housing": 0.7115,
+        "utilities": 0.8725,
+        "otherServices": 0.9219
+      }
+    },
+    "20500": {
+      "id": "20500",
+      "name": "Durham-Chapel Hill, NC",
+      "shortName": "Durham, NC",
+      "type": "metro",
+      "states": [
+        "NC"
+      ],
+      "primaryState": "NC",
+      "priceParity": {
+        "allItems": 0.9757,
+        "goods": 0.9662,
+        "housing": 0.9893,
+        "utilities": 0.8932,
+        "otherServices": 0.9819
+      }
+    },
+    "20580": {
+      "id": "20580",
+      "name": "Eagle Pass, TX",
+      "shortName": "Eagle Pass, TX",
+      "type": "metro",
+      "states": [
+        "TX"
+      ],
+      "primaryState": "TX",
+      "priceParity": {
+        "allItems": 0.8381,
+        "goods": 0.9376,
+        "housing": 0.5368,
+        "utilities": 0.8186,
+        "otherServices": 0.9624
+      }
+    },
+    "20740": {
+      "id": "20740",
+      "name": "Eau Claire, WI",
+      "shortName": "Eau Claire, WI",
+      "type": "metro",
+      "states": [
+        "WI"
+      ],
+      "primaryState": "WI",
+      "priceParity": {
+        "allItems": 0.928,
+        "goods": 0.9379,
+        "housing": 0.7285,
+        "utilities": 0.9093,
+        "otherServices": 0.9941
+      }
+    },
+    "20940": {
+      "id": "20940",
+      "name": "El Centro, CA",
+      "shortName": "El Centro, CA",
+      "type": "metro",
+      "states": [
+        "CA"
+      ],
+      "primaryState": "CA",
+      "priceParity": {
+        "allItems": 0.9517,
+        "goods": 1.0517,
+        "housing": 0.6627,
+        "utilities": 1.5719,
+        "otherServices": 1.0027
+      }
+    },
+    "21060": {
+      "id": "21060",
+      "name": "Elizabethtown, KY",
+      "shortName": "Elizabethtown, KY",
+      "type": "metro",
+      "states": [
+        "KY"
+      ],
+      "primaryState": "KY",
+      "priceParity": {
+        "allItems": 0.9057,
+        "goods": 0.9625,
+        "housing": 0.6667,
+        "utilities": 0.746,
+        "otherServices": 0.9689
+      }
+    },
+    "21140": {
+      "id": "21140",
+      "name": "Elkhart-Goshen, IN",
+      "shortName": "Elkhart, IN",
+      "type": "metro",
+      "states": [
+        "IN"
+      ],
+      "primaryState": "IN",
+      "priceParity": {
+        "allItems": 0.9032,
+        "goods": 0.9432,
+        "housing": 0.6433,
+        "utilities": 0.8636,
+        "otherServices": 0.9914
+      }
+    },
+    "21300": {
+      "id": "21300",
+      "name": "Elmira, NY",
+      "shortName": "Elmira, NY",
+      "type": "metro",
+      "states": [
+        "NY"
+      ],
+      "primaryState": "NY",
+      "priceParity": {
+        "allItems": 0.944,
+        "goods": 0.9969,
+        "housing": 0.7636,
+        "utilities": 1.3158,
+        "otherServices": 0.9775
+      }
+    },
+    "21340": {
+      "id": "21340",
+      "name": "El Paso, TX",
+      "shortName": "El Paso, TX",
+      "type": "metro",
+      "states": [
+        "TX"
+      ],
+      "primaryState": "TX",
+      "priceParity": {
+        "allItems": 0.8991,
+        "goods": 0.9376,
+        "housing": 0.7125,
+        "utilities": 0.8258,
+        "otherServices": 0.9624
+      }
+    },
+    "21420": {
+      "id": "21420",
+      "name": "Enid, OK",
+      "shortName": "Enid, OK",
+      "type": "metro",
+      "states": [
+        "OK"
+      ],
+      "primaryState": "OK",
+      "priceParity": {
+        "allItems": 0.8427,
+        "goods": 0.9378,
+        "housing": 0.5139,
+        "utilities": 0.7437,
+        "otherServices": 0.9546
+      }
+    },
+    "21500": {
+      "id": "21500",
+      "name": "Erie, PA",
+      "shortName": "Erie, PA",
+      "type": "metro",
+      "states": [
+        "PA"
+      ],
+      "primaryState": "PA",
+      "priceParity": {
+        "allItems": 0.9095,
+        "goods": 1.0068,
+        "housing": 0.5683,
+        "utilities": 1.0681,
+        "otherServices": 0.9773
+      }
+    },
+    "21660": {
+      "id": "21660",
+      "name": "Eugene-Springfield, OR",
+      "shortName": "Eugene, OR",
+      "type": "metro",
+      "states": [
+        "OR"
+      ],
+      "primaryState": "OR",
+      "priceParity": {
+        "allItems": 1.0157,
+        "goods": 1.0526,
+        "housing": 0.9835,
+        "utilities": 1.0253,
+        "otherServices": 1.003
+      }
+    },
+    "21780": {
+      "id": "21780",
+      "name": "Evansville, IN",
+      "shortName": "Evansville, IN",
+      "type": "metro",
+      "states": [
+        "IN"
+      ],
+      "primaryState": "IN",
+      "priceParity": {
+        "allItems": 0.9153,
+        "goods": 0.9432,
+        "housing": 0.6673,
+        "utilities": 0.8672,
+        "otherServices": 0.9914
+      }
+    },
+    "21820": {
+      "id": "21820",
+      "name": "Fairbanks-College, AK",
+      "shortName": "Fairbanks, AK",
+      "type": "metro",
+      "states": [
+        "AK"
+      ],
+      "primaryState": "AK",
+      "priceParity": {
+        "allItems": 1.0321,
+        "goods": 1.0734,
+        "housing": 0.9256,
+        "utilities": 1.1978,
+        "otherServices": 1.0334
+      }
+    },
+    "22020": {
+      "id": "22020",
+      "name": "Fargo, ND-MN",
+      "shortName": "Fargo, ND",
+      "type": "metro",
+      "states": [
+        "MN",
+        "ND"
+      ],
+      "primaryState": "ND",
+      "priceParity": {
+        "allItems": 0.9087,
+        "goods": 0.9565,
+        "housing": 0.8114,
+        "utilities": 0.7732,
+        "otherServices": 0.9133
+      }
+    },
+    "22140": {
+      "id": "22140",
+      "name": "Farmington, NM",
+      "shortName": "Farmington, NM",
+      "type": "metro",
+      "states": [
+        "NM"
+      ],
+      "primaryState": "NM",
+      "priceParity": {
+        "allItems": 0.8771,
+        "goods": 0.9614,
+        "housing": 0.5655,
+        "utilities": 0.7786,
+        "otherServices": 0.9854
+      }
+    },
+    "22180": {
+      "id": "22180",
+      "name": "Fayetteville, NC",
+      "shortName": "Fayetteville, NC",
+      "type": "metro",
+      "states": [
+        "NC"
+      ],
+      "primaryState": "NC",
+      "priceParity": {
+        "allItems": 0.9198,
+        "goods": 0.9662,
+        "housing": 0.7308,
+        "utilities": 0.8778,
+        "otherServices": 0.9819
+      }
+    },
+    "22220": {
+      "id": "22220",
+      "name": "Fayetteville-Springdale-Rogers, AR",
+      "shortName": "Fayetteville, AR",
+      "type": "metro",
+      "states": [
+        "AR"
+      ],
+      "primaryState": "AR",
+      "priceParity": {
+        "allItems": 0.9135,
+        "goods": 0.9358,
+        "housing": 0.7689,
+        "utilities": 0.7511,
+        "otherServices": 0.9529
+      }
+    },
+    "22380": {
+      "id": "22380",
+      "name": "Flagstaff, AZ",
+      "shortName": "Flagstaff, AZ",
+      "type": "metro",
+      "states": [
+        "AZ"
+      ],
+      "primaryState": "AZ",
+      "priceParity": {
+        "allItems": 1.0032,
+        "goods": 0.9624,
+        "housing": 1.0896,
+        "utilities": 0.9383,
+        "otherServices": 0.9984
+      }
+    },
+    "22420": {
+      "id": "22420",
+      "name": "Flint, MI",
+      "shortName": "Flint, MI",
+      "type": "metro",
+      "states": [
+        "MI"
+      ],
+      "primaryState": "MI",
+      "priceParity": {
+        "allItems": 0.9303,
+        "goods": 0.9371,
+        "housing": 0.7404,
+        "utilities": 0.9707,
+        "otherServices": 0.9956
+      }
+    },
+    "22500": {
+      "id": "22500",
+      "name": "Florence, SC",
+      "shortName": "Florence, SC",
+      "type": "metro",
+      "states": [
+        "SC"
+      ],
+      "primaryState": "SC",
+      "priceParity": {
+        "allItems": 0.8677,
+        "goods": 0.9634,
+        "housing": 0.5242,
+        "utilities": 0.8773,
+        "otherServices": 0.9828
+      }
+    },
+    "22520": {
+      "id": "22520",
+      "name": "Florence-Muscle Shoals, AL",
+      "shortName": "Florence, AL",
+      "type": "metro",
+      "states": [
+        "AL"
+      ],
+      "primaryState": "AL",
+      "priceParity": {
+        "allItems": 0.8482,
+        "goods": 0.964,
+        "housing": 0.4768,
+        "utilities": 0.8577,
+        "otherServices": 0.9669
+      }
+    },
+    "22540": {
+      "id": "22540",
+      "name": "Fond du Lac, WI",
+      "shortName": "Fond du Lac, WI",
+      "type": "metro",
+      "states": [
+        "WI"
+      ],
+      "primaryState": "WI",
+      "priceParity": {
+        "allItems": 0.9164,
+        "goods": 0.9379,
+        "housing": 0.6732,
+        "utilities": 0.9111,
+        "otherServices": 0.9941
+      }
+    },
+    "22660": {
+      "id": "22660",
+      "name": "Fort Collins-Loveland, CO",
+      "shortName": "Fort Collins, CO",
+      "type": "metro",
+      "states": [
+        "CO"
+      ],
+      "primaryState": "CO",
+      "priceParity": {
+        "allItems": 1.0113,
+        "goods": 0.9605,
+        "housing": 1.2059,
+        "utilities": 0.8216,
+        "otherServices": 0.9982
+      }
+    },
+    "22900": {
+      "id": "22900",
+      "name": "Fort Smith, AR-OK",
+      "shortName": "Fort Smith, AR",
+      "type": "metro",
+      "states": [
+        "AR",
+        "OK"
+      ],
+      "primaryState": "AR",
+      "priceParity": {
+        "allItems": 0.8589,
+        "goods": 0.9361,
+        "housing": 0.5344,
+        "utilities": 0.738,
+        "otherServices": 0.9532
+      }
+    },
+    "23060": {
+      "id": "23060",
+      "name": "Fort Wayne, IN",
+      "shortName": "Fort Wayne, IN",
+      "type": "metro",
+      "states": [
+        "IN"
+      ],
+      "primaryState": "IN",
+      "priceParity": {
+        "allItems": 0.9257,
+        "goods": 0.9432,
+        "housing": 0.7228,
+        "utilities": 0.8625,
+        "otherServices": 0.9914
+      }
+    },
+    "23420": {
+      "id": "23420",
+      "name": "Fresno, CA",
+      "shortName": "Fresno, CA",
+      "type": "metro",
+      "states": [
+        "CA"
+      ],
+      "primaryState": "CA",
+      "priceParity": {
+        "allItems": 1.0216,
+        "goods": 1.0517,
+        "housing": 0.9572,
+        "utilities": 1.6101,
+        "otherServices": 1.0027
+      }
+    },
+    "23460": {
+      "id": "23460",
+      "name": "Gadsden, AL",
+      "shortName": "Gadsden, AL",
+      "type": "metro",
+      "states": [
+        "AL"
+      ],
+      "primaryState": "AL",
+      "priceParity": {
+        "allItems": 0.8565,
+        "goods": 0.964,
+        "housing": 0.537,
+        "utilities": 0.8671,
+        "otherServices": 0.9669
+      }
+    },
+    "23540": {
+      "id": "23540",
+      "name": "Gainesville, FL",
+      "shortName": "Gainesville, FL",
+      "type": "metro",
+      "states": [
+        "FL"
+      ],
+      "primaryState": "FL",
+      "priceParity": {
+        "allItems": 0.9673,
+        "goods": 0.9624,
+        "housing": 0.9298,
+        "utilities": 0.8816,
+        "otherServices": 0.9886
+      }
+    },
+    "23580": {
+      "id": "23580",
+      "name": "Gainesville, GA",
+      "shortName": "Gainesville, GA",
+      "type": "metro",
+      "states": [
+        "GA"
+      ],
+      "primaryState": "GA",
+      "priceParity": {
+        "allItems": 0.9677,
+        "goods": 0.9627,
+        "housing": 0.9349,
+        "utilities": 0.8959,
+        "otherServices": 0.9867
+      }
+    },
+    "23900": {
+      "id": "23900",
+      "name": "Gettysburg, PA",
+      "shortName": "Gettysburg, PA",
+      "type": "metro",
+      "states": [
+        "PA"
+      ],
+      "primaryState": "PA",
+      "priceParity": {
+        "allItems": 0.9538,
+        "goods": 1.0068,
+        "housing": 0.7386,
+        "utilities": 1.07,
+        "otherServices": 0.9773
+      }
+    },
+    "24020": {
+      "id": "24020",
+      "name": "Glens Falls, NY",
+      "shortName": "Glens Falls, NY",
+      "type": "metro",
+      "states": [
+        "NY"
+      ],
+      "primaryState": "NY",
+      "priceParity": {
+        "allItems": 0.9487,
+        "goods": 0.9969,
+        "housing": 0.7623,
+        "utilities": 1.3383,
+        "otherServices": 0.9775
+      }
+    },
+    "24140": {
+      "id": "24140",
+      "name": "Goldsboro, NC",
+      "shortName": "Goldsboro, NC",
+      "type": "metro",
+      "states": [
+        "NC"
+      ],
+      "primaryState": "NC",
+      "priceParity": {
+        "allItems": 0.8846,
+        "goods": 0.9662,
+        "housing": 0.5768,
+        "utilities": 0.8789,
+        "otherServices": 0.9819
+      }
+    },
+    "24220": {
+      "id": "24220",
+      "name": "Grand Forks, ND-MN",
+      "shortName": "Grand Forks, ND",
+      "type": "metro",
+      "states": [
+        "MN",
+        "ND"
+      ],
+      "primaryState": "ND",
+      "priceParity": {
+        "allItems": 0.8666,
+        "goods": 0.9563,
+        "housing": 0.5966,
+        "utilities": 0.7709,
+        "otherServices": 0.9142
+      }
+    },
+    "24260": {
+      "id": "24260",
+      "name": "Grand Island, NE",
+      "shortName": "Grand Island, NE",
+      "type": "metro",
+      "states": [
+        "NE"
+      ],
+      "primaryState": "NE",
+      "priceParity": {
+        "allItems": 0.8666,
+        "goods": 0.941,
+        "housing": 0.6175,
+        "utilities": 0.7424,
+        "otherServices": 0.9298
+      }
+    },
+    "24300": {
+      "id": "24300",
+      "name": "Grand Junction, CO",
+      "shortName": "Grand Junction, CO",
+      "type": "metro",
+      "states": [
+        "CO"
+      ],
+      "primaryState": "CO",
+      "priceParity": {
+        "allItems": 0.9548,
+        "goods": 0.9605,
+        "housing": 0.8637,
+        "utilities": 0.8329,
+        "otherServices": 0.9982
+      }
+    },
+    "24340": {
+      "id": "24340",
+      "name": "Grand Rapids-Wyoming-Kentwood, MI",
+      "shortName": "Grand Rapids, MI",
+      "type": "metro",
+      "states": [
+        "MI"
+      ],
+      "primaryState": "MI",
+      "priceParity": {
+        "allItems": 0.9555,
+        "goods": 0.9371,
+        "housing": 0.866,
+        "utilities": 0.9378,
+        "otherServices": 0.9956
+      }
+    },
+    "24420": {
+      "id": "24420",
+      "name": "Grants Pass, OR",
+      "shortName": "Grants Pass, OR",
+      "type": "metro",
+      "states": [
+        "OR"
+      ],
+      "primaryState": "OR",
+      "priceParity": {
+        "allItems": 0.9776,
+        "goods": 1.0526,
+        "housing": 0.7991,
+        "utilities": 1.0356,
+        "otherServices": 1.003
+      }
+    },
+    "24500": {
+      "id": "24500",
+      "name": "Great Falls, MT",
+      "shortName": "Great Falls, MT",
+      "type": "metro",
+      "states": [
+        "MT"
+      ],
+      "primaryState": "MT",
+      "priceParity": {
+        "allItems": 0.9685,
+        "goods": 0.9601,
+        "housing": 0.9711,
+        "utilities": 0.7305,
+        "otherServices": 0.9872
+      }
+    },
+    "24540": {
+      "id": "24540",
+      "name": "Greeley, CO",
+      "shortName": "Greeley, CO",
+      "type": "metro",
+      "states": [
+        "CO"
+      ],
+      "primaryState": "CO",
+      "priceParity": {
+        "allItems": 1.0018,
+        "goods": 0.9605,
+        "housing": 1.126,
+        "utilities": 0.82,
+        "otherServices": 0.9982
+      }
+    },
+    "24580": {
+      "id": "24580",
+      "name": "Green Bay, WI",
+      "shortName": "Green Bay, WI",
+      "type": "metro",
+      "states": [
+        "WI"
+      ],
+      "primaryState": "WI",
+      "priceParity": {
+        "allItems": 0.9309,
+        "goods": 0.9379,
+        "housing": 0.747,
+        "utilities": 0.9004,
+        "otherServices": 0.9941
+      }
+    },
+    "24660": {
+      "id": "24660",
+      "name": "Greensboro-High Point, NC",
+      "shortName": "Greensboro, NC",
+      "type": "metro",
+      "states": [
+        "NC"
+      ],
+      "primaryState": "NC",
+      "priceParity": {
+        "allItems": 0.9286,
+        "goods": 0.9662,
+        "housing": 0.7452,
+        "utilities": 0.8906,
+        "otherServices": 0.9819
+      }
+    },
+    "24780": {
+      "id": "24780",
+      "name": "Greenville, NC",
+      "shortName": "Greenville, NC",
+      "type": "metro",
+      "states": [
+        "NC"
+      ],
+      "primaryState": "NC",
+      "priceParity": {
+        "allItems": 0.884,
+        "goods": 0.9662,
+        "housing": 0.5733,
+        "utilities": 0.8729,
+        "otherServices": 0.9819
+      }
+    },
+    "24860": {
+      "id": "24860",
+      "name": "Greenville-Anderson-Greer, SC",
+      "shortName": "Greenville, SC",
+      "type": "metro",
+      "states": [
+        "SC"
+      ],
+      "primaryState": "SC",
+      "priceParity": {
+        "allItems": 0.9326,
+        "goods": 0.9634,
+        "housing": 0.7684,
+        "utilities": 0.8876,
+        "otherServices": 0.9828
+      }
+    },
+    "25060": {
+      "id": "25060",
+      "name": "Gulfport-Biloxi, MS",
+      "shortName": "Gulfport, MS",
+      "type": "metro",
+      "states": [
+        "MS"
+      ],
+      "primaryState": "MS",
+      "priceParity": {
+        "allItems": 0.9001,
+        "goods": 0.9622,
+        "housing": 0.6791,
+        "utilities": 0.7634,
+        "otherServices": 0.9609
+      }
+    },
+    "25180": {
+      "id": "25180",
+      "name": "Hagerstown-Martinsburg, MD-WV",
+      "shortName": "Hagerstown, MD",
+      "type": "metro",
+      "states": [
+        "MD",
+        "WV"
+      ],
+      "primaryState": "MD",
+      "priceParity": {
+        "allItems": 0.9417,
+        "goods": 0.964,
+        "housing": 0.7574,
+        "utilities": 0.9569,
+        "otherServices": 0.9948
+      }
+    },
+    "25220": {
+      "id": "25220",
+      "name": "Hammond, LA",
+      "shortName": "Hammond, LA",
+      "type": "metro",
+      "states": [
+        "LA"
+      ],
+      "primaryState": "LA",
+      "priceParity": {
+        "allItems": 0.8446,
+        "goods": 0.9369,
+        "housing": 0.4816,
+        "utilities": 0.71,
+        "otherServices": 0.957
+      }
+    },
+    "25260": {
+      "id": "25260",
+      "name": "Hanford-Corcoran, CA",
+      "shortName": "Hanford, CA",
+      "type": "metro",
+      "states": [
+        "CA"
+      ],
+      "primaryState": "CA",
+      "priceParity": {
+        "allItems": 1.0161,
+        "goods": 1.0517,
+        "housing": 0.935,
+        "utilities": 1.5738,
+        "otherServices": 1.0027
+      }
+    },
+    "25420": {
+      "id": "25420",
+      "name": "Harrisburg-Carlisle, PA",
+      "shortName": "Harrisburg, PA",
+      "type": "metro",
+      "states": [
+        "PA"
+      ],
+      "primaryState": "PA",
+      "priceParity": {
+        "allItems": 0.9865,
+        "goods": 1.0068,
+        "housing": 0.9628,
+        "utilities": 1.0808,
+        "otherServices": 0.9773
+      }
+    },
+    "25500": {
+      "id": "25500",
+      "name": "Harrisonburg, VA",
+      "shortName": "Harrisonburg, VA",
+      "type": "metro",
+      "states": [
+        "VA"
+      ],
+      "primaryState": "VA",
+      "priceParity": {
+        "allItems": 0.9489,
+        "goods": 0.9677,
+        "housing": 0.8227,
+        "utilities": 0.8855,
+        "otherServices": 0.9861
+      }
+    },
+    "25540": {
+      "id": "25540",
+      "name": "Hartford-West Hartford-East Hartford, CT",
+      "shortName": "Hartford, CT",
+      "type": "metro",
+      "states": [
+        "CT"
+      ],
+      "primaryState": "CT",
+      "priceParity": {
+        "allItems": 1.0275,
+        "goods": 0.9733,
+        "housing": 1.1023,
+        "utilities": 1.4485,
+        "otherServices": 1.0266
+      }
+    },
+    "25620": {
+      "id": "25620",
+      "name": "Hattiesburg, MS",
+      "shortName": "Hattiesburg, MS",
+      "type": "metro",
+      "states": [
+        "MS"
+      ],
+      "primaryState": "MS",
+      "priceParity": {
+        "allItems": 0.8763,
+        "goods": 0.9622,
+        "housing": 0.6006,
+        "utilities": 0.7688,
+        "otherServices": 0.9609
+      }
+    },
+    "25740": {
+      "id": "25740",
+      "name": "Helena, MT",
+      "shortName": "Helena, MT",
+      "type": "metro",
+      "states": [
+        "MT"
+      ],
+      "primaryState": "MT",
+      "priceParity": {
+        "allItems": 0.9567,
+        "goods": 0.9601,
+        "housing": 0.9014,
+        "utilities": 0.7265,
+        "otherServices": 0.9872
+      }
+    },
+    "25860": {
+      "id": "25860",
+      "name": "Hickory-Lenoir-Morganton, NC",
+      "shortName": "Hickory, NC",
+      "type": "metro",
+      "states": [
+        "NC"
+      ],
+      "primaryState": "NC",
+      "priceParity": {
+        "allItems": 0.8849,
+        "goods": 0.9662,
+        "housing": 0.5958,
+        "utilities": 0.8781,
+        "otherServices": 0.9819
+      }
+    },
+    "25940": {
+      "id": "25940",
+      "name": "Hilton Head Island-Bluffton-Port Royal, SC",
+      "shortName": "Hilton Head Island, SC",
+      "type": "metro",
+      "states": [
+        "SC"
+      ],
+      "primaryState": "SC",
+      "priceParity": {
+        "allItems": 0.9802,
+        "goods": 0.9634,
+        "housing": 1.0124,
+        "utilities": 0.8809,
+        "otherServices": 0.9828
+      }
+    },
+    "25980": {
+      "id": "25980",
+      "name": "Hinesville, GA",
+      "shortName": "Hinesville, GA",
+      "type": "metro",
+      "states": [
+        "GA"
+      ],
+      "primaryState": "GA",
+      "priceParity": {
+        "allItems": 0.9393,
+        "goods": 0.9627,
+        "housing": 0.7946,
+        "utilities": 0.8684,
+        "otherServices": 0.9867
+      }
+    },
+    "26140": {
+      "id": "26140",
+      "name": "Homosassa Springs, FL",
+      "shortName": "Homosassa Springs, FL",
+      "type": "metro",
+      "states": [
+        "FL"
+      ],
+      "primaryState": "FL",
+      "priceParity": {
+        "allItems": 0.9347,
+        "goods": 0.9624,
+        "housing": 0.7843,
+        "utilities": 0.8733,
+        "otherServices": 0.9886
+      }
+    },
+    "26300": {
+      "id": "26300",
+      "name": "Hot Springs, AR",
+      "shortName": "Hot Springs, AR",
+      "type": "metro",
+      "states": [
+        "AR"
+      ],
+      "primaryState": "AR",
+      "priceParity": {
+        "allItems": 0.8573,
+        "goods": 0.9358,
+        "housing": 0.5728,
+        "utilities": 0.7425,
+        "otherServices": 0.9529
+      }
+    },
+    "26380": {
+      "id": "26380",
+      "name": "Houma-Bayou Cane-Thibodaux, LA",
+      "shortName": "Houma, LA",
+      "type": "metro",
+      "states": [
+        "LA"
+      ],
+      "primaryState": "LA",
+      "priceParity": {
+        "allItems": 0.851,
+        "goods": 0.9369,
+        "housing": 0.5131,
+        "utilities": 0.713,
+        "otherServices": 0.957
+      }
+    },
+    "26420": {
+      "id": "26420",
+      "name": "Houston-Pasadena-The Woodlands, TX",
+      "shortName": "Houston, TX",
+      "type": "metro",
+      "states": [
+        "TX"
+      ],
+      "primaryState": "TX",
+      "priceParity": {
+        "allItems": 0.9863,
+        "goods": 1.0064,
+        "housing": 1.0451,
+        "utilities": 0.9529,
+        "otherServices": 0.9559
+      }
+    },
+    "26580": {
+      "id": "26580",
+      "name": "Huntington-Ashland, WV-KY-OH",
+      "shortName": "Huntington, WV",
+      "type": "metro",
+      "states": [
+        "KY",
+        "OH",
+        "WV"
+      ],
+      "primaryState": "WV",
+      "priceParity": {
+        "allItems": 0.8842,
+        "goods": 0.9632,
+        "housing": 0.5126,
+        "utilities": 0.8785,
+        "otherServices": 0.9941
+      }
+    },
+    "26620": {
+      "id": "26620",
+      "name": "Huntsville, AL",
+      "shortName": "Huntsville, AL",
+      "type": "metro",
+      "states": [
+        "AL"
+      ],
+      "primaryState": "AL",
+      "priceParity": {
+        "allItems": 0.9307,
+        "goods": 0.964,
+        "housing": 0.7795,
+        "utilities": 0.8393,
+        "otherServices": 0.9669
+      }
+    },
+    "26820": {
+      "id": "26820",
+      "name": "Idaho Falls, ID",
+      "shortName": "Idaho Falls, ID",
+      "type": "metro",
+      "states": [
+        "ID"
+      ],
+      "primaryState": "ID",
+      "priceParity": {
+        "allItems": 0.9441,
+        "goods": 0.9618,
+        "housing": 0.8398,
+        "utilities": 0.6965,
+        "otherServices": 0.9897
+      }
+    },
+    "26900": {
+      "id": "26900",
+      "name": "Indianapolis-Carmel-Greenwood, IN",
+      "shortName": "Indianapolis, IN",
+      "type": "metro",
+      "states": [
+        "IN"
+      ],
+      "primaryState": "IN",
+      "priceParity": {
+        "allItems": 0.957,
+        "goods": 0.9432,
+        "housing": 0.8892,
+        "utilities": 0.8636,
+        "otherServices": 0.9914
+      }
+    },
+    "26980": {
+      "id": "26980",
+      "name": "Iowa City, IA",
+      "shortName": "Iowa City, IA",
+      "type": "metro",
+      "states": [
+        "IA"
+      ],
+      "primaryState": "IA",
+      "priceParity": {
+        "allItems": 0.9151,
+        "goods": 0.9373,
+        "housing": 0.8399,
+        "utilities": 0.8367,
+        "otherServices": 0.9293
+      }
+    },
+    "27060": {
+      "id": "27060",
+      "name": "Ithaca, NY",
+      "shortName": "Ithaca, NY",
+      "type": "metro",
+      "states": [
+        "NY"
+      ],
+      "primaryState": "NY",
+      "priceParity": {
+        "allItems": 1.0332,
+        "goods": 0.9969,
+        "housing": 1.2838,
+        "utilities": 1.3164,
+        "otherServices": 0.9775
+      }
+    },
+    "27100": {
+      "id": "27100",
+      "name": "Jackson, MI",
+      "shortName": "Jackson, MI",
+      "type": "metro",
+      "states": [
+        "MI"
+      ],
+      "primaryState": "MI",
+      "priceParity": {
+        "allItems": 0.9178,
+        "goods": 0.9371,
+        "housing": 0.6709,
+        "utilities": 0.9785,
+        "otherServices": 0.9956
+      }
+    },
+    "27140": {
+      "id": "27140",
+      "name": "Jackson, MS",
+      "shortName": "Jackson, MS",
+      "type": "metro",
+      "states": [
+        "MS"
+      ],
+      "primaryState": "MS",
+      "priceParity": {
+        "allItems": 0.8905,
+        "goods": 0.9622,
+        "housing": 0.6477,
+        "utilities": 0.7814,
+        "otherServices": 0.9609
+      }
+    },
+    "27180": {
+      "id": "27180",
+      "name": "Jackson, TN",
+      "shortName": "Jackson, TN",
+      "type": "metro",
+      "states": [
+        "TN"
+      ],
+      "primaryState": "TN",
+      "priceParity": {
+        "allItems": 0.8552,
+        "goods": 0.9625,
+        "housing": 0.5657,
+        "utilities": 0.7262,
+        "otherServices": 0.9514
+      }
+    },
+    "27260": {
+      "id": "27260",
+      "name": "Jacksonville, FL",
+      "shortName": "Jacksonville, FL",
+      "type": "metro",
+      "states": [
+        "FL"
+      ],
+      "primaryState": "FL",
+      "priceParity": {
+        "allItems": 0.9948,
+        "goods": 0.9624,
+        "housing": 1.0978,
+        "utilities": 0.8751,
+        "otherServices": 0.9886
+      }
+    },
+    "27340": {
+      "id": "27340",
+      "name": "Jacksonville, NC",
+      "shortName": "Jacksonville, NC",
+      "type": "metro",
+      "states": [
+        "NC"
+      ],
+      "primaryState": "NC",
+      "priceParity": {
+        "allItems": 0.9208,
+        "goods": 0.9662,
+        "housing": 0.7212,
+        "utilities": 0.8724,
+        "otherServices": 0.9819
+      }
+    },
+    "27500": {
+      "id": "27500",
+      "name": "Janesville-Beloit, WI",
+      "shortName": "Janesville, WI",
+      "type": "metro",
+      "states": [
+        "WI"
+      ],
+      "primaryState": "WI",
+      "priceParity": {
+        "allItems": 0.937,
+        "goods": 0.9379,
+        "housing": 0.7955,
+        "utilities": 0.9036,
+        "otherServices": 0.9941
+      }
+    },
+    "27620": {
+      "id": "27620",
+      "name": "Jefferson City, MO",
+      "shortName": "Jefferson City, MO",
+      "type": "metro",
+      "states": [
+        "MO"
+      ],
+      "primaryState": "MO",
+      "priceParity": {
+        "allItems": 0.8797,
+        "goods": 0.9419,
+        "housing": 0.6212,
+        "utilities": 0.855,
+        "otherServices": 0.9303
+      }
+    },
+    "27740": {
+      "id": "27740",
+      "name": "Johnson City, TN",
+      "shortName": "Johnson City, TN",
+      "type": "metro",
+      "states": [
+        "TN"
+      ],
+      "primaryState": "TN",
+      "priceParity": {
+        "allItems": 0.8793,
+        "goods": 0.9625,
+        "housing": 0.6318,
+        "utilities": 0.7193,
+        "otherServices": 0.9514
+      }
+    },
+    "27780": {
+      "id": "27780",
+      "name": "Johnstown, PA",
+      "shortName": "Johnstown, PA",
+      "type": "metro",
+      "states": [
+        "PA"
+      ],
+      "primaryState": "PA",
+      "priceParity": {
+        "allItems": 0.8593,
+        "goods": 1.0068,
+        "housing": 0.4233,
+        "utilities": 1.0887,
+        "otherServices": 0.9773
+      }
+    },
+    "27860": {
+      "id": "27860",
+      "name": "Jonesboro, AR",
+      "shortName": "Jonesboro, AR",
+      "type": "metro",
+      "states": [
+        "AR"
+      ],
+      "primaryState": "AR",
+      "priceParity": {
+        "allItems": 0.8588,
+        "goods": 0.9358,
+        "housing": 0.5385,
+        "utilities": 0.7497,
+        "otherServices": 0.9529
+      }
+    },
+    "27900": {
+      "id": "27900",
+      "name": "Joplin, MO-KS",
+      "shortName": "Joplin, MO",
+      "type": "metro",
+      "states": [
+        "KS",
+        "MO"
+      ],
+      "primaryState": "MO",
+      "priceParity": {
+        "allItems": 0.8572,
+        "goods": 0.9418,
+        "housing": 0.5398,
+        "utilities": 0.8587,
+        "otherServices": 0.9309
+      }
+    },
+    "27980": {
+      "id": "27980",
+      "name": "Kahului-Wailuku, HI",
+      "shortName": "Kahului, HI",
+      "type": "metro",
+      "states": [
+        "HI"
+      ],
+      "primaryState": "HI",
+      "priceParity": {
+        "allItems": 1.0939,
+        "goods": 1.1156,
+        "housing": 1.1918,
+        "utilities": 1.9059,
+        "otherServices": 1.029
+      }
+    },
+    "28020": {
+      "id": "28020",
+      "name": "Kalamazoo-Portage, MI",
+      "shortName": "Kalamazoo, MI",
+      "type": "metro",
+      "states": [
+        "MI"
+      ],
+      "primaryState": "MI",
+      "priceParity": {
+        "allItems": 0.9484,
+        "goods": 0.9371,
+        "housing": 0.8159,
+        "utilities": 0.9927,
+        "otherServices": 0.9956
+      }
+    },
+    "28100": {
+      "id": "28100",
+      "name": "Kankakee, IL",
+      "shortName": "Kankakee, IL",
+      "type": "metro",
+      "states": [
+        "IL"
+      ],
+      "primaryState": "IL",
+      "priceParity": {
+        "allItems": 0.9639,
+        "goods": 0.9364,
+        "housing": 0.9286,
+        "utilities": 0.8942,
+        "otherServices": 0.9959
+      }
+    },
+    "28140": {
+      "id": "28140",
+      "name": "Kansas City, MO-KS",
+      "shortName": "Kansas City, MO",
+      "type": "metro",
+      "states": [
+        "KS",
+        "MO"
+      ],
+      "primaryState": "MO",
+      "priceParity": {
+        "allItems": 0.9254,
+        "goods": 0.9412,
+        "housing": 0.8664,
+        "utilities": 0.8903,
+        "otherServices": 0.9337
+      }
+    },
+    "28420": {
+      "id": "28420",
+      "name": "Kennewick-Richland, WA",
+      "shortName": "Kennewick, WA",
+      "type": "metro",
+      "states": [
+        "WA"
+      ],
+      "primaryState": "WA",
+      "priceParity": {
+        "allItems": 1.0008,
+        "goods": 1.0503,
+        "housing": 0.9482,
+        "utilities": 0.9356,
+        "otherServices": 0.9947
+      }
+    },
+    "28450": {
+      "id": "28450",
+      "name": "Kenosha, WI",
+      "shortName": "Kenosha, WI",
+      "type": "metro",
+      "states": [
+        "WI"
+      ],
+      "primaryState": "WI",
+      "priceParity": {
+        "allItems": 1.0112,
+        "goods": 1.0619,
+        "housing": 0.9581,
+        "utilities": 0.8586,
+        "otherServices": 1.0033
+      }
+    },
+    "28660": {
+      "id": "28660",
+      "name": "Killeen-Temple, TX",
+      "shortName": "Killeen, TX",
+      "type": "metro",
+      "states": [
+        "TX"
+      ],
+      "primaryState": "TX",
+      "priceParity": {
+        "allItems": 0.9113,
+        "goods": 0.9376,
+        "housing": 0.7788,
+        "utilities": 0.8124,
+        "otherServices": 0.9624
+      }
+    },
+    "28700": {
+      "id": "28700",
+      "name": "Kingsport-Bristol, TN-VA",
+      "shortName": "Kingsport, TN",
+      "type": "metro",
+      "states": [
+        "TN",
+        "VA"
+      ],
+      "primaryState": "TN",
+      "priceParity": {
+        "allItems": 0.8645,
+        "goods": 0.9624,
+        "housing": 0.565,
+        "utilities": 0.7591,
+        "otherServices": 0.9581
+      }
+    },
+    "28740": {
+      "id": "28740",
+      "name": "Kingston, NY",
+      "shortName": "Kingston, NY",
+      "type": "metro",
+      "states": [
+        "NY"
+      ],
+      "primaryState": "NY",
+      "priceParity": {
+        "allItems": 1.0071,
+        "goods": 0.9969,
+        "housing": 1.1017,
+        "utilities": 1.3359,
+        "otherServices": 0.9775
+      }
+    },
+    "28880": {
+      "id": "28880",
+      "name": "Kiryas Joel-Poughkeepsie-Newburgh, NY",
+      "shortName": "Kiryas Joel, NY",
+      "type": "metro",
+      "states": [
+        "NY"
+      ],
+      "primaryState": "NY",
+      "priceParity": {
+        "allItems": 1.0942,
+        "goods": 1.1025,
+        "housing": 1.1576,
+        "utilities": 1.3676,
+        "otherServices": 1.0654
+      }
+    },
+    "28940": {
+      "id": "28940",
+      "name": "Knoxville, TN",
+      "shortName": "Knoxville, TN",
+      "type": "metro",
+      "states": [
+        "TN"
+      ],
+      "primaryState": "TN",
+      "priceParity": {
+        "allItems": 0.9257,
+        "goods": 0.9625,
+        "housing": 0.8278,
+        "utilities": 0.7187,
+        "otherServices": 0.9514
+      }
+    },
+    "29020": {
+      "id": "29020",
+      "name": "Kokomo, IN",
+      "shortName": "Kokomo, IN",
+      "type": "metro",
+      "states": [
+        "IN"
+      ],
+      "primaryState": "IN",
+      "priceParity": {
+        "allItems": 0.8965,
+        "goods": 0.9432,
+        "housing": 0.5925,
+        "utilities": 0.8626,
+        "otherServices": 0.9914
+      }
+    },
+    "29100": {
+      "id": "29100",
+      "name": "La Crosse-Onalaska, WI-MN",
+      "shortName": "La Crosse, WI",
+      "type": "metro",
+      "states": [
+        "MN",
+        "WI"
+      ],
+      "primaryState": "WI",
+      "priceParity": {
+        "allItems": 0.9177,
+        "goods": 0.938,
+        "housing": 0.6939,
+        "utilities": 0.8953,
+        "otherServices": 0.9945
+      }
+    },
+    "29180": {
+      "id": "29180",
+      "name": "Lafayette, LA",
+      "shortName": "Lafayette, LA",
+      "type": "metro",
+      "states": [
+        "LA"
+      ],
+      "primaryState": "LA",
+      "priceParity": {
+        "allItems": 0.8721,
+        "goods": 0.9369,
+        "housing": 0.5885,
+        "utilities": 0.7122,
+        "otherServices": 0.957
+      }
+    },
+    "29200": {
+      "id": "29200",
+      "name": "Lafayette-West Lafayette, IN",
+      "shortName": "Lafayette, IN",
+      "type": "metro",
+      "states": [
+        "IN"
+      ],
+      "primaryState": "IN",
+      "priceParity": {
+        "allItems": 0.9343,
+        "goods": 0.9432,
+        "housing": 0.7644,
+        "utilities": 0.8638,
+        "otherServices": 0.9914
+      }
+    },
+    "29340": {
+      "id": "29340",
+      "name": "Lake Charles, LA",
+      "shortName": "Lake Charles, LA",
+      "type": "metro",
+      "states": [
+        "LA"
+      ],
+      "primaryState": "LA",
+      "priceParity": {
+        "allItems": 0.8585,
+        "goods": 0.9369,
+        "housing": 0.5175,
+        "utilities": 0.7174,
+        "otherServices": 0.957
+      }
+    },
+    "29420": {
+      "id": "29420",
+      "name": "Lake Havasu City-Kingman, AZ",
+      "shortName": "Lake Havasu City, AZ",
+      "type": "metro",
+      "states": [
+        "AZ"
+      ],
+      "primaryState": "AZ",
+      "priceParity": {
+        "allItems": 0.941,
+        "goods": 0.9624,
+        "housing": 0.7977,
+        "utilities": 0.8872,
+        "otherServices": 0.9984
+      }
+    },
+    "29460": {
+      "id": "29460",
+      "name": "Lakeland-Winter Haven, FL",
+      "shortName": "Lakeland, FL",
+      "type": "metro",
+      "states": [
+        "FL"
+      ],
+      "primaryState": "FL",
+      "priceParity": {
+        "allItems": 0.9714,
+        "goods": 0.9624,
+        "housing": 0.9594,
+        "utilities": 0.8688,
+        "otherServices": 0.9886
+      }
+    },
+    "29540": {
+      "id": "29540",
+      "name": "Lancaster, PA",
+      "shortName": "Lancaster, PA",
+      "type": "metro",
+      "states": [
+        "PA"
+      ],
+      "primaryState": "PA",
+      "priceParity": {
+        "allItems": 0.9826,
+        "goods": 1.0068,
+        "housing": 0.9381,
+        "utilities": 1.0727,
+        "otherServices": 0.9773
+      }
+    },
+    "29620": {
+      "id": "29620",
+      "name": "Lansing-East Lansing, MI",
+      "shortName": "Lansing, MI",
+      "type": "metro",
+      "states": [
+        "MI"
+      ],
+      "primaryState": "MI",
+      "priceParity": {
+        "allItems": 0.9499,
+        "goods": 0.9371,
+        "housing": 0.8347,
+        "utilities": 0.9552,
+        "otherServices": 0.9956
+      }
+    },
+    "29700": {
+      "id": "29700",
+      "name": "Laredo, TX",
+      "shortName": "Laredo, TX",
+      "type": "metro",
+      "states": [
+        "TX"
+      ],
+      "primaryState": "TX",
+      "priceParity": {
+        "allItems": 0.8696,
+        "goods": 0.9376,
+        "housing": 0.5975,
+        "utilities": 0.8061,
+        "otherServices": 0.9624
+      }
+    },
+    "29740": {
+      "id": "29740",
+      "name": "Las Cruces, NM",
+      "shortName": "Las Cruces, NM",
+      "type": "metro",
+      "states": [
+        "NM"
+      ],
+      "primaryState": "NM",
+      "priceParity": {
+        "allItems": 0.9021,
+        "goods": 0.9614,
+        "housing": 0.6298,
+        "utilities": 0.7792,
+        "otherServices": 0.9854
+      }
+    },
+    "29820": {
+      "id": "29820",
+      "name": "Las Vegas-Henderson-North Las Vegas, NV",
+      "shortName": "Las Vegas, NV",
+      "type": "metro",
+      "states": [
+        "NV"
+      ],
+      "primaryState": "NV",
+      "priceParity": {
+        "allItems": 1.0022,
+        "goods": 0.9627,
+        "housing": 1.1554,
+        "utilities": 0.9065,
+        "otherServices": 0.9874
+      }
+    },
+    "29940": {
+      "id": "29940",
+      "name": "Lawrence, KS",
+      "shortName": "Lawrence, KS",
+      "type": "metro",
+      "states": [
+        "KS"
+      ],
+      "primaryState": "KS",
+      "priceParity": {
+        "allItems": 0.9024,
+        "goods": 0.9403,
+        "housing": 0.7164,
+        "utilities": 0.8929,
+        "otherServices": 0.9382
+      }
+    },
+    "30020": {
+      "id": "30020",
+      "name": "Lawton, OK",
+      "shortName": "Lawton, OK",
+      "type": "metro",
+      "states": [
+        "OK"
+      ],
+      "primaryState": "OK",
+      "priceParity": {
+        "allItems": 0.8594,
+        "goods": 0.9378,
+        "housing": 0.5739,
+        "utilities": 0.7298,
+        "otherServices": 0.9546
+      }
+    },
+    "30140": {
+      "id": "30140",
+      "name": "Lebanon, PA",
+      "shortName": "Lebanon, PA",
+      "type": "metro",
+      "states": [
+        "PA"
+      ],
+      "primaryState": "PA",
+      "priceParity": {
+        "allItems": 0.9321,
+        "goods": 1.0068,
+        "housing": 0.6604,
+        "utilities": 1.0844,
+        "otherServices": 0.9773
+      }
+    },
+    "30300": {
+      "id": "30300",
+      "name": "Lewiston, ID-WA",
+      "shortName": "Lewiston, ID",
+      "type": "metro",
+      "states": [
+        "ID",
+        "WA"
+      ],
+      "primaryState": "ID",
+      "priceParity": {
+        "allItems": 0.9116,
+        "goods": 0.9622,
+        "housing": 0.7192,
+        "utilities": 0.7259,
+        "otherServices": 0.9936
+      }
+    },
+    "30340": {
+      "id": "30340",
+      "name": "Lewiston-Auburn, ME",
+      "shortName": "Lewiston, ME",
+      "type": "metro",
+      "states": [
+        "ME"
+      ],
+      "primaryState": "ME",
+      "priceParity": {
+        "allItems": 0.9474,
+        "goods": 0.9717,
+        "housing": 0.69,
+        "utilities": 1.3438,
+        "otherServices": 1.0319
+      }
+    },
+    "30460": {
+      "id": "30460",
+      "name": "Lexington-Fayette, KY",
+      "shortName": "Lexington, KY",
+      "type": "metro",
+      "states": [
+        "KY"
+      ],
+      "primaryState": "KY",
+      "priceParity": {
+        "allItems": 0.9289,
+        "goods": 0.9625,
+        "housing": 0.7709,
+        "utilities": 0.7459,
+        "otherServices": 0.9689
+      }
+    },
+    "30500": {
+      "id": "30500",
+      "name": "Lexington Park, MD",
+      "shortName": "Lexington Park, MD",
+      "type": "metro",
+      "states": [
+        "MD"
+      ],
+      "primaryState": "MD",
+      "priceParity": {
+        "allItems": 1.0076,
+        "goods": 0.9966,
+        "housing": 1.0381,
+        "utilities": 1.064,
+        "otherServices": 1.0032
+      }
+    },
+    "30620": {
+      "id": "30620",
+      "name": "Lima, OH",
+      "shortName": "Lima, OH",
+      "type": "metro",
+      "states": [
+        "OH"
+      ],
+      "primaryState": "OH",
+      "priceParity": {
+        "allItems": 0.8967,
+        "goods": 0.9363,
+        "housing": 0.5727,
+        "utilities": 0.9581,
+        "otherServices": 0.9894
+      }
+    },
+    "30700": {
+      "id": "30700",
+      "name": "Lincoln, NE",
+      "shortName": "Lincoln, NE",
+      "type": "metro",
+      "states": [
+        "NE"
+      ],
+      "primaryState": "NE",
+      "priceParity": {
+        "allItems": 0.9158,
+        "goods": 0.941,
+        "housing": 0.8421,
+        "utilities": 0.7682,
+        "otherServices": 0.9298
+      }
+    },
+    "30780": {
+      "id": "30780",
+      "name": "Little Rock-North Little Rock-Conway, AR",
+      "shortName": "Little Rock, AR",
+      "type": "metro",
+      "states": [
+        "AR"
+      ],
+      "primaryState": "AR",
+      "priceParity": {
+        "allItems": 0.8936,
+        "goods": 0.9358,
+        "housing": 0.683,
+        "utilities": 0.7464,
+        "otherServices": 0.9529
+      }
+    },
+    "30860": {
+      "id": "30860",
+      "name": "Logan, UT-ID",
+      "shortName": "Logan, UT",
+      "type": "metro",
+      "states": [
+        "ID",
+        "UT"
+      ],
+      "primaryState": "UT",
+      "priceParity": {
+        "allItems": 0.9593,
+        "goods": 0.9643,
+        "housing": 0.9096,
+        "utilities": 0.7786,
+        "otherServices": 0.9896
+      }
+    },
+    "30980": {
+      "id": "30980",
+      "name": "Longview, TX",
+      "shortName": "Longview, TX",
+      "type": "metro",
+      "states": [
+        "TX"
+      ],
+      "primaryState": "TX",
+      "priceParity": {
+        "allItems": 0.8949,
+        "goods": 0.9376,
+        "housing": 0.6675,
+        "utilities": 0.8346,
+        "otherServices": 0.9624
+      }
+    },
+    "31020": {
+      "id": "31020",
+      "name": "Longview-Kelso, WA",
+      "shortName": "Longview, WA",
+      "type": "metro",
+      "states": [
+        "WA"
+      ],
+      "primaryState": "WA",
+      "priceParity": {
+        "allItems": 0.9755,
+        "goods": 1.0503,
+        "housing": 0.8254,
+        "utilities": 0.9846,
+        "otherServices": 0.9947
+      }
+    },
+    "31080": {
+      "id": "31080",
+      "name": "Los Angeles-Long Beach-Anaheim, CA",
+      "shortName": "Los Angeles, CA",
+      "type": "metro",
+      "states": [
+        "CA"
+      ],
+      "primaryState": "CA",
+      "priceParity": {
+        "allItems": 1.1357,
+        "goods": 1.0662,
+        "housing": 1.7043,
+        "utilities": 1.5859,
+        "otherServices": 1.0436
+      }
+    },
+    "31140": {
+      "id": "31140",
+      "name": "Louisville/Jefferson County, KY-IN",
+      "shortName": "Louisville/Jefferson County, KY",
+      "type": "metro",
+      "states": [
+        "IN",
+        "KY"
+      ],
+      "primaryState": "KY",
+      "priceParity": {
+        "allItems": 0.9307,
+        "goods": 0.9623,
+        "housing": 0.7856,
+        "utilities": 0.7496,
+        "otherServices": 0.968
+      }
+    },
+    "31180": {
+      "id": "31180",
+      "name": "Lubbock, TX",
+      "shortName": "Lubbock, TX",
+      "type": "metro",
+      "states": [
+        "TX"
+      ],
+      "primaryState": "TX",
+      "priceParity": {
+        "allItems": 0.9132,
+        "goods": 0.9376,
+        "housing": 0.7636,
+        "utilities": 0.8277,
+        "otherServices": 0.9624
+      }
+    },
+    "31340": {
+      "id": "31340",
+      "name": "Lynchburg, VA",
+      "shortName": "Lynchburg, VA",
+      "type": "metro",
+      "states": [
+        "VA"
+      ],
+      "primaryState": "VA",
+      "priceParity": {
+        "allItems": 0.8936,
+        "goods": 0.9677,
+        "housing": 0.6391,
+        "utilities": 0.8777,
+        "otherServices": 0.9861
+      }
+    },
+    "31420": {
+      "id": "31420",
+      "name": "Macon-Bibb County, GA",
+      "shortName": "Macon, GA",
+      "type": "metro",
+      "states": [
+        "GA"
+      ],
+      "primaryState": "GA",
+      "priceParity": {
+        "allItems": 0.8853,
+        "goods": 0.9627,
+        "housing": 0.5892,
+        "utilities": 0.8948,
+        "otherServices": 0.9867
+      }
+    },
+    "31540": {
+      "id": "31540",
+      "name": "Madison, WI",
+      "shortName": "Madison, WI",
+      "type": "metro",
+      "states": [
+        "WI"
+      ],
+      "primaryState": "WI",
+      "priceParity": {
+        "allItems": 0.9729,
+        "goods": 0.9379,
+        "housing": 0.9975,
+        "utilities": 0.8982,
+        "otherServices": 0.9941
+      }
+    },
+    "31700": {
+      "id": "31700",
+      "name": "Manchester-Nashua, NH",
+      "shortName": "Manchester, NH",
+      "type": "metro",
+      "states": [
+        "NH"
+      ],
+      "primaryState": "NH",
+      "priceParity": {
+        "allItems": 1.0566,
+        "goods": 0.9769,
+        "housing": 1.3422,
+        "utilities": 1.3354,
+        "otherServices": 1.0369
+      }
+    },
+    "31740": {
+      "id": "31740",
+      "name": "Manhattan, KS",
+      "shortName": "Manhattan, KS",
+      "type": "metro",
+      "states": [
+        "KS"
+      ],
+      "primaryState": "KS",
+      "priceParity": {
+        "allItems": 0.9016,
+        "goods": 0.9403,
+        "housing": 0.7197,
+        "utilities": 0.8836,
+        "otherServices": 0.9382
+      }
+    },
+    "31860": {
+      "id": "31860",
+      "name": "Mankato, MN",
+      "shortName": "Mankato, MN",
+      "type": "metro",
+      "states": [
+        "MN"
+      ],
+      "primaryState": "MN",
+      "priceParity": {
+        "allItems": 0.9095,
+        "goods": 0.9543,
+        "housing": 0.7988,
+        "utilities": 0.8705,
+        "otherServices": 0.9219
+      }
+    },
+    "31900": {
+      "id": "31900",
+      "name": "Mansfield, OH",
+      "shortName": "Mansfield, OH",
+      "type": "metro",
+      "states": [
+        "OH"
+      ],
+      "primaryState": "OH",
+      "priceParity": {
+        "allItems": 0.8887,
+        "goods": 0.9363,
+        "housing": 0.5492,
+        "utilities": 0.9625,
+        "otherServices": 0.9894
+      }
+    },
+    "32580": {
+      "id": "32580",
+      "name": "McAllen-Edinburg-Mission, TX",
+      "shortName": "McAllen, TX",
+      "type": "metro",
+      "states": [
+        "TX"
+      ],
+      "primaryState": "TX",
+      "priceParity": {
+        "allItems": 0.8589,
+        "goods": 0.9376,
+        "housing": 0.5589,
+        "utilities": 0.8119,
+        "otherServices": 0.9624
+      }
+    },
+    "32780": {
+      "id": "32780",
+      "name": "Medford, OR",
+      "shortName": "Medford, OR",
+      "type": "metro",
+      "states": [
+        "OR"
+      ],
+      "primaryState": "OR",
+      "priceParity": {
+        "allItems": 1.0143,
+        "goods": 1.0526,
+        "housing": 0.9766,
+        "utilities": 1.0227,
+        "otherServices": 1.003
+      }
+    },
+    "32820": {
+      "id": "32820",
+      "name": "Memphis, TN-MS-AR",
+      "shortName": "Memphis, TN",
+      "type": "metro",
+      "states": [
+        "AR",
+        "MS",
+        "TN"
+      ],
+      "primaryState": "TN",
+      "priceParity": {
+        "allItems": 0.9218,
+        "goods": 0.9622,
+        "housing": 0.7981,
+        "utilities": 0.741,
+        "otherServices": 0.9537
+      }
+    },
+    "32900": {
+      "id": "32900",
+      "name": "Merced, CA",
+      "shortName": "Merced, CA",
+      "type": "metro",
+      "states": [
+        "CA"
+      ],
+      "primaryState": "CA",
+      "priceParity": {
+        "allItems": 0.9828,
+        "goods": 1.0517,
+        "housing": 0.7863,
+        "utilities": 1.5834,
+        "otherServices": 1.0027
+      }
+    },
+    "33100": {
+      "id": "33100",
+      "name": "Miami-Fort Lauderdale-West Palm Beach, FL",
+      "shortName": "Miami, FL",
+      "type": "metro",
+      "states": [
+        "FL"
+      ],
+      "primaryState": "FL",
+      "priceParity": {
+        "allItems": 1.1416,
+        "goods": 1.0356,
+        "housing": 1.5555,
+        "utilities": 0.9724,
+        "otherServices": 1.0911
+      }
+    },
+    "33140": {
+      "id": "33140",
+      "name": "Michigan City-La Porte, IN",
+      "shortName": "Michigan City, IN",
+      "type": "metro",
+      "states": [
+        "IN"
+      ],
+      "primaryState": "IN",
+      "priceParity": {
+        "allItems": 0.9168,
+        "goods": 0.9432,
+        "housing": 0.6845,
+        "utilities": 0.8642,
+        "otherServices": 0.9914
+      }
+    },
+    "33220": {
+      "id": "33220",
+      "name": "Midland, MI",
+      "shortName": "Midland, MI",
+      "type": "metro",
+      "states": [
+        "MI"
+      ],
+      "primaryState": "MI",
+      "priceParity": {
+        "allItems": 0.9192,
+        "goods": 0.9371,
+        "housing": 0.6668,
+        "utilities": 0.9522,
+        "otherServices": 0.9956
+      }
+    },
+    "33260": {
+      "id": "33260",
+      "name": "Midland, TX",
+      "shortName": "Midland, TX",
+      "type": "metro",
+      "states": [
+        "TX"
+      ],
+      "primaryState": "TX",
+      "priceParity": {
+        "allItems": 0.9578,
+        "goods": 0.9376,
+        "housing": 1.015,
+        "utilities": 0.8324,
+        "otherServices": 0.9624
+      }
+    },
+    "33340": {
+      "id": "33340",
+      "name": "Milwaukee-Waukesha, WI",
+      "shortName": "Milwaukee, WI",
+      "type": "metro",
+      "states": [
+        "WI"
+      ],
+      "primaryState": "WI",
+      "priceParity": {
+        "allItems": 0.9694,
+        "goods": 0.9379,
+        "housing": 0.9711,
+        "utilities": 0.9159,
+        "otherServices": 0.9941
+      }
+    },
+    "33460": {
+      "id": "33460",
+      "name": "Minneapolis-St. Paul-Bloomington, MN-WI",
+      "shortName": "Minneapolis, MN",
+      "type": "metro",
+      "states": [
+        "MN",
+        "WI"
+      ],
+      "primaryState": "MN",
+      "priceParity": {
+        "allItems": 1.0482,
+        "goods": 1.0307,
+        "housing": 1.1184,
+        "utilities": 0.9349,
+        "otherServices": 1.0442
+      }
+    },
+    "33500": {
+      "id": "33500",
+      "name": "Minot, ND",
+      "shortName": "Minot, ND",
+      "type": "metro",
+      "states": [
+        "ND"
+      ],
+      "primaryState": "ND",
+      "priceParity": {
+        "allItems": 0.8703,
+        "goods": 0.957,
+        "housing": 0.6323,
+        "utilities": 0.729,
+        "otherServices": 0.9116
+      }
+    },
+    "33540": {
+      "id": "33540",
+      "name": "Missoula, MT",
+      "shortName": "Missoula, MT",
+      "type": "metro",
+      "states": [
+        "MT"
+      ],
+      "primaryState": "MT",
+      "priceParity": {
+        "allItems": 0.9644,
+        "goods": 0.9601,
+        "housing": 0.9494,
+        "utilities": 0.7208,
+        "otherServices": 0.9872
+      }
+    },
+    "33660": {
+      "id": "33660",
+      "name": "Mobile, AL",
+      "shortName": "Mobile, AL",
+      "type": "metro",
+      "states": [
+        "AL"
+      ],
+      "primaryState": "AL",
+      "priceParity": {
+        "allItems": 0.881,
+        "goods": 0.964,
+        "housing": 0.6012,
+        "utilities": 0.8418,
+        "otherServices": 0.9669
+      }
+    },
+    "33700": {
+      "id": "33700",
+      "name": "Modesto, CA",
+      "shortName": "Modesto, CA",
+      "type": "metro",
+      "states": [
+        "CA"
+      ],
+      "primaryState": "CA",
+      "priceParity": {
+        "allItems": 1.0411,
+        "goods": 1.0517,
+        "housing": 1.0848,
+        "utilities": 1.5226,
+        "otherServices": 1.0027
+      }
+    },
+    "33740": {
+      "id": "33740",
+      "name": "Monroe, LA",
+      "shortName": "Monroe, LA",
+      "type": "metro",
+      "states": [
+        "LA"
+      ],
+      "primaryState": "LA",
+      "priceParity": {
+        "allItems": 0.836,
+        "goods": 0.9369,
+        "housing": 0.4281,
+        "utilities": 0.7222,
+        "otherServices": 0.957
+      }
+    },
+    "33780": {
+      "id": "33780",
+      "name": "Monroe, MI",
+      "shortName": "Monroe, MI",
+      "type": "metro",
+      "states": [
+        "MI"
+      ],
+      "primaryState": "MI",
+      "priceParity": {
+        "allItems": 0.9349,
+        "goods": 0.9371,
+        "housing": 0.7464,
+        "utilities": 0.9368,
+        "otherServices": 0.9956
+      }
+    },
+    "33860": {
+      "id": "33860",
+      "name": "Montgomery, AL",
+      "shortName": "Montgomery, AL",
+      "type": "metro",
+      "states": [
+        "AL"
+      ],
+      "primaryState": "AL",
+      "priceParity": {
+        "allItems": 0.8968,
+        "goods": 0.964,
+        "housing": 0.6435,
+        "utilities": 0.8491,
+        "otherServices": 0.9669
+      }
+    },
+    "34060": {
+      "id": "34060",
+      "name": "Morgantown, WV",
+      "shortName": "Morgantown, WV",
+      "type": "metro",
+      "states": [
+        "WV"
+      ],
+      "primaryState": "WV",
+      "priceParity": {
+        "allItems": 0.9332,
+        "goods": 0.9627,
+        "housing": 0.6913,
+        "utilities": 0.9253,
+        "otherServices": 0.9981
+      }
+    },
+    "34100": {
+      "id": "34100",
+      "name": "Morristown, TN",
+      "shortName": "Morristown, TN",
+      "type": "metro",
+      "states": [
+        "TN"
+      ],
+      "primaryState": "TN",
+      "priceParity": {
+        "allItems": 0.8636,
+        "goods": 0.9625,
+        "housing": 0.5902,
+        "utilities": 0.7243,
+        "otherServices": 0.9514
+      }
+    },
+    "34580": {
+      "id": "34580",
+      "name": "Mount Vernon-Anacortes, WA",
+      "shortName": "Mount Vernon, WA",
+      "type": "metro",
+      "states": [
+        "WA"
+      ],
+      "primaryState": "WA",
+      "priceParity": {
+        "allItems": 1.0244,
+        "goods": 1.0503,
+        "housing": 1.0817,
+        "utilities": 0.9601,
+        "otherServices": 0.9947
+      }
+    },
+    "34620": {
+      "id": "34620",
+      "name": "Muncie, IN",
+      "shortName": "Muncie, IN",
+      "type": "metro",
+      "states": [
+        "IN"
+      ],
+      "primaryState": "IN",
+      "priceParity": {
+        "allItems": 0.8815,
+        "goods": 0.9432,
+        "housing": 0.5747,
+        "utilities": 0.8644,
+        "otherServices": 0.9914
+      }
+    },
+    "34740": {
+      "id": "34740",
+      "name": "Muskegon-Norton Shores, MI",
+      "shortName": "Muskegon, MI",
+      "type": "metro",
+      "states": [
+        "MI"
+      ],
+      "primaryState": "MI",
+      "priceParity": {
+        "allItems": 0.9252,
+        "goods": 0.9371,
+        "housing": 0.7423,
+        "utilities": 0.9281,
+        "otherServices": 0.9956
+      }
+    },
+    "34820": {
+      "id": "34820",
+      "name": "Myrtle Beach-Conway-North Myrtle Beach, SC",
+      "shortName": "Myrtle Beach, SC",
+      "type": "metro",
+      "states": [
+        "SC"
+      ],
+      "primaryState": "SC",
+      "priceParity": {
+        "allItems": 0.9364,
+        "goods": 0.9634,
+        "housing": 0.8313,
+        "utilities": 0.8799,
+        "otherServices": 0.9828
+      }
+    },
+    "34900": {
+      "id": "34900",
+      "name": "Napa, CA",
+      "shortName": "Napa, CA",
+      "type": "metro",
+      "states": [
+        "CA"
+      ],
+      "primaryState": "CA",
+      "priceParity": {
+        "allItems": 1.1255,
+        "goods": 1.0517,
+        "housing": 1.9744,
+        "utilities": 1.5654,
+        "otherServices": 1.0027
+      }
+    },
+    "34940": {
+      "id": "34940",
+      "name": "Naples-Marco Island, FL",
+      "shortName": "Naples, FL",
+      "type": "metro",
+      "states": [
+        "FL"
+      ],
+      "primaryState": "FL",
+      "priceParity": {
+        "allItems": 1.032,
+        "goods": 0.9624,
+        "housing": 1.2944,
+        "utilities": 0.8776,
+        "otherServices": 0.9886
+      }
+    },
+    "34980": {
+      "id": "34980",
+      "name": "Nashville-Davidson--Murfreesboro--Franklin, TN",
+      "shortName": "Nashville, TN",
+      "type": "metro",
+      "states": [
+        "TN"
+      ],
+      "primaryState": "TN",
+      "priceParity": {
+        "allItems": 0.9634,
+        "goods": 0.9625,
+        "housing": 1.0463,
+        "utilities": 0.7195,
+        "otherServices": 0.9514
+      }
+    },
+    "35300": {
+      "id": "35300",
+      "name": "New Haven, CT",
+      "shortName": "New Haven, CT",
+      "type": "metro",
+      "states": [
+        "CT"
+      ],
+      "primaryState": "CT",
+      "priceParity": {
+        "allItems": 1.0456,
+        "goods": 0.9733,
+        "housing": 1.2429,
+        "utilities": 1.4485,
+        "otherServices": 1.0266
+      }
+    },
+    "35380": {
+      "id": "35380",
+      "name": "New Orleans-Metairie, LA",
+      "shortName": "New Orleans, LA",
+      "type": "metro",
+      "states": [
+        "LA"
+      ],
+      "primaryState": "LA",
+      "priceParity": {
+        "allItems": 0.926,
+        "goods": 0.9369,
+        "housing": 0.8601,
+        "utilities": 0.7123,
+        "otherServices": 0.957
+      }
+    },
+    "35620": {
+      "id": "35620",
+      "name": "New York-Newark-Jersey City, NY-NJ",
+      "shortName": "New York, NY",
+      "type": "metro",
+      "states": [
+        "NJ",
+        "NY"
+      ],
+      "primaryState": "NY",
+      "priceParity": {
+        "allItems": 1.1256,
+        "goods": 1.1026,
+        "housing": 1.4862,
+        "utilities": 1.2702,
+        "otherServices": 1.0584
+      }
+    },
+    "35660": {
+      "id": "35660",
+      "name": "Niles, MI",
+      "shortName": "Niles, MI",
+      "type": "metro",
+      "states": [
+        "MI"
+      ],
+      "primaryState": "MI",
+      "priceParity": {
+        "allItems": 0.9237,
+        "goods": 0.9371,
+        "housing": 0.716,
+        "utilities": 0.9596,
+        "otherServices": 0.9956
+      }
+    },
+    "35840": {
+      "id": "35840",
+      "name": "North Port-Bradenton-Sarasota, FL",
+      "shortName": "North Port, FL",
+      "type": "metro",
+      "states": [
+        "FL"
+      ],
+      "primaryState": "FL",
+      "priceParity": {
+        "allItems": 1.0242,
+        "goods": 0.9624,
+        "housing": 1.2795,
+        "utilities": 0.8817,
+        "otherServices": 0.9886
+      }
+    },
+    "35980": {
+      "id": "35980",
+      "name": "Norwich-New London-Willimantic, CT",
+      "shortName": "Norwich, CT",
+      "type": "metro",
+      "states": [
+        "CT"
+      ],
+      "primaryState": "CT",
+      "priceParity": {
+        "allItems": 1.0044,
+        "goods": 0.9733,
+        "housing": 0.9366,
+        "utilities": 1.4856,
+        "otherServices": 1.0266
+      }
+    },
+    "36100": {
+      "id": "36100",
+      "name": "Ocala, FL",
+      "shortName": "Ocala, FL",
+      "type": "metro",
+      "states": [
+        "FL"
+      ],
+      "primaryState": "FL",
+      "priceParity": {
+        "allItems": 0.9523,
+        "goods": 0.9624,
+        "housing": 0.8623,
+        "utilities": 0.8711,
+        "otherServices": 0.9886
+      }
+    },
+    "36220": {
+      "id": "36220",
+      "name": "Odessa, TX",
+      "shortName": "Odessa, TX",
+      "type": "metro",
+      "states": [
+        "TX"
+      ],
+      "primaryState": "TX",
+      "priceParity": {
+        "allItems": 0.939,
+        "goods": 0.9376,
+        "housing": 0.8971,
+        "utilities": 0.8286,
+        "otherServices": 0.9624
+      }
+    },
+    "36260": {
+      "id": "36260",
+      "name": "Ogden, UT",
+      "shortName": "Ogden, UT",
+      "type": "metro",
+      "states": [
+        "UT"
+      ],
+      "primaryState": "UT",
+      "priceParity": {
+        "allItems": 1.0035,
+        "goods": 0.9645,
+        "housing": 1.179,
+        "utilities": 0.7878,
+        "otherServices": 0.9896
+      }
+    },
+    "36420": {
+      "id": "36420",
+      "name": "Oklahoma City, OK",
+      "shortName": "Oklahoma City, OK",
+      "type": "metro",
+      "states": [
+        "OK"
+      ],
+      "primaryState": "OK",
+      "priceParity": {
+        "allItems": 0.9041,
+        "goods": 0.9378,
+        "housing": 0.7389,
+        "utilities": 0.7407,
+        "otherServices": 0.9546
+      }
+    },
+    "36500": {
+      "id": "36500",
+      "name": "Olympia-Lacey-Tumwater, WA",
+      "shortName": "Olympia, WA",
+      "type": "metro",
+      "states": [
+        "WA"
+      ],
+      "primaryState": "WA",
+      "priceParity": {
+        "allItems": 1.0367,
+        "goods": 1.0503,
+        "housing": 1.1667,
+        "utilities": 0.9171,
+        "otherServices": 0.9947
+      }
+    },
+    "36540": {
+      "id": "36540",
+      "name": "Omaha, NE-IA",
+      "shortName": "Omaha, NE",
+      "type": "metro",
+      "states": [
+        "IA",
+        "NE"
+      ],
+      "primaryState": "NE",
+      "priceParity": {
+        "allItems": 0.9191,
+        "goods": 0.9406,
+        "housing": 0.864,
+        "utilities": 0.7638,
+        "otherServices": 0.9297
+      }
+    },
+    "36740": {
+      "id": "36740",
+      "name": "Orlando-Kissimmee-Sanford, FL",
+      "shortName": "Orlando, FL",
+      "type": "metro",
+      "states": [
+        "FL"
+      ],
+      "primaryState": "FL",
+      "priceParity": {
+        "allItems": 1.0142,
+        "goods": 0.9624,
+        "housing": 1.2337,
+        "utilities": 0.872,
+        "otherServices": 0.9886
+      }
+    },
+    "36780": {
+      "id": "36780",
+      "name": "Oshkosh-Neenah, WI",
+      "shortName": "Oshkosh, WI",
+      "type": "metro",
+      "states": [
+        "WI"
+      ],
+      "primaryState": "WI",
+      "priceParity": {
+        "allItems": 0.9293,
+        "goods": 0.9379,
+        "housing": 0.7444,
+        "utilities": 0.9061,
+        "otherServices": 0.9941
+      }
+    },
+    "36980": {
+      "id": "36980",
+      "name": "Owensboro, KY",
+      "shortName": "Owensboro, KY",
+      "type": "metro",
+      "states": [
+        "KY"
+      ],
+      "primaryState": "KY",
+      "priceParity": {
+        "allItems": 0.8861,
+        "goods": 0.9625,
+        "housing": 0.557,
+        "utilities": 0.7517,
+        "otherServices": 0.9689
+      }
+    },
+    "37100": {
+      "id": "37100",
+      "name": "Oxnard-Thousand Oaks-Ventura, CA",
+      "shortName": "Oxnard, CA",
+      "type": "metro",
+      "states": [
+        "CA"
+      ],
+      "primaryState": "CA",
+      "priceParity": {
+        "allItems": 1.1053,
+        "goods": 1.0517,
+        "housing": 1.711,
+        "utilities": 1.5293,
+        "otherServices": 1.0027
+      }
+    },
+    "37140": {
+      "id": "37140",
+      "name": "Paducah, KY-IL",
+      "shortName": "Paducah, KY",
+      "type": "metro",
+      "states": [
+        "IL",
+        "KY"
+      ],
+      "primaryState": "KY",
+      "priceParity": {
+        "allItems": 0.8608,
+        "goods": 0.9603,
+        "housing": 0.4879,
+        "utilities": 0.7687,
+        "otherServices": 0.969
+      }
+    },
+    "37340": {
+      "id": "37340",
+      "name": "Palm Bay-Melbourne-Titusville, FL",
+      "shortName": "Palm Bay, FL",
+      "type": "metro",
+      "states": [
+        "FL"
+      ],
+      "primaryState": "FL",
+      "priceParity": {
+        "allItems": 1,
+        "goods": 0.9624,
+        "housing": 1.1173,
+        "utilities": 0.8806,
+        "otherServices": 0.9886
+      }
+    },
+    "37460": {
+      "id": "37460",
+      "name": "Panama City-Panama City Beach, FL",
+      "shortName": "Panama City, FL",
+      "type": "metro",
+      "states": [
+        "FL"
+      ],
+      "primaryState": "FL",
+      "priceParity": {
+        "allItems": 0.973,
+        "goods": 0.9624,
+        "housing": 0.9642,
+        "utilities": 0.8809,
+        "otherServices": 0.9886
+      }
+    },
+    "37620": {
+      "id": "37620",
+      "name": "Parkersburg-Vienna, WV",
+      "shortName": "Parkersburg, WV",
+      "type": "metro",
+      "states": [
+        "WV"
+      ],
+      "primaryState": "WV",
+      "priceParity": {
+        "allItems": 0.8707,
+        "goods": 0.9627,
+        "housing": 0.4588,
+        "utilities": 0.929,
+        "otherServices": 0.9981
+      }
+    },
+    "37860": {
+      "id": "37860",
+      "name": "Pensacola-Ferry Pass-Brent, FL",
+      "shortName": "Pensacola, FL",
+      "type": "metro",
+      "states": [
+        "FL"
+      ],
+      "primaryState": "FL",
+      "priceParity": {
+        "allItems": 0.9772,
+        "goods": 0.9624,
+        "housing": 0.9877,
+        "utilities": 0.8848,
+        "otherServices": 0.9886
+      }
+    },
+    "37900": {
+      "id": "37900",
+      "name": "Peoria, IL",
+      "shortName": "Peoria, IL",
+      "type": "metro",
+      "states": [
+        "IL"
+      ],
+      "primaryState": "IL",
+      "priceParity": {
+        "allItems": 0.9123,
+        "goods": 0.9364,
+        "housing": 0.6376,
+        "utilities": 0.905,
+        "otherServices": 0.9959
+      }
+    },
+    "37980": {
+      "id": "37980",
+      "name": "Philadelphia-Camden-Wilmington, PA-NJ-DE-MD",
+      "shortName": "Philadelphia, PA",
+      "type": "metro",
+      "states": [
+        "NJ",
+        "PA",
+        "DE",
+        "MD"
+      ],
+      "primaryState": "PA",
+      "priceParity": {
+        "allItems": 1.0255,
+        "goods": 0.9683,
+        "housing": 1.1314,
+        "utilities": 1.1439,
+        "otherServices": 1.0305
+      }
+    },
+    "38060": {
+      "id": "38060",
+      "name": "Phoenix-Mesa-Chandler, AZ",
+      "shortName": "Phoenix, AZ",
+      "type": "metro",
+      "states": [
+        "AZ"
+      ],
+      "primaryState": "AZ",
+      "priceParity": {
+        "allItems": 1.0332,
+        "goods": 0.9502,
+        "housing": 1.2124,
+        "utilities": 0.9333,
+        "otherServices": 1.0402
+      }
+    },
+    "38240": {
+      "id": "38240",
+      "name": "Pinehurst-Southern Pines, NC",
+      "shortName": "Pinehurst, NC",
+      "type": "metro",
+      "states": [
+        "NC"
+      ],
+      "primaryState": "NC",
+      "priceParity": {
+        "allItems": 0.8834,
+        "goods": 0.9662,
+        "housing": 0.5932,
+        "utilities": 0.8818,
+        "otherServices": 0.9819
+      }
+    },
+    "38300": {
+      "id": "38300",
+      "name": "Pittsburgh, PA",
+      "shortName": "Pittsburgh, PA",
+      "type": "metro",
+      "states": [
+        "PA"
+      ],
+      "primaryState": "PA",
+      "priceParity": {
+        "allItems": 0.9467,
+        "goods": 1.0068,
+        "housing": 0.7199,
+        "utilities": 1.0771,
+        "otherServices": 0.9773
+      }
+    },
+    "38340": {
+      "id": "38340",
+      "name": "Pittsfield, MA",
+      "shortName": "Pittsfield, MA",
+      "type": "metro",
+      "states": [
+        "MA"
+      ],
+      "primaryState": "MA",
+      "priceParity": {
+        "allItems": 0.9511,
+        "goods": 0.9701,
+        "housing": 0.7345,
+        "utilities": 1.5371,
+        "otherServices": 1.012
+      }
+    },
+    "38540": {
+      "id": "38540",
+      "name": "Pocatello, ID",
+      "shortName": "Pocatello, ID",
+      "type": "metro",
+      "states": [
+        "ID"
+      ],
+      "primaryState": "ID",
+      "priceParity": {
+        "allItems": 0.8891,
+        "goods": 0.9618,
+        "housing": 0.664,
+        "utilities": 0.6977,
+        "otherServices": 0.9897
+      }
+    },
+    "38860": {
+      "id": "38860",
+      "name": "Portland-South Portland, ME",
+      "shortName": "Portland, ME",
+      "type": "metro",
+      "states": [
+        "ME"
+      ],
+      "primaryState": "ME",
+      "priceParity": {
+        "allItems": 1.0186,
+        "goods": 0.9717,
+        "housing": 1.0516,
+        "utilities": 1.3459,
+        "otherServices": 1.0319
+      }
+    },
+    "38900": {
+      "id": "38900",
+      "name": "Portland-Vancouver-Hillsboro, OR-WA",
+      "shortName": "Portland, OR",
+      "type": "metro",
+      "states": [
+        "OR",
+        "WA"
+      ],
+      "primaryState": "OR",
+      "priceParity": {
+        "allItems": 1.0542,
+        "goods": 1.0522,
+        "housing": 1.2511,
+        "utilities": 1.0697,
+        "otherServices": 1.0014
+      }
+    },
+    "38940": {
+      "id": "38940",
+      "name": "Port St. Lucie, FL",
+      "shortName": "Port St. Lucie, FL",
+      "type": "metro",
+      "states": [
+        "FL"
+      ],
+      "primaryState": "FL",
+      "priceParity": {
+        "allItems": 1.0023,
+        "goods": 0.9624,
+        "housing": 1.1364,
+        "utilities": 0.8703,
+        "otherServices": 0.9886
+      }
+    },
+    "39150": {
+      "id": "39150",
+      "name": "Prescott Valley-Prescott, AZ",
+      "shortName": "Prescott Valley, AZ",
+      "type": "metro",
+      "states": [
+        "AZ"
+      ],
+      "primaryState": "AZ",
+      "priceParity": {
+        "allItems": 0.9825,
+        "goods": 0.9624,
+        "housing": 0.9878,
+        "utilities": 0.9146,
+        "otherServices": 0.9984
+      }
+    },
+    "39300": {
+      "id": "39300",
+      "name": "Providence-Warwick, RI-MA",
+      "shortName": "Providence, RI",
+      "type": "metro",
+      "states": [
+        "MA",
+        "RI"
+      ],
+      "primaryState": "RI",
+      "priceParity": {
+        "allItems": 1.0177,
+        "goods": 0.9712,
+        "housing": 1.0385,
+        "utilities": 1.4881,
+        "otherServices": 1.0228
+      }
+    },
+    "39340": {
+      "id": "39340",
+      "name": "Provo-Orem-Lehi, UT",
+      "shortName": "Provo, UT",
+      "type": "metro",
+      "states": [
+        "UT"
+      ],
+      "primaryState": "UT",
+      "priceParity": {
+        "allItems": 0.9823,
+        "goods": 0.9645,
+        "housing": 1.0408,
+        "utilities": 0.7863,
+        "otherServices": 0.9896
+      }
+    },
+    "39380": {
+      "id": "39380",
+      "name": "Pueblo, CO",
+      "shortName": "Pueblo, CO",
+      "type": "metro",
+      "states": [
+        "CO"
+      ],
+      "primaryState": "CO",
+      "priceParity": {
+        "allItems": 0.9176,
+        "goods": 0.9605,
+        "housing": 0.7128,
+        "utilities": 0.8193,
+        "otherServices": 0.9982
+      }
+    },
+    "39460": {
+      "id": "39460",
+      "name": "Punta Gorda, FL",
+      "shortName": "Punta Gorda, FL",
+      "type": "metro",
+      "states": [
+        "FL"
+      ],
+      "primaryState": "FL",
+      "priceParity": {
+        "allItems": 1.0052,
+        "goods": 0.9624,
+        "housing": 1.1328,
+        "utilities": 0.8735,
+        "otherServices": 0.9886
+      }
+    },
+    "39540": {
+      "id": "39540",
+      "name": "Racine-Mount Pleasant, WI",
+      "shortName": "Racine, WI",
+      "type": "metro",
+      "states": [
+        "WI"
+      ],
+      "primaryState": "WI",
+      "priceParity": {
+        "allItems": 0.9596,
+        "goods": 0.9379,
+        "housing": 0.9203,
+        "utilities": 0.9002,
+        "otherServices": 0.9941
+      }
+    },
+    "39580": {
+      "id": "39580",
+      "name": "Raleigh-Cary, NC",
+      "shortName": "Raleigh, NC",
+      "type": "metro",
+      "states": [
+        "NC"
+      ],
+      "primaryState": "NC",
+      "priceParity": {
+        "allItems": 0.9816,
+        "goods": 0.9662,
+        "housing": 1.0348,
+        "utilities": 0.8896,
+        "otherServices": 0.9819
+      }
+    },
+    "39660": {
+      "id": "39660",
+      "name": "Rapid City, SD",
+      "shortName": "Rapid City, SD",
+      "type": "metro",
+      "states": [
+        "SD"
+      ],
+      "primaryState": "SD",
+      "priceParity": {
+        "allItems": 0.8916,
+        "goods": 0.9547,
+        "housing": 0.7255,
+        "utilities": 0.7909,
+        "otherServices": 0.919
+      }
+    },
+    "39740": {
+      "id": "39740",
+      "name": "Reading, PA",
+      "shortName": "Reading, PA",
+      "type": "metro",
+      "states": [
+        "PA"
+      ],
+      "primaryState": "PA",
+      "priceParity": {
+        "allItems": 0.9706,
+        "goods": 1.0068,
+        "housing": 0.8542,
+        "utilities": 1.0822,
+        "otherServices": 0.9773
+      }
+    },
+    "39820": {
+      "id": "39820",
+      "name": "Redding, CA",
+      "shortName": "Redding, CA",
+      "type": "metro",
+      "states": [
+        "CA"
+      ],
+      "primaryState": "CA",
+      "priceParity": {
+        "allItems": 1.0068,
+        "goods": 1.0517,
+        "housing": 0.8937,
+        "utilities": 1.5771,
+        "otherServices": 1.0027
+      }
+    },
+    "39900": {
+      "id": "39900",
+      "name": "Reno, NV",
+      "shortName": "Reno, NV",
+      "type": "metro",
+      "states": [
+        "NV"
+      ],
+      "primaryState": "NV",
+      "priceParity": {
+        "allItems": 1.0101,
+        "goods": 0.9627,
+        "housing": 1.2348,
+        "utilities": 0.8927,
+        "otherServices": 0.9874
+      }
+    },
+    "40060": {
+      "id": "40060",
+      "name": "Richmond, VA",
+      "shortName": "Richmond, VA",
+      "type": "metro",
+      "states": [
+        "VA"
+      ],
+      "primaryState": "VA",
+      "priceParity": {
+        "allItems": 0.9786,
+        "goods": 0.9677,
+        "housing": 0.9914,
+        "utilities": 0.8922,
+        "otherServices": 0.9861
+      }
+    },
+    "40140": {
+      "id": "40140",
+      "name": "Riverside-San Bernardino-Ontario, CA",
+      "shortName": "Riverside, CA",
+      "type": "metro",
+      "states": [
+        "CA"
+      ],
+      "primaryState": "CA",
+      "priceParity": {
+        "allItems": 1.0644,
+        "goods": 1.0143,
+        "housing": 1.2931,
+        "utilities": 1.4864,
+        "otherServices": 1.0128
+      }
+    },
+    "40220": {
+      "id": "40220",
+      "name": "Roanoke, VA",
+      "shortName": "Roanoke, VA",
+      "type": "metro",
+      "states": [
+        "VA"
+      ],
+      "primaryState": "VA",
+      "priceParity": {
+        "allItems": 0.9362,
+        "goods": 0.9677,
+        "housing": 0.7853,
+        "utilities": 0.8891,
+        "otherServices": 0.9861
+      }
+    },
+    "40340": {
+      "id": "40340",
+      "name": "Rochester, MN",
+      "shortName": "Rochester, MN",
+      "type": "metro",
+      "states": [
+        "MN"
+      ],
+      "primaryState": "MN",
+      "priceParity": {
+        "allItems": 0.9082,
+        "goods": 0.9543,
+        "housing": 0.7863,
+        "utilities": 0.8739,
+        "otherServices": 0.9219
+      }
+    },
+    "40380": {
+      "id": "40380",
+      "name": "Rochester, NY",
+      "shortName": "Rochester, NY",
+      "type": "metro",
+      "states": [
+        "NY"
+      ],
+      "primaryState": "NY",
+      "priceParity": {
+        "allItems": 0.9703,
+        "goods": 0.9969,
+        "housing": 0.8748,
+        "utilities": 1.3321,
+        "otherServices": 0.9775
+      }
+    },
+    "40420": {
+      "id": "40420",
+      "name": "Rockford, IL",
+      "shortName": "Rockford, IL",
+      "type": "metro",
+      "states": [
+        "IL"
+      ],
+      "primaryState": "IL",
+      "priceParity": {
+        "allItems": 0.9215,
+        "goods": 0.9364,
+        "housing": 0.7008,
+        "utilities": 0.8938,
+        "otherServices": 0.9959
+      }
+    },
+    "40580": {
+      "id": "40580",
+      "name": "Rocky Mount, NC",
+      "shortName": "Rocky Mount, NC",
+      "type": "metro",
+      "states": [
+        "NC"
+      ],
+      "primaryState": "NC",
+      "priceParity": {
+        "allItems": 0.8801,
+        "goods": 0.9662,
+        "housing": 0.561,
+        "utilities": 0.8838,
+        "otherServices": 0.9819
+      }
+    },
+    "40660": {
+      "id": "40660",
+      "name": "Rome, GA",
+      "shortName": "Rome, GA",
+      "type": "metro",
+      "states": [
+        "GA"
+      ],
+      "primaryState": "GA",
+      "priceParity": {
+        "allItems": 0.9016,
+        "goods": 0.9627,
+        "housing": 0.6028,
+        "utilities": 0.9072,
+        "otherServices": 0.9867
+      }
+    },
+    "40900": {
+      "id": "40900",
+      "name": "Sacramento-Roseville-Folsom, CA",
+      "shortName": "Sacramento, CA",
+      "type": "metro",
+      "states": [
+        "CA"
+      ],
+      "primaryState": "CA",
+      "priceParity": {
+        "allItems": 1.0667,
+        "goods": 1.0517,
+        "housing": 1.3023,
+        "utilities": 1.5129,
+        "otherServices": 1.0027
+      }
+    },
+    "40980": {
+      "id": "40980",
+      "name": "Saginaw, MI",
+      "shortName": "Saginaw, MI",
+      "type": "metro",
+      "states": [
+        "MI"
+      ],
+      "primaryState": "MI",
+      "priceParity": {
+        "allItems": 0.9089,
+        "goods": 0.9371,
+        "housing": 0.6365,
+        "utilities": 0.9585,
+        "otherServices": 0.9956
+      }
+    },
+    "41060": {
+      "id": "41060",
+      "name": "St. Cloud, MN",
+      "shortName": "St. Cloud, MN",
+      "type": "metro",
+      "states": [
+        "MN"
+      ],
+      "primaryState": "MN",
+      "priceParity": {
+        "allItems": 0.8763,
+        "goods": 0.9543,
+        "housing": 0.6506,
+        "utilities": 0.8867,
+        "otherServices": 0.9219
+      }
+    },
+    "41100": {
+      "id": "41100",
+      "name": "St. George, UT",
+      "shortName": "St. George, UT",
+      "type": "metro",
+      "states": [
+        "UT"
+      ],
+      "primaryState": "UT",
+      "priceParity": {
+        "allItems": 0.9732,
+        "goods": 0.9645,
+        "housing": 0.9815,
+        "utilities": 0.7769,
+        "otherServices": 0.9896
+      }
+    },
+    "41140": {
+      "id": "41140",
+      "name": "St. Joseph, MO-KS",
+      "shortName": "St. Joseph, MO",
+      "type": "metro",
+      "states": [
+        "KS",
+        "MO"
+      ],
+      "primaryState": "MO",
+      "priceParity": {
+        "allItems": 0.8638,
+        "goods": 0.9418,
+        "housing": 0.5536,
+        "utilities": 0.8828,
+        "otherServices": 0.9309
+      }
+    },
+    "41180": {
+      "id": "41180",
+      "name": "St. Louis, MO-IL",
+      "shortName": "St. Louis, MO",
+      "type": "metro",
+      "states": [
+        "IL",
+        "MO"
+      ],
+      "primaryState": "MO",
+      "priceParity": {
+        "allItems": 0.9509,
+        "goods": 1,
+        "housing": 0.7902,
+        "utilities": 0.6992,
+        "otherServices": 0.9864
+      }
+    },
+    "41420": {
+      "id": "41420",
+      "name": "Salem, OR",
+      "shortName": "Salem, OR",
+      "type": "metro",
+      "states": [
+        "OR"
+      ],
+      "primaryState": "OR",
+      "priceParity": {
+        "allItems": 1.0365,
+        "goods": 1.0526,
+        "housing": 1.1033,
+        "utilities": 1.0469,
+        "otherServices": 1.003
+      }
+    },
+    "41500": {
+      "id": "41500",
+      "name": "Salinas, CA",
+      "shortName": "Salinas, CA",
+      "type": "metro",
+      "states": [
+        "CA"
+      ],
+      "primaryState": "CA",
+      "priceParity": {
+        "allItems": 1.0904,
+        "goods": 1.0517,
+        "housing": 1.4567,
+        "utilities": 1.5416,
+        "otherServices": 1.0027
+      }
+    },
+    "41540": {
+      "id": "41540",
+      "name": "Salisbury, MD",
+      "shortName": "Salisbury, MD",
+      "type": "metro",
+      "states": [
+        "MD"
+      ],
+      "primaryState": "MD",
+      "priceParity": {
+        "allItems": 0.9562,
+        "goods": 0.9659,
+        "housing": 0.8721,
+        "utilities": 1.028,
+        "otherServices": 0.9899
+      }
+    },
+    "41620": {
+      "id": "41620",
+      "name": "Salt Lake City-Murray, UT",
+      "shortName": "Salt Lake City, UT",
+      "type": "metro",
+      "states": [
+        "UT"
+      ],
+      "primaryState": "UT",
+      "priceParity": {
+        "allItems": 1.0087,
+        "goods": 0.9645,
+        "housing": 1.2331,
+        "utilities": 0.79,
+        "otherServices": 0.9896
+      }
+    },
+    "41660": {
+      "id": "41660",
+      "name": "San Angelo, TX",
+      "shortName": "San Angelo, TX",
+      "type": "metro",
+      "states": [
+        "TX"
+      ],
+      "primaryState": "TX",
+      "priceParity": {
+        "allItems": 0.9245,
+        "goods": 0.9376,
+        "housing": 0.8144,
+        "utilities": 0.8157,
+        "otherServices": 0.9624
+      }
+    },
+    "41700": {
+      "id": "41700",
+      "name": "San Antonio-New Braunfels, TX",
+      "shortName": "San Antonio, TX",
+      "type": "metro",
+      "states": [
+        "TX"
+      ],
+      "primaryState": "TX",
+      "priceParity": {
+        "allItems": 0.9472,
+        "goods": 0.9376,
+        "housing": 0.9457,
+        "utilities": 0.8217,
+        "otherServices": 0.9624
+      }
+    },
+    "41740": {
+      "id": "41740",
+      "name": "San Diego-Chula Vista-Carlsbad, CA",
+      "shortName": "San Diego, CA",
+      "type": "metro",
+      "states": [
+        "CA"
+      ],
+      "primaryState": "CA",
+      "priceParity": {
+        "allItems": 1.1189,
+        "goods": 1.0796,
+        "housing": 1.7927,
+        "utilities": 1.7425,
+        "otherServices": 0.996
+      }
+    },
+    "41780": {
+      "id": "41780",
+      "name": "Sandusky, OH",
+      "shortName": "Sandusky, OH",
+      "type": "metro",
+      "states": [
+        "OH"
+      ],
+      "primaryState": "OH",
+      "priceParity": {
+        "allItems": 0.8928,
+        "goods": 0.9363,
+        "housing": 0.5946,
+        "utilities": 0.967,
+        "otherServices": 0.9894
+      }
+    },
+    "41860": {
+      "id": "41860",
+      "name": "San Francisco-Oakland-Fremont, CA",
+      "shortName": "San Francisco, CA",
+      "type": "metro",
+      "states": [
+        "CA"
+      ],
+      "primaryState": "CA",
+      "priceParity": {
+        "allItems": 1.1561,
+        "goods": 1.0847,
+        "housing": 1.9472,
+        "utilities": 1.7259,
+        "otherServices": 1.0621
+      }
+    },
+    "41940": {
+      "id": "41940",
+      "name": "San Jose-Sunnyvale-Santa Clara, CA",
+      "shortName": "San Jose, CA",
+      "type": "metro",
+      "states": [
+        "CA"
+      ],
+      "primaryState": "CA",
+      "priceParity": {
+        "allItems": 1.1042,
+        "goods": 1.0517,
+        "housing": 2.119,
+        "utilities": 1.5666,
+        "otherServices": 1.0027
+      }
+    },
+    "42020": {
+      "id": "42020",
+      "name": "San Luis Obispo-Paso Robles, CA",
+      "shortName": "San Luis Obispo, CA",
+      "type": "metro",
+      "states": [
+        "CA"
+      ],
+      "primaryState": "CA",
+      "priceParity": {
+        "allItems": 1.086,
+        "goods": 1.0517,
+        "housing": 1.4436,
+        "utilities": 1.4782,
+        "otherServices": 1.0027
+      }
+    },
+    "42100": {
+      "id": "42100",
+      "name": "Santa Cruz-Watsonville, CA",
+      "shortName": "Santa Cruz, CA",
+      "type": "metro",
+      "states": [
+        "CA"
+      ],
+      "primaryState": "CA",
+      "priceParity": {
+        "allItems": 1.099,
+        "goods": 1.0517,
+        "housing": 1.6433,
+        "utilities": 1.5272,
+        "otherServices": 1.0027
+      }
+    },
+    "42140": {
+      "id": "42140",
+      "name": "Santa Fe, NM",
+      "shortName": "Santa Fe, NM",
+      "type": "metro",
+      "states": [
+        "NM"
+      ],
+      "primaryState": "NM",
+      "priceParity": {
+        "allItems": 0.9877,
+        "goods": 0.9614,
+        "housing": 1.0798,
+        "utilities": 0.7671,
+        "otherServices": 0.9854
+      }
+    },
+    "42200": {
+      "id": "42200",
+      "name": "Santa Maria-Santa Barbara, CA",
+      "shortName": "Santa Maria, CA",
+      "type": "metro",
+      "states": [
+        "CA"
+      ],
+      "primaryState": "CA",
+      "priceParity": {
+        "allItems": 1.088,
+        "goods": 1.0517,
+        "housing": 1.5139,
+        "utilities": 1.4981,
+        "otherServices": 1.0027
+      }
+    },
+    "42220": {
+      "id": "42220",
+      "name": "Santa Rosa-Petaluma, CA",
+      "shortName": "Santa Rosa, CA",
+      "type": "metro",
+      "states": [
+        "CA"
+      ],
+      "primaryState": "CA",
+      "priceParity": {
+        "allItems": 1.0778,
+        "goods": 1.0517,
+        "housing": 1.3957,
+        "utilities": 1.5478,
+        "otherServices": 1.0027
+      }
+    },
+    "42340": {
+      "id": "42340",
+      "name": "Savannah, GA",
+      "shortName": "Savannah, GA",
+      "type": "metro",
+      "states": [
+        "GA"
+      ],
+      "primaryState": "GA",
+      "priceParity": {
+        "allItems": 0.9521,
+        "goods": 0.9627,
+        "housing": 0.8601,
+        "utilities": 0.886,
+        "otherServices": 0.9867
+      }
+    },
+    "42540": {
+      "id": "42540",
+      "name": "Scranton--Wilkes-Barre, PA",
+      "shortName": "Scranton, PA",
+      "type": "metro",
+      "states": [
+        "PA"
+      ],
+      "primaryState": "PA",
+      "priceParity": {
+        "allItems": 0.9356,
+        "goods": 1.0068,
+        "housing": 0.6699,
+        "utilities": 1.0653,
+        "otherServices": 0.9773
+      }
+    },
+    "42660": {
+      "id": "42660",
+      "name": "Seattle-Tacoma-Bellevue, WA",
+      "shortName": "Seattle, WA",
+      "type": "metro",
+      "states": [
+        "WA"
+      ],
+      "primaryState": "WA",
+      "priceParity": {
+        "allItems": 1.1113,
+        "goods": 1.0397,
+        "housing": 1.5131,
+        "utilities": 0.9281,
+        "otherServices": 1.0683
+      }
+    },
+    "42680": {
+      "id": "42680",
+      "name": "Sebastian-Vero Beach-West Vero Corridor, FL",
+      "shortName": "Sebastian, FL",
+      "type": "metro",
+      "states": [
+        "FL"
+      ],
+      "primaryState": "FL",
+      "priceParity": {
+        "allItems": 0.9831,
+        "goods": 0.9624,
+        "housing": 1.0164,
+        "utilities": 0.8727,
+        "otherServices": 0.9886
+      }
+    },
+    "42700": {
+      "id": "42700",
+      "name": "Sebring, FL",
+      "shortName": "Sebring, FL",
+      "type": "metro",
+      "states": [
+        "FL"
+      ],
+      "primaryState": "FL",
+      "priceParity": {
+        "allItems": 0.9247,
+        "goods": 0.9624,
+        "housing": 0.7346,
+        "utilities": 0.8675,
+        "otherServices": 0.9886
+      }
+    },
+    "43100": {
+      "id": "43100",
+      "name": "Sheboygan, WI",
+      "shortName": "Sheboygan, WI",
+      "type": "metro",
+      "states": [
+        "WI"
+      ],
+      "primaryState": "WI",
+      "priceParity": {
+        "allItems": 0.9401,
+        "goods": 0.9379,
+        "housing": 0.8054,
+        "utilities": 0.8757,
+        "otherServices": 0.9941
+      }
+    },
+    "43300": {
+      "id": "43300",
+      "name": "Sherman-Denison, TX",
+      "shortName": "Sherman, TX",
+      "type": "metro",
+      "states": [
+        "TX"
+      ],
+      "primaryState": "TX",
+      "priceParity": {
+        "allItems": 0.9377,
+        "goods": 0.9376,
+        "housing": 0.8947,
+        "utilities": 0.8332,
+        "otherServices": 0.9624
+      }
+    },
+    "43340": {
+      "id": "43340",
+      "name": "Shreveport-Bossier City, LA",
+      "shortName": "Shreveport, LA",
+      "type": "metro",
+      "states": [
+        "LA"
+      ],
+      "primaryState": "LA",
+      "priceParity": {
+        "allItems": 0.8477,
+        "goods": 0.9369,
+        "housing": 0.5229,
+        "utilities": 0.7256,
+        "otherServices": 0.957
+      }
+    },
+    "43420": {
+      "id": "43420",
+      "name": "Sierra Vista-Douglas, AZ",
+      "shortName": "Sierra Vista, AZ",
+      "type": "metro",
+      "states": [
+        "AZ"
+      ],
+      "primaryState": "AZ",
+      "priceParity": {
+        "allItems": 0.8924,
+        "goods": 0.9624,
+        "housing": 0.6192,
+        "utilities": 0.9194,
+        "otherServices": 0.9984
+      }
+    },
+    "43580": {
+      "id": "43580",
+      "name": "Sioux City, IA-NE-SD",
+      "shortName": "Sioux City, IA",
+      "type": "metro",
+      "states": [
+        "IA",
+        "NE",
+        "SD"
+      ],
+      "primaryState": "IA",
+      "priceParity": {
+        "allItems": 0.8645,
+        "goods": 0.9401,
+        "housing": 0.5785,
+        "utilities": 0.8271,
+        "otherServices": 0.9275
+      }
+    },
+    "43620": {
+      "id": "43620",
+      "name": "Sioux Falls, SD-MN",
+      "shortName": "Sioux Falls, SD",
+      "type": "metro",
+      "states": [
+        "MN",
+        "SD"
+      ],
+      "primaryState": "SD",
+      "priceParity": {
+        "allItems": 0.9063,
+        "goods": 0.9547,
+        "housing": 0.7761,
+        "utilities": 0.807,
+        "otherServices": 0.9191
+      }
+    },
+    "43640": {
+      "id": "43640",
+      "name": "Slidell-Mandeville-Covington, LA",
+      "shortName": "Slidell, LA",
+      "type": "metro",
+      "states": [
+        "LA"
+      ],
+      "primaryState": "LA",
+      "priceParity": {
+        "allItems": 0.9273,
+        "goods": 0.9369,
+        "housing": 0.8545,
+        "utilities": 0.7165,
+        "otherServices": 0.957
+      }
+    },
+    "43780": {
+      "id": "43780",
+      "name": "South Bend-Mishawaka, IN-MI",
+      "shortName": "South Bend, IN",
+      "type": "metro",
+      "states": [
+        "IN",
+        "MI"
+      ],
+      "primaryState": "IN",
+      "priceParity": {
+        "allItems": 0.9286,
+        "goods": 0.9422,
+        "housing": 0.7459,
+        "utilities": 0.8773,
+        "otherServices": 0.9921
+      }
+    },
+    "43900": {
+      "id": "43900",
+      "name": "Spartanburg, SC",
+      "shortName": "Spartanburg, SC",
+      "type": "metro",
+      "states": [
+        "SC"
+      ],
+      "primaryState": "SC",
+      "priceParity": {
+        "allItems": 0.9105,
+        "goods": 0.9634,
+        "housing": 0.6801,
+        "utilities": 0.8833,
+        "otherServices": 0.9828
+      }
+    },
+    "44060": {
+      "id": "44060",
+      "name": "Spokane-Spokane Valley, WA",
+      "shortName": "Spokane, WA",
+      "type": "metro",
+      "states": [
+        "WA"
+      ],
+      "primaryState": "WA",
+      "priceParity": {
+        "allItems": 1.0035,
+        "goods": 1.0503,
+        "housing": 0.9706,
+        "utilities": 0.912,
+        "otherServices": 0.9947
+      }
+    },
+    "44100": {
+      "id": "44100",
+      "name": "Springfield, IL",
+      "shortName": "Springfield, IL",
+      "type": "metro",
+      "states": [
+        "IL"
+      ],
+      "primaryState": "IL",
+      "priceParity": {
+        "allItems": 0.9274,
+        "goods": 0.9364,
+        "housing": 0.7162,
+        "utilities": 0.9041,
+        "otherServices": 0.9959
+      }
+    },
+    "44140": {
+      "id": "44140",
+      "name": "Springfield, MA",
+      "shortName": "Springfield, MA",
+      "type": "metro",
+      "states": [
+        "MA"
+      ],
+      "primaryState": "MA",
+      "priceParity": {
+        "allItems": 0.9606,
+        "goods": 0.9701,
+        "housing": 0.7578,
+        "utilities": 1.55,
+        "otherServices": 1.012
+      }
+    },
+    "44180": {
+      "id": "44180",
+      "name": "Springfield, MO",
+      "shortName": "Springfield, MO",
+      "type": "metro",
+      "states": [
+        "MO"
+      ],
+      "primaryState": "MO",
+      "priceParity": {
+        "allItems": 0.8858,
+        "goods": 0.9419,
+        "housing": 0.6557,
+        "utilities": 0.8583,
+        "otherServices": 0.9303
+      }
+    },
+    "44220": {
+      "id": "44220",
+      "name": "Springfield, OH",
+      "shortName": "Springfield, OH",
+      "type": "metro",
+      "states": [
+        "OH"
+      ],
+      "primaryState": "OH",
+      "priceParity": {
+        "allItems": 0.9048,
+        "goods": 0.9363,
+        "housing": 0.6173,
+        "utilities": 0.9716,
+        "otherServices": 0.9894
+      }
+    },
+    "44300": {
+      "id": "44300",
+      "name": "State College, PA",
+      "shortName": "State College, PA",
+      "type": "metro",
+      "states": [
+        "PA"
+      ],
+      "primaryState": "PA",
+      "priceParity": {
+        "allItems": 0.9676,
+        "goods": 1.0068,
+        "housing": 0.8569,
+        "utilities": 1.0946,
+        "otherServices": 0.9773
+      }
+    },
+    "44420": {
+      "id": "44420",
+      "name": "Staunton-Stuarts Draft, VA",
+      "shortName": "Staunton, VA",
+      "type": "metro",
+      "states": [
+        "VA"
+      ],
+      "primaryState": "VA",
+      "priceParity": {
+        "allItems": 0.9113,
+        "goods": 0.9677,
+        "housing": 0.6823,
+        "utilities": 0.8952,
+        "otherServices": 0.9861
+      }
+    },
+    "44700": {
+      "id": "44700",
+      "name": "Stockton-Lodi, CA",
+      "shortName": "Stockton, CA",
+      "type": "metro",
+      "states": [
+        "CA"
+      ],
+      "primaryState": "CA",
+      "priceParity": {
+        "allItems": 1.0509,
+        "goods": 1.0517,
+        "housing": 1.1561,
+        "utilities": 1.5825,
+        "otherServices": 1.0027
+      }
+    },
+    "44940": {
+      "id": "44940",
+      "name": "Sumter, SC",
+      "shortName": "Sumter, SC",
+      "type": "metro",
+      "states": [
+        "SC"
+      ],
+      "primaryState": "SC",
+      "priceParity": {
+        "allItems": 0.8802,
+        "goods": 0.9634,
+        "housing": 0.6083,
+        "utilities": 0.873,
+        "otherServices": 0.9828
+      }
+    },
+    "45060": {
+      "id": "45060",
+      "name": "Syracuse, NY",
+      "shortName": "Syracuse, NY",
+      "type": "metro",
+      "states": [
+        "NY"
+      ],
+      "primaryState": "NY",
+      "priceParity": {
+        "allItems": 0.9574,
+        "goods": 0.9969,
+        "housing": 0.8066,
+        "utilities": 1.334,
+        "otherServices": 0.9775
+      }
+    },
+    "45220": {
+      "id": "45220",
+      "name": "Tallahassee, FL",
+      "shortName": "Tallahassee, FL",
+      "type": "metro",
+      "states": [
+        "FL"
+      ],
+      "primaryState": "FL",
+      "priceParity": {
+        "allItems": 0.9392,
+        "goods": 0.9624,
+        "housing": 0.7853,
+        "utilities": 0.8747,
+        "otherServices": 0.9886
+      }
+    },
+    "45300": {
+      "id": "45300",
+      "name": "Tampa-St. Petersburg-Clearwater, FL",
+      "shortName": "Tampa, FL",
+      "type": "metro",
+      "states": [
+        "FL"
+      ],
+      "primaryState": "FL",
+      "priceParity": {
+        "allItems": 1.0089,
+        "goods": 0.9547,
+        "housing": 1.2584,
+        "utilities": 0.8853,
+        "otherServices": 0.9757
+      }
+    },
+    "45460": {
+      "id": "45460",
+      "name": "Terre Haute, IN",
+      "shortName": "Terre Haute, IN",
+      "type": "metro",
+      "states": [
+        "IN"
+      ],
+      "primaryState": "IN",
+      "priceParity": {
+        "allItems": 0.878,
+        "goods": 0.9432,
+        "housing": 0.5192,
+        "utilities": 0.8656,
+        "otherServices": 0.9914
+      }
+    },
+    "45500": {
+      "id": "45500",
+      "name": "Texarkana, TX-AR",
+      "shortName": "Texarkana, TX",
+      "type": "metro",
+      "states": [
+        "AR",
+        "TX"
+      ],
+      "primaryState": "TX",
+      "priceParity": {
+        "allItems": 0.8401,
+        "goods": 0.9369,
+        "housing": 0.4988,
+        "utilities": 0.7926,
+        "otherServices": 0.9589
+      }
+    },
+    "45780": {
+      "id": "45780",
+      "name": "Toledo, OH",
+      "shortName": "Toledo, OH",
+      "type": "metro",
+      "states": [
+        "OH"
+      ],
+      "primaryState": "OH",
+      "priceParity": {
+        "allItems": 0.9145,
+        "goods": 0.9363,
+        "housing": 0.6732,
+        "utilities": 0.9628,
+        "otherServices": 0.9894
+      }
+    },
+    "45820": {
+      "id": "45820",
+      "name": "Topeka, KS",
+      "shortName": "Topeka, KS",
+      "type": "metro",
+      "states": [
+        "KS"
+      ],
+      "primaryState": "KS",
+      "priceParity": {
+        "allItems": 0.8882,
+        "goods": 0.9403,
+        "housing": 0.6499,
+        "utilities": 0.8894,
+        "otherServices": 0.9382
+      }
+    },
+    "45900": {
+      "id": "45900",
+      "name": "Traverse City, MI",
+      "shortName": "Traverse City, MI",
+      "type": "metro",
+      "states": [
+        "MI"
+      ],
+      "primaryState": "MI",
+      "priceParity": {
+        "allItems": 0.9337,
+        "goods": 0.9371,
+        "housing": 0.7815,
+        "utilities": 0.9236,
+        "otherServices": 0.9956
+      }
+    },
+    "45940": {
+      "id": "45940",
+      "name": "Trenton-Princeton, NJ",
+      "shortName": "Trenton, NJ",
+      "type": "metro",
+      "states": [
+        "NJ"
+      ],
+      "primaryState": "NJ",
+      "priceParity": {
+        "allItems": 1.0318,
+        "goods": 0.9979,
+        "housing": 1.3508,
+        "utilities": 1.1227,
+        "otherServices": 0.9792
+      }
+    },
+    "46060": {
+      "id": "46060",
+      "name": "Tucson, AZ",
+      "shortName": "Tucson, AZ",
+      "type": "metro",
+      "states": [
+        "AZ"
+      ],
+      "primaryState": "AZ",
+      "priceParity": {
+        "allItems": 0.969,
+        "goods": 0.9624,
+        "housing": 0.9176,
+        "utilities": 0.8952,
+        "otherServices": 0.9984
+      }
+    },
+    "46140": {
+      "id": "46140",
+      "name": "Tulsa, OK",
+      "shortName": "Tulsa, OK",
+      "type": "metro",
+      "states": [
+        "OK"
+      ],
+      "primaryState": "OK",
+      "priceParity": {
+        "allItems": 0.8921,
+        "goods": 0.9378,
+        "housing": 0.6824,
+        "utilities": 0.7386,
+        "otherServices": 0.9546
+      }
+    },
+    "46220": {
+      "id": "46220",
+      "name": "Tuscaloosa, AL",
+      "shortName": "Tuscaloosa, AL",
+      "type": "metro",
+      "states": [
+        "AL"
+      ],
+      "primaryState": "AL",
+      "priceParity": {
+        "allItems": 0.8772,
+        "goods": 0.964,
+        "housing": 0.5825,
+        "utilities": 0.844,
+        "otherServices": 0.9669
+      }
+    },
+    "46300": {
+      "id": "46300",
+      "name": "Twin Falls, ID",
+      "shortName": "Twin Falls, ID",
+      "type": "metro",
+      "states": [
+        "ID"
+      ],
+      "primaryState": "ID",
+      "priceParity": {
+        "allItems": 0.9211,
+        "goods": 0.9618,
+        "housing": 0.7383,
+        "utilities": 0.7003,
+        "otherServices": 0.9897
+      }
+    },
+    "46340": {
+      "id": "46340",
+      "name": "Tyler, TX",
+      "shortName": "Tyler, TX",
+      "type": "metro",
+      "states": [
+        "TX"
+      ],
+      "primaryState": "TX",
+      "priceParity": {
+        "allItems": 0.9216,
+        "goods": 0.9376,
+        "housing": 0.7991,
+        "utilities": 0.829,
+        "otherServices": 0.9624
+      }
+    },
+    "46520": {
+      "id": "46520",
+      "name": "Urban Honolulu, HI",
+      "shortName": "Urban Honolulu, HI",
+      "type": "metro",
+      "states": [
+        "HI"
+      ],
+      "primaryState": "HI",
+      "priceParity": {
+        "allItems": 1.1096,
+        "goods": 1.1156,
+        "housing": 1.3554,
+        "utilities": 1.8726,
+        "otherServices": 1.029
+      }
+    },
+    "46540": {
+      "id": "46540",
+      "name": "Utica-Rome, NY",
+      "shortName": "Utica, NY",
+      "type": "metro",
+      "states": [
+        "NY"
+      ],
+      "primaryState": "NY",
+      "priceParity": {
+        "allItems": 0.9268,
+        "goods": 0.9969,
+        "housing": 0.6606,
+        "utilities": 1.3191,
+        "otherServices": 0.9775
+      }
+    },
+    "46660": {
+      "id": "46660",
+      "name": "Valdosta, GA",
+      "shortName": "Valdosta, GA",
+      "type": "metro",
+      "states": [
+        "GA"
+      ],
+      "primaryState": "GA",
+      "priceParity": {
+        "allItems": 0.8827,
+        "goods": 0.9627,
+        "housing": 0.5876,
+        "utilities": 0.878,
+        "otherServices": 0.9867
+      }
+    },
+    "46700": {
+      "id": "46700",
+      "name": "Vallejo, CA",
+      "shortName": "Vallejo, CA",
+      "type": "metro",
+      "states": [
+        "CA"
+      ],
+      "primaryState": "CA",
+      "priceParity": {
+        "allItems": 1.0848,
+        "goods": 1.0517,
+        "housing": 1.4204,
+        "utilities": 1.5499,
+        "otherServices": 1.0027
+      }
+    },
+    "47020": {
+      "id": "47020",
+      "name": "Victoria, TX",
+      "shortName": "Victoria, TX",
+      "type": "metro",
+      "states": [
+        "TX"
+      ],
+      "primaryState": "TX",
+      "priceParity": {
+        "allItems": 0.8984,
+        "goods": 0.9376,
+        "housing": 0.6932,
+        "utilities": 0.8527,
+        "otherServices": 0.9624
+      }
+    },
+    "47220": {
+      "id": "47220",
+      "name": "Vineland, NJ",
+      "shortName": "Vineland, NJ",
+      "type": "metro",
+      "states": [
+        "NJ"
+      ],
+      "primaryState": "NJ",
+      "priceParity": {
+        "allItems": 0.9597,
+        "goods": 0.9979,
+        "housing": 0.8388,
+        "utilities": 1.0823,
+        "otherServices": 0.9792
+      }
+    },
+    "47260": {
+      "id": "47260",
+      "name": "Virginia Beach-Chesapeake-Norfolk, VA-NC",
+      "shortName": "Virginia Beach, VA",
+      "type": "metro",
+      "states": [
+        "NC",
+        "VA"
+      ],
+      "primaryState": "VA",
+      "priceParity": {
+        "allItems": 0.9794,
+        "goods": 0.9677,
+        "housing": 0.9981,
+        "utilities": 0.8958,
+        "otherServices": 0.986
+      }
+    },
+    "47300": {
+      "id": "47300",
+      "name": "Visalia, CA",
+      "shortName": "Visalia, CA",
+      "type": "metro",
+      "states": [
+        "CA"
+      ],
+      "primaryState": "CA",
+      "priceParity": {
+        "allItems": 0.9983,
+        "goods": 1.0517,
+        "housing": 0.8405,
+        "utilities": 1.5645,
+        "otherServices": 1.0027
+      }
+    },
+    "47380": {
+      "id": "47380",
+      "name": "Waco, TX",
+      "shortName": "Waco, TX",
+      "type": "metro",
+      "states": [
+        "TX"
+      ],
+      "primaryState": "TX",
+      "priceParity": {
+        "allItems": 0.9255,
+        "goods": 0.9376,
+        "housing": 0.8353,
+        "utilities": 0.8097,
+        "otherServices": 0.9624
+      }
+    },
+    "47460": {
+      "id": "47460",
+      "name": "Walla Walla, WA",
+      "shortName": "Walla Walla, WA",
+      "type": "metro",
+      "states": [
+        "WA"
+      ],
+      "primaryState": "WA",
+      "priceParity": {
+        "allItems": 0.9852,
+        "goods": 1.0503,
+        "housing": 0.8658,
+        "utilities": 0.9431,
+        "otherServices": 0.9947
+      }
+    },
+    "47580": {
+      "id": "47580",
+      "name": "Warner Robins, GA",
+      "shortName": "Warner Robins, GA",
+      "type": "metro",
+      "states": [
+        "GA"
+      ],
+      "primaryState": "GA",
+      "priceParity": {
+        "allItems": 0.9379,
+        "goods": 0.9627,
+        "housing": 0.7917,
+        "utilities": 0.8814,
+        "otherServices": 0.9867
+      }
+    },
+    "47900": {
+      "id": "47900",
+      "name": "Washington-Arlington-Alexandria, DC-VA-MD-WV",
+      "shortName": "Washington, DC",
+      "type": "metro",
+      "states": [
+        "VA",
+        "WV",
+        "MD",
+        "DC"
+      ],
+      "primaryState": "DC",
+      "priceParity": {
+        "allItems": 1.0888,
+        "goods": 1.0485,
+        "housing": 1.5113,
+        "utilities": 1.067,
+        "otherServices": 1.0232
+      }
+    },
+    "47930": {
+      "id": "47930",
+      "name": "Waterbury-Shelton, CT",
+      "shortName": "Waterbury, CT",
+      "type": "metro",
+      "states": [
+        "CT"
+      ],
+      "primaryState": "CT",
+      "priceParity": {
+        "allItems": 0.9978,
+        "goods": 0.9733,
+        "housing": 0.8911,
+        "utilities": 1.4756,
+        "otherServices": 1.0266
+      }
+    },
+    "47940": {
+      "id": "47940",
+      "name": "Waterloo-Cedar Falls, IA",
+      "shortName": "Waterloo, IA",
+      "type": "metro",
+      "states": [
+        "IA"
+      ],
+      "primaryState": "IA",
+      "priceParity": {
+        "allItems": 0.8706,
+        "goods": 0.9373,
+        "housing": 0.6313,
+        "utilities": 0.8365,
+        "otherServices": 0.9293
+      }
+    },
+    "48060": {
+      "id": "48060",
+      "name": "Watertown-Fort Drum, NY",
+      "shortName": "Watertown, NY",
+      "type": "metro",
+      "states": [
+        "NY"
+      ],
+      "primaryState": "NY",
+      "priceParity": {
+        "allItems": 0.8769,
+        "goods": 0.9969,
+        "housing": 0.5319,
+        "utilities": 1.3218,
+        "otherServices": 0.9775
+      }
+    },
+    "48140": {
+      "id": "48140",
+      "name": "Wausau, WI",
+      "shortName": "Wausau, WI",
+      "type": "metro",
+      "states": [
+        "WI"
+      ],
+      "primaryState": "WI",
+      "priceParity": {
+        "allItems": 0.9265,
+        "goods": 0.9379,
+        "housing": 0.7146,
+        "utilities": 0.8998,
+        "otherServices": 0.9941
+      }
+    },
+    "48260": {
+      "id": "48260",
+      "name": "Weirton-Steubenville, WV-OH",
+      "shortName": "Weirton, WV",
+      "type": "metro",
+      "states": [
+        "OH",
+        "WV"
+      ],
+      "primaryState": "WV",
+      "priceParity": {
+        "allItems": 0.8902,
+        "goods": 0.9645,
+        "housing": 0.5238,
+        "utilities": 0.9499,
+        "otherServices": 0.9965
+      }
+    },
+    "48300": {
+      "id": "48300",
+      "name": "Wenatchee-East Wenatchee, WA",
+      "shortName": "Wenatchee, WA",
+      "type": "metro",
+      "states": [
+        "WA"
+      ],
+      "primaryState": "WA",
+      "priceParity": {
+        "allItems": 1.0386,
+        "goods": 1.0503,
+        "housing": 1.1496,
+        "utilities": 1.0059,
+        "otherServices": 0.9947
+      }
+    },
+    "48540": {
+      "id": "48540",
+      "name": "Wheeling, WV-OH",
+      "shortName": "Wheeling, WV",
+      "type": "metro",
+      "states": [
+        "OH",
+        "WV"
+      ],
+      "primaryState": "WV",
+      "priceParity": {
+        "allItems": 0.8832,
+        "goods": 0.9642,
+        "housing": 0.5144,
+        "utilities": 0.9489,
+        "otherServices": 0.9968
+      }
+    },
+    "48620": {
+      "id": "48620",
+      "name": "Wichita, KS",
+      "shortName": "Wichita, KS",
+      "type": "metro",
+      "states": [
+        "KS"
+      ],
+      "primaryState": "KS",
+      "priceParity": {
+        "allItems": 0.8895,
+        "goods": 0.9403,
+        "housing": 0.6625,
+        "utilities": 0.8846,
+        "otherServices": 0.9382
+      }
+    },
+    "48660": {
+      "id": "48660",
+      "name": "Wichita Falls, TX",
+      "shortName": "Wichita Falls, TX",
+      "type": "metro",
+      "states": [
+        "TX"
+      ],
+      "primaryState": "TX",
+      "priceParity": {
+        "allItems": 0.8951,
+        "goods": 0.9376,
+        "housing": 0.6821,
+        "utilities": 0.8409,
+        "otherServices": 0.9624
+      }
+    },
+    "48680": {
+      "id": "48680",
+      "name": "Wildwood-The Villages, FL",
+      "shortName": "Wildwood, FL",
+      "type": "metro",
+      "states": [
+        "FL"
+      ],
+      "primaryState": "FL",
+      "priceParity": {
+        "allItems": 0.8542,
+        "goods": 0.9624,
+        "housing": 0.5173,
+        "utilities": 0.89,
+        "otherServices": 0.9886
+      }
+    },
+    "48700": {
+      "id": "48700",
+      "name": "Williamsport, PA",
+      "shortName": "Williamsport, PA",
+      "type": "metro",
+      "states": [
+        "PA"
+      ],
+      "primaryState": "PA",
+      "priceParity": {
+        "allItems": 0.9235,
+        "goods": 1.0068,
+        "housing": 0.6439,
+        "utilities": 1.0745,
+        "otherServices": 0.9773
+      }
+    },
+    "48900": {
+      "id": "48900",
+      "name": "Wilmington, NC",
+      "shortName": "Wilmington, NC",
+      "type": "metro",
+      "states": [
+        "NC"
+      ],
+      "primaryState": "NC",
+      "priceParity": {
+        "allItems": 0.9642,
+        "goods": 0.9662,
+        "housing": 0.9322,
+        "utilities": 0.879,
+        "otherServices": 0.9819
+      }
+    },
+    "49020": {
+      "id": "49020",
+      "name": "Winchester, VA-WV",
+      "shortName": "Winchester, VA",
+      "type": "metro",
+      "states": [
+        "VA",
+        "WV"
+      ],
+      "primaryState": "VA",
+      "priceParity": {
+        "allItems": 0.9645,
+        "goods": 0.967,
+        "housing": 0.9001,
+        "utilities": 0.8972,
+        "otherServices": 0.988
+      }
+    },
+    "49180": {
+      "id": "49180",
+      "name": "Winston-Salem, NC",
+      "shortName": "Winston, NC",
+      "type": "metro",
+      "states": [
+        "NC"
+      ],
+      "primaryState": "NC",
+      "priceParity": {
+        "allItems": 0.9204,
+        "goods": 0.9662,
+        "housing": 0.7138,
+        "utilities": 0.8842,
+        "otherServices": 0.9819
+      }
+    },
+    "49340": {
+      "id": "49340",
+      "name": "Worcester, MA",
+      "shortName": "Worcester, MA",
+      "type": "metro",
+      "states": [
+        "MA"
+      ],
+      "primaryState": "MA",
+      "priceParity": {
+        "allItems": 1.0252,
+        "goods": 0.9701,
+        "housing": 1.13,
+        "utilities": 1.5521,
+        "otherServices": 1.012
+      }
+    },
+    "49420": {
+      "id": "49420",
+      "name": "Yakima, WA",
+      "shortName": "Yakima, WA",
+      "type": "metro",
+      "states": [
+        "WA"
+      ],
+      "primaryState": "WA",
+      "priceParity": {
+        "allItems": 0.9555,
+        "goods": 1.0503,
+        "housing": 0.7263,
+        "utilities": 0.919,
+        "otherServices": 0.9947
+      }
+    },
+    "49620": {
+      "id": "49620",
+      "name": "York-Hanover, PA",
+      "shortName": "York, PA",
+      "type": "metro",
+      "states": [
+        "PA"
+      ],
+      "primaryState": "PA",
+      "priceParity": {
+        "allItems": 0.96,
+        "goods": 1.0068,
+        "housing": 0.7976,
+        "utilities": 1.0701,
+        "otherServices": 0.9773
+      }
+    },
+    "49660": {
+      "id": "49660",
+      "name": "Youngstown-Warren, OH",
+      "shortName": "Youngstown, OH",
+      "type": "metro",
+      "states": [
+        "OH"
+      ],
+      "primaryState": "OH",
+      "priceParity": {
+        "allItems": 0.8739,
+        "goods": 0.9363,
+        "housing": 0.5345,
+        "utilities": 0.9629,
+        "otherServices": 0.9894
+      }
+    },
+    "49700": {
+      "id": "49700",
+      "name": "Yuba City, CA",
+      "shortName": "Yuba City, CA",
+      "type": "metro",
+      "states": [
+        "CA"
+      ],
+      "primaryState": "CA",
+      "priceParity": {
+        "allItems": 1.0423,
+        "goods": 1.0517,
+        "housing": 1.0828,
+        "utilities": 1.6077,
+        "otherServices": 1.0027
+      }
+    },
+    "49740": {
+      "id": "49740",
+      "name": "Yuma, AZ",
+      "shortName": "Yuma, AZ",
+      "type": "metro",
+      "states": [
+        "AZ"
+      ],
+      "primaryState": "AZ",
+      "priceParity": {
+        "allItems": 0.9271,
+        "goods": 0.9624,
+        "housing": 0.7378,
+        "utilities": 0.8783,
+        "otherServices": 0.9984
+      }
+    },
+    "rest-of-AL": {
+      "id": "rest-of-AL",
+      "name": "Rest of Alabama",
+      "shortName": "Rest of Alabama",
+      "type": "restOfState",
+      "states": [
+        "AL"
+      ],
+      "primaryState": "AL",
+      "priceParity": {
+        "allItems": 0.8882,
+        "goods": 0.964,
+        "housing": 0.6179,
+        "utilities": 0.8464,
+        "otherServices": 0.9671
+      },
+      "note": "Uses statewide price parities. BEA publishes no rural-only index, so this blends the state's metros back in and may slightly overstate rural costs."
+    },
+    "rest-of-AK": {
+      "id": "rest-of-AK",
+      "name": "Rest of Alaska",
+      "shortName": "Rest of Alaska",
+      "type": "restOfState",
+      "states": [
+        "AK"
+      ],
+      "primaryState": "AK",
+      "priceParity": {
+        "allItems": 1.0236,
+        "goods": 1.0632,
+        "housing": 0.9378,
+        "utilities": 1.1902,
+        "otherServices": 1.0221
+      },
+      "note": "Uses statewide price parities. BEA publishes no rural-only index, so this blends the state's metros back in and may slightly overstate rural costs."
+    },
+    "rest-of-AZ": {
+      "id": "rest-of-AZ",
+      "name": "Rest of Arizona",
+      "shortName": "Rest of Arizona",
+      "type": "restOfState",
+      "states": [
+        "AZ"
+      ],
+      "primaryState": "AZ",
+      "priceParity": {
+        "allItems": 1.0068,
+        "goods": 0.9536,
+        "housing": 1.068,
+        "utilities": 0.9232,
+        "otherServices": 1.0281
+      },
+      "note": "Uses statewide price parities. BEA publishes no rural-only index, so this blends the state's metros back in and may slightly overstate rural costs."
+    },
+    "rest-of-AR": {
+      "id": "rest-of-AR",
+      "name": "Rest of Arkansas",
+      "shortName": "Rest of Arkansas",
+      "type": "restOfState",
+      "states": [
+        "AR"
+      ],
+      "primaryState": "AR",
+      "priceParity": {
+        "allItems": 0.8694,
+        "goods": 0.936,
+        "housing": 0.582,
+        "utilities": 0.7473,
+        "otherServices": 0.9531
+      },
+      "note": "Uses statewide price parities. BEA publishes no rural-only index, so this blends the state's metros back in and may slightly overstate rural costs."
+    },
+    "rest-of-CA": {
+      "id": "rest-of-CA",
+      "name": "Rest of California",
+      "shortName": "Rest of California",
+      "type": "restOfState",
+      "states": [
+        "CA"
+      ],
+      "primaryState": "CA",
+      "priceParity": {
+        "allItems": 1.1072,
+        "goods": 1.061,
+        "housing": 1.5435,
+        "utilities": 1.589,
+        "otherServices": 1.0259
+      },
+      "note": "Uses statewide price parities. BEA publishes no rural-only index, so this blends the state's metros back in and may slightly overstate rural costs."
+    },
+    "rest-of-CO": {
+      "id": "rest-of-CO",
+      "name": "Rest of Colorado",
+      "shortName": "Rest of Colorado",
+      "type": "restOfState",
+      "states": [
+        "CO"
+      ],
+      "primaryState": "CO",
+      "priceParity": {
+        "allItems": 1.0305,
+        "goods": 0.9873,
+        "housing": 1.2736,
+        "utilities": 0.8497,
+        "otherServices": 0.9961
+      },
+      "note": "Uses statewide price parities. BEA publishes no rural-only index, so this blends the state's metros back in and may slightly overstate rural costs."
+    },
+    "rest-of-CT": {
+      "id": "rest-of-CT",
+      "name": "Rest of Connecticut",
+      "shortName": "Rest of Connecticut",
+      "type": "restOfState",
+      "states": [
+        "CT"
+      ],
+      "primaryState": "CT",
+      "priceParity": {
+        "allItems": 1.0361,
+        "goods": 0.9733,
+        "housing": 1.1705,
+        "utilities": 1.4649,
+        "otherServices": 1.0266
+      },
+      "note": "Uses statewide price parities. BEA publishes no rural-only index, so this blends the state's metros back in and may slightly overstate rural costs."
+    },
+    "rest-of-DE": {
+      "id": "rest-of-DE",
+      "name": "Rest of Delaware",
+      "shortName": "Rest of Delaware",
+      "type": "restOfState",
+      "states": [
+        "DE"
+      ],
+      "primaryState": "DE",
+      "priceParity": {
+        "allItems": 0.9981,
+        "goods": 0.9616,
+        "housing": 1.0202,
+        "utilities": 1.0381,
+        "otherServices": 1.0124
+      },
+      "note": "Uses statewide price parities. BEA publishes no rural-only index, so this blends the state's metros back in and may slightly overstate rural costs."
+    },
+    "rest-of-FL": {
+      "id": "rest-of-FL",
+      "name": "Rest of Florida",
+      "shortName": "Rest of Florida",
+      "type": "restOfState",
+      "states": [
+        "FL"
+      ],
+      "primaryState": "FL",
+      "priceParity": {
+        "allItems": 1.0341,
+        "goods": 0.9806,
+        "housing": 1.2211,
+        "utilities": 0.9007,
+        "otherServices": 1.0132
+      },
+      "note": "Uses statewide price parities. BEA publishes no rural-only index, so this blends the state's metros back in and may slightly overstate rural costs."
+    },
+    "rest-of-GA": {
+      "id": "rest-of-GA",
+      "name": "Rest of Georgia",
+      "shortName": "Rest of Georgia",
+      "type": "restOfState",
+      "states": [
+        "GA"
+      ],
+      "primaryState": "GA",
+      "priceParity": {
+        "allItems": 0.9629,
+        "goods": 0.9893,
+        "housing": 0.8869,
+        "utilities": 0.9281,
+        "otherServices": 0.9734
+      },
+      "note": "Uses statewide price parities. BEA publishes no rural-only index, so this blends the state's metros back in and may slightly overstate rural costs."
+    },
+    "rest-of-HI": {
+      "id": "rest-of-HI",
+      "name": "Rest of Hawaii",
+      "shortName": "Rest of Hawaii",
+      "type": "restOfState",
+      "states": [
+        "HI"
+      ],
+      "primaryState": "HI",
+      "priceParity": {
+        "allItems": 1.0995,
+        "goods": 1.1156,
+        "housing": 1.253,
+        "utilities": 1.9018,
+        "otherServices": 1.029
+      },
+      "note": "Uses statewide price parities. BEA publishes no rural-only index, so this blends the state's metros back in and may slightly overstate rural costs."
+    },
+    "rest-of-ID": {
+      "id": "rest-of-ID",
+      "name": "Rest of Idaho",
+      "shortName": "Rest of Idaho",
+      "type": "restOfState",
+      "states": [
+        "ID"
+      ],
+      "primaryState": "ID",
+      "priceParity": {
+        "allItems": 0.9549,
+        "goods": 0.9631,
+        "housing": 0.9003,
+        "utilities": 0.7044,
+        "otherServices": 0.9901
+      },
+      "note": "Uses statewide price parities. BEA publishes no rural-only index, so this blends the state's metros back in and may slightly overstate rural costs."
+    },
+    "rest-of-IL": {
+      "id": "rest-of-IL",
+      "name": "Rest of Illinois",
+      "shortName": "Rest of Illinois",
+      "type": "restOfState",
+      "states": [
+        "IL"
+      ],
+      "primaryState": "IL",
+      "priceParity": {
+        "allItems": 0.9996,
+        "goods": 1.0383,
+        "housing": 0.9394,
+        "utilities": 0.8495,
+        "otherServices": 1.0016
+      },
+      "note": "Uses statewide price parities. BEA publishes no rural-only index, so this blends the state's metros back in and may slightly overstate rural costs."
+    },
+    "rest-of-IN": {
+      "id": "rest-of-IN",
+      "name": "Rest of Indiana",
+      "shortName": "Rest of Indiana",
+      "type": "restOfState",
+      "states": [
+        "IN"
+      ],
+      "primaryState": "IN",
+      "priceParity": {
+        "allItems": 0.9333,
+        "goods": 0.9551,
+        "housing": 0.7393,
+        "utilities": 0.8555,
+        "otherServices": 0.9914
+      },
+      "note": "Uses statewide price parities. BEA publishes no rural-only index, so this blends the state's metros back in and may slightly overstate rural costs."
+    },
+    "rest-of-IA": {
+      "id": "rest-of-IA",
+      "name": "Rest of Iowa",
+      "shortName": "Rest of Iowa",
+      "type": "restOfState",
+      "states": [
+        "IA"
+      ],
+      "primaryState": "IA",
+      "priceParity": {
+        "allItems": 0.8776,
+        "goods": 0.9373,
+        "housing": 0.6532,
+        "utilities": 0.8327,
+        "otherServices": 0.9293
+      },
+      "note": "Uses statewide price parities. BEA publishes no rural-only index, so this blends the state's metros back in and may slightly overstate rural costs."
+    },
+    "rest-of-KS": {
+      "id": "rest-of-KS",
+      "name": "Rest of Kansas",
+      "shortName": "Rest of Kansas",
+      "type": "restOfState",
+      "states": [
+        "KS"
+      ],
+      "primaryState": "KS",
+      "priceParity": {
+        "allItems": 0.9007,
+        "goods": 0.9403,
+        "housing": 0.7116,
+        "utilities": 0.8844,
+        "otherServices": 0.9382
+      },
+      "note": "Uses statewide price parities. BEA publishes no rural-only index, so this blends the state's metros back in and may slightly overstate rural costs."
+    },
+    "rest-of-KY": {
+      "id": "rest-of-KY",
+      "name": "Rest of Kentucky",
+      "shortName": "Rest of Kentucky",
+      "type": "restOfState",
+      "states": [
+        "KY"
+      ],
+      "primaryState": "KY",
+      "priceParity": {
+        "allItems": 0.9016,
+        "goods": 0.9597,
+        "housing": 0.6431,
+        "utilities": 0.7531,
+        "otherServices": 0.9725
+      },
+      "note": "Uses statewide price parities. BEA publishes no rural-only index, so this blends the state's metros back in and may slightly overstate rural costs."
+    },
+    "rest-of-LA": {
+      "id": "rest-of-LA",
+      "name": "Rest of Louisiana",
+      "shortName": "Rest of Louisiana",
+      "type": "restOfState",
+      "states": [
+        "LA"
+      ],
+      "primaryState": "LA",
+      "priceParity": {
+        "allItems": 0.8821,
+        "goods": 0.937,
+        "housing": 0.631,
+        "utilities": 0.7146,
+        "otherServices": 0.9571
+      },
+      "note": "Uses statewide price parities. BEA publishes no rural-only index, so this blends the state's metros back in and may slightly overstate rural costs."
+    },
+    "rest-of-ME": {
+      "id": "rest-of-ME",
+      "name": "Rest of Maine",
+      "shortName": "Rest of Maine",
+      "type": "restOfState",
+      "states": [
+        "ME"
+      ],
+      "primaryState": "ME",
+      "priceParity": {
+        "allItems": 0.9705,
+        "goods": 0.9717,
+        "housing": 0.7894,
+        "utilities": 1.3519,
+        "otherServices": 1.0319
+      },
+      "note": "Uses statewide price parities. BEA publishes no rural-only index, so this blends the state's metros back in and may slightly overstate rural costs."
+    },
+    "rest-of-MD": {
+      "id": "rest-of-MD",
+      "name": "Rest of Maryland",
+      "shortName": "Rest of Maryland",
+      "type": "restOfState",
+      "states": [
+        "MD"
+      ],
+      "primaryState": "MD",
+      "priceParity": {
+        "allItems": 1.0496,
+        "goods": 1.0252,
+        "housing": 1.2108,
+        "utilities": 1.1086,
+        "otherServices": 1.016
+      },
+      "note": "Uses statewide price parities. BEA publishes no rural-only index, so this blends the state's metros back in and may slightly overstate rural costs."
+    },
+    "rest-of-MA": {
+      "id": "rest-of-MA",
+      "name": "Rest of Massachusetts",
+      "shortName": "Rest of Massachusetts",
+      "type": "restOfState",
+      "states": [
+        "MA"
+      ],
+      "primaryState": "MA",
+      "priceParity": {
+        "allItems": 1.0576,
+        "goods": 0.9882,
+        "housing": 1.2807,
+        "utilities": 1.5207,
+        "otherServices": 1.0285
+      },
+      "note": "Uses statewide price parities. BEA publishes no rural-only index, so this blends the state's metros back in and may slightly overstate rural costs."
+    },
+    "rest-of-MI": {
+      "id": "rest-of-MI",
+      "name": "Rest of Michigan",
+      "shortName": "Rest of Michigan",
+      "type": "restOfState",
+      "states": [
+        "MI"
+      ],
+      "primaryState": "MI",
+      "priceParity": {
+        "allItems": 0.9622,
+        "goods": 0.9599,
+        "housing": 0.8233,
+        "utilities": 1.0015,
+        "otherServices": 1.0093
+      },
+      "note": "Uses statewide price parities. BEA publishes no rural-only index, so this blends the state's metros back in and may slightly overstate rural costs."
+    },
+    "rest-of-MN": {
+      "id": "rest-of-MN",
+      "name": "Rest of Minnesota",
+      "shortName": "Rest of Minnesota",
+      "type": "restOfState",
+      "states": [
+        "MN"
+      ],
+      "primaryState": "MN",
+      "priceParity": {
+        "allItems": 0.9862,
+        "goods": 1.0052,
+        "housing": 0.9128,
+        "utilities": 0.9084,
+        "otherServices": 1.0021
+      },
+      "note": "Uses statewide price parities. BEA publishes no rural-only index, so this blends the state's metros back in and may slightly overstate rural costs."
+    },
+    "rest-of-MS": {
+      "id": "rest-of-MS",
+      "name": "Rest of Mississippi",
+      "shortName": "Rest of Mississippi",
+      "type": "restOfState",
+      "states": [
+        "MS"
+      ],
+      "primaryState": "MS",
+      "priceParity": {
+        "allItems": 0.8695,
+        "goods": 0.9622,
+        "housing": 0.5646,
+        "utilities": 0.7842,
+        "otherServices": 0.9609
+      },
+      "note": "Uses statewide price parities. BEA publishes no rural-only index, so this blends the state's metros back in and may slightly overstate rural costs."
+    },
+    "rest-of-MO": {
+      "id": "rest-of-MO",
+      "name": "Rest of Missouri",
+      "shortName": "Rest of Missouri",
+      "type": "restOfState",
+      "states": [
+        "MO"
+      ],
+      "primaryState": "MO",
+      "priceParity": {
+        "allItems": 0.9082,
+        "goods": 0.963,
+        "housing": 0.6988,
+        "utilities": 0.7941,
+        "otherServices": 0.9517
+      },
+      "note": "Uses statewide price parities. BEA publishes no rural-only index, so this blends the state's metros back in and may slightly overstate rural costs."
+    },
+    "rest-of-MT": {
+      "id": "rest-of-MT",
+      "name": "Rest of Montana",
+      "shortName": "Rest of Montana",
+      "type": "restOfState",
+      "states": [
+        "MT"
+      ],
+      "primaryState": "MT",
+      "priceParity": {
+        "allItems": 0.9465,
+        "goods": 0.9601,
+        "housing": 0.8465,
+        "utilities": 0.7225,
+        "otherServices": 0.9872
+      },
+      "note": "Uses statewide price parities. BEA publishes no rural-only index, so this blends the state's metros back in and may slightly overstate rural costs."
+    },
+    "rest-of-NE": {
+      "id": "rest-of-NE",
+      "name": "Rest of Nebraska",
+      "shortName": "Rest of Nebraska",
+      "type": "restOfState",
+      "states": [
+        "NE"
+      ],
+      "primaryState": "NE",
+      "priceParity": {
+        "allItems": 0.901,
+        "goods": 0.941,
+        "housing": 0.7517,
+        "utilities": 0.756,
+        "otherServices": 0.9298
+      },
+      "note": "Uses statewide price parities. BEA publishes no rural-only index, so this blends the state's metros back in and may slightly overstate rural costs."
+    },
+    "rest-of-NV": {
+      "id": "rest-of-NV",
+      "name": "Rest of Nevada",
+      "shortName": "Rest of Nevada",
+      "type": "restOfState",
+      "states": [
+        "NV"
+      ],
+      "primaryState": "NV",
+      "priceParity": {
+        "allItems": 0.9998,
+        "goods": 0.9627,
+        "housing": 1.1414,
+        "utilities": 0.9051,
+        "otherServices": 0.9874
+      },
+      "note": "Uses statewide price parities. BEA publishes no rural-only index, so this blends the state's metros back in and may slightly overstate rural costs."
+    },
+    "rest-of-NH": {
+      "id": "rest-of-NH",
+      "name": "Rest of New Hampshire",
+      "shortName": "Rest of New Hampshire",
+      "type": "restOfState",
+      "states": [
+        "NH"
+      ],
+      "primaryState": "NH",
+      "priceParity": {
+        "allItems": 1.0416,
+        "goods": 0.9858,
+        "housing": 1.1495,
+        "utilities": 1.3366,
+        "otherServices": 1.0388
+      },
+      "note": "Uses statewide price parities. BEA publishes no rural-only index, so this blends the state's metros back in and may slightly overstate rural costs."
+    },
+    "rest-of-NJ": {
+      "id": "rest-of-NJ",
+      "name": "Rest of New Jersey",
+      "shortName": "Rest of New Jersey",
+      "type": "restOfState",
+      "states": [
+        "NJ"
+      ],
+      "primaryState": "NJ",
+      "priceParity": {
+        "allItems": 1.088,
+        "goods": 1.0707,
+        "housing": 1.3429,
+        "utilities": 1.1419,
+        "otherServices": 1.0353
+      },
+      "note": "Uses statewide price parities. BEA publishes no rural-only index, so this blends the state's metros back in and may slightly overstate rural costs."
+    },
+    "rest-of-NM": {
+      "id": "rest-of-NM",
+      "name": "Rest of New Mexico",
+      "shortName": "Rest of New Mexico",
+      "type": "restOfState",
+      "states": [
+        "NM"
+      ],
+      "primaryState": "NM",
+      "priceParity": {
+        "allItems": 0.9221,
+        "goods": 0.9614,
+        "housing": 0.7361,
+        "utilities": 0.7789,
+        "otherServices": 0.9854
+      },
+      "note": "Uses statewide price parities. BEA publishes no rural-only index, so this blends the state's metros back in and may slightly overstate rural costs."
+    },
+    "rest-of-NY": {
+      "id": "rest-of-NY",
+      "name": "Rest of New York",
+      "shortName": "Rest of New York",
+      "type": "restOfState",
+      "states": [
+        "NY"
+      ],
+      "primaryState": "NY",
+      "priceParity": {
+        "allItems": 1.0792,
+        "goods": 1.0725,
+        "housing": 1.2217,
+        "utilities": 1.3437,
+        "otherServices": 1.0407
+      },
+      "note": "Uses statewide price parities. BEA publishes no rural-only index, so this blends the state's metros back in and may slightly overstate rural costs."
+    },
+    "rest-of-NC": {
+      "id": "rest-of-NC",
+      "name": "Rest of North Carolina",
+      "shortName": "Rest of North Carolina",
+      "type": "restOfState",
+      "states": [
+        "NC"
+      ],
+      "primaryState": "NC",
+      "priceParity": {
+        "allItems": 0.9433,
+        "goods": 0.9662,
+        "housing": 0.8136,
+        "utilities": 0.8862,
+        "otherServices": 0.9819
+      },
+      "note": "Uses statewide price parities. BEA publishes no rural-only index, so this blends the state's metros back in and may slightly overstate rural costs."
+    },
+    "rest-of-ND": {
+      "id": "rest-of-ND",
+      "name": "Rest of North Dakota",
+      "shortName": "Rest of North Dakota",
+      "type": "restOfState",
+      "states": [
+        "ND"
+      ],
+      "primaryState": "ND",
+      "priceParity": {
+        "allItems": 0.8896,
+        "goods": 0.957,
+        "housing": 0.7142,
+        "utilities": 0.7367,
+        "otherServices": 0.9116
+      },
+      "note": "Uses statewide price parities. BEA publishes no rural-only index, so this blends the state's metros back in and may slightly overstate rural costs."
+    },
+    "rest-of-OH": {
+      "id": "rest-of-OH",
+      "name": "Rest of Ohio",
+      "shortName": "Rest of Ohio",
+      "type": "restOfState",
+      "states": [
+        "OH"
+      ],
+      "primaryState": "OH",
+      "priceParity": {
+        "allItems": 0.9277,
+        "goods": 0.9367,
+        "housing": 0.7301,
+        "utilities": 0.9582,
+        "otherServices": 0.9895
+      },
+      "note": "Uses statewide price parities. BEA publishes no rural-only index, so this blends the state's metros back in and may slightly overstate rural costs."
+    },
+    "rest-of-OK": {
+      "id": "rest-of-OK",
+      "name": "Rest of Oklahoma",
+      "shortName": "Rest of Oklahoma",
+      "type": "restOfState",
+      "states": [
+        "OK"
+      ],
+      "primaryState": "OK",
+      "priceParity": {
+        "allItems": 0.8784,
+        "goods": 0.9378,
+        "housing": 0.6276,
+        "utilities": 0.7388,
+        "otherServices": 0.9546
+      },
+      "note": "Uses statewide price parities. BEA publishes no rural-only index, so this blends the state's metros back in and may slightly overstate rural costs."
+    },
+    "rest-of-OR": {
+      "id": "rest-of-OR",
+      "name": "Rest of Oregon",
+      "shortName": "Rest of Oregon",
+      "type": "restOfState",
+      "states": [
+        "OR"
+      ],
+      "primaryState": "OR",
+      "priceParity": {
+        "allItems": 1.0336,
+        "goods": 1.0526,
+        "housing": 1.0863,
+        "utilities": 1.0705,
+        "otherServices": 1.003
+      },
+      "note": "Uses statewide price parities. BEA publishes no rural-only index, so this blends the state's metros back in and may slightly overstate rural costs."
+    },
+    "rest-of-PA": {
+      "id": "rest-of-PA",
+      "name": "Rest of Pennsylvania",
+      "shortName": "Rest of Pennsylvania",
+      "type": "restOfState",
+      "states": [
+        "PA"
+      ],
+      "primaryState": "PA",
+      "priceParity": {
+        "allItems": 0.9757,
+        "goods": 0.9936,
+        "housing": 0.8507,
+        "utilities": 1.0932,
+        "otherServices": 0.9976
+      },
+      "note": "Uses statewide price parities. BEA publishes no rural-only index, so this blends the state's metros back in and may slightly overstate rural costs."
+    },
+    "rest-of-RI": {
+      "id": "rest-of-RI",
+      "name": "Rest of Rhode Island",
+      "shortName": "Rest of Rhode Island",
+      "type": "restOfState",
+      "states": [
+        "RI"
+      ],
+      "primaryState": "RI",
+      "priceParity": {
+        "allItems": 1.0228,
+        "goods": 0.9717,
+        "housing": 1.0562,
+        "utilities": 1.4665,
+        "otherServices": 1.0284
+      },
+      "note": "Uses statewide price parities. BEA publishes no rural-only index, so this blends the state's metros back in and may slightly overstate rural costs."
+    },
+    "rest-of-SC": {
+      "id": "rest-of-SC",
+      "name": "Rest of South Carolina",
+      "shortName": "Rest of South Carolina",
+      "type": "restOfState",
+      "states": [
+        "SC"
+      ],
+      "primaryState": "SC",
+      "priceParity": {
+        "allItems": 0.9375,
+        "goods": 0.9634,
+        "housing": 0.8049,
+        "utilities": 0.883,
+        "otherServices": 0.9828
+      },
+      "note": "Uses statewide price parities. BEA publishes no rural-only index, so this blends the state's metros back in and may slightly overstate rural costs."
+    },
+    "rest-of-SD": {
+      "id": "rest-of-SD",
+      "name": "Rest of South Dakota",
+      "shortName": "Rest of South Dakota",
+      "type": "restOfState",
+      "states": [
+        "SD"
+      ],
+      "primaryState": "SD",
+      "priceParity": {
+        "allItems": 0.8859,
+        "goods": 0.9547,
+        "housing": 0.6764,
+        "utilities": 0.7965,
+        "otherServices": 0.919
+      },
+      "note": "Uses statewide price parities. BEA publishes no rural-only index, so this blends the state's metros back in and may slightly overstate rural costs."
+    },
+    "rest-of-TN": {
+      "id": "rest-of-TN",
+      "name": "Rest of Tennessee",
+      "shortName": "Rest of Tennessee",
+      "type": "restOfState",
+      "states": [
+        "TN"
+      ],
+      "primaryState": "TN",
+      "priceParity": {
+        "allItems": 0.9187,
+        "goods": 0.9625,
+        "housing": 0.7907,
+        "utilities": 0.7214,
+        "otherServices": 0.9514
+      },
+      "note": "Uses statewide price parities. BEA publishes no rural-only index, so this blends the state's metros back in and may slightly overstate rural costs."
+    },
+    "rest-of-TX": {
+      "id": "rest-of-TX",
+      "name": "Rest of Texas",
+      "shortName": "Rest of Texas",
+      "type": "restOfState",
+      "states": [
+        "TX"
+      ],
+      "primaryState": "TX",
+      "priceParity": {
+        "allItems": 0.9706,
+        "goods": 0.9808,
+        "housing": 0.965,
+        "utilities": 0.8751,
+        "otherServices": 0.9708
+      },
+      "note": "Uses statewide price parities. BEA publishes no rural-only index, so this blends the state's metros back in and may slightly overstate rural costs."
+    },
+    "rest-of-UT": {
+      "id": "rest-of-UT",
+      "name": "Rest of Utah",
+      "shortName": "Rest of Utah",
+      "type": "restOfState",
+      "states": [
+        "UT"
+      ],
+      "primaryState": "UT",
+      "priceParity": {
+        "allItems": 0.9886,
+        "goods": 0.9645,
+        "housing": 1.0781,
+        "utilities": 0.7874,
+        "otherServices": 0.9896
+      },
+      "note": "Uses statewide price parities. BEA publishes no rural-only index, so this blends the state's metros back in and may slightly overstate rural costs."
+    },
+    "rest-of-VT": {
+      "id": "rest-of-VT",
+      "name": "Rest of Vermont",
+      "shortName": "Rest of Vermont",
+      "type": "restOfState",
+      "states": [
+        "VT"
+      ],
+      "primaryState": "VT",
+      "priceParity": {
+        "allItems": 0.9796,
+        "goods": 0.9727,
+        "housing": 0.865,
+        "utilities": 1.2583,
+        "otherServices": 1.0159
+      },
+      "note": "Uses statewide price parities. BEA publishes no rural-only index, so this blends the state's metros back in and may slightly overstate rural costs."
+    },
+    "rest-of-VA": {
+      "id": "rest-of-VA",
+      "name": "Rest of Virginia",
+      "shortName": "Rest of Virginia",
+      "type": "restOfState",
+      "states": [
+        "VA"
+      ],
+      "primaryState": "VA",
+      "priceParity": {
+        "allItems": 1.011,
+        "goods": 1.0037,
+        "housing": 1.068,
+        "utilities": 0.9219,
+        "otherServices": 1.0023
+      },
+      "note": "Uses statewide price parities. BEA publishes no rural-only index, so this blends the state's metros back in and may slightly overstate rural costs."
+    },
+    "rest-of-WA": {
+      "id": "rest-of-WA",
+      "name": "Rest of Washington",
+      "shortName": "Rest of Washington",
+      "type": "restOfState",
+      "states": [
+        "WA"
+      ],
+      "primaryState": "WA",
+      "priceParity": {
+        "allItems": 1.0701,
+        "goods": 1.0436,
+        "housing": 1.2598,
+        "utilities": 0.9286,
+        "otherServices": 1.0387
+      },
+      "note": "Uses statewide price parities. BEA publishes no rural-only index, so this blends the state's metros back in and may slightly overstate rural costs."
+    },
+    "rest-of-WV": {
+      "id": "rest-of-WV",
+      "name": "Rest of West Virginia",
+      "shortName": "Rest of West Virginia",
+      "type": "restOfState",
+      "states": [
+        "WV"
+      ],
+      "primaryState": "WV",
+      "priceParity": {
+        "allItems": 0.895,
+        "goods": 0.9654,
+        "housing": 0.5424,
+        "utilities": 0.9224,
+        "otherServices": 0.9994
+      },
+      "note": "Uses statewide price parities. BEA publishes no rural-only index, so this blends the state's metros back in and may slightly overstate rural costs."
+    },
+    "rest-of-WI": {
+      "id": "rest-of-WI",
+      "name": "Rest of Wisconsin",
+      "shortName": "Rest of Wisconsin",
+      "type": "restOfState",
+      "states": [
+        "WI"
+      ],
+      "primaryState": "WI",
+      "priceParity": {
+        "allItems": 0.9409,
+        "goods": 0.9431,
+        "housing": 0.7931,
+        "utilities": 0.8991,
+        "otherServices": 0.995
+      },
+      "note": "Uses statewide price parities. BEA publishes no rural-only index, so this blends the state's metros back in and may slightly overstate rural costs."
+    },
+    "rest-of-WY": {
+      "id": "rest-of-WY",
+      "name": "Rest of Wyoming",
+      "shortName": "Rest of Wyoming",
+      "type": "restOfState",
+      "states": [
+        "WY"
+      ],
+      "primaryState": "WY",
+      "priceParity": {
+        "allItems": 0.9269,
+        "goods": 0.9537,
+        "housing": 0.7113,
+        "utilities": 0.7842,
+        "otherServices": 1.0043
+      },
+      "note": "Uses statewide price parities. BEA publishes no rural-only index, so this blends the state's metros back in and may slightly overstate rural costs."
+    },
+    "rest-of-DC": {
+      "id": "rest-of-DC",
+      "name": "Rest of District of Columbia",
+      "shortName": "Rest of District of Columbia",
+      "type": "restOfState",
+      "states": [
+        "DC"
+      ],
+      "primaryState": "DC",
+      "priceParity": {
+        "allItems": 1.099,
+        "goods": 1.065,
+        "housing": 1.5498,
+        "utilities": 1.1282,
+        "otherServices": 1.0296
+      },
+      "note": "Uses statewide price parities. BEA publishes no rural-only index, so this blends the state's metros back in and may slightly overstate rural costs."
+    }
+  }
+}

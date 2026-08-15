@@ -271,6 +271,87 @@ const HEAD_OF_HOUSEHOLD = {
   },
 };
 
+
+/**
+ * MANDATORY EMPLOYEE PAYROLL CONTRIBUTIONS.
+ *
+ * Eleven states deduct disability or paid-leave contributions from every
+ * paycheque by law. They are not income tax, they are not FICA, and this engine
+ * modelled none of them. California's is the largest by a distance: 1.3% of
+ * ALL wages with no ceiling at all, which is $1,300 a year at $100,000 and
+ * $3,900 at $300,000. Every Californian on this site was shown that money as
+ * theirs to spend.
+ *
+ * Rates are the 2026 EMPLOYEE share. Several programmes split the cost with the
+ * employer and the split varies with headcount; where it does, the figure here
+ * is the employee share at a normal-sized employer, which is what a person
+ * reading a payslip will see.
+ *
+ * DEDUCTIBLE ONES ARE MARKED. The IRS treats mandatory contributions to the
+ * California, New Jersey and New York disability funds, the Rhode Island
+ * temporary disability fund and the Washington supplemental workers'
+ * compensation fund as state income tax for Schedule A. The newer paid-leave
+ * programmes have no such ruling, so they are not claimed as deductible —
+ * understating a deduction is the safe direction.
+ *
+ * Maine and Delaware are deliberately absent: their employee share exists only
+ * if the employer elects to split the cost, so there is no figure that is true
+ * for everyone. DC's programme is employer-funded entirely.
+ *
+ * Source: EY, "2026 state disability, paid family and medical leave and
+ * long-term care insurance wage base and rates", 5 January 2026, cross-checked
+ * against each state's own labour department where it publishes one.
+ */
+const SS_WAGE_BASE_2026 = 184_500;
+
+const PAYROLL_CONTRIBUTIONS = {
+  California: [
+    { id: 'ca-sdi', name: 'State Disability Insurance', rate: 0.013, wageCap: null, deductible: true },
+  ],
+  'New Jersey': [
+    { id: 'nj-tdi', name: 'Temporary Disability Insurance', rate: 0.0019, wageCap: 171_100, deductible: true },
+    { id: 'nj-fli', name: 'Family Leave Insurance', rate: 0.0023, wageCap: 171_100, deductible: true },
+  ],
+  'New York': [
+    // Half a per cent of weekly wages, but capped at 60 cents a week, which
+    // binds for anyone earning over $6,240 — so in practice a flat $31.20.
+    { id: 'ny-dbl', name: 'Disability Benefits Law', rate: 0.005, wageCap: 6_240, deductible: true },
+    { id: 'ny-pfl', name: 'Paid Family Leave', rate: 0.00432, wageCap: 95_348.76, deductible: true },
+  ],
+  'Rhode Island': [
+    { id: 'ri-tdi', name: 'Temporary Disability Insurance', rate: 0.011, wageCap: 100_000, deductible: true },
+  ],
+  Washington: [
+    // 71.43% of a 1.13% total premium.
+    { id: 'wa-pfml', name: 'Paid Family and Medical Leave', rate: 0.0113 * 0.7143, wageCap: SS_WAGE_BASE_2026, deductible: true },
+  ],
+  Hawaii: [
+    // Half a per cent, capped at $7.50 a week.
+    { id: 'hi-tdi', name: 'Temporary Disability Insurance', rate: 0.005, wageCap: 78_000, deductible: false },
+  ],
+  Connecticut: [
+    { id: 'ct-pfl', name: 'Paid Leave', rate: 0.005, wageCap: SS_WAGE_BASE_2026, deductible: false },
+  ],
+  Colorado: [
+    { id: 'co-famli', name: 'Family and Medical Leave Insurance', rate: 0.0044, wageCap: SS_WAGE_BASE_2026, deductible: false },
+  ],
+  Massachusetts: [
+    { id: 'ma-pfml', name: 'Paid Family and Medical Leave', rate: 0.0046, wageCap: SS_WAGE_BASE_2026, deductible: false },
+  ],
+  Oregon: [
+    { id: 'or-pfml', name: 'Paid Leave Oregon', rate: 0.006, wageCap: SS_WAGE_BASE_2026, deductible: false },
+  ],
+  Minnesota: [
+    { id: 'mn-paid-leave', name: 'Paid Leave', rate: 0.0044, wageCap: SS_WAGE_BASE_2026, deductible: false },
+  ],
+};
+
+const PAYROLL_SOURCE = {
+  citation: 'EY, "2026 state disability, paid family and medical leave and long-term care insurance wage base and rates" (5 January 2026), cross-checked against state labour departments',
+  url: 'https://taxnews.ey.com/news/2026-0131-2026-state-disability-paid-family-and-medical-leave-and-long-term-care-insurance-wage-base-and-rates',
+  checked: '2026-08-15',
+};
+
 // --- post-process ----------------------------------------------------------
 
 const warnings = [];
@@ -317,6 +398,16 @@ function applyBracketsLocal(income, brackets) {
 
 for (const [name, s] of Object.entries(states)) {
   s.notes = s.footnotes.map((f) => footnoteText[f]).filter(Boolean);
+
+  s.payrollContributions = PAYROLL_CONTRIBUTIONS[name] ?? [];
+  for (const c of s.payrollContributions) {
+    if (!(c.rate > 0 && c.rate < 0.05)) {
+      throw new Error(`${name}: implausible payroll contribution rate ${c.rate} for ${c.id}`);
+    }
+    if (c.wageCap !== null && !(c.wageCap > 1_000)) {
+      throw new Error(`${name}: implausible wage cap ${c.wageCap} for ${c.id}`);
+    }
+  }
 
   const hoh = HEAD_OF_HOUSEHOLD[name];
   s.headOfHouseholdBasis = hoh ? hoh.basis : 'assumed-single';
@@ -406,6 +497,7 @@ const output = {
     snapshot: `data/${VERSION}/sources/taxfoundation-state-income-tax-2026.html`,
     confidence: 'secondary — reputable aggregator of state statutes; high-population states spot-verified against state revenue departments',
   },
+  payrollContributionSource: PAYROLL_SOURCE,
   filingStatusMapping: {
     single: 'single',
     marriedJointly: 'marriedJointly',
