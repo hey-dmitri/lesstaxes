@@ -16,7 +16,7 @@
  *                             and Portland twice — Multnomah County's preschool
  *                             tax and the Metro housing tax
  *   Per county, weighted:     every Indiana metro, by population
- *   State-average fallback:   AL, IA, KY, MD, MI, MO, OH, PA — the smaller
+ *   State-average fallback:   AL, IA, KY, MD, MI, MO, OH, OR, PA — the smaller
  *                             cities, where an average is much closer to right
  *
  * The fallback uses Tax Foundation's average effective local rate as a share
@@ -26,7 +26,8 @@
  * levies 3.74% against a Pennsylvania average of 0.99%.
  *
  * Every city rate here is transcribed from that city's own revenue department
- * and carries its source URL. A remembered rate is worse than an average,
+ * or, for New York City and Yonkers, from the state form that carries the
+ * city's schedule, and every one of them records its source URL. A remembered rate is worse than an average,
  * because it looks sourced; where a rate could not be verified against a
  * primary source it is deliberately still on the average, and listed under
  * `limitations`.

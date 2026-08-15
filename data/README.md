@@ -15,17 +15,32 @@ Each subdirectory is one immutable, dated dataset, e.g. `2026.1/`.
 
 See `PROJECT.md` sections 9.2 and 16.2.
 
-## Expected contents per version
+## Contents per version
+
+This is what every release from `2026.1` onward actually contains — nine
+files, the same nine each time. It replaces a plan that named
+`tax-rules.json`, `cost-index.json` and `manifest.json`, none of which was
+ever written: the tax rules split into federal and state, the price parities
+went into `metros.json` beside the metro they describe, and the provenance
+that would have gone in a manifest is carried inside each file instead, next
+to the numbers it is about.
 
 | File | Contents | Source |
 |---|---|---|
-| `metros.json` | Metro list, names, states, counties, CBSA codes | Census CBSA delineation |
-| `tax-rules.json` | Federal + state + local income tax rules | IRS, state DORs |
-| `cost-index.json` | Regional price parities by category | BEA RPP |
-| `housing.json` | Median rent, median home value, property tax rates | Census ACS, HUD |
-| `spending.json` | Household spending profiles by income band | BLS CES |
-| `transport.json` | Vehicles per household, car costs, transit costs | Census ACS, BLS |
-| `sales-tax.json` | Combined rates and per-state taxable-share matrix | State DORs |
-| `manifest.json` | Version, build date, source vintages, row counts | Generated |
+| `metros.json` | Metro list, names, states, CBSA codes, price parities by category | Census CBSA delineation, BEA RPP |
+| `metros-counties.json` | The counties making up each metro | Census CBSA delineation |
+| `federal.json` | Federal brackets, deductions, credits, FICA, SALT and mortgage caps | IRS, SSA |
+| `states.json` | State income tax for all 50 states and DC, with each state's own recorded source | State revenue departments and statutes; first compiled from Tax Foundation |
+| `local-income-tax.json` | 13 named cities, every Indiana county, state averages elsewhere | City revenue departments, Indiana DOR |
+| `housing.json` | Median rent by size, median home value, effective property tax, income curves | Census ACS |
+| `transport.json` | Vehicles per adult, cost per vehicle | Census ACS, BLS |
+| `spending.json` | Household spending profiles by income band, and the price factors that restate them | BLS CES, BLS CPI, Case-Shiller |
+| `sales-tax.json` | Combined rates and grocery treatment — **reference only, not charged** | Tax Foundation, state statutes |
 
-Populated in Stage 2.
+Each file carries its own `source`, `vintage` and `limitations`, so provenance
+travels with the numbers rather than in a separate index that can fall out of
+step with them.
+
+HUD Fair Market Rents appear nowhere. They were specified and then rejected:
+HUD publishes on its own areas, which do not map cleanly onto the metros used
+here. Rent by bedroom comes from ACS table B25031.

@@ -30,14 +30,23 @@ See `PROJECT.md` section 16.1.
 
 ## Layout
 
-| Path | Contents | Stage |
-|---|---|---|
-| `types.ts` | Domain model — inputs and results | 0 ✅ |
-| `money.ts` | Formatting and unit-conversion helpers | 0 ✅ |
-| `tax/` | Federal, FICA, state, and local income tax | 1 |
-| `housing/` | Rent, mortgage amortisation, property tax, insurance | 3 |
-| `living/` | Spending profiles, price parities, cars, sales tax | 3 |
-| `compare.ts` | `leftover()`, the decomposition, the break-even solver | 3 |
-| `index.ts` | Public API surface | 3 |
+The Stage column is gone: all ten stages shipped and the site is live, so a
+column of build-order numbers was telling a reader about a schedule rather than
+about the code. `housing/` and `living/` were listed as directories and are
+single files. `living/` was also credited with sales tax, which no longer
+exists as a line — the spending basket already contains it.
+
+| Path | Contents |
+|---|---|
+| `types.ts` | Domain model — inputs and results |
+| `money.ts` | Formatting and unit-conversion helpers |
+| `datasets.ts` | Every shipped release, and which one a link resolves to |
+| `dataset.ts` | Reading a release: metros, defaults, local tax options |
+| `tax/` | Federal, FICA, state, and local income tax; separate-return splitting |
+| `housing.ts` | Rent, mortgage amortisation, property tax, upkeep, insurance |
+| `living.ts` | Spending profiles, price parities, cars, utilities |
+| `narrative.ts` | The verdict, the biggest reason, the sentences on the card |
+| `compare.ts` | `leftover()`, the decomposition, the break-even solver |
+| `index.ts` | Public API surface |
 
 Tests live beside the code they cover, as `*.test.ts`.

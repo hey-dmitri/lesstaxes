@@ -47,8 +47,14 @@ and credits is a lot of careful data entry.
 
 ## Stage 2 — Data pipeline and the metro dataset
 
-**Build:** fetch scripts for Census ACS, BEA, BLS and HUD; validation and sanity checks; the
-first dated dataset (`data/2026.1/`) covering all ~387 metros plus rural fallbacks.
+**Build:** build scripts for Census ACS, BEA and BLS; validation and sanity checks; the
+first dated dataset (`data/2026.1/`) covering all 387 metros plus 51 rural fallbacks.
+
+*What actually happened:* HUD was on this list and was dropped. HUD publishes
+Fair Market Rents on its own areas, which do not map cleanly onto the metros
+used here, so rent by bedroom comes from ACS table B25031 instead. Fetching and
+building also never separated: each builder reads raw responses committed under
+the release's own `sources/` directory, so every one rebuilds offline.
 
 **You'll see:** a data browser page — pick any city, see every number the site holds for it and
 which federal table it came from. Spot-check the places you know well.
@@ -65,6 +71,12 @@ quite line up between sources.
 
 **Build:** housing (rent and own), cars, living costs, sales tax, the `leftover` calculation, the
 city-effect/salary-effect decomposition, and the break-even salary solver.
+
+*What actually happened:* the sales tax line was built and later removed. The
+BLS spending figures are what households handed over at the till, tax included,
+so charging a rate on top of them counted the same tax twice. The rates are
+still built and published as reference — see `data/<version>/sales-tax.json` —
+and the gap that leaves is listed on the methodology page.
 
 **You'll see:** your own scenarios computed end to end — Chicago→Austin, NYC→Austin, and any
 others you want to throw at it — with every intermediate number visible so you can follow the

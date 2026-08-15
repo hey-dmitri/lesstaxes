@@ -6,16 +6,31 @@ Run manually, or quarterly by a GitHub Action that opens a pull request when any
 (Stage 9). **Never auto-merged** — a human reviews the diff and a Vercel preview before it goes
 live.
 
-## Planned scripts (Stage 2)
+## The scripts
+
+The six `fetch-*.ts` files this section used to plan were never written. Fetching
+and building were not separated in the end: each builder reads the raw responses
+committed under the release's own `sources/` directory, so every one of them
+rebuilds offline with no API key.
 
 | Script | Source | Produces |
 |---|---|---|
-| `fetch-census.ts` | Census ACS + CBSA delineation | `metros.json`, `housing.json`, `transport.json` |
-| `fetch-bea.ts` | BEA Regional Price Parities | `cost-index.json` |
-| `fetch-bls.ts` | BLS Consumer Expenditure Survey | `spending.json` |
-| `fetch-hud.ts` | HUD Fair Market Rents | `housing.json` (rent by bedroom) |
-| `fetch-tax-rules.ts` | IRS + state revenue departments | `tax-rules.json`, `sales-tax.json` |
-| `build-dataset.ts` | — | Orchestrates the above, writes `manifest.json` |
+| `build-metros.mjs` | Census CBSA delineation, BEA RPP | `metros.json`, `metros-counties.json` |
+| `build-housing-transport.mjs` | Census ACS | `housing.json`, `transport.json` |
+| `build-spending.mjs` | BLS CES, BLS CPI, Case-Shiller | `spending.json` |
+| `build-state-tax-rules.mjs` | State revenue departments and statutes | `federal.json`, `states.json` |
+| `build-local-income-tax.mjs` | City revenue departments, Indiana DOR | `local-income-tax.json` |
+| `build-sales-tax.mjs` | Tax Foundation, state statutes | `sales-tax.json` (reference only) |
+| `build-all.mjs` | — | Runs every builder above, in order |
+| `refresh-sources.mjs` | — | Re-downloads the upstream responses into `sources/` |
+| `cut-dataset-version.mjs` | — | Opens the next release and registers it |
+
+Three more generate review pages rather than data: `report-dataset.ts`,
+`report-scenarios.ts` and `report-tax-examples.ts`. They read through the
+engine's own dataset resolver, so they cannot disagree with the calculator
+about which release is live — `report-dataset.ts` did exactly that for
+twenty-four releases, reading `2026.2` while printing today's version at the
+top of the page.
 
 ## Non-negotiable: validation
 

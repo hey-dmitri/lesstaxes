@@ -3,11 +3,23 @@
  *
  *   node scripts/build-sales-tax.mjs
  *
- * Two things are needed to estimate sales tax on a household's spending:
+ * NOTHING THIS FILE PRODUCES IS CHARGED TO ANYBODY. It is reference material.
+ *
+ * The spending survey the calculator uses already contains the sales tax those
+ * households handed over at the till, so charging these rates on top of it was
+ * counting the same tax twice, and the line was removed. What is built here
+ * stays published because it is worth being able to look up, and because the
+ * gap it leaves — the basket carries a NATIONAL blend, so a state levying no
+ * sales tax and the highest-rate state look identical — is worth a few hundred
+ * dollars a year and might one day be closed. Closing it means stripping the
+ * embedded average back out category by category, which the survey does not
+ * publish.
+ *
+ * The two things below were what an estimate NEEDED, back when one was made:
  * the RATE, and the SHARE of spending that is actually taxable. The second is
  * where naive calculators go wrong — most states exempt groceries, and almost
  * all services are untaxed, so the taxable base is far smaller than total
- * spending. See PROJECT.md section 2.
+ * spending. Both are still computed, and both are still only recorded.
  *
  * Sources:
  *   Rates    Tax Foundation, "State and Local Sales Tax Rates, 2026"

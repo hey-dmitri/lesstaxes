@@ -5,15 +5,35 @@
  *   npx tsx scripts/report-dataset.ts > .stage2-report.html
  */
 
-import metros from '../data/2026.2/metros.json';
-import metroCounties from '../data/2026.2/metros-counties.json';
-import housing from '../data/2026.2/housing.json';
-import transport from '../data/2026.2/transport.json';
-import spending from '../data/2026.2/spending.json';
-import salesTax from '../data/2026.2/sales-tax.json';
-import localTax from '../data/2026.2/local-income-tax.json';
-import states from '../data/2026.2/states.json';
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
+
 import { DATASET_VERSION } from '../engine/dataset';
+import { datasetBundle } from '../engine/datasets';
+
+/*
+ * THE VERSION IS RESOLVED, NOT TYPED.
+ *
+ * These eight were pinned imports from `data/2026.2/` while the heading at the
+ * bottom of this file printed DATASET_VERSION — so the page built for
+ * spot-checking numbers before they ship stamped today's version on figures
+ * twenty-four releases old. In 2026.2 no state itemised, no state had a
+ * low-income credit, there were thirteen local jurisdictions rather than
+ * thirty-nine, and South Carolina's top rate was 6.00% against today's 5.21%.
+ * Every one of those is something this page exists to let somebody catch.
+ *
+ * Reading through `datasetBundle` means the review page cannot disagree with
+ * the calculator about what the calculator is using, because it is asking the
+ * same function the calculator asks.
+ */
+const bundle = datasetBundle(DATASET_VERSION);
+const { metros, housing, transport, spending, salesTax, localTax, states } = bundle;
+
+// Counties are the one file not in the bundle — nothing in the engine needs
+// them at runtime, so they are read straight off the release being reported.
+const metroCounties = JSON.parse(
+  readFileSync(resolve(import.meta.dirname, '..', 'data', DATASET_VERSION, 'metros-counties.json'), 'utf8'),
+);
 
 type Row = {
   id: string;
@@ -210,7 +230,7 @@ console.log(`<title>Pack or Stay — Stage 2: Dataset Browser</title>
 <div class="wrap">
 <p class="eyebrow">Pack or Stay &middot; Stage 2 of 10</p>
 <h1>Dataset Browser</h1>
-<p class="sub">Every number the calculator will use &middot; dataset <code>${DATASET_VERSION}</code></p>
+<p class="sub">Every number the calculator will use &middot; dataset <code>${bundle.version}</code></p>
 
 <div class="tally-row">
   <div class="tally"><b>${metroCount}</b><span>metros</span></div>

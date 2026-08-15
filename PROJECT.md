@@ -1,9 +1,10 @@
 # Pack or Stay — Project Vision
 
-> **Status:** Built through Stage 9 and running locally. Two open items block launch — see §14.
+> **Status:** **Live** at [packorstay.com](https://packorstay.com). All ten stages shipped.
+> Current dataset `2026.26`. What remains open is listed in the README's "Known gaps".
 > **Audience:** This document is written so a fresh AI session or new contributor can pick the
 > project up cold, with no prior conversation, and understand exactly what is being built and why.
-> **Last updated:** 2026-08-12
+> **Last updated:** 2026-08-15
 
 ---
 
@@ -36,7 +37,8 @@ wrong. The product's value is in catching the cases where intuition fails:
 - Most households **do not itemize**, so the "tax benefits of owning a home" are often worth
   exactly $0.
 - **Property tax** in low-income-tax states (TX, NH) frequently claws back the income tax saving.
-- **Groceries are sales-tax-exempt in ~32 states**, so the sales-tax difference is much smaller
+- **Groceries are sales-tax-exempt in 36 of the 46 states that levy one** (reduced in six,
+  fully taxed in four), so the sales-tax difference is much smaller
   than people assume — typically a few hundred dollars a year, not thousands.
 
 The site should tell the truth about all of these, including when the truth is boring.
@@ -56,7 +58,7 @@ leftover(city) =   gross salary in that city
                  − FICA (Social Security + Medicare)
                  − housing  (rent, or mortgage + property tax + insurance)
                  − living costs (food, utilities, healthcare, transport, other)
-                 − sales tax on taxable spending
+                 − state disability and paid family leave, where levied
 
 ANSWER  =  leftover(destination) − leftover(origin)
 PERCENT =  ANSWER / leftover(origin)
@@ -175,18 +177,25 @@ Run the following for **each** city independently, then difference the results.
 
 ### Step 2 — FICA
 ```
-social_security = min(gross, SS_WAGE_BASE) × 6.20%
+# per EARNER, not per household — the wage base is a per-person cap
+social_security = Σ over earners of ( min(wages_of_earner, SS_WAGE_BASE) × 6.20% )
 medicare        = gross × 1.45%
                 + max(0, gross − ADDL_MEDICARE_THRESHOLD[filing]) × 0.90%
 fica            = social_security + medicare
 ```
+
+**Corrected after launch.** This was written as `min(gross, SS_WAGE_BASE)`,
+which caps a two-earner couple as though they were one person. On $300,000
+split evenly it charged $11,439 instead of $18,600 — $7,161 of Social Security
+that two people genuinely owe. Medicare has no cap and the additional Medicare
+threshold is genuinely per household, so only the first line changes.
 Federal and identical in both cities — but does *not* fully cancel when salary differs between
 cities, so it must be computed per city rather than skipped.
 
 ### Step 3 — Housing
 ```
 if tenure == RENT:
-    housing_cash      = monthly_rent × 12 + renters_insurance[state]
+    housing_cash      = monthly_rent × 12 + utilities_inside_gross_rent
     property_tax      = 0
     mortgage_interest = 0
 
@@ -194,9 +203,9 @@ if tenure == OWN:
     loan              = home_price × (1 − down_payment_pct)
     monthly_payment   = amortize(loan, rate, 360 months)      # principal + interest
     property_tax      = home_price × county_effective_rate
-    home_insurance    = home_insurance_annual[state]          # see §6.1
+    upkeep            = owned_dwelling_line ÷ homeowner_share   # repairs + insurance
     mortgage_interest = first_year_interest(loan, rate)       # for itemization test
-    housing_cash      = monthly_payment × 12 + property_tax + home_insurance
+    housing_cash      = monthly_payment × 12 + property_tax + upkeep + utilities
 ```
 
 #### 6.1 Insurance note
@@ -245,18 +254,28 @@ Transport is deliberately **excluded** from the price-parity-scaled categories a
 car counts instead — this is what allows the model to capture a change in the *number* of vehicles
 rather than just their price. See §2.
 
-### Step 7 — Sales tax
+### Step 7 — Sales tax — **REMOVED, and the rates kept as reference**
+
+This step was built and then deleted. BLS defines an expenditure as the
+transaction cost INCLUDING sales and excise tax, so the spending basket in step
+6 already contains it and charging a rate on top counted the same tax twice —
+$917 a year in Chicago, $1,187 in Nashville.
+
+What it used to do, kept for the day the difference between states can be
+modelled properly:
 ```
 taxable_spend = Σ over categories of ( cost[k] × taxable_share[k][state] )
 sales_tax     = taxable_spend × combined_state_and_local_rate(metro)
 ```
-`taxable_share` is a per-state matrix. Groceries are exempt in ~32 states; most services are
-exempt nearly everywhere; rent and mortgage are never taxed.
+`taxable_share` is a per-state matrix. Groceries are exempt in 36 of the 46
+states with a sales tax; most services are exempt nearly everywhere; rent and
+mortgage are never taxed. The rates still ship in
+`data/<version>/sales-tax.json`, labelled reference-only.
 
 ### Step 8 — Leftover
 ```
-leftover = gross − fed_tax − state_tax − local_tax − fica
-                 − housing_cash − living − sales_tax
+leftover = gross − fed_tax − state_tax − local_tax − fica − state_payroll
+                 − housing_cash − living
 ```
 
 ### Step 9 — Difference and present
@@ -280,7 +299,7 @@ All free. All bundled into the app at build time. No runtime API calls. No keys.
 | Local income tax (NYC, Yonkers, PA/OH/MD) | **State/local revenue depts** | Government edict | Annual |
 | Median rent, median home value | **Census ACS** (B25064, B25077, DP04) | Public domain | ~1 yr lag |
 | Property tax paid by county | **Census ACS B25103** | Public domain | ~1 yr lag |
-| Rent by bedroom count | **HUD Fair Market Rents** | Public domain | Annual |
+| Rent by bedroom count | Census ACS table B25031 | Public domain | Annual |
 | Household spending by income band | **BLS Consumer Expenditure Survey** | Public domain | Annual |
 | Regional price levels / inflation | **BLS CPI (regional)** | Public domain | Monthly |
 | Home price index | **FHFA HPI** | Public domain | Quarterly |
@@ -700,7 +719,7 @@ deploy pipeline until there is an interface worth deploying.
 | SALT cap is **$40k** (2025–2029), not $10k | Overstates savings from leaving high-tax states |
 | Most households take the **standard deduction** | Fabricates non-existent "tax benefits of owning" |
 | State/property tax must be computed **before** federal | Itemization test is wrong; federal tax is wrong |
-| **Groceries exempt** from sales tax in ~32 states | Overstates sales tax difference substantially |
+| **Groceries exempt** from sales tax in 36 of the 46 states that levy one | Overstated the sales tax difference substantially, back when one was charged |
 | Local sales tax dominates (Chicago 10.25% vs Austin 8.25% on identical 6.25% state bases) | State-level rates alone find no difference at all |
 | **Car count**, not car price, drives transport cost | Misses ~$15k/yr on the canonical NYC→Austin move |
 | Cars scale with **adults in household**, not just metro | Doubles a single person's transport cost |

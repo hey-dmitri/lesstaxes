@@ -106,7 +106,7 @@ const PRIOR_YEAR_FIGURES = {
  * bracket and every allowance against what we ship.
  *
  * It exists because the aggregated table is published once a year, in
- * February, and states legislate through the spring. Four moved underneath it
+ * February, and states legislate through the spring. Seven moved underneath it
  * in 2026. "Our source is reputable" is not an answer to that; only looking is.
  *
  * `matched: true` means the state's own publication agreed with the table and
@@ -3334,9 +3334,10 @@ const output = {
      * a long time that was treated as the end of the argument. It is not.
      * Reproducible only means everyone gets the same answer; it says nothing
      * about whether the answer is still true. This table was published in
-     * February, states legislate through the spring, and by August four of them
-     * had moved underneath it — Georgia, Arizona, South Carolina and Maine —
-     * every one of them in the direction that overcharges the reader.
+     * February, states legislate through the spring, and by August seven of
+     * them had moved underneath it — South Carolina, Arkansas, Georgia, West
+     * Virginia, Arizona, Utah and Maine — every one of them in the direction
+     * that overcharges the reader.
      *
      * Recording the date lets the build say how old it is instead of leaving
      * everyone to assume it is current.
@@ -3358,7 +3359,7 @@ const output = {
   limitations: [
     'Income-based phase-outs of the standard deduction or personal exemption are modelled in nine states — Alabama, Colorado, Connecticut, Maryland, Maine, Minnesota, Rhode Island, South Carolina and Wisconsin, Colorado\'s as a cliff. Phase-outs of a CREDIT are modelled in two more, Oregon and Utah. Where a state has one that is not modelled, that state carries a note saying so and which way it runs.',
     'A deduction for federal income tax paid is modelled for Oregon. Alabama and Missouri also allow one and are not modelled: Alabama gives it on its own line of Form 40, to every filer rather than only to itemisers, worked out as the federal tax you actually bore after the refundable credits are backed out; Missouri sets it as a percentage of federal tax that reaches zero above $125,000 of Missouri income. Both carry a note saying so.',
-    'Local income taxes are excluded here and handled separately; see local.json.',
+    'Local income taxes are excluded here and handled separately; see local-income-tax.json.',
     'Alternative minimum taxes and supplemental high-income surtaxes beyond the published bracket schedules are not modelled. Connecticut\'s recapture IS modelled; New York\'s is not, and New York carries a note.',
     'Every state that taxes wages has been read off its own publication for rates, allowances and head-of-household treatment. Ten states ship the prior year\'s figures because the state has not published this year\'s; each names itself in priorYearFigures.',
   ],
