@@ -50,6 +50,25 @@ describe('describeHousehold', () => {
     expect(describeHousehold(CHICAGO_TO_AUSTIN)).toBe('Single · no children · renting');
   });
 
+  /*
+   * A card that shows a couple's combined salary without saying it is combined
+   * invites the reader to hold it against their own single wage. The earner
+   * count also changes the money, so it belongs on the assumptions line.
+   */
+  it('says when two people are earning the salary', () => {
+    const couple: SharedComparison = { ...CHICAGO_TO_AUSTIN, filingStatus: 'marriedJointly' };
+    expect(describeHousehold({ ...couple, earners: 2 })).toContain('Married, jointly, both earning');
+    expect(describeHousehold({ ...couple, earners: 1 })).toContain('Married, jointly ·');
+    expect(describeHousehold(couple)).toContain('Married, jointly ·');
+  });
+
+  it('does not claim two earners for a household that has one adult', () => {
+    // Old links can carry a stale count from before the status changed.
+    expect(describeHousehold({ ...CHICAGO_TO_AUSTIN, earners: 2 })).toBe(
+      'Single · no children · renting',
+    );
+  });
+
   it('counts one child in the singular', () => {
     expect(describeHousehold({ ...CHICAGO_TO_AUSTIN, children: 1 })).toContain('1 child ');
     expect(describeHousehold({ ...CHICAGO_TO_AUSTIN, children: 2 })).toContain('2 children');

@@ -8,6 +8,7 @@ import {
   percentIsMeaningful,
   verdict,
 } from '@/engine';
+import { salaryWording } from '@/lib/salary-wording';
 import { decodeComparison } from '@/lib/share-link';
 import { comparisonFromShared, describeHousehold } from '@/lib/shared-comparison';
 import { SITE_NAME, TAGLINE } from '@/lib/site';
@@ -65,6 +66,12 @@ export async function GET(_request: Request, { params }: { params: Promise<{ pay
 
   let card: {
     household: string;
+    /*
+     * "Salary" or "Both salaries". The card is the version of this that travels
+     * without the form beside it, so a figure covering two incomes has to say
+     * so here or a reader holds it against their own single wage.
+     */
+    salaryLabel: string;
     origin: CardCity;
     destination: CardCity;
     /** The same call the page makes, in the same words. */
@@ -131,6 +138,9 @@ export async function GET(_request: Request, { params }: { params: Promise<{ pay
 
     card = {
       household: describeHousehold(shared),
+      salaryLabel: salaryWording(shared.filingStatus, shared.earners ?? 1).combined
+        ? 'Both salaries'
+        : 'Salary',
       verdict: {
         word: v.kind === 'pack' ? 'Pack' : v.kind === 'stay' ? 'Stay' : 'Too close to call',
         tooClose: v.kind === 'too-close',
@@ -209,7 +219,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ pay
     >
       <div style={{ display: 'flex', fontSize: 23, fontWeight: 600, color: INK }}>{c.name}</div>
       <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 19, color: MUTED }}>
-        <div style={{ display: 'flex' }}>Salary</div>
+        <div style={{ display: 'flex' }}>{card.salaryLabel}</div>
         <div style={{ display: 'flex', color: INK }}>{formatUSD(c.salary)}</div>
       </div>
       <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 19, color: MUTED }}>

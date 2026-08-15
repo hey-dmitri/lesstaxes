@@ -83,7 +83,19 @@ export function describeHousehold(input: SharedComparison): string {
   const word = (t: 'rent' | 'own') => (t === 'rent' ? 'renting' : 'buying');
   const tenure = from === to ? word(from) : `${word(from)} → ${word(to)}`;
 
-  return `${FILING_WORDS[input.filingStatus]} · ${children} · ${tenure}`;
+  /*
+   * Whether one or two people earn the salary is an assumption on the same
+   * footing as the rest of this line, not a detail. It moves the Social
+   * Security cap, and for a couple filing separately it decides whether the
+   * figure is run through one return or two. Only worth saying for couples —
+   * a single filer and a head of household are one earner by definition.
+   */
+  const status = FILING_WORDS[input.filingStatus];
+  const both =
+    (input.filingStatus === 'marriedJointly' || input.filingStatus === 'marriedSeparately') &&
+    (input.earners ?? 1) >= 2;
+
+  return `${status}${both ? ', both earning' : ''} · ${children} · ${tenure}`;
 }
 
 export interface ComparisonSummary {

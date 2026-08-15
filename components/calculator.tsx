@@ -8,6 +8,7 @@ import { Results } from '@/components/results';
 import { ShareBar } from '@/components/share-bar';
 import { encodeComparison, type SharedComparison } from '@/lib/share-link';
 import { comparisonInputsFrom } from '@/lib/comparison-inputs';
+import { salaryWording } from '@/lib/salary-wording';
 import { describeComparison, jurisdictionsFor } from '@/lib/shared-comparison';
 import { ACTION, TAGLINE } from '@/lib/site';
 import {
@@ -295,6 +296,11 @@ export function Calculator({ initial }: CalculatorProps) {
 
   const sameCity = bothChosen && origin.metroId === destination.metroId;
 
+  // What the salary boxes are asking for. Changes with the household, because
+  // "Salary" means one person's pay or two people's added together depending
+  // on what was answered in step 1.
+  const salary = salaryWording(filingStatus, earners);
+
   // The result exists the moment the inputs do — there is nothing to wait for.
   const result = useMemo(() => {
     if (!bothChosen || sameCity) return null;
@@ -432,11 +438,17 @@ export function Calculator({ initial }: CalculatorProps) {
             tenure={tenure}
             onChange={setOrigin}
             onSalaryChange={changeSalary(origin, setOrigin)}
-            salaryLabel="Salary here"
+            salaryLabel={salary.here}
             salaryHint={
               origin.grossSalary === DEFAULT_SALARY
-                ? 'a year, gross — the US median for full-time work. Change it to yours.'
-                : 'a year, gross'
+                ? // The default is ONE worker's median, so it is the wrong
+                  // starting point the moment two people are earning. Name the
+                  // figure rather than saying "that", which by this point in
+                  // the sentence could be pointing at either of two things.
+                  `${salary.whose} ${formatUSD(DEFAULT_SALARY)} is the US median for ${
+                    salary.combined ? 'one full-time worker' : 'full-time work'
+                  } — change it to ${salary.combined ? 'what the two of you make' : 'yours'}.`
+                : salary.whose
             }
             result={result?.origin ?? null}
             takeHomeNote={takeHomeNote(result?.origin ?? null)}
@@ -453,11 +465,11 @@ export function Calculator({ initial }: CalculatorProps) {
             onSalaryChange={changeSalary(destination, setDestination)}
             result={result?.destination ?? null}
             takeHomeNote={takeHomeNote(result?.destination ?? null)}
-            salaryLabel="Salary offered"
+            salaryLabel={salary.there}
             salaryHint={
               destination.grossSalary !== origin.grossSalary
-                ? `${formatUSD(destination.grossSalary - origin.grossSalary, { signed: true })} versus now`
-                : 'Defaults to your current salary'
+                ? `${salary.whose} ${formatUSD(destination.grossSalary - origin.grossSalary, { signed: true })} versus now.`
+                : `${salary.whose} Defaults to what you earn now.`
             }
           />
         </div>
