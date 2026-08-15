@@ -53,6 +53,12 @@ export interface StateTaxRules {
    * produce identical numbers, and only a written record tells them apart.
    */
   ratesCheckedAgainstState: { url: string; checked: string; matched: boolean } | null;
+  /**
+   * The document this state's head-of-household treatment was read from, and
+   * when. Separate from the rates check because it answers a narrower
+   * question and was settled first.
+   */
+  headOfHouseholdSource: { url: string; checked: string } | null;
   personalExemption: {
     single: USD;
     marriedJointly: USD;

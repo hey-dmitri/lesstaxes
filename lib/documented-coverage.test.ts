@@ -104,3 +104,52 @@ describe('every Indiana metro carries a county rate', () => {
     }
   });
 });
+
+/**
+ * Provenance, which is a different claim from coverage.
+ *
+ * The build reported "42 of 42 read off the state's own 2026 publication" by
+ * counting any recorded source at all. Two of those were republishers rather
+ * than the state, and ten states ship the prior year's figures — so the
+ * sentence was stronger than the evidence twice over.
+ */
+describe('what a recorded source actually is', () => {
+  const official =
+    /\.gov(\/|$|:)|\.state\.[a-z]{2}\.us|legislature\.|\blegis\.|capitol\.|revisor\.|ksrevisor\.|mca\.legmt/i;
+
+  const sources = taxing.flatMap((s) =>
+    [
+      ['rates', s.ratesCheckedAgainstState?.url],
+      ['head of household', s.headOfHouseholdSource?.url],
+    ]
+      .filter(([, url]) => url)
+      .map(([what, url]) => ({ code: s.code, what, url: url as string })),
+  );
+
+  it('records a source for every taxing state', () => {
+    for (const s of taxing) {
+      expect(s.ratesCheckedAgainstState?.url, s.code).toBeTruthy();
+      expect(s.headOfHouseholdSource?.url, s.code).toBeTruthy();
+    }
+  });
+
+  /*
+   * Not zero — New Mexico's revenue department serves its forms through
+   * JavaScript that cannot be fetched, so its booklet is recorded from a
+   * mirror. The point is that the number stays small and visible rather than
+   * being absorbed into a claim that everything came from the state.
+   */
+  it('keeps republished sources few, and never claims they are the state', () => {
+    const republished = sources.filter((s) => !official.test(s.url));
+    expect(republished.length).toBeLessThanOrEqual(2);
+    for (const s of republished) expect(s.code).toBe('NM');
+  });
+
+  it('does not describe prior-year figures as this year\'s document', () => {
+    // Ten states ship last year's figures; the coverage sentence must not
+    // call all 42 a 2026 publication.
+    const priorYear = taxing.filter((s) => s.priorYearFigures).length;
+    expect(priorYear).toBeGreaterThan(0);
+    expect(readme).not.toMatch(/all \d+ .{0,40}2026 publication/i);
+  });
+});

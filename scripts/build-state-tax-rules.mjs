@@ -493,7 +493,7 @@ const RATES_CHECKED = {
   Connecticut: {
     // The personal exemption vanishes by $44,000 and we gave it at every income.
     matched: false,
-    source: 'https://codes.findlaw.com/ct/title-12-taxation/ct-gen-st-sect-12-702/',
+    source: 'https://portal.ct.gov/-/media/drs/forms/2025/income/ct-1040-tcs_1225.pdf',
     checked: '2026-08-15',
   },
   'Rhode Island': {
@@ -1943,7 +1943,7 @@ const STATE_OVERRIDES = {
         headOfHousehold: [{ base: 19_000, start: 38_000, perDollar: 1 }],
       },
     },
-    source: 'https://codes.findlaw.com/ct/title-12-taxation/ct-gen-st-sect-12-702/',
+    source: 'https://portal.ct.gov/-/media/drs/forms/2025/income/ct-1040-tcs_1225.pdf',
     checked: '2026-08-15',
     note: "Connecticut allows no itemised deductions and no standard deduction at all — the personal exemption is the only across-the-board subtraction — so a homeowner gets no relief for a mortgage here, and that is Connecticut's rule rather than a gap. Its property tax credit of up to $300 is not modelled, so Connecticut tax shown here is higher than the true figure for anyone who owns a home or a car.",
   },
@@ -2182,7 +2182,7 @@ const STATE_OVERRIDES = {
     },
     source: 'https://www.mass.gov/info-details/massachusetts-tax-rates',
     checked: '2026-08-15',
-    note: 'Massachusetts lets every wage earner deduct up to $2,000 each of the Social Security and Medicare tax they paid. That is not modelled here, so Massachusetts tax shown is about $100 a year higher than the true figure for most earners.',
+        note: "Massachusetts has no itemised deductions and no standard deduction — a personal exemption and a short list of named deductions are all there is. Its rent deduction of half a year's rent up to $4,000, its commuter deduction and its $440-per-child credit are not calculated, so Massachusetts tax shown here is higher than the true figure for renters, commuters and families.",
   },
   Maryland: {
     /*
@@ -3349,6 +3349,35 @@ console.log(`  top marginal rate:      ${(topRate * 100).toFixed(2)}%`);
  * A coverage report that quietly excludes a category is worse than none: it
  * reads as "all clear" for states it never looked at.
  */
+/*
+ * IS THIS SOURCE THE STATE ITSELF, OR SOMEBODY REPUBLISHING IT?
+ *
+ * The coverage line below used to count any recorded source as "the state's
+ * own publication", which was stronger than the evidence. A statute on a
+ * commercial law site and a form mirrored by a forms aggregator are both
+ * likely accurate and neither is the state speaking.
+ *
+ * The distinction is worth keeping because the whole point of recording a
+ * source is that the next person can re-check it — and a mirror can go away,
+ * or lag, without the state changing anything.
+ */
+const OFFICIAL_HOST =
+  /\.gov(\/|$|:)|\.state\.[a-z]{2}\.us|legislature\.|\blegis\.|capitol\.|revisor\.|ksrevisor\.|mca\.legmt/i;
+
+const secondarySources = [];
+for (const s of Object.values(byCode)) {
+  if (!s.hasWageIncomeTax) continue;
+  for (const [what, src] of [
+    ['rates', s.ratesCheckedAgainstState],
+    ['head of household', s.headOfHouseholdSource],
+  ]) {
+    if (!src?.url) continue;
+    if (!OFFICIAL_HOST.test(src.url)) {
+      secondarySources.push(`${s.code} ${what}: ${new URL(src.url).host}`);
+    }
+  }
+}
+
 const taxing = Object.values(byCode).filter((s) => s.hasWageIncomeTax);
 const checked = taxing.filter((s) => s.headOfHouseholdBasis !== 'assumed-single');
 const unchecked = taxing.filter((s) => s.headOfHouseholdBasis === 'assumed-single');
@@ -3369,9 +3398,18 @@ console.log(`    ${unchecked.map((s) => s.code).join(' ')}`);
  */
 const ratesChecked = taxing.filter((s) => s.ratesCheckedAgainstState);
 const ratesCorrected = ratesChecked.filter((s) => !s.ratesCheckedAgainstState.matched);
+const onPriorYear = taxing.filter((s) => s.priorYearFigures);
 console.log(
-  `\n  RATES AND ALLOWANCES — ${ratesChecked.length} of ${taxing.length} read off the state's own 2026 publication`,
+  `\n  RATES AND ALLOWANCES — ${ratesChecked.length} of ${taxing.length} read off the state's own publication`,
 );
+console.log(
+  `    of those, ${taxing.length - onPriorYear.length} against a 2026 document and ` +
+    `${onPriorYear.length} against the state's most recent, because it has published no 2026 figures`,
+);
+if (secondarySources.length) {
+  console.log(`    recorded against a REPUBLISHER rather than the state (${secondarySources.length}):`);
+  for (const line of secondarySources) console.log(`      ${line}`);
+}
 if (ratesCorrected.length) {
   console.log(`    corrected as a result (${ratesCorrected.length}):`);
   console.log(`      ${ratesCorrected.map((s) => s.code).join(' ')}`);
@@ -3381,6 +3419,13 @@ if (ratesUnchecked.length) {
   console.log(`    still taken on trust from the aggregated table (${ratesUnchecked.length}):`);
   console.log(`      ${ratesUnchecked.map((s) => s.code).join(' ')}`);
 }
+for (const line of secondarySources) {
+  warnings.push(
+    `${line} — recorded against a republisher rather than the state's own site. ` +
+      `Likely accurate, but a mirror can lag or vanish without the state changing anything.`,
+  );
+}
+
 if (warnings.length) {
   console.log('\nWARNINGS:');
   for (const w of warnings) console.log(`  - ${w}`);

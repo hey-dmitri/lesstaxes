@@ -1387,13 +1387,13 @@
       ],
       "priorYearFigures": null,
       "ratesCheckedAgainstState": {
-        "url": "https://codes.findlaw.com/ct/title-12-taxation/ct-gen-st-sect-12-702/",
+        "url": "https://portal.ct.gov/-/media/drs/forms/2025/income/ct-1040-tcs_1225.pdf",
         "checked": "2026-08-15",
         "matched": false
       },
       "itemizedDeductions": null,
       "verifiedAgainstState": {
-        "url": "https://codes.findlaw.com/ct/title-12-taxation/ct-gen-st-sect-12-702/",
+        "url": "https://portal.ct.gov/-/media/drs/forms/2025/income/ct-1040-tcs_1225.pdf",
         "checked": "2026-08-15"
       },
       "communityProperty": false,
@@ -2660,7 +2660,7 @@
       "notes": [
         "Bracket levels adjusted for inflation each year. Inflation-adjusted bracket widths for 2026 were not available as of publication, so table reflects 2025 inflation-adjusted bracket widths.",
         "In Massachusetts, rates exclude the paid family and medical leave payroll tax. Employers must withhold 0.46 percent of employees' eligible wages. Additionally, employers with 25 or more employees contribute an extra 0.42 percent of eligible wages.",
-        "Massachusetts lets every wage earner deduct up to $2,000 each of the Social Security and Medicare tax they paid. That is not modelled here, so Massachusetts tax shown is about $100 a year higher than the true figure for most earners."
+        "Massachusetts has no itemised deductions and no standard deduction — a personal exemption and a short list of named deductions are all there is. Its rent deduction of half a year's rent up to $4,000, its commuter deduction and its $440-per-child credit are not calculated, so Massachusetts tax shown here is higher than the true figure for renters, commuters and families."
       ],
       "earnedIncomeCredit": null,
       "creditPhaseOut": null,
@@ -2678,7 +2678,7 @@
         "capPerPerson": 2000
       },
       "modellingGaps": [
-        "Massachusetts lets every wage earner deduct up to $2,000 each of the Social Security and Medicare tax they paid. That is not modelled here, so Massachusetts tax shown is about $100 a year higher than the true figure for most earners."
+        "Massachusetts has no itemised deductions and no standard deduction — a personal exemption and a short list of named deductions are all there is. Its rent deduction of half a year's rent up to $4,000, its commuter deduction and its $440-per-child credit are not calculated, so Massachusetts tax shown here is higher than the true figure for renters, commuters and families."
       ],
       "priorYearFigures": null,
       "ratesCheckedAgainstState": {

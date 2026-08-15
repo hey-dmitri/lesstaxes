@@ -451,8 +451,9 @@ answer          =  in your pocket THERE  −  in your pocket HERE`}</pre>
           What is still not asked: your age, whether each child meets the residency and
           relationship tests, and whether you have investment income. The childless EITC therefore
           assumes you are 25 to 64 (it is worth at most $664), children are assumed to qualify,
-          and the $12,200 investment-income disqualification never bites. State EITCs are not
-          modelled at all, and around thirty states have one.
+          and the $12,200 investment-income disqualification never bites. Around thirty states add a
+          credit of their own on top; {COVERAGE.earnedIncomeCredit} of them are calculated here,
+          and the list below says which are not and why.
         </p>
 
         <h2>Metro areas that cross a state line</h2>

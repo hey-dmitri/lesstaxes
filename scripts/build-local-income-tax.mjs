@@ -683,10 +683,10 @@ writeDataset(
         },
       ],
       limitations: [
-        'Outside New York City and Yonkers, local income tax uses the STATE AVERAGE effective rate rather than a city-specific rate.',
-        'This understates high-rate cities. Philadelphia, Columbus, Cleveland, Cincinnati, Detroit, Louisville, Kansas City, St. Louis and Portland all levy more than their state averages.',
+        'Fourteen named cities carry their own published rate — New York City, Yonkers, Philadelphia, Detroit, Columbus, Cincinnati, Cleveland, Pittsburgh, Louisville, Kansas City, St. Louis, Baltimore and the two Portland-area taxes — and every Indiana metro carries its counties\' rates weighted by population. Everywhere else uses the state average effective rate.',
+        'Where a state average is still used it is for smaller cities, and the average is much closer to the truth there than it was for the large ones. It remains an average: an individual city may be above or below it.',
         'It is accurate where local rates are uniform — Maryland counties all fall between 2.25% and 3.20% against a 2.4% average.',
-        'Adding city-specific rates for the largest affected metros is the highest-value refinement to this dataset.',
+        'Indiana fixes your county on 1 January and does not change it when you move, so somebody moving into Indiana owes no county tax in their first year unless they already worked there. That is not modelled, so a first year is overstated.',
         'New York City and Yonkers are modelled as OPTIONAL because the New York metro spans 22 counties and only five-borough residents pay the city tax.',
         'No New York locality outside New York City and Yonkers levies an income tax, so Buffalo, Rochester, Syracuse and Albany correctly carry none. Applying the NY state average there would invent a tax that does not exist.',
         'In Missouri, Oregon, Michigan and Alabama the tax is city-specific, so it is applied only to metros that actually contain a taxing jurisdiction.',
@@ -702,18 +702,54 @@ writeDataset(
 // --- report -----------------------------------------------------------------
 
 const stateCounts = {};
-for (const metroId of Object.keys(byMetro)) {
-  const state = metrosMeta.metros[metroId].primaryState;
-  stateCounts[state] = (stateCounts[state] ?? 0) + 1;
+/*
+ * COUNTED BY THE JURISDICTION EACH METRO ACTUALLY CARRIES, not by its primary
+ * state's average rate.
+ *
+ * The old report keyed off primaryState and printed the state-average rate
+ * beside it, which said "IN 13 metros 0.35% average" long after no Indiana
+ * metro used that average at all — and printed "IL NaN%" for the Illinois
+ * metros that carry Indiana jurisdictions, because Illinois has no average to
+ * look up. A report that describes a dataset the build no longer produces is
+ * worse than no report.
+ */
+const byKind = { named: 0, stateAverage: 0 };
+for (const entries of Object.values(byMetro)) {
+  for (const entry of entries) {
+    const j = jurisdictions[entry.jurisdictionId];
+    const state = j.stateCode;
+    stateCounts[state] ??= { metros: 0, named: 0, average: 0 };
+    stateCounts[state].metros += 1;
+    if (j.isStateAverage) {
+      stateCounts[state].average += 1;
+      // The jurisdiction's OWN rate. Indiana's rural fallback is the average of
+      // its 92 counties at 1.75%, not the 0.35% figure this state used to sit
+      // on, and looking the label up by state code reprinted the old one.
+      stateCounts[state].averageRate = j.kind === 'flatRate' ? j.rate : undefined;
+      byKind.stateAverage += 1;
+    } else {
+      stateCounts[state].named += 1;
+      byKind.named += 1;
+    }
+  }
 }
 
 console.log(`Wrote ${OUT}`);
 console.log(`  jurisdictions defined: ${Object.keys(jurisdictions).length}`);
 console.log(`  metros with a local income tax: ${covered} of ${Object.keys(metrosMeta.metros).length}`);
 console.log('\n  by state:');
-for (const [state, n] of Object.entries(stateCounts).sort((a, b) => b[1] - a[1])) {
-  const rate = STATE_AVERAGE_LOCAL[state];
-  const label = state === 'NY' ? 'NYC + Yonkers (optional), avg elsewhere' : `${(rate * 100).toFixed(2)}% average`;
-  console.log(`    ${state}  ${String(n).padStart(3)} metros   ${label}`);
+for (const [state, c] of Object.entries(stateCounts).sort((a, b) => b[1].metros - a[1].metros)) {
+  const parts = [];
+  if (c.named) parts.push(`${c.named} with published rates`);
+  if (c.average) {
+    const rate = c.averageRate ?? STATE_AVERAGE_LOCAL[state];
+    parts.push(
+      `${c.average} on the ${rate === undefined ? 'state' : `${(rate * 100).toFixed(2)}%`} average`,
+    );
+  }
+  console.log(`    ${state}  ${String(c.metros).padStart(3)} entries   ${parts.join(', ')}`);
 }
+console.log(
+  `\n  ${byKind.named} entries carry a published rate; ${byKind.stateAverage} still use a state average.`,
+);
 console.log('\n  NYC top marginal rate: 3.876% (single, above $50,000) — on top of New York State');

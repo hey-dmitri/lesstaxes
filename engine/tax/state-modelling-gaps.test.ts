@@ -110,7 +110,7 @@ describe('stated modelling gaps', () => {
    */
   it('never claims a gap the state no longer has', () => {
     const claims: Array<[string, (s: ReturnType<typeof stateRules>) => boolean, RegExp]> = [
-      ['itemising', (s) => s.itemizedDeductions !== null, /itemis\w+[^.]*not modelled|not modelled[^.]*itemis/i],
+      ['itemising', (s) => s.itemizedDeductions !== null, /itemis\w+[\s\S]{0,120}not modelled|not modelled[\s\S]{0,120}itemis/i],
       ['add-backs', (s) => (s.taxAddBacks ?? []).length > 0, /recaptur\w+[^.]*not modelled|neither is modelled/i],
       ['a credit that is a share of tax', (s) => s.taxCreditFraction !== null, /personal (tax )?credit[^.]*not modelled/i],
       ['the federal tax subtraction', (s) => s.federalTaxDeduction !== null, /subtract[^.]*federal income tax[^.]*not modelled/i],
@@ -121,7 +121,13 @@ describe('stated modelling gaps', () => {
        * written. A guard built from the failures it already knows about is a
        * guard that only ever catches those.
        */
-      ['the payroll tax deduction', (s) => s.payrollTaxDeduction !== null, /social security and medicare[^.]*not modelled/i],
+      /*
+       * Matched across the WHOLE note, not within one sentence. The first
+       * version required the capability and the disclaimer to appear between
+       * the same two full stops, and Massachusetts split them across
+       * consecutive sentences — so the guard read a false claim and passed it.
+       */
+      ['the payroll tax deduction', (s) => s.payrollTaxDeduction !== null, /social security and medicare[\s\S]*not modelled/i],
       ['a credit for two-earner couples', (s) => s.taxCreditFraction?.requiresTwoEarners === true, /both work[^.]*not modelled|two-earner[^.]*not modelled/i],
       ['a property tax credit', (s) => s.propertyTaxCredit !== null, /property tax credit[^.]*not modelled/i],
       ['an allowance phase-out', (s) => s.allowancePhaseOut !== null, /phase[- ]out[^.]*not modelled/i],
