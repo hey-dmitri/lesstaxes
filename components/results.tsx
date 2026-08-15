@@ -458,6 +458,23 @@ function DetailTable({ result }: { result: ComparisonResult }) {
     { key: 'stateTax', label: 'State income tax', a: -result.origin.tax.state, b: -mid.tax.state, c: -result.destination.tax.state },
     { key: 'localTax', label: 'Local income tax', a: -result.origin.tax.local, b: -mid.tax.local, c: -result.destination.tax.local },
     { key: 'fica', label: 'Social Security & Medicare', a: -result.origin.tax.fica, b: -mid.tax.fica, c: -result.destination.tax.fica },
+    /*
+     * STATE DISABILITY AND PAID LEAVE, which this table left out while the
+     * engine charged it. The rows summed to $1,560 more than the "in your
+     * pocket" figure printed underneath them for a Californian on $120,000 —
+     * a table headed "the full numbers, line by line" that did not add up to
+     * the answer it was explaining.
+     *
+     * Eleven states charge it. The breakdown and the share card both carried
+     * it already; only this table did not.
+     */
+    {
+      key: 'statePayroll',
+      label: 'State disability & paid leave',
+      a: -result.origin.tax.statePayroll,
+      b: -mid.tax.statePayroll,
+      c: -result.destination.tax.statePayroll,
+    },
     // Shelter plus the utility bill, matching the label and the breakdown. It
     // is inside the rent for a renter and charged separately for an owner, so
     // adding the field is right in both cases: it is zero for renters.

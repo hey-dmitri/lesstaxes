@@ -184,15 +184,6 @@
       "isStateAverage": true,
       "confidence": "secondary — state average, not a city-specific rate"
     },
-    "avg-IN": {
-      "id": "avg-IN",
-      "kind": "flatRate",
-      "name": "IN average local income tax",
-      "stateCode": "IN",
-      "rate": 0.0035,
-      "isStateAverage": true,
-      "confidence": "secondary — state average, not a city-specific rate"
-    },
     "avg-IA": {
       "id": "avg-IA",
       "kind": "flatRate",
@@ -209,7 +200,7 @@
       "stateCode": "KY",
       "rate": 0.0093,
       "isStateAverage": true,
-      "understatementNote": "Louisville and Lexington levy occupational taxes above the Kentucky average of 0.93%.",
+      "understatementNote": "Lexington levies a city income tax above this 0.93% average and are still charged the average here, which understates them. The state's larger cities now carry their own published rate.",
       "confidence": "secondary — state average, not a city-specific rate"
     },
     "avg-MD": {
@@ -228,7 +219,7 @@
       "stateCode": "MI",
       "rate": 0.0016,
       "isStateAverage": true,
-      "understatementNote": "Detroit levies a resident income tax well above the Michigan average of 0.16%.",
+      "understatementNote": "Flint, Grand Rapids, Lansing and Saginaw levy a city income tax above this 0.16% average and are still charged the average here, which understates them. The state's larger cities now carry their own published rate.",
       "confidence": "secondary — state average, not a city-specific rate"
     },
     "avg-MO": {
@@ -237,16 +228,6 @@
       "name": "MO average local income tax",
       "stateCode": "MO",
       "rate": 0.0018,
-      "isStateAverage": true,
-      "understatementNote": "Kansas City and St. Louis each levy a 1% earnings tax, against a Missouri average of 0.18%.",
-      "confidence": "secondary — state average, not a city-specific rate"
-    },
-    "avg-NY": {
-      "id": "avg-NY",
-      "kind": "flatRate",
-      "name": "NY average local income tax",
-      "stateCode": "NY",
-      "rate": 0.016,
       "isStateAverage": true,
       "confidence": "secondary — state average, not a city-specific rate"
     },
@@ -257,7 +238,7 @@
       "stateCode": "OH",
       "rate": 0.012,
       "isStateAverage": true,
-      "understatementNote": "Columbus, Cleveland, Cincinnati and Toledo all levy municipal income taxes above the Ohio average of 1.2%.",
+      "understatementNote": "Toledo levies a city income tax above this 1.20% average and are still charged the average here, which understates them. The state's larger cities now carry their own published rate.",
       "confidence": "secondary — state average, not a city-specific rate"
     },
     "avg-OR": {
@@ -267,7 +248,6 @@
       "stateCode": "OR",
       "rate": 0.0018,
       "isStateAverage": true,
-      "understatementNote": "The Portland metro levies supportive-housing and preschool taxes above the Oregon average of 0.18%.",
       "confidence": "secondary — state average, not a city-specific rate"
     },
     "avg-PA": {
@@ -277,7 +257,6 @@
       "stateCode": "PA",
       "rate": 0.0099,
       "isStateAverage": true,
-      "understatementNote": "Philadelphia levies a resident wage tax far above the Pennsylvania average of 0.99%.",
       "confidence": "secondary — state average, not a city-specific rate"
     },
     "philadelphia": {

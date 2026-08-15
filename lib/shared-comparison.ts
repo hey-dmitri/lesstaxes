@@ -130,7 +130,7 @@ export function describeComparison(result: ComparisonResult): ComparisonSummary 
     description:
       `${spare}${formatUSD(Math.abs(result.deltaMonthly))} a month. ` +
       (breakEven ? `${breakEven} ` : '') +
-      `Income tax, property tax, sales tax, housing, cars and cost of living, from public data.`,
+      `Income tax, property tax, housing, cars and cost of living, from public data.`,
     slug: `${slugify(from)}-to-${slugify(to)}`,
   };
 }

@@ -765,17 +765,29 @@ const provenance = {
     name: `US Census Bureau, American Community Survey ${ACS_YEAR} 5-year estimates`,
     url: `https://api.census.gov/data/${ACS_YEAR}/${ACS_DATASET}`,
     licence: 'US Government work — public domain',
-    tables: {
-      B25064: 'Median gross rent',
-      B25031: 'Median gross rent by bedrooms',
-      B25074: 'Household income by gross rent as a percentage of household income',
-      B25077: 'Median value, owner-occupied units',
-      B25103: 'Median real estate taxes paid',
-      B25044: 'Tenure by vehicles available',
-      B09021: 'Population 18 years and over',
-      B25010: 'Average household size',
-    },
   },
+};
+
+/*
+ * THE TWO FILES THIS SCRIPT WRITES DO NOT DRAW ON THE SAME CENSUS TABLES, and
+ * listing all eight against both was a plain copy-paste. It mattered because
+ * the data browser prints these to show a reader where a figure came from: the
+ * vehicle counts were being credited to the median-rent and property-tax
+ * tables, which have nothing to do with cars.
+ */
+const HOUSING_TABLES = {
+  B25064: 'Median gross rent',
+  B25031: 'Median gross rent by bedrooms',
+  B25074: 'Household income by gross rent as a percentage of household income',
+  B25077: 'Median value, owner-occupied units',
+  B25121: 'Household income by value, owner-occupied units',
+  B25103: 'Median real estate taxes paid',
+};
+
+const TRANSPORT_TABLES = {
+  B25044: 'Tenure by vehicles available',
+  B09021: 'Population 18 years and over',
+  B25010: 'Average household size',
 };
 
 writeDataset(
@@ -783,6 +795,7 @@ writeDataset(
   `${JSON.stringify(
     {
       ...provenance,
+      source: { ...provenance.source, tables: HOUSING_TABLES },
       notes: [
         'effectivePropertyTaxRate = median real estate taxes paid / median home value. This is an EFFECTIVE rate as actually experienced, not a statutory millage rate — it already reflects assessment ratios, homestead exemptions and caps.',
         'rentByBedrooms is the local median for each unit size (B25031). The engine picks a size from household composition, so a single person and a family of four are no longer quoted the same rent.',
@@ -808,6 +821,7 @@ writeDataset(
   `${JSON.stringify(
     {
       ...provenance,
+      source: { ...provenance.source, tables: TRANSPORT_TABLES },
       notes: [
         'vehiclesPerAdult = average vehicles per household / average adults per household. Cars follow drivers, so the denominator is adults (18+), not household size.',
         'The engine multiplies this by the adults implied by filing status, then rounds — see PROJECT.md D17.',

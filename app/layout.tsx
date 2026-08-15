@@ -53,13 +53,13 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: `${SITE_NAME} — ${TAGLINE.toLowerCase()}`,
   description:
-    'Compare two US cities on what you would actually have left over: income tax, property tax, sales tax, housing, cars and cost of living. Free, no accounts, no tracking.',
+    'Compare two US cities on what you would actually have left over: income tax, property tax, housing, cars and cost of living. Free, no accounts, no tracking.',
   openGraph: {
     type: 'website',
     siteName: SITE_NAME,
     title: TAGLINE,
     description:
-      'Income tax, property tax, sales tax, housing, cars and cost of living — for any two US cities.',
+      'Income tax, property tax, housing, cars and cost of living — for any two US cities.',
   },
   twitter: { card: 'summary_large_image' },
 };
@@ -154,8 +154,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               </Link>
             </nav>
             <span className="flex-1">
-              Estimates from public sources — Census, BEA, BLS, IRS, SSA, the Tax Foundation and
-              state and city revenue departments. <strong>Not financial, tax or legal
+              Estimates from public sources — Census, BEA, BLS, IRS, SSA, Case-Shiller, the Tax
+              Foundation and state and city revenue departments. <strong>Not financial, tax or legal
               advice.</strong> No accounts, no tracking, nothing stored.
             </span>
             <span className="whitespace-nowrap">

@@ -28,8 +28,8 @@
     "_note": "The source table publishes single and joint columns only. Head of household is no longer mapped to single: every taxing state has been checked against its own publication, and each carries headOfHouseholdBasis saying which schedule and which allowance it actually gets. Married-filing-separately maps to single, which is correct in most states."
   },
   "limitations": [
-    "Income-based phase-outs of standard deductions, personal exemptions and credits are modelled in eight states — Alabama, Connecticut, Maryland, Maine, Minnesota, Rhode Island, South Carolina and Wisconsin — and in Colorado as a cliff. Where a state has one that is not modelled, the state carries a note saying so and which way it runs.",
-    "A deduction for federal income tax paid is modelled for Oregon. Alabama and Missouri also allow one and are not modelled: Alabama runs it through its itemised schedule and Missouri sets it as a percentage of federal tax that reaches zero above $125,000 of Missouri income. Both carry a note.",
+    "Income-based phase-outs of the standard deduction or personal exemption are modelled in nine states — Alabama, Colorado, Connecticut, Maryland, Maine, Minnesota, Rhode Island, South Carolina and Wisconsin, Colorado's as a cliff. Phase-outs of a CREDIT are modelled in two more, Oregon and Utah. Where a state has one that is not modelled, that state carries a note saying so and which way it runs.",
+    "A deduction for federal income tax paid is modelled for Oregon. Alabama and Missouri also allow one and are not modelled: Alabama runs it through its itemised schedule and Missouri sets it as a percentage of federal tax that reaches zero above $125,000 of Missouri income. Both carry a note saying so.",
     "Local income taxes are excluded here and handled separately; see local.json.",
     "Alternative minimum taxes and supplemental high-income surtaxes beyond the published bracket schedules are not modelled. Connecticut's recapture IS modelled; New York's is not, and New York carries a note.",
     "Every state that taxes wages has been read off its own publication for rates, allowances and head-of-household treatment. Ten states ship the prior year's figures because the state has not published this year's; each names itself in priorYearFigures."
@@ -3445,6 +3445,7 @@
         "State provides a state-defined personal exemption amount for each exemption available and/or deductible under the Internal Revenue Code. The Tax Cuts and Jobs Act set the personal exemption to $0 until 2026 but did not eliminate it, and the One Big Beautiful Bill Act permanently set the personal exemption to $0 but did not eliminate it. Because it is still available, these state-defined personal exemptions remain available in some states but are set to $0 in other states.",
         "Deduction and/or exemption tied to federal tax system. Federal deductions are indexed for inflation. Where applicable, the tax year 2026 inflation-adjusted amounts are shown.",
         "Bracket levels adjusted for inflation each year. Inflation-adjusted bracket levels for 2026 are shown.",
+        "Missouri lets you deduct a percentage of the federal income tax you paid — 35% at low incomes, falling to nothing above $125,000 of Missouri income, and capped at $5,000. That is not calculated here, so Missouri tax shown is higher than the true figure below that income, by around $62 a year for a single filer on $80,000.",
         "Income below $1,348 (single) is not taxed.",
         "Income below $1,348 (married filing jointly) is not taxed."
       ],
@@ -3466,7 +3467,9 @@
       "personalCreditRefundable": false,
       "propertyTaxCredit": null,
       "payrollTaxDeduction": null,
-      "modellingGaps": [],
+      "modellingGaps": [
+        "Missouri lets you deduct a percentage of the federal income tax you paid — 35% at low incomes, falling to nothing above $125,000 of Missouri income, and capped at $5,000. That is not calculated here, so Missouri tax shown is higher than the true figure below that income, by around $62 a year for a single filer on $80,000."
+      ],
       "priorYearFigures": null,
       "ratesCheckedAgainstState": {
         "url": "https://dor.mo.gov/forms/4282_2026.pdf",
@@ -3474,6 +3477,10 @@
         "matched": false
       },
       "itemizedDeductions": null,
+      "verifiedAgainstState": {
+        "url": "https://revisor.mo.gov/main/OneSection.aspx?section=143.171",
+        "checked": "2026-08-15"
+      },
       "communityProperty": false,
       "payrollContributions": [],
       "headOfHouseholdBasis": "own",

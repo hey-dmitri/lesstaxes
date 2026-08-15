@@ -142,7 +142,7 @@ Total data cost: **$0**. No paid feeds, no runtime API calls.
    at a cliff.
 
 7. **What is still not modelled is written on the state, not buried here.**
-   Nineteen states carry a note naming the rule that is missing and which way
+   Twenty states carry a note naming the rule that is missing and which way
    it runs — New York's recapture from high earners, Missouri's and Alabama's
    federal-tax deductions, Connecticut's property tax credit, Colorado's
    interaction with itemising, and the rest. Those notes are rendered on the
@@ -185,7 +185,7 @@ node scripts/build-metros.mjs              # 438 locations + price parities
 node scripts/build-housing-transport.mjs   # rent, homes, property tax, vehicles
 node scripts/build-spending.mjs            # BLS spending baselines
 node scripts/build-sales-tax.mjs           # sales tax + grocery rules
-node scripts/build-local-income-tax.mjs    # NYC, Yonkers, state averages
+node scripts/build-local-income-tax.mjs    # 13 cities, Indiana counties, state averages
 ```
 
 Or all at once:

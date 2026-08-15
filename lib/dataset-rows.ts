@@ -239,8 +239,15 @@ export const DATASET_SOURCES: Array<{
   {
     what: 'State income tax rules',
     kind: 'Statutory rate',
-    source: 'Tax Foundation (2026), compiled from state statutes',
-    licence: 'CC BY-NC 4.0',
+    // The compilation is where these STARTED. Every one of the 42 taxing
+    // jurisdictions has since been read off the state's own rate schedule,
+    // withholding guide or statute, and 24 of them were wrong — which is the
+    // whole reason that second pass exists. Saying only "Tax Foundation" here
+    // undersells the sourcing and, worse, points a reader at the compilation
+    // when the state's own document is what the figures now match.
+    source:
+      "Each state's own rate schedule, withholding guide or statute — every one of the 42 taxing jurisdictions, each with its date and document recorded below. First compiled from Tax Foundation (2026).",
+    licence: 'Mixed — state publications public domain; Tax Foundation CC BY-NC 4.0',
   },
   {
     // Shipped and shown, but no longer used in the calculation: the spending
@@ -253,7 +260,24 @@ export const DATASET_SOURCES: Array<{
   {
     what: 'Local income tax',
     kind: 'Statutory rate',
-    source: 'Named cities from their own revenue departments; state averages elsewhere',
+    source:
+      "Thirteen named cities and every Indiana county from their own revenue departments; state averages elsewhere",
     licence: 'Mixed',
+  },
+  {
+    what: 'State disability and paid family leave',
+    kind: 'Statutory rate',
+    source: 'Each state agency — CA EDD, NJ DOL, NY DFS, RI DLT, HI DLIR, WA ESD and the rest',
+    licence: 'Public domain',
+  },
+  {
+    // Every price on this site is restated into one year's money before it is
+    // compared to anything else, and the reader deserves to see WHICH series
+    // does the restating — they are different for houses, rents and everything
+    // else, and using one where another belongs is a real error.
+    what: 'Restating older prices in current money',
+    kind: 'Index',
+    source: 'BLS CPI-U for general prices and rents; S&P CoreLogic Case-Shiller for home prices',
+    licence: 'Public domain (BLS); Case-Shiller index values as published',
   },
 ];

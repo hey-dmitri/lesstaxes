@@ -91,7 +91,7 @@ const TENURE_OPTIONS = [
  * real median full-time earnings rose 2.3% while prices rose 6.1%, so the
  * nominal uplift is the product of the two.
  */
-const DEFAULT_SALARY = Math.round(61_657 * priceFactor('wage'));
+export const DEFAULT_SALARY = Math.round(61_657 * priceFactor('wage'));
 
 /**
  * A column with no city in it yet.
@@ -465,9 +465,15 @@ export function Calculator({ initial }: CalculatorProps) {
                   // starting point the moment two people are earning. Name the
                   // figure rather than saying "that", which by this point in
                   // the sentence could be pointing at either of two things.
+                  // Says "in today's money" because it is NOT the published
+                  // figure: the Census median is $61,657 and this is that
+                  // brought forward, so a reader who looks the number up finds
+                  // a different one and has no way to reconcile them.
                   `${salary.whose} ${formatUSD(DEFAULT_SALARY)} is the US median for ${
                     salary.combined ? 'one full-time worker' : 'full-time work'
-                  } — change it to ${salary.combined ? 'what the two of you make' : 'yours'}.`
+                  }, in today's money — change it to ${
+                    salary.combined ? 'what the two of you make' : 'yours'
+                  }.`
                 : salary.whose
             }
             result={result?.origin ?? null}

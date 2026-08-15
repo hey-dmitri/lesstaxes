@@ -27,11 +27,12 @@
     "otherServices": 0.15
   },
   "limitations": [
-    "Local rates are population-weighted state averages, not the exact rate for a given metro. Chicago at 10.25% is above the Illinois average; the model uses the average.",
-    "Taxable shares by category are informed estimates, not statute. Services and healthcare are broadly untaxed; tangible goods broadly are. Erring low is deliberate.",
-    "In Alaska, Colorado, Louisiana and Arizona, local jurisdictions may tax groceries even where the state does not. Not modelled.",
-    "Idaho offsets its grocery tax with a credit, which is not applied here.",
-    "Sales tax is typically a few hundred dollars a year of difference between metros — real, but small next to income tax and housing."
+    "Reference only — no sales tax is charged in any comparison. The spending figures already contain the tax paid at the till, so charging these rates again would have counted it twice.",
+    "Local rates are population-weighted state averages, not the exact rate for a given metro. Chicago at 10.25% is above the Illinois average; only the average is recorded here.",
+    "Taxable shares by category are informed estimates, not statute. Services and healthcare are broadly untaxed; tangible goods broadly are. Erring low was deliberate.",
+    "In Alaska, Colorado, Louisiana and Arizona, local jurisdictions may tax groceries even where the state does not. Not recorded.",
+    "Idaho offsets its grocery tax with a credit, which is not reflected in its rate here.",
+    "Because the spending basket carries a NATIONAL blend of sales tax, Oregon (which levies none) and Tennessee (the highest) currently look identical on that line. That gap is worth a few hundred dollars a year and is listed on the methodology page."
   ],
   "states": {
     "AL": {

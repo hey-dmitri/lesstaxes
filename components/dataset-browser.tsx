@@ -67,7 +67,7 @@ function Row({ row }: { row: DatasetRow }) {
         title={
           row.taxCheckedUrl
             ? `Checked against ${row.taxCheckedUrl}`
-            : 'Not yet read off this state\u2019s own publication \u2014 these figures come from the annual bracket table alone.'
+            : 'This state does not tax wages, so there is no rate schedule to check.'
         }
       >
         {row.taxChecked ?? 'not checked'}
@@ -97,7 +97,7 @@ export function DatasetBrowser() {
           type="search"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search 438 locations — try Chicago, NJ, or Rest of"
+          placeholder={`Search ${DATASET_ROWS.length} rows — try Chicago, NJ, or Rest of`}
           aria-label="Search locations"
           className="min-w-64 flex-1 rounded border px-3 py-2 text-sm"
           style={{
@@ -149,7 +149,7 @@ export function DatasetBrowser() {
                 ['Local tax', 'Local income tax jurisdictions'],
                 [
                   'Tax checked',
-                  "When this state's rates and allowances were last read off the state's own 2026 publication, rather than taken from the annual bracket table",
+                  "When this state's rates and allowances were last read off the state's own publication, rather than taken from the annual bracket table. Ten states are checked against their most recent figures rather than a 2026 document, because they have published none",
                 ],
               ].map(([label, title]) => (
                 <th
@@ -184,9 +184,10 @@ export function DatasetBrowser() {
         above the US average. Property tax is the <em>effective</em> rate actually paid, which
         already reflects assessment ratios, homestead exemptions and caps.{' '}
         <strong>Tax checked</strong> is the date someone opened that state&rsquo;s own rate schedule
-        and compared every bracket and allowance to ours. Where it says <em>not checked</em>, the
-        figures rest on a bracket table published once a year in February — which seven states
-        legislated their way out of during 2026, every one of them leaving us charging too much.
+        and compared every bracket and allowance to ours. Every state that taxes wages has been —
+        which mattered, because the annual bracket table is printed in February and seven states
+        legislated their way out of it during 2026. Where it says <em>not checked</em>, that state
+        has no wage income tax and so no schedule to check.
       </p>
     </div>
   );

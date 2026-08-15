@@ -205,12 +205,23 @@ writeDataset(
         },
       ],
       taxableShares: TAXABLE_SHARES,
+      /*
+       * NOTHING HERE IS CHARGED TO ANYBODY. This file is reference material and
+       * nothing more: the spending survey the calculator uses already includes
+       * the sales tax paid at the till, so adding a sales tax line on top was a
+       * double count and was removed. These rates stay published because they
+       * are useful to look at and because modelling the DIFFERENCE between
+       * states — stripping the embedded national average back out, category by
+       * category — is still wanted one day. The limitations below are written
+       * for that day, in the past tense of a model that is not running.
+       */
       limitations: [
-        'Local rates are population-weighted state averages, not the exact rate for a given metro. Chicago at 10.25% is above the Illinois average; the model uses the average.',
-        'Taxable shares by category are informed estimates, not statute. Services and healthcare are broadly untaxed; tangible goods broadly are. Erring low is deliberate.',
-        'In Alaska, Colorado, Louisiana and Arizona, local jurisdictions may tax groceries even where the state does not. Not modelled.',
-        'Idaho offsets its grocery tax with a credit, which is not applied here.',
-        'Sales tax is typically a few hundred dollars a year of difference between metros — real, but small next to income tax and housing.',
+        'Reference only — no sales tax is charged in any comparison. The spending figures already contain the tax paid at the till, so charging these rates again would have counted it twice.',
+        'Local rates are population-weighted state averages, not the exact rate for a given metro. Chicago at 10.25% is above the Illinois average; only the average is recorded here.',
+        'Taxable shares by category are informed estimates, not statute. Services and healthcare are broadly untaxed; tangible goods broadly are. Erring low was deliberate.',
+        'In Alaska, Colorado, Louisiana and Arizona, local jurisdictions may tax groceries even where the state does not. Not recorded.',
+        'Idaho offsets its grocery tax with a credit, which is not reflected in its rate here.',
+        'Because the spending basket carries a NATIONAL blend of sales tax, Oregon (which levies none) and Tennessee (the highest) currently look identical on that line. That gap is worth a few hundred dollars a year and is listed on the methodology page.',
       ],
       states,
     },

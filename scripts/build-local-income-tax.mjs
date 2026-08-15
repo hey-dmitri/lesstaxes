@@ -10,9 +10,14 @@
  *
  * COVERAGE, STATED PLAINLY
  *
- *   Explicit, city-specific:  New York City, Yonkers, Philadelphia, Detroit,
- *                             Columbus, Cincinnati
- *   State-average fallback:   AL, IN, IA, KY, MD, MI, MO, OH, OR, PA
+ *   Explicit, city-specific:  New York City, Yonkers, Philadelphia, Pittsburgh,
+ *                             Detroit, Columbus, Cincinnati, Cleveland,
+ *                             Louisville, Kansas City, St. Louis, Baltimore,
+ *                             and Portland twice — Multnomah County's preschool
+ *                             tax and the Metro housing tax
+ *   Per county, weighted:     every Indiana metro, by population
+ *   State-average fallback:   AL, IA, KY, MD, MI, MO, OH, PA — the smaller
+ *                             cities, where an average is much closer to right
  *
  * The fallback uses Tax Foundation's average effective local rate as a share
  * of AGI for that state. That is accurate where local rates are uniform
@@ -423,16 +428,33 @@ const CITY_SPECIFIC_METROS = {
 };
 
 /** Cities whose actual rate materially exceeds their state average. */
-const KNOWN_UNDERSTATED = {
-  PA: 'Philadelphia levies a resident wage tax far above the Pennsylvania average of 0.99%.',
-  OH: 'Columbus, Cleveland, Cincinnati and Toledo all levy municipal income taxes above the Ohio average of 1.2%.',
-  MI: 'Detroit levies a resident income tax well above the Michigan average of 0.16%.',
-  KY: 'Louisville and Lexington levy occupational taxes above the Kentucky average of 0.93%.',
-  MO: 'Kansas City and St. Louis each levy a 1% earnings tax, against a Missouri average of 0.18%.',
-  OR: 'The Portland metro levies supportive-housing and preschool taxes above the Oregon average of 0.18%.',
+/**
+ * WHICH CITIES ARE STILL ON THE AVERAGE, by state.
+ *
+ * These notes used to name the cities the average understated, and they were
+ * written when almost every big city was on it. As cities were given their own
+ * published rates the notes were not revisited, so they ended up naming the
+ * ones that had been fixed and missing the ones that had not.
+ *
+ * Michigan was exactly backwards: it warned about Detroit, which has carried
+ * its own 2.4% for months, while Flint, Grand Rapids, Lansing and Saginaw all
+ * still sit on a 0.16% average and all levy a real city tax.
+ *
+ * So the list now names ONLY cities that still fall back to the average, and
+ * the note is generated around it. A state whose named cities are all modelled
+ * gets no warning at all, because there is nothing left to warn about.
+ */
+const STILL_ON_THE_AVERAGE = {
+  OH: ['Toledo'],
+  KY: ['Lexington'],
+  MI: ['Flint', 'Grand Rapids', 'Lansing', 'Saginaw'],
 };
 
 // --- assemble ---------------------------------------------------------------
+
+/** "A, B and C" — so a generated sentence reads like a written one. */
+const listOf = (names) =>
+  names.length === 1 ? names[0] : `${names.slice(0, -1).join(', ')} and ${names[names.length - 1]}`;
 
 const metrosMeta = JSON.parse(readFileSync(resolve(DATA_DIR, 'metros.json'), 'utf8'));
 
@@ -443,7 +465,23 @@ const jurisdictions = {
   [PORTLAND_METRO.id]: PORTLAND_METRO,
 };
 
+/*
+ * INDIANA NO LONGER HAS A STATE AVERAGE, because every Indiana metro carries
+ * its own counties' rates and the rural fallback carries the population-
+ * weighted average of all 92. Leaving `avg-IN` defined left a jurisdiction in
+ * the data that nothing referenced, describing a 0.35% rate the calculator had
+ * stopped using — visible in the data browser and contradicted by this file's
+ * own limitations.
+ */
 for (const [code, rate] of Object.entries(STATE_AVERAGE_LOCAL)) {
+  if (code === 'IN') continue;
+  // NEW YORK HAS NO STATE AVERAGE EITHER, for the opposite reason: no locality
+  // outside New York City and Yonkers levies an income tax at all, so `byMetro`
+  // deliberately assigns nothing to the other New York metros. `avg-NY` was
+  // therefore referenced by nothing, while sitting in the data browser
+  // advertising a 1.60% rate — which is really the city rate diluted across the
+  // state, and would have been badly wrong anywhere it was applied.
+  if (code === 'NY') continue;
   const id = `avg-${code}`;
   jurisdictions[id] = {
     id,
@@ -452,7 +490,15 @@ for (const [code, rate] of Object.entries(STATE_AVERAGE_LOCAL)) {
     stateCode: code,
     rate,
     isStateAverage: true,
-    ...(KNOWN_UNDERSTATED[code] ? { understatementNote: KNOWN_UNDERSTATED[code] } : {}),
+    ...(STILL_ON_THE_AVERAGE[code]
+      ? {
+          understatementNote:
+            `${listOf(STILL_ON_THE_AVERAGE[code])} ` +
+            `${STILL_ON_THE_AVERAGE[code].length === 1 ? 'levies' : 'levy'} a city income tax above this ` +
+            `${(rate * 100).toFixed(2)}% average and are still charged the average here, which ` +
+            `understates them. The state's larger cities now carry their own published rate.`,
+        }
+      : {}),
     confidence: 'secondary — state average, not a city-specific rate',
   };
 }

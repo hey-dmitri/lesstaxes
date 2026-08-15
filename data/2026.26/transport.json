@@ -9,11 +9,6 @@
     "url": "https://api.census.gov/data/2024/acs/acs5",
     "licence": "US Government work — public domain",
     "tables": {
-      "B25064": "Median gross rent",
-      "B25031": "Median gross rent by bedrooms",
-      "B25074": "Household income by gross rent as a percentage of household income",
-      "B25077": "Median value, owner-occupied units",
-      "B25103": "Median real estate taxes paid",
       "B25044": "Tenure by vehicles available",
       "B09021": "Population 18 years and over",
       "B25010": "Average household size"

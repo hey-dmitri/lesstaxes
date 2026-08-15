@@ -1272,29 +1272,6 @@ const HEAD_OF_HOUSEHOLD = {
     source: 'https://tax.vermont.gov/sites/tax/files/documents/TaxRateSched-2025.pdf',
     checked: '2026-08-15',
   },
-  /*
-   * VERMONT'S REMAINING GAP is the tax YEAR, not the filing status.
-   *
-   * Its head-of-household schedule was transcribed from 32 V.S.A. § 5822(a)(2)
-   * and rejected by the build guard: the statutory table is a base that Vermont
-   * indexes for inflation every year, and the base sits about 28% below the
-   * 2026 brackets this project ships, so a head of household came out paying
-   * more than a single filer.
-   *
-   * The obvious shortcut does not work either. Deriving 2026 from the statute
-   * needs one inflation factor, and no single factor reproduces the 2026 single
-   * AND joint brackets already shipped here — the ranges each threshold implies
-   * do not overlap. So a derived head-of-household schedule would be a number
-   * this project made up, which is the one thing it does not do.
-   *
-   * Vermont's department has published a document titled "2026 VT Rate
-   * Schedules", and it is wage-bracket WITHHOLDING charts with two columns,
-   * single and married. There is no head-of-household column in it. The real
-   * rate schedules arrive with the 2026 return forms.
-   *
-   * Until then Vermont stays on the single schedule, which is the narrowest
-   * one and therefore charges the most — the error runs against the reader.
-   */
   Alabama: {
     /*
      * "For single persons, HEADS OF FAMILIES, and married persons filing
@@ -2298,6 +2275,18 @@ const STATE_OVERRIDES = {
     checked: '2026-08-15',
     note: "Minnesota's dependent exemption also phases out, by 2 percentage points for each $2,500 of income above $244,500 single and $366,700 joint. That is not modelled, so Minnesota tax shown above those incomes is slightly lower than the true figure.",
   },
+  Missouri: {
+    /*
+     * MISSOURI WAS PROMISED A NOTE IT DID NOT HAVE. The dataset's own
+     * limitations said Alabama and Missouri both carry one for the federal
+     * income tax deduction; Alabama did and Missouri did not, so the one state
+     * where a reader is shown a rule that costs them money had no warning
+     * attached to it.
+     */
+    source: 'https://revisor.mo.gov/main/OneSection.aspx?section=143.171',
+    checked: '2026-08-15',
+    note: "Missouri lets you deduct a percentage of the federal income tax you paid — 35% at low incomes, falling to nothing above $125,000 of Missouri income, and capped at $5,000. That is not calculated here, so Missouri tax shown is higher than the true figure below that income, by around $62 a year for a single filer on $80,000.",
+  },
   Iowa: {
     // The personal credit is $80 for a head of household, the same as a couple,
     // not the single filer's $40.
@@ -2397,19 +2386,20 @@ const STATE_OVERRIDES = {
  * STATE INCOME TAX IS NOT DEDUCTED. California requires it subtracted on
  * Schedule CA; you cannot deduct California tax from California income.
  *
- * NOT MODELLED, and it runs the reader's way: California reduces itemised
- * deductions for high earners, by the lesser of 6% of income above roughly
- * $252,000 or 80% of the deductions. Above that income this figure is a little
- * too generous.
+ * California's high-income reduction — the lesser of 6% of income above about
+ * $252,000 or 80% of the deductions — IS applied. What is still missing there
+ * is the separate cut to its exemption CREDITS, which shares the same income
+ * thresholds and is a different rule; California's own note says so.
  *
- * Only California is populated. Every other state keeps the standard deduction
+ * Fourteen states are populated. Every other state keeps the standard deduction
  * until its own rules have been read, which is the same honesty rule the
  * head-of-household table uses.
  */
 const ITEMIZED_DEDUCTIONS = {
   /*
-   * NINE MORE STATES LET A HOMEOWNER DEDUCT THEIR MORTGAGE, and we gave every
-   * one of them the plain standard deduction. That overcharges, by $200 to
+   * THIRTEEN MORE STATES LET A HOMEOWNER DEDUCT THEIR MORTGAGE than the one
+   * this file started with, and we gave every one of them the plain standard
+   * deduction. That overcharges, by $200 to
    * $1,750 a year each.
    *
    * A USEFUL INVARIANT RUNS THROUGH MOST OF THEM: nearly every state that
@@ -3307,8 +3297,8 @@ const output = {
       'The source table publishes single and joint columns only. Head of household is no longer mapped to single: every taxing state has been checked against its own publication, and each carries headOfHouseholdBasis saying which schedule and which allowance it actually gets. Married-filing-separately maps to single, which is correct in most states.',
   },
   limitations: [
-    'Income-based phase-outs of standard deductions, personal exemptions and credits are modelled in eight states — Alabama, Connecticut, Maryland, Maine, Minnesota, Rhode Island, South Carolina and Wisconsin — and in Colorado as a cliff. Where a state has one that is not modelled, the state carries a note saying so and which way it runs.',
-    'A deduction for federal income tax paid is modelled for Oregon. Alabama and Missouri also allow one and are not modelled: Alabama runs it through its itemised schedule and Missouri sets it as a percentage of federal tax that reaches zero above $125,000 of Missouri income. Both carry a note.',
+    'Income-based phase-outs of the standard deduction or personal exemption are modelled in nine states — Alabama, Colorado, Connecticut, Maryland, Maine, Minnesota, Rhode Island, South Carolina and Wisconsin, Colorado\'s as a cliff. Phase-outs of a CREDIT are modelled in two more, Oregon and Utah. Where a state has one that is not modelled, that state carries a note saying so and which way it runs.',
+    'A deduction for federal income tax paid is modelled for Oregon. Alabama and Missouri also allow one and are not modelled: Alabama runs it through its itemised schedule and Missouri sets it as a percentage of federal tax that reaches zero above $125,000 of Missouri income. Both carry a note saying so.',
     'Local income taxes are excluded here and handled separately; see local.json.',
     'Alternative minimum taxes and supplemental high-income surtaxes beyond the published bracket schedules are not modelled. Connecticut\'s recapture IS modelled; New York\'s is not, and New York carries a note.',
     'Every state that taxes wages has been read off its own publication for rates, allowances and head-of-household treatment. Ten states ship the prior year\'s figures because the state has not published this year\'s; each names itself in priorYearFigures.',

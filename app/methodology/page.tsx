@@ -2,7 +2,8 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 
 import { PageShell, Prose } from '@/components/page-shell';
-import { ALL_STATE_CODES, stateRules } from '@/engine';
+import { ALL_STATE_CODES, formatUSD, stateRules } from '@/engine';
+import { DEFAULT_SALARY } from '@/components/calculator';
 import { ReportProblem } from '@/components/report-problem';
 import { DATASET_VERSION } from '@/engine';
 import { SITE_NAME } from '@/lib/site';
@@ -108,7 +109,7 @@ answer          =  in your pocket THERE  −  in your pocket HERE`}</pre>
             come after it.
           </li>
           <li className="my-1.5">
-            Federal income tax — which uses steps 2 to 4, because state and property tax are
+            Federal income tax — which uses steps 2 to 5, because state and property tax are
             deductible. That decides whether itemising beats the standard deduction, which changes
             what you owe.
           </li>
@@ -135,8 +136,11 @@ answer          =  in your pocket THERE  −  in your pocket HERE`}</pre>
         <p>
           One real exception: federal tax <em>can</em> differ between cities at the same salary, for
           people who itemise. State and property tax are deductible, so a high earner with a
-          mortgage in New York pays less federal tax than an identical earner in Texas. Most
-          households take the standard deduction and never see this.
+          mortgage in New York pays less federal tax than an identical earner in Texas — but only
+          up to a point. That deduction is capped at <strong>$40,400</strong> ($20,200 filing
+          separately), and the cap itself shrinks above $505,000 of income down to a $10,000 floor.
+          Both are applied here. Most households take the standard deduction and never see any of
+          it.
         </p>
 
         <h2>Housing</h2>
@@ -154,8 +158,10 @@ answer          =  in your pocket THERE  −  in your pocket HERE`}</pre>
           nothing at all to keep the house standing.
         </p>
         <p>
-          It is now charged: about <strong>$4,000 a year</strong> at $100,000 of income, rising to
-          roughly <strong>$7,300</strong> above $200,000. The published figure averages owners and
+          It is now charged: about <strong>$4,600 a year</strong> at $100,000 of income and{' '}
+          <strong>$5,000</strong> at $200,000, reaching roughly <strong>$7,300</strong> only above
+          $320,000. (Those were quoted as $4,000 and $7,300 until August 2026 — the first was in
+          2024 money and the second was the top band&rsquo;s figure attached to the wrong income.) The published figure averages owners and
           renters together, and renters pay none of this, so it is divided by the share of
           households who actually own before it is used. Renters are charged nothing — their
           landlord pays for the roof.
@@ -299,10 +305,11 @@ answer          =  in your pocket THERE  −  in your pocket HERE`}</pre>
         </p>
         <p>
           <strong>{COVERAGE.itemising} states</strong> now let a homeowner claim mortgage interest
-          and property tax on the state return, and we calculate all of them. Two more do
+          and property tax on the state return, and we calculate all of them. Three more do
           something different with the same idea: New Jersey relieves property tax without
-          itemising at all — the only relief here a renter can claim, at 18% of rent — and
-          Wisconsin gives a credit for mortgage interest while ignoring property tax entirely.
+          itemising at all — the only relief here a renter can claim, at 18% of rent — Wisconsin
+          gives a credit for mortgage interest while ignoring property tax entirely, and Illinois
+          credits 5% of your property tax until your income passes $250,000, when it stops dead.
         </p>
         <p>
           The &ldquo;What this gets wrong&rdquo; list below names every state with a rule we know
@@ -317,7 +324,7 @@ answer          =  in your pocket THERE  −  in your pocket HERE`}</pre>
           look better than it is.
         </p>
         <p>
-          So the 2024 figures are brought forward to current prices. Three separate official
+          So the 2024 figures are brought forward to current prices. Four separate official
           measures, because they have not moved together since 2024: <strong>rent</strong> is up
           7.1%, <strong>everything you buy</strong> 6.1%, and <strong>house prices</strong> 3.0%.
           Tax rules are already current and are left alone, and so is your salary.
@@ -339,8 +346,10 @@ answer          =  in your pocket THERE  −  in your pocket HERE`}</pre>
           <strong>gross rent</strong>: the rent itself <em>plus</em> the electricity, gas, water,
           sewer and heating the tenant pays. So a renter&rsquo;s energy bill is already inside the
           rent number on this page. This site used to subtract a full national utilities bill on top
-          of that as well, charging renters for the same thing twice — around $2,700 a year in
-          Chicago and $4,000 in New York.
+          of that as well, charging renters for the same thing twice — for a couple, around $2,700 a
+          year in Chicago and $4,000 in New York. A family of four is charged more of these and one
+          person less, because the bill follows the household, so the double count was bigger for a
+          family: near $3,700 and $5,700.
         </p>
         <p>
           A mortgage covers no such thing, so buyers are charged those utilities separately. Either
@@ -410,9 +419,11 @@ answer          =  in your pocket THERE  −  in your pocket HERE`}</pre>
 
         <h2>What the form starts you on</h2>
         <p>
-          The salary box opens on <strong>$61,657</strong> &mdash; the median for someone working
-          full time all year, from the same Census release as everything else here (ACS 2024,
-          table S2001). It was $150,000 until August 2026, which is roughly the 90th percentile of
+          The salary box opens on <strong>{formatUSD(DEFAULT_SALARY)}</strong>. The published
+          median for someone working full time all year is <strong>$61,657</strong>, from the same
+          Census release as everything else here (ACS 2024, table S2001), and like every other
+          2024 figure on this site it is brought forward to today&rsquo;s money &mdash; which is
+          where the difference comes from. It was $150,000 until August 2026, which is roughly the 90th percentile of
           American full-time earnings.
         </p>
         <p>
@@ -631,9 +642,10 @@ answer          =  in your pocket THERE  −  in your pocket HERE`}</pre>
             above.
           </li>
           <li>
-            <strong>Income-based phase-outs</strong> of state deductions, exemptions and credits
-            are calculated in nine states. Where a state has one we do not calculate, that state
-            says so in the list above, along with which way it runs.
+            <strong>Income-based phase-outs</strong> are calculated in eleven states — the
+            deduction or exemption shrinking in nine, and a credit shrinking in Oregon and Utah.
+            Where a state has one we do not calculate, that state says so in the list above, along
+            with which way it runs.
           </li>
           <li>
             <strong>Only wage income.</strong> No investment income, no self-employment, no rental
@@ -652,8 +664,8 @@ answer          =  in your pocket THERE  −  in your pocket HERE`}</pre>
           </li>
           <li>
             <strong>The suggested number of cars is a whole number, and it jumps.</strong> We start
-            you at the local average vehicles per adult, rounded. New York City averages 0.486 per
-            adult, so a single person there is offered no car at all; everywhere else in the country
+            you at the local average vehicles per adult, rounded. The New York side of the New York
+            metro averages 0.486 per adult, so a single person there is offered no car at all; everywhere else in the country
             is offered at least one. A car costs several thousand a year, so a small difference in
             that average swings a big number. It is the honest thing to show — you own a car or you
             do not — and the field is yours to change, but it is worth knowing the edge is there.
