@@ -655,7 +655,8 @@
       "personalExemption": {
         "single": 15000,
         "marriedJointly": 24000,
-        "dependent": 0
+        "dependent": 0,
+        "headOfHousehold": 19000
       },
       "personalCredit": {
         "single": 0,
@@ -673,7 +674,8 @@
       "notes": [
         "Connecticut and New York have \"tax benefit recapture,\" by which many high-income taxpayers pay their top tax rate on all income, not just on amounts above the benefit threshold.",
         "Connecticut has a complex set of phaseout provisions. For each single taxpayer whose Connecticut AGI exceeds $56,500, the amount of the taxpayer's Connecticut taxable income to which the 2 percent tax rate applies shall be reduced by $1,000 for each $5,000, or fraction thereof, by which the taxpayer's Connecticut AGI exceeds said amount. Any such amount will have a tax rate of 4.5 percent instead of 2 percent. Each single taxpayer whose Connecticut AGI exceeds $105,000 shall pay an amount equal to $25 for each $5,000, or fraction thereof, by which the taxpayer's Connecticut AGI exceeds $105,000, up to a maximum payment of $250. Additionally, each single taxpayer whose Connecticut AGI exceeds $200,000 shall pay an amount equal to $90 for each $5,000, or fraction thereof, by which the taxpayer's Connecticut AGI exceeds $200,000 but is less than $500,000, and by an additional $50 for each $5,000, or fraction thereof, by which the taxpayer’s AGI exceeds $500,000, up to a maximum payment of $3,150. For each MFJ taxpayer whose Connecticut AGI exceeds $100,500, the amount of the taxpayer's Connecticut taxable income to which the 2 percent tax rate applies shall be reduced by $2,000 for each $5,000, or fraction thereof, by which the taxpayer's Connecticut AGI exceeds said amount. Any such amount of Connecticut taxable income to which, as provided in the preceding sentence, the 2 percent tax rate does not apply shall be an amount to which the 4.5 percent tax rate shall apply. Each MFJ filer whose Connecticut AGI exceeds $210,000 shall pay an amount equal to $50 for each $10,000, or fraction thereof, by which the taxpayer's Connecticut AGI exceeds $210,000, up to a maximum payment of $500. Additionally, each MFJ taxpayer whose Connecticut AGI exceeds $400,000 shall pay, in addition to the amount above, an amount equal to $180 for each $10,000, or fraction thereof, by which the taxpayer's Connecticut AGI exceeds $400,000, up to a maximum of $5,400, and a further $100 for each $10,000, or fraction thereof, by which Connecticut AGI exceeds $1 million, up to a combined maximum payment of $6,300.",
-        "Connecticut's personal exemption phases out by $1,000 for each $1,000, or fraction thereof, by which a single filer's Connecticut AGI exceeds $30,000 and a MFJ filer's Connecticut AGI exceeds $48,000."
+        "Connecticut's personal exemption phases out by $1,000 for each $1,000, or fraction thereof, by which a single filer's Connecticut AGI exceeds $30,000 and a MFJ filer's Connecticut AGI exceeds $48,000.",
+        "Connecticut also adds a flat charge above $56,500 single / $100,500 joint (up to $250 / $500) and recaptures the benefit of its lower rates above $105,000 / $210,000 (up to $3,400 / $6,800). Neither is modelled, so Connecticut tax shown here is lower than the true figure for higher earners."
       ],
       "earnedIncomeCredit": {
         "percentOfFederal": 0.4,
@@ -682,9 +684,45 @@
         "maxCredit": null
       },
       "creditPhaseOut": null,
-      "allowancePhaseOut": null,
-      "ratesCheckedAgainstState": null,
+      "allowancePhaseOut": {
+        "kind": "linear",
+        "appliesTo": [
+          "personalExemption"
+        ],
+        "segments": {
+          "single": [
+            {
+              "base": 15000,
+              "start": 30000,
+              "perDollar": 1
+            }
+          ],
+          "marriedJointly": [
+            {
+              "base": 24000,
+              "start": 48000,
+              "perDollar": 1
+            }
+          ],
+          "headOfHousehold": [
+            {
+              "base": 19000,
+              "start": 38000,
+              "perDollar": 1
+            }
+          ]
+        }
+      },
+      "ratesCheckedAgainstState": {
+        "url": "https://portal.ct.gov/-/media/drs/forms/2025/incometax/ct-1040-tcs.pdf",
+        "checked": "2026-08-15",
+        "matched": false
+      },
       "itemizedDeductions": null,
+      "verifiedAgainstState": {
+        "url": "https://portal.ct.gov/-/media/drs/forms/2025/incometax/ct-1040-tcs.pdf",
+        "checked": "2026-08-15"
+      },
       "communityProperty": false,
       "payrollContributions": [
         {
@@ -793,7 +831,11 @@
       "earnedIncomeCredit": null,
       "creditPhaseOut": null,
       "allowancePhaseOut": null,
-      "ratesCheckedAgainstState": null,
+      "ratesCheckedAgainstState": {
+        "url": "https://otr.cfo.dc.gov/page/district-columbia-tax-rates-individual-income-and-business-franchise-taxes",
+        "checked": "2026-08-15",
+        "matched": true
+      },
       "itemizedDeductions": null,
       "communityProperty": false,
       "payrollContributions": [],
@@ -901,7 +943,11 @@
       "earnedIncomeCredit": null,
       "creditPhaseOut": null,
       "allowancePhaseOut": null,
-      "ratesCheckedAgainstState": null,
+      "ratesCheckedAgainstState": {
+        "url": "https://revenuefiles.delaware.gov/2025/PITForms_Instructions/Instructions/PIT-RES_Instructions_2025-01.pdf",
+        "checked": "2026-08-15",
+        "matched": true
+      },
       "itemizedDeductions": null,
       "communityProperty": false,
       "payrollContributions": [],
@@ -986,7 +1032,11 @@
       "earnedIncomeCredit": null,
       "creditPhaseOut": null,
       "allowancePhaseOut": null,
-      "ratesCheckedAgainstState": null,
+      "ratesCheckedAgainstState": {
+        "url": "https://dor.georgia.gov/document/document/2026-employers-tax-guide/download",
+        "checked": "2026-08-15",
+        "matched": true
+      },
       "itemizedDeductions": null,
       "verifiedAgainstState": {
         "url": "https://dor.georgia.gov/document/document/2026-employers-tax-guide/download",
@@ -1157,8 +1207,9 @@
         ]
       },
       "standardDeduction": {
-        "single": 4400,
-        "marriedJointly": 8800
+        "single": 8000,
+        "marriedJointly": 16000,
+        "headOfHousehold": 12000
       },
       "personalExemption": {
         "single": 1144,
@@ -1187,8 +1238,16 @@
       },
       "creditPhaseOut": null,
       "allowancePhaseOut": null,
-      "ratesCheckedAgainstState": null,
+      "ratesCheckedAgainstState": {
+        "url": "https://files.hawaii.gov/tax/news/announce/ann25-07.pdf",
+        "checked": "2026-08-15",
+        "matched": false
+      },
       "itemizedDeductions": null,
+      "verifiedAgainstState": {
+        "url": "https://files.hawaii.gov/tax/news/announce/ann25-07.pdf",
+        "checked": "2026-08-15"
+      },
       "communityProperty": false,
       "payrollContributions": [
         {
@@ -1257,7 +1316,11 @@
       },
       "creditPhaseOut": null,
       "allowancePhaseOut": null,
-      "ratesCheckedAgainstState": null,
+      "ratesCheckedAgainstState": {
+        "url": "https://revenue.iowa.gov/taxes/tax-guidance/individual-income-tax",
+        "checked": "2026-08-15",
+        "matched": true
+      },
       "itemizedDeductions": null,
       "communityProperty": false,
       "payrollContributions": [],
@@ -1327,7 +1390,11 @@
       "earnedIncomeCredit": null,
       "creditPhaseOut": null,
       "allowancePhaseOut": null,
-      "ratesCheckedAgainstState": null,
+      "ratesCheckedAgainstState": {
+        "url": "https://tax.idaho.gov/wp-content/uploads/forms/EFO00089/EFO00089_03-02-2026.pdf",
+        "checked": "2026-08-15",
+        "matched": true
+      },
       "itemizedDeductions": null,
       "communityProperty": true,
       "payrollContributions": [],
@@ -1388,7 +1455,11 @@
       },
       "creditPhaseOut": null,
       "allowancePhaseOut": null,
-      "ratesCheckedAgainstState": null,
+      "ratesCheckedAgainstState": {
+        "url": "https://tax.illinois.gov/content/dam/soi/en/web/tax/forms/incometax/documents/currentyear/individual/il-1040-exemption-allowance-chart.pdf",
+        "checked": "2026-08-15",
+        "matched": true
+      },
       "itemizedDeductions": null,
       "communityProperty": false,
       "payrollContributions": [],
@@ -1449,7 +1520,11 @@
       },
       "creditPhaseOut": null,
       "allowancePhaseOut": null,
-      "ratesCheckedAgainstState": null,
+      "ratesCheckedAgainstState": {
+        "url": "https://www.in.gov/dor/files/dn01.pdf",
+        "checked": "2026-08-15",
+        "matched": true
+      },
       "itemizedDeductions": null,
       "communityProperty": false,
       "payrollContributions": [],
@@ -1518,7 +1593,11 @@
       },
       "creditPhaseOut": null,
       "allowancePhaseOut": null,
-      "ratesCheckedAgainstState": null,
+      "ratesCheckedAgainstState": {
+        "url": "https://www.ksrevenue.gov/incomebook25.html",
+        "checked": "2026-08-15",
+        "matched": true
+      },
       "itemizedDeductions": null,
       "communityProperty": false,
       "payrollContributions": [],
@@ -1573,7 +1652,11 @@
       "earnedIncomeCredit": null,
       "creditPhaseOut": null,
       "allowancePhaseOut": null,
-      "ratesCheckedAgainstState": null,
+      "ratesCheckedAgainstState": {
+        "url": "https://revenue.ky.gov/News/Pages/Kentucky-DOR-Announces-2026-Standard-Deduction.aspx",
+        "checked": "2026-08-15",
+        "matched": true
+      },
       "itemizedDeductions": null,
       "communityProperty": false,
       "payrollContributions": [],
@@ -1631,7 +1714,11 @@
       },
       "creditPhaseOut": null,
       "allowancePhaseOut": null,
-      "ratesCheckedAgainstState": null,
+      "ratesCheckedAgainstState": {
+        "url": "https://dam.ldr.la.gov/taxforms/1306-1-26.pdf",
+        "checked": "2026-08-15",
+        "matched": true
+      },
       "itemizedDeductions": null,
       "communityProperty": true,
       "payrollContributions": [],
@@ -2021,7 +2108,11 @@
       },
       "creditPhaseOut": null,
       "allowancePhaseOut": null,
-      "ratesCheckedAgainstState": null,
+      "ratesCheckedAgainstState": {
+        "url": "https://www.michigan.gov/treasury/news/2026/04/15/state-individual-income-tax-rate-for-2026-tax-year-determined",
+        "checked": "2026-08-15",
+        "matched": true
+      },
       "itemizedDeductions": null,
       "communityProperty": false,
       "payrollContributions": [],
@@ -2123,7 +2214,11 @@
       "earnedIncomeCredit": null,
       "creditPhaseOut": null,
       "allowancePhaseOut": null,
-      "ratesCheckedAgainstState": null,
+      "ratesCheckedAgainstState": {
+        "url": "https://www.revenue.state.mn.us/sites/default/files/2025-12/inflation-adjusted-amounts-2026.pdf",
+        "checked": "2026-08-15",
+        "matched": true
+      },
       "itemizedDeductions": null,
       "communityProperty": false,
       "payrollContributions": [
@@ -2249,14 +2344,18 @@
         "Income below $1,348 (married filing jointly) is not taxed."
       ],
       "earnedIncomeCredit": {
-        "percentOfFederal": 0.1,
+        "percentOfFederal": 0.2,
         "byChildren": null,
         "refundable": false,
         "maxCredit": null
       },
       "creditPhaseOut": null,
       "allowancePhaseOut": null,
-      "ratesCheckedAgainstState": null,
+      "ratesCheckedAgainstState": {
+        "url": "https://dor.mo.gov/forms/4282_2026.pdf",
+        "checked": "2026-08-15",
+        "matched": false
+      },
       "itemizedDeductions": null,
       "communityProperty": false,
       "payrollContributions": [],
@@ -2318,7 +2417,11 @@
       "earnedIncomeCredit": null,
       "creditPhaseOut": null,
       "allowancePhaseOut": null,
-      "ratesCheckedAgainstState": null,
+      "ratesCheckedAgainstState": {
+        "url": "https://www.dor.ms.gov/general-information",
+        "checked": "2026-08-15",
+        "matched": true
+      },
       "itemizedDeductions": null,
       "communityProperty": false,
       "payrollContributions": [],
@@ -2399,7 +2502,11 @@
       },
       "creditPhaseOut": null,
       "allowancePhaseOut": null,
-      "ratesCheckedAgainstState": null,
+      "ratesCheckedAgainstState": {
+        "url": "https://revenue.mt.gov/news/recent-news/HB-337",
+        "checked": "2026-08-15",
+        "matched": true
+      },
       "itemizedDeductions": null,
       "communityProperty": false,
       "payrollContributions": [],
@@ -3455,9 +3562,35 @@
         "maxCredit": null
       },
       "creditPhaseOut": null,
-      "allowancePhaseOut": null,
-      "ratesCheckedAgainstState": null,
+      "allowancePhaseOut": {
+        "kind": "stepped",
+        "appliesTo": [
+          "standardDeduction",
+          "personalExemption"
+        ],
+        "start": {
+          "single": 261000,
+          "marriedJointly": 261000,
+          "headOfHousehold": 261000
+        },
+        "stepSize": 7450,
+        "factors": [
+          0.8,
+          0.6,
+          0.4,
+          0.2
+        ]
+      },
+      "ratesCheckedAgainstState": {
+        "url": "https://tax.ri.gov/sites/g/files/xkgbur541/files/2025-10/2026%20RI-1040ES_bd.pdf",
+        "checked": "2026-08-15",
+        "matched": false
+      },
       "itemizedDeductions": null,
+      "verifiedAgainstState": {
+        "url": "https://tax.ri.gov/sites/g/files/xkgbur541/files/2025-10/2026%20RI-1040ES_bd.pdf",
+        "checked": "2026-08-15"
+      },
       "communityProperty": false,
       "payrollContributions": [
         {
@@ -3540,18 +3673,32 @@
       },
       "creditPhaseOut": null,
       "allowancePhaseOut": {
+        "kind": "linear",
         "appliesTo": [
           "standardDeduction"
         ],
-        "start": {
-          "single": 40000,
-          "headOfHousehold": 60000,
-          "marriedJointly": 80000
-        },
-        "range": {
-          "single": 55000,
-          "headOfHousehold": 82500,
-          "marriedJointly": 110000
+        "segments": {
+          "single": [
+            {
+              "base": 15000,
+              "start": 40000,
+              "perDollar": 0.2727272727272727
+            }
+          ],
+          "headOfHousehold": [
+            {
+              "base": 22500,
+              "start": 60000,
+              "perDollar": 0.2727272727272727
+            }
+          ],
+          "marriedJointly": [
+            {
+              "base": 30000,
+              "start": 80000,
+              "perDollar": 0.2727272727272727
+            }
+          ]
         },
         "roundReductionDownTo": 10
       },
@@ -3686,13 +3833,13 @@
         "single": [
           {
             "from": 0,
-            "rate": 0.045
+            "rate": 0.0445
           }
         ],
         "marriedJointly": [
           {
             "from": 0,
-            "rate": 0.045
+            "rate": 0.0445
           }
         ]
       },
@@ -3722,7 +3869,8 @@
       "notes": [
         "Standard deduction and/or personal exemption is adjusted annually for inflation. Inflation-adjusted amounts for tax year 2026 are shown.",
         "Standard deduction or personal exemption is structured as a tax credit.",
-        "The dependent deduction/exemption is adjusted annually for inflation, but the 2026 amount was not available at the time of publication, so the 2025 amount is shown."
+        "The dependent deduction/exemption is adjusted annually for inflation, but the 2026 amount was not available at the time of publication, so the 2025 amount is shown.",
+        "Utah's taxpayer tax credit phase-out thresholds and dependent exemption are the 2025 figures — the state has not published 2026 amounts. Utah indexes them upward, so the reduction starts slightly early here and the credit comes out slightly small."
       ],
       "earnedIncomeCredit": {
         "percentOfFederal": 0.2,
@@ -3739,10 +3887,14 @@
         }
       },
       "allowancePhaseOut": null,
-      "ratesCheckedAgainstState": null,
+      "ratesCheckedAgainstState": {
+        "url": "https://le.utah.gov/~2026/bills/sbillenr/SB0060.pdf",
+        "checked": "2026-08-15",
+        "matched": false
+      },
       "itemizedDeductions": null,
       "verifiedAgainstState": {
-        "url": "https://incometax.utah.gov/credits/taxpayer-tax-credit",
+        "url": "https://le.utah.gov/~2026/bills/sbillenr/SB0060.pdf",
         "checked": "2026-08-15"
       },
       "communityProperty": false,
@@ -3820,7 +3972,11 @@
       "earnedIncomeCredit": null,
       "creditPhaseOut": null,
       "allowancePhaseOut": null,
-      "ratesCheckedAgainstState": null,
+      "ratesCheckedAgainstState": {
+        "url": "https://www.tax.virginia.gov/news/new-virginia-tax-laws",
+        "checked": "2026-08-15",
+        "matched": true
+      },
       "itemizedDeductions": null,
       "communityProperty": false,
       "payrollContributions": [],
@@ -3870,11 +4026,30 @@
             "from": 304000,
             "rate": 0.0875
           }
+        ],
+        "headOfHousehold": [
+          {
+            "from": 0,
+            "rate": 0.0335
+          },
+          {
+            "from": 66200,
+            "rate": 0.066
+          },
+          {
+            "from": 171000,
+            "rate": 0.076
+          },
+          {
+            "from": 276850,
+            "rate": 0.0875
+          }
         ]
       },
       "standardDeduction": {
         "single": 7650,
-        "marriedJointly": 15300
+        "marriedJointly": 15300,
+        "headOfHousehold": 11450
       },
       "personalExemption": {
         "single": 5300,
@@ -3901,11 +4076,19 @@
       "earnedIncomeCredit": null,
       "creditPhaseOut": null,
       "allowancePhaseOut": null,
-      "ratesCheckedAgainstState": null,
+      "ratesCheckedAgainstState": {
+        "url": "https://tax.vermont.gov/sites/tax/files/documents/TaxRateSched-2025.pdf",
+        "checked": "2026-08-15",
+        "matched": false
+      },
       "itemizedDeductions": null,
       "communityProperty": false,
       "payrollContributions": [],
-      "headOfHouseholdBasis": "assumed-single"
+      "headOfHouseholdBasis": "own",
+      "headOfHouseholdSource": {
+        "url": "https://tax.vermont.gov/sites/tax/files/documents/TaxRateSched-2025.pdf",
+        "checked": "2026-08-15"
+      }
     },
     "WA": {
       "code": "WA",
@@ -4001,7 +4184,8 @@
       },
       "standardDeduction": {
         "single": 13960,
-        "marriedJointly": 25840
+        "marriedJointly": 25840,
+        "headOfHousehold": 18030
       },
       "personalExemption": {
         "single": 700,
@@ -4039,9 +4223,51 @@
         "maxCredit": null
       },
       "creditPhaseOut": null,
-      "allowancePhaseOut": null,
-      "ratesCheckedAgainstState": null,
+      "allowancePhaseOut": {
+        "kind": "linear",
+        "appliesTo": [
+          "standardDeduction"
+        ],
+        "combine": "max",
+        "segments": {
+          "single": [
+            {
+              "base": 13960,
+              "start": 20120,
+              "perDollar": 0.12
+            }
+          ],
+          "marriedJointly": [
+            {
+              "base": 25840,
+              "start": 29040,
+              "perDollar": 0.19778
+            }
+          ],
+          "headOfHousehold": [
+            {
+              "base": 18030,
+              "start": 20120,
+              "perDollar": 0.22515
+            },
+            {
+              "base": 13960,
+              "start": 20120,
+              "perDollar": 0.12
+            }
+          ]
+        }
+      },
+      "ratesCheckedAgainstState": {
+        "url": "https://www.revenue.wi.gov/TaxForms2026/2026-Form1-ES-Inst.pdf",
+        "checked": "2026-08-15",
+        "matched": false
+      },
       "itemizedDeductions": null,
+      "verifiedAgainstState": {
+        "url": "https://www.revenue.wi.gov/TaxForms2026/2026-Form1-ES-Inst.pdf",
+        "checked": "2026-08-15"
+      },
       "communityProperty": true,
       "payrollContributions": [],
       "headOfHouseholdBasis": "single",
@@ -4058,45 +4284,45 @@
         "single": [
           {
             "from": 0,
-            "rate": 0.0222
+            "rate": 0.0211
           },
           {
             "from": 10000,
-            "rate": 0.0296
+            "rate": 0.0281
           },
           {
             "from": 25000,
-            "rate": 0.0333
+            "rate": 0.0316
           },
           {
             "from": 40000,
-            "rate": 0.0444
+            "rate": 0.0422
           },
           {
             "from": 60000,
-            "rate": 0.0482
+            "rate": 0.0458
           }
         ],
         "marriedJointly": [
           {
             "from": 0,
-            "rate": 0.0222
+            "rate": 0.0211
           },
           {
             "from": 10000,
-            "rate": 0.0296
+            "rate": 0.0281
           },
           {
             "from": 25000,
-            "rate": 0.0333
+            "rate": 0.0316
           },
           {
             "from": 40000,
-            "rate": 0.0444
+            "rate": 0.0422
           },
           {
             "from": 60000,
-            "rate": 0.0482
+            "rate": 0.0458
           }
         ]
       },
@@ -4126,8 +4352,16 @@
       "earnedIncomeCredit": null,
       "creditPhaseOut": null,
       "allowancePhaseOut": null,
-      "ratesCheckedAgainstState": null,
+      "ratesCheckedAgainstState": {
+        "url": "https://tax.wv.gov/Individuals/Pages/PersonalIncomeTaxReductionBill.aspx",
+        "checked": "2026-08-15",
+        "matched": false
+      },
       "itemizedDeductions": null,
+      "verifiedAgainstState": {
+        "url": "https://tax.wv.gov/Individuals/Pages/PersonalIncomeTaxReductionBill.aspx",
+        "checked": "2026-08-15"
+      },
       "communityProperty": false,
       "payrollContributions": [],
       "headOfHouseholdBasis": "single",

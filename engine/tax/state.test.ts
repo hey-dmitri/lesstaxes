@@ -173,17 +173,26 @@ describe('head of household', () => {
       'AL', 'AR', 'AZ', 'CA', 'CO', 'CT', 'DC', 'DE', 'GA', 'HI', 'IA', 'ID',
       'IL', 'IN', 'KS', 'KY', 'LA', 'MA', 'MD', 'ME', 'MI', 'MN', 'MO', 'MS',
       'MT', 'NC', 'ND', 'NE', 'NJ', 'NM', 'NY', 'OH', 'OK', 'OR', 'PA', 'RI',
-      'SC', 'VA', 'WI', 'WV',
+      'SC', 'UT', 'VA', 'VT', 'WI', 'WV',
     ]) {
       expect(stateRules(code).headOfHouseholdBasis).not.toBe('assumed-single');
     }
-    // Vermont is the only one left, and it is waiting on the state to publish
-    // 2026 figures rather than on nobody having looked.
+    /*
+     * NONE LEFT. Every state that taxes wages has now been read off its own
+     * publication for head of household.
+     *
+     * Vermont was the last, and it was unblocked by noticing something about
+     * our own data rather than by Vermont publishing anything: the brackets
+     * shipped here for single and joint filers are 2025 figures, so Vermont's
+     * 2025 head-of-household schedule is exactly in step with them rather than
+     * a year behind. The vintage objection had been comparing the 2025 table
+     * against brackets that were also 2025.
+     */
     expect(
       graduated
         .filter((s) => s.headOfHouseholdBasis === 'assumed-single')
         .map((s) => s.code),
-    ).toEqual(['VT']);
+    ).toEqual([]);
   });
 
   /*
@@ -209,12 +218,13 @@ describe('head of household', () => {
     expect(at(18_000)).toBe(0);
 
     // Above $92,521 it is gone entirely — $966 / 1.3 cents past $18,213 — so
-    // the tax is the flat 4.5% with no relief at all.
-    expect(at(150_000)).toBeCloseTo(150_000 * 0.045, 2);
+    // the tax is the flat rate with no relief at all. SB 60 of the 2026
+    // session cut that rate from 4.50% to 4.45%, retroactive to 1 January.
+    expect(at(150_000)).toBeCloseTo(150_000 * 0.0445, 2);
 
     // In between, partial. At $80,000 the reduction is 1.3% of the $61,787
     // above the threshold, or $803.23, leaving $162.77 of the $966.
-    expect(at(80_000)).toBeCloseTo(80_000 * 0.045 - 162.77, 1);
+    expect(at(80_000)).toBeCloseTo(80_000 * 0.0445 - 162.77, 1);
   });
 
   it('gives a Utah head of household a bigger credit and a later phase-out', () => {

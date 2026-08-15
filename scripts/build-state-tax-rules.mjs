@@ -82,12 +82,156 @@ const SNAPSHOT_STALE_AFTER_MONTHS = 4;
  * indistinguishable from "never looked" unless somebody writes it down.
  */
 const RATES_CHECKED = {
+  // --- read and found WRONG -------------------------------------------------
   'South Carolina': {
-    // Act No. 110 of 2026, read from the enacted text. Nothing matched: the
-    // rates, the allowance, the starting point and the earned income credit
-    // all changed, and two shipped footnotes had become false.
+    // Act No. 110 of 2026. Rates, allowance, starting point and earned income
+    // credit all changed, and two shipped footnotes had become false.
     matched: false,
     source: 'https://www.scstatehouse.gov/sess126_2025-2026/prever/4216_20260224.htm',
+    checked: '2026-08-15',
+  },
+  'West Virginia': {
+    // SB 392 of 2026 cut every rate 5%, retroactive to 1 January.
+    matched: false,
+    source: 'https://tax.wv.gov/Individuals/Pages/PersonalIncomeTaxReductionBill.aspx',
+    checked: '2026-08-15',
+  },
+  Utah: {
+    // SB 60 of 2026 cut the rate 4.50% -> 4.45%, retroactive to 1 January.
+    matched: false,
+    source: 'https://le.utah.gov/~2026/bills/sbillenr/SB0060.pdf',
+    checked: '2026-08-15',
+  },
+  Hawaii: {
+    // 2026 is a step year in the 2024 law: the standard deduction nearly
+    // doubles and we were shipping the 2024-2025 figure.
+    matched: false,
+    source: 'https://files.hawaii.gov/tax/news/announce/ann25-07.pdf',
+    checked: '2026-08-15',
+  },
+  Wisconsin: {
+    // The standard deduction phases out to nothing and we gave it in full.
+    matched: false,
+    source: 'https://www.revenue.wi.gov/TaxForms2026/2026-Form1-ES-Inst.pdf',
+    checked: '2026-08-15',
+  },
+  Connecticut: {
+    // The personal exemption vanishes by $44,000 and we gave it at every income.
+    matched: false,
+    source: 'https://portal.ct.gov/-/media/drs/forms/2025/incometax/ct-1040-tcs.pdf',
+    checked: '2026-08-15',
+  },
+  'Rhode Island': {
+    // Head-of-household standard deduction was the 2025 figure.
+    matched: false,
+    source: 'https://tax.ri.gov/sites/g/files/xkgbur541/files/2025-10/2026%20RI-1040ES_bd.pdf',
+    checked: '2026-08-15',
+  },
+  Vermont: {
+    // Brackets confirmed to be 2025 figures, which is what unblocked the
+    // head-of-household schedule rather than anything Vermont published.
+    matched: false,
+    source: 'https://tax.vermont.gov/sites/tax/files/documents/TaxRateSched-2025.pdf',
+    checked: '2026-08-15',
+  },
+  Missouri: {
+    // Rates and allowances matched; the working family credit is 20%, not 10%.
+    matched: false,
+    source: 'https://dor.mo.gov/forms/4282_2026.pdf',
+    checked: '2026-08-15',
+  },
+
+  // --- read and found RIGHT -------------------------------------------------
+  /*
+   * These are the most common result and the least interesting to read, and
+   * they are recorded for exactly that reason. "Checked and agreed" and "never
+   * looked" produce identical numbers; only a written record tells them apart,
+   * and the flat-rate states already taught this project that lesson once.
+   */
+  Michigan: {
+    // The 4.25% rollback trigger did not fire for 2026.
+    matched: true,
+    source: 'https://www.michigan.gov/treasury/news/2026/04/15/state-individual-income-tax-rate-for-2026-tax-year-determined',
+    checked: '2026-08-15',
+  },
+  Minnesota: {
+    matched: true,
+    source: 'https://www.revenue.state.mn.us/sites/default/files/2025-12/inflation-adjusted-amounts-2026.pdf',
+    checked: '2026-08-15',
+  },
+  Mississippi: {
+    // 4.0% for 2026 confirmed; the cuts to 3.75% start in 2027.
+    matched: true,
+    source: 'https://www.dor.ms.gov/general-information',
+    checked: '2026-08-15',
+  },
+  Montana: {
+    // Montana's legislature meets in odd years, so there is no post-February
+    // session to have moved anything.
+    matched: true,
+    source: 'https://revenue.mt.gov/news/recent-news/HB-337',
+    checked: '2026-08-15',
+  },
+  'Washington DC': {
+    matched: true,
+    source: 'https://otr.cfo.dc.gov/page/district-columbia-tax-rates-individual-income-and-business-franchise-taxes',
+    checked: '2026-08-15',
+  },
+  Delaware: {
+    matched: true,
+    source: 'https://revenuefiles.delaware.gov/2025/PITForms_Instructions/Instructions/PIT-RES_Instructions_2025-01.pdf',
+    checked: '2026-08-15',
+  },
+  Georgia: {
+    // Verifies the correction already applied for the law signed 11 May 2026.
+    matched: true,
+    source: 'https://dor.georgia.gov/document/document/2026-employers-tax-guide/download',
+    checked: '2026-08-15',
+  },
+  Iowa: {
+    // 3.8%, not the 3.9% one stale Iowa government page still shows.
+    matched: true,
+    source: 'https://revenue.iowa.gov/taxes/tax-guidance/individual-income-tax',
+    checked: '2026-08-15',
+  },
+  Idaho: {
+    matched: true,
+    source: 'https://tax.idaho.gov/wp-content/uploads/forms/EFO00089/EFO00089_03-02-2026.pdf',
+    checked: '2026-08-15',
+  },
+  Illinois: {
+    matched: true,
+    source: 'https://tax.illinois.gov/content/dam/soi/en/web/tax/forms/incometax/documents/currentyear/individual/il-1040-exemption-allowance-chart.pdf',
+    checked: '2026-08-15',
+  },
+  Indiana: {
+    // State rate and exemptions matched. Indiana's COUNTY tax is a separate
+    // dataset and is a separate, larger problem.
+    matched: true,
+    source: 'https://www.in.gov/dor/files/dn01.pdf',
+    checked: '2026-08-15',
+  },
+  Kansas: {
+    // The 2025 automatic-rate-cut trigger did not fire for 2026.
+    matched: true,
+    source: 'https://www.ksrevenue.gov/incomebook25.html',
+    checked: '2026-08-15',
+  },
+  Kentucky: {
+    // 3.5% holds: the trigger for a cut to 3.0% failed by $7.5 million.
+    matched: true,
+    source: 'https://revenue.ky.gov/News/Pages/Kentucky-DOR-Announces-2026-Standard-Deduction.aspx',
+    checked: '2026-08-15',
+  },
+  Louisiana: {
+    matched: true,
+    source: 'https://dam.ldr.la.gov/taxforms/1306-1-26.pdf',
+    checked: '2026-08-15',
+  },
+  Virginia: {
+    // $8,750 / $17,500 holds for 2026; the rise to $9,200 is 2027.
+    matched: true,
+    source: 'https://www.tax.virginia.gov/news/new-virginia-tax-laws',
     checked: '2026-08-15',
   },
 };
@@ -598,8 +742,43 @@ const HEAD_OF_HOUSEHOLD = {
     source: 'https://revenue.nebraska.gov/sites/default/files/doc/tax-forms/2025/f_1040N-ES.pdf',
     checked: '2026-08-15',
   },
+  Vermont: {
+    /*
+     * UNBLOCKED, AND BY NOTICING WHAT WAS ALREADY TRUE OF OUR OWN DATA.
+     *
+     * This sat out of the table for months on a vintage argument: Vermont's
+     * statutory head-of-household table is a base it indexes annually, the
+     * base runs about 28% below the brackets shipped here, and setting one
+     * against the other made a head of household pay more than a single filer.
+     *
+     * The premise was wrong. The brackets shipped here for single and joint
+     * filers are TAX YEAR 2025 figures — Vermont has published nothing for
+     * 2026 and the source said so in a footnote nobody followed up. So the
+     * 2025 Schedule Z is not a year out of step with them. It is exactly in
+     * step, because they are 2025 too.
+     *
+     * Vermont has published a head-of-household schedule every year and always
+     * had one. What was missing was never the column; it was the realisation
+     * that our other columns were the same age.
+     *
+     * The trap that cost the months: Vermont publishes a document titled
+     * "2026 VT Rate Schedules" which contains wage-bracket WITHHOLDING charts,
+     * single and married only, and reuses the filename the real income tax
+     * schedules used through 2024.
+     */
+    basis: 'own',
+    brackets: [
+      { from: 0, rate: 0.0335 },
+      { from: 66_200, rate: 0.066 },
+      { from: 171_000, rate: 0.076 },
+      { from: 276_850, rate: 0.0875 },
+    ],
+    standardDeduction: 11_450,
+    source: 'https://tax.vermont.gov/sites/tax/files/documents/TaxRateSched-2025.pdf',
+    checked: '2026-08-15',
+  },
   /*
-   * VERMONT IS THE LAST ONE, and it is still blocked for the original reason.
+   * VERMONT'S REMAINING GAP is the tax YEAR, not the filing status.
    *
    * Its head-of-household schedule was transcribed from 32 V.S.A. § 5822(a)(2)
    * and rejected by the build guard: the statutory table is a base that Vermont
@@ -1083,6 +1262,170 @@ const STATE_OVERRIDES = {
     source: 'https://dor.georgia.gov/document/document/2026-employers-tax-guide/download',
     checked: '2026-08-15',
   },
+  Hawaii: {
+    /*
+     * A ONE-NUMBER ERROR THAT NEARLY DOUBLED THE ALLOWANCE. Hawaii's 2024 law
+     * raises the standard deduction in steps and 2026 is a step year: $8,000
+     * single, $16,000 joint, $12,000 head of household, against the $4,400 and
+     * $8,800 shipped, which are the 2024-2025 figures.
+     *
+     * Confirmed three times over — HRS 235-2.4, Announcement 2024-03 and
+     * Announcement 2025-07 — so this is not a reading of pending legislation.
+     * It was overcharging a Hawaii couple about $490 a year.
+     */
+    standardDeduction: { single: 8_000, marriedJointly: 16_000, headOfHousehold: 12_000 },
+    source: 'https://files.hawaii.gov/tax/news/announce/ann25-07.pdf',
+    checked: '2026-08-15',
+  },
+  'West Virginia': {
+    /*
+     * The fifth state to legislate after the February table, and the third to
+     * cut. SB 392 of the 2026 session, signed 31 March 2026, reduces every
+     * rate by exactly 5%, RETROACTIVE to 1 January 2026. Thresholds unchanged.
+     *
+     * Each new rate is 95% of the old to the fourth decimal, which is the check
+     * that all five were transcribed rather than guessed. West Virginia runs
+     * one schedule for single, head of household and joint alike.
+     */
+    brackets: {
+      single: [
+        { from: 0, rate: 0.0211 },
+        { from: 10_000, rate: 0.0281 },
+        { from: 25_000, rate: 0.0316 },
+        { from: 40_000, rate: 0.0422 },
+        { from: 60_000, rate: 0.0458 },
+      ],
+      marriedJointly: [
+        { from: 0, rate: 0.0211 },
+        { from: 10_000, rate: 0.0281 },
+        { from: 25_000, rate: 0.0316 },
+        { from: 40_000, rate: 0.0422 },
+        { from: 60_000, rate: 0.0458 },
+      ],
+    },
+    source: 'https://tax.wv.gov/Individuals/Pages/PersonalIncomeTaxReductionBill.aspx',
+    checked: '2026-08-15',
+  },
+  Utah: {
+    /*
+     * The sixth state to move after February. SB 60 of the 2026 session cuts
+     * the rate from 4.50% to 4.45%, signed 23 March 2026 with retrospective
+     * operation for tax years beginning on or after 1 January 2026.
+     *
+     * The taxpayer tax credit below is unaffected — SB 60 touches only the
+     * rate sections.
+     */
+    brackets: {
+      single: [{ from: 0, rate: 0.0445 }],
+      marriedJointly: [{ from: 0, rate: 0.0445 }],
+    },
+    personalExemption: { dependent: 0 },
+    personalCredit: {
+      single: 966,
+      marriedJointly: 1_932,
+      headOfHousehold: 1_449,
+      dependent: 127,
+    },
+    creditPhaseOut: {
+      perDollar: 0.013,
+      threshold: { single: 18_213, marriedJointly: 36_426, headOfHousehold: 27_320 },
+    },
+    source: 'https://le.utah.gov/~2026/bills/sbillenr/SB0060.pdf',
+    checked: '2026-08-15',
+    note: "Utah's taxpayer tax credit phase-out thresholds and dependent exemption are the 2025 figures — the state has not published 2026 amounts. Utah indexes them upward, so the reduction starts slightly early here and the credit comes out slightly small.",
+  },
+  'Rhode Island': {
+    /*
+     * The head-of-household standard deduction was the 2025 figure, $16,350,
+     * used deliberately at the time because 2026 was not out. It is now:
+     * $16,800, from Rhode Island's own 2026 estimated-tax form.
+     *
+     * THE PHASE-OUT IS A STAIRCASE, NOT A SLOPE, which is why it needed its
+     * own shape. Above $261,000 the deduction AND every exemption drop in four
+     * twenty-point steps and vanish entirely above $290,800 — so a household
+     * can lose a fifth of both by earning one dollar more. Ignoring it was
+     * undercharging, which is the direction that flatters.
+     */
+    // Only the head-of-household figure. The single and joint amounts the
+    // source already carries are correct, and the build warns when a
+    // hand-typed override starts merely repeating what the source says.
+    standardDeduction: { headOfHousehold: 16_800 },
+    allowancePhaseOut: {
+      kind: 'stepped',
+      appliesTo: ['standardDeduction', 'personalExemption'],
+      start: { single: 261_000, marriedJointly: 261_000, headOfHousehold: 261_000 },
+      stepSize: 7_450,
+      factors: [0.8, 0.6, 0.4, 0.2],
+    },
+    source: 'https://tax.ri.gov/sites/g/files/xkgbur541/files/2025-10/2026%20RI-1040ES_bd.pdf',
+    checked: '2026-08-15',
+  },
+  Wisconsin: {
+    /*
+     * THE LARGEST UNDERCHARGE FOUND ANYWHERE — a Wisconsin couple on $150,000
+     * was being shown a bill $1,268 too low, which makes Wisconsin look better
+     * than it is against every other state on the site.
+     *
+     * The standard deduction does not just shrink, it disappears: $13,960 for
+     * a single filer less 12% of everything over $20,120, reaching exactly zero
+     * at $136,453. For a couple, $25,840 less 19.778% over $29,040, zero at
+     * $159,690.
+     *
+     * A HEAD OF HOUSEHOLD FOLLOWS TWO LINES, NOT ONE. It falls steeply from
+     * $18,030 at 22.515%, and past $58,827 it joins the line a single filer is
+     * already on. Those two lines cross exactly where the statute switches, so
+     * taking whichever gives more reproduces the rule without special-casing —
+     * which is why the phase-out shape allows more than one segment.
+     */
+    // Only the head-of-household figure — the source already has the other two
+    // right, and the build warns when an override merely repeats the source.
+    standardDeduction: { headOfHousehold: 18_030 },
+    allowancePhaseOut: {
+      kind: 'linear',
+      appliesTo: ['standardDeduction'],
+      combine: 'max',
+      segments: {
+        single: [{ base: 13_960, start: 20_120, perDollar: 0.12 }],
+        marriedJointly: [{ base: 25_840, start: 29_040, perDollar: 0.19778 }],
+        headOfHousehold: [
+          { base: 18_030, start: 20_120, perDollar: 0.22515 },
+          { base: 13_960, start: 20_120, perDollar: 0.12 },
+        ],
+      },
+    },
+    source: 'https://www.revenue.wi.gov/TaxForms2026/2026-Form1-ES-Inst.pdf',
+    checked: '2026-08-15',
+  },
+  Connecticut: {
+    /*
+     * CONNECTICUT'S PERSONAL EXEMPTION VANISHES and we were handing it out at
+     * every income. It falls by $1,000 for every $1,000 earned above $30,000
+     * single, $48,000 joint, $38,000 head of household — a dollar for a dollar,
+     * so it is gone entirely by $44,000 / $71,000 / $57,000.
+     *
+     * At the incomes this site is used at, Connecticut gives NOTHING, and we
+     * were still deducting $15,000 or $24,000. That is an undercharge of
+     * roughly $950 to $1,820 a year, in the direction that flatters.
+     *
+     * Two further Connecticut charges remain unmodelled and are recorded in
+     * the note: a "2% add-back" and a recapture that claws back the lower
+     * rates from high earners. Both would add tax, so what ships here is still
+     * short of the truth rather than past it.
+     */
+    personalExemption: { single: 15_000, marriedJointly: 24_000, headOfHousehold: 19_000 },
+    allowancePhaseOut: {
+      kind: 'linear',
+      appliesTo: ['personalExemption'],
+      segments: {
+        single: [{ base: 15_000, start: 30_000, perDollar: 1 }],
+        marriedJointly: [{ base: 24_000, start: 48_000, perDollar: 1 }],
+        headOfHousehold: [{ base: 19_000, start: 38_000, perDollar: 1 }],
+      },
+    },
+    source: 'https://portal.ct.gov/-/media/drs/forms/2025/incometax/ct-1040-tcs.pdf',
+    checked: '2026-08-15',
+    note: "Connecticut also adds a flat charge above $56,500 single / $100,500 joint (up to $250 / $500) and recaptures the benefit of its lower rates above $105,000 / $210,000 (up to $3,400 / $6,800). Neither is modelled, so Connecticut tax shown here is lower than the true figure for higher earners.",
+  },
   'South Carolina': {
     /*
      * SOUTH CAROLINA REWROTE ITS INCOME TAX AND WE WERE STILL MODELLING THE OLD
@@ -1125,9 +1468,16 @@ const STATE_OVERRIDES = {
     },
     standardDeduction: { single: 15_000, marriedJointly: 30_000, headOfHousehold: 22_500 },
     allowancePhaseOut: {
+      kind: 'linear',
       appliesTo: ['standardDeduction'],
-      start: { single: 40_000, headOfHousehold: 60_000, marriedJointly: 80_000 },
-      range: { single: 55_000, headOfHousehold: 82_500, marriedJointly: 110_000 },
+      // All three run at exactly 3/11 of a dollar per dollar — 15,000/55,000,
+      // 22,500/82,500, 30,000/110,000. That the three reduce to one ratio is
+      // the check that all six numbers were transcribed correctly.
+      segments: {
+        single: [{ base: 15_000, start: 40_000, perDollar: 15_000 / 55_000 }],
+        headOfHousehold: [{ base: 22_500, start: 60_000, perDollar: 22_500 / 82_500 }],
+        marriedJointly: [{ base: 30_000, start: 80_000, perDollar: 30_000 / 110_000 }],
+      },
       // "Any reduction amount which is not a multiplier of ten dollars must be
       // rounded to the next lowest ten dollars" — 12-6-1140(15)(c). Rounding
       // the REDUCTION down leaves a slightly larger deduction, so this favours
@@ -1138,46 +1488,7 @@ const STATE_OVERRIDES = {
     checked: '2026-08-15',
     note: "South Carolina's dependent exemption is shown at the 2025 figure of $4,930. The state indexes it every December and the 2026 amount appears only in the 2026 return instructions, which are not published yet. The real figure will be slightly higher, so this errs against the reader.",
   },
-  Utah: {
-    /*
-     * UTAH'S ALLOWANCE WAS BEING DROPPED ON THE FLOOR, all of it.
-     *
-     * Utah has no standard deduction and no personal exemption. Instead the
-     * whole thing is the "taxpayer tax credit": 6% of the federal deduction
-     * plus 6% of Utah's dependent exemption, reduced by 1.3 cents per dollar
-     * of taxable income above a threshold. TC-40 lines 15 to 20.
-     *
-     * The source table prints this in the standard-deduction column as
-     * "$966 credit" / "$1,932 credit". Utah is the only state that does that —
-     * every other credit in the table sits in the personal-exemption columns —
-     * and the parser only ever looks for the word "credit" there. So the
-     * string failed to parse as money, became a $0 standard deduction, and the
-     * credit was never picked up from anywhere. Utah filers lost the lot.
-     *
-     * The amounts are 6% of the 2026 federal deduction: $16,100 single,
-     * $24,150 head of household, $32,200 joint, and $2,111 per dependent.
-     *
-     * THE PHASE-OUT THRESHOLDS ARE THE 2025 ONES, because Utah has not
-     * published 2026 yet. Utah indexes them upward, so using last year's
-     * starts the reduction slightly too early and makes the credit slightly
-     * too small — against the reader, the same trade Oregon and Rhode Island
-     * make. Shipping the credit without any phase-out was the alternative, and
-     * that would have understated Utah tax for most people who use this site.
-     */
-    personalExemption: { dependent: 0 },
-    personalCredit: {
-      single: 966,
-      marriedJointly: 1_932,
-      headOfHousehold: 1_449,
-      dependent: 127,
-    },
-    creditPhaseOut: {
-      perDollar: 0.013,
-      threshold: { single: 18_213, marriedJointly: 36_426, headOfHousehold: 27_320 },
-    },
-    source: 'https://incometax.utah.gov/credits/taxpayer-tax-credit',
-    checked: '2026-08-15',
-  },
+
 };
 
 
@@ -1297,7 +1608,13 @@ const STATE_EITC = {
   Kansas: { percent: 0.17, refundable: true },
   Louisiana: { percent: 0.05, refundable: true },
   Michigan: { percent: 0.3, refundable: true },
-  Missouri: { percent: 0.1, refundable: false },
+  /*
+   * TWENTY percent, not ten. The statute sets 10% "which may be increased to
+   * twenty percent" on a revenue trigger, and once increased "shall continue
+   * in effect until the next percentage increase occurs" — it ratchets and
+   * cannot fall back. Missouri's own 2025 instructions say 20% in plain words.
+   */
+  Missouri: { percent: 0.2, refundable: false },
   Montana: { percent: 0.2, refundable: true },
   Nebraska: { percent: 0.1, refundable: true },
   'New Jersey': { percent: 0.4, refundable: true },
@@ -1489,14 +1806,60 @@ for (const [name, s] of Object.entries(states)) {
       }
     }
     if (override.allowancePhaseOut) {
-      const { appliesTo, start, range } = override.allowancePhaseOut;
-      if (!Array.isArray(appliesTo) || appliesTo.length === 0) {
+      const rule = override.allowancePhaseOut;
+      if (!Array.isArray(rule.appliesTo) || rule.appliesTo.length === 0) {
         throw new Error(`${name}: allowance phase-out must say what it applies to`);
       }
-      if (!(start.single >= 0) || !(range.single > 0)) {
-        throw new Error(`${name}: allowance phase-out needs a single start and range`);
+      if (rule.kind === 'stepped') {
+        if (!(rule.start.single >= 0) || !(rule.stepSize > 0) || !rule.factors?.length) {
+          throw new Error(`${name}: stepped phase-out needs a start, a step size and factors`);
+        }
+        for (let i = 1; i < rule.factors.length; i++) {
+          if (rule.factors[i] >= rule.factors[i - 1]) {
+            throw new Error(`${name}: stepped phase-out factors must decrease`);
+          }
+        }
+      } else if (rule.kind === 'linear') {
+        /*
+         * A linear segment's base is a FIXED amount, so pointing it at the
+         * personal exemption in a state that also gives a per-dependent
+         * exemption would silently throw the children's share away.
+         */
+        if (rule.appliesTo.includes('personalExemption') && s.personalExemption.dependent > 0) {
+          throw new Error(
+            `${name}: a linear allowance phase-out cannot cover the personal exemption ` +
+              `while a dependent exemption of $${s.personalExemption.dependent} also applies`,
+          );
+        }
+        for (const [status, segments] of Object.entries(rule.segments ?? {})) {
+          if (!Array.isArray(segments) || segments.length === 0) {
+            throw new Error(`${name}: linear phase-out for ${status} has no segments`);
+          }
+          for (const seg of segments) {
+            if (!(seg.base > 0) || !(seg.perDollar > 0) || !(seg.start >= 0)) {
+              throw new Error(`${name}: implausible phase-out segment for ${status}`);
+            }
+          }
+          /*
+           * The largest segment base must equal the allowance the state
+           * actually gives, or the two would drift apart on the next refresh
+           * and nothing would notice.
+           */
+          const declared =
+            rule.appliesTo.includes('standardDeduction')
+              ? s.standardDeduction[status]
+              : s.personalExemption[status];
+          const biggest = Math.max(...segments.map((x) => x.base));
+          if (declared !== undefined && Math.abs(declared - biggest) > 0.5) {
+            throw new Error(
+              `${name}: ${status} phase-out starts from $${biggest} but the allowance is $${declared}`,
+            );
+          }
+        }
+      } else {
+        throw new Error(`${name}: unknown allowance phase-out kind ${rule.kind}`);
       }
-      s.allowancePhaseOut = override.allowancePhaseOut;
+      s.allowancePhaseOut = rule;
     }
     if (override.creditPhaseOut) {
       const { perDollar, threshold } = override.creditPhaseOut;

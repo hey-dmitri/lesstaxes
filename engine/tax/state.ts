@@ -256,20 +256,77 @@ export interface StateEitcRules {
  * error that flatters a destination, and a flattering verdict is the one that
  * actually moves somebody across the country.
  */
-export interface AllowancePhaseOut {
-  /** Which allowances shrink. Rhode Island reduces both at once. */
-  appliesTo: Array<'standardDeduction' | 'personalExemption'>;
-  /** Income at which the reduction starts, by published filing status. */
-  start: Partial<Record<PublishedStatus, number>> & { single: number };
-  /** How far past `start` the allowance reaches zero, by filing status. */
-  range: Partial<Record<PublishedStatus, number>> & { single: number };
-  /**
-   * Round the REDUCTION down to this multiple, where the state says to.
-   * South Carolina rounds to $10, which slightly favours the taxpayer: a
-   * smaller reduction leaves a larger deduction.
-   */
-  roundReductionDownTo?: number;
+/** One straight line of a taper: the allowance at `start`, falling per dollar. */
+export interface PhaseOutSegment {
+  /** The allowance at and below `start`. */
+  base: USD;
+  start: USD;
+  /** Dollars of allowance lost per dollar of income above `start`. */
+  perDollar: number;
 }
+
+export type AllowanceKind = 'standardDeduction' | 'personalExemption';
+
+/**
+ * How a state's deduction or exemption shrinks as income rises.
+ *
+ * These sat under "not modelled" for months and the direction is why they
+ * matter: ignoring a phase-out hands the reader an allowance the state takes
+ * away, so the site shows more money left over than they will actually have.
+ * A flattering verdict is the one that actually moves somebody across country.
+ *
+ * TWO SHAPES, because states genuinely use two.
+ *
+ * 'linear' computes the allowance OUTRIGHT from straight lines. Where a status
+ * has more than one segment the answer is the LARGEST — Wisconsin tapers a head
+ * of household steeply from $18,030 and then, past $58,827, along the same line
+ * a single filer follows from $13,960. Those are two lines that cross exactly
+ * where the statute switches, so taking the larger reproduces the rule without
+ * any special-casing.
+ *
+ * 'stepped' scales whatever the allowance already is. Rhode Island does not
+ * taper at all: it drops the deduction AND every exemption in four twenty-point
+ * steps, so a household can lose a fifth of both by earning one dollar more.
+ */
+export type AllowancePhaseOut =
+  | {
+      kind: 'linear';
+      /**
+       * A segment's base is a FIXED amount, so this may only be pointed at an
+       * allowance that does not move with the number of children. The build
+       * refuses to point it at exemptions in a state that has a dependent
+       * exemption, which would silently drop the children's share.
+       */
+      appliesTo: AllowanceKind[];
+      segments: Partial<Record<PublishedStatus, PhaseOutSegment[]>> & {
+        single: PhaseOutSegment[];
+      };
+      /** Round the REDUCTION down to this multiple, where the state says to. */
+      roundReductionDownTo?: number;
+      /**
+       * Which line wins where a status has more than one.
+       *
+       * 'max' is Wisconsin: two alternative formulas that cross, and the
+       * statute switches to whichever gives more. 'min' is Minnesota, where
+       * the reduction steepens past a second threshold so the lines stack
+       * rather than compete. Defaults to 'max'.
+       */
+      combine?: 'max' | 'min';
+      /** The allowance never falls below this share of itself. Minnesota caps
+          its reduction at 80%, leaving a fifth standing however high income
+          goes. */
+      floorFraction?: number;
+    }
+  | {
+      kind: 'stepped';
+      appliesTo: AllowanceKind[];
+      /** Income above which the steps begin, by filing status. */
+      start: Partial<Record<PublishedStatus, number>> & { single: number };
+      /** Width of each step of income. */
+      stepSize: number;
+      /** Share of the allowance kept at step 1, 2, 3 … Past the last, nothing. */
+      factors: number[];
+    };
 
 /** How a state's personal credit shrinks as income rises. See creditPhaseOut. */
 export interface CreditPhaseOut {
@@ -430,29 +487,57 @@ export function computeStateTax(
       : schedule;
 
   /*
-   * Shrink an allowance for income above the state's threshold, straight-line
-   * to zero. Returns the allowance untouched where the state has no phase-out
-   * or this is not one of the allowances it applies to.
+   * Shrink an allowance for income above the state's threshold. Returns it
+   * untouched where the state has no phase-out, or where this is not one of
+   * the allowances the state's phase-out reaches.
+   *
+   * Measured on gross income, this engine's stand-in for the adjusted gross
+   * income every one of these statutes is written against.
    */
-  const phaseOutAllowance = (
-    amount: number,
-    which: 'standardDeduction' | 'personalExemption',
-  ): number => {
+  const phaseOutAllowance = (amount: number, which: AllowanceKind): number => {
     const rule = rules.allowancePhaseOut;
     if (!rule || amount <= 0 || !rule.appliesTo.includes(which)) return amount;
 
-    const start = rule.start[allowanceKey] ?? rule.start[otherwise] ?? rule.start.single;
-    const range = rule.range[allowanceKey] ?? rule.range[otherwise] ?? rule.range.single;
-    if (!(range > 0)) return amount;
-
-    // Measured on gross income, which is this engine's stand-in for the AGI
-    // every one of these statutes is written against.
-    const fraction = Math.min(1, Math.max(0, (gross - start) / range));
-    let reduction = amount * fraction;
-    if (rule.roundReductionDownTo) {
-      reduction = Math.floor(reduction / rule.roundReductionDownTo) * rule.roundReductionDownTo;
+    if (rule.kind === 'stepped') {
+      const start = rule.start[allowanceKey] ?? rule.start[otherwise] ?? rule.start.single;
+      const over = gross - start;
+      if (over <= 0) return amount;
+      // Step 1 begins at the first dollar over, so round the count UP.
+      const step = Math.ceil(over / rule.stepSize);
+      const factor = rule.factors[step - 1] ?? 0;
+      return amount * factor;
     }
-    return Math.max(0, amount - reduction);
+
+    /*
+     * Linear. Each segment is a line; the allowance is the highest of them,
+     * never below zero. One segment is the ordinary case and two is Wisconsin's
+     * head of household.
+     */
+    const segments =
+      rule.segments[allowanceKey] ?? rule.segments[otherwise] ?? rule.segments.single;
+
+    const pick = rule.combine === 'min' ? Math.min : Math.max;
+    let best: number | null = null;
+    let base = 0;
+    for (const seg of segments) {
+      /*
+       * Round to cents before anything else. A rate like 15,000/55,000 cannot
+       * be held exactly in binary, so at the very top of South Carolina's
+       * taper the reduction came out as 14,999.999999999998 — which, floored
+       * to the next lowest $10, left $10 of deduction standing where the
+       * statute leaves none. Money is counted in cents; so is this.
+       */
+      let reduction = Math.round(Math.max(0, gross - seg.start) * seg.perDollar * 100) / 100;
+      if (rule.roundReductionDownTo) {
+        reduction =
+          Math.floor(reduction / rule.roundReductionDownTo) * rule.roundReductionDownTo;
+      }
+      base = Math.max(base, seg.base);
+      const value = seg.base - reduction;
+      best = best === null ? value : pick(best, value);
+    }
+    const floor = rule.floorFraction ? base * rule.floorFraction : 0;
+    return Math.max(floor, best ?? amount, 0);
   };
 
   const standardDeduction = phaseOutAllowance(
