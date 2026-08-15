@@ -85,6 +85,14 @@ answer          =  in your pocket THERE  −  in your pocket HERE`}</pre>
           detailed table shows a middle column at your current salary precisely so this is visible.
         </p>
         <p>
+          <strong>That split is a convention, not a law of nature.</strong> We work out the new
+          city at your current salary first, and call whatever is left the pay effect. Doing it the
+          other way round — the pay rise first, then the city — gives different numbers for each
+          half, though the same total. There is no single correct way to divide a change between
+          two causes that happen at once. This is the order we chose, and it is the order the
+          middle column of the table shows.
+        </p>
+        <p>
           One real exception: federal tax <em>can</em> differ between cities at the same salary, for
           people who itemise. State and property tax are deductible, so a high earner with a
           mortgage in New York pays less federal tax than an identical earner in Texas. Most
@@ -191,6 +199,26 @@ answer          =  in your pocket THERE  −  in your pocket HERE`}</pre>
           your household, and you can change it. Each car costs what US households actually spend
           per vehicle — purchase, fuel, insurance, maintenance and finance charges — at your income
           level.
+        </p>
+
+        <h2>What year the dollars are in</h2>
+        <p>
+          Today&rsquo;s. Every cost figure behind this site was measured in <strong>2024</strong>,
+          the most recent year the federal surveys cover, but the tax rules are 2026 and the salary
+          you type is 2026. Subtracting old costs from a current salary made the money left over
+          look better than it is.
+        </p>
+        <p>
+          So the 2024 figures are brought forward to current prices. Three separate official
+          measures, because they have not moved together since 2024: <strong>rent</strong> is up
+          7.1%, <strong>everything you buy</strong> 6.1%, and <strong>house prices</strong> 3.0%.
+          Tax rules are already current and are left alone, and so is your salary.
+        </p>
+        <p>
+          This matters more than 6% sounds. Money left over is what survives after subtracting a
+          big number from another big number, so an error in the costs lands almost undiluted on
+          the answer: for a Chicago renter on $100,000 it was 13% of the result, and 27% for a
+          buyer.
         </p>
 
         <h2>Where your gas and electricity bill lives</h2>
@@ -462,6 +490,14 @@ answer          =  in your pocket THERE  −  in your pocket HERE`}</pre>
             for local service prices, not from the price of the house you typed in. A $1.6M house
             really does cost more to look after than a $500k one, and this does not fully capture
             that. It leans towards making expensive cities look cheaper than they are.
+          </li>
+          <li>
+            <strong>The suggested number of cars is a whole number, and it jumps.</strong> We start
+            you at the local average vehicles per adult, rounded. New York City averages 0.486 per
+            adult, so a single person there is offered no car at all; everywhere else in the country
+            is offered at least one. A car costs several thousand a year, so a small difference in
+            that average swings a big number. It is the honest thing to show — you own a car or you
+            do not — and the field is yours to change, but it is worth knowing the edge is there.
           </li>
           <li>
             <strong>Hotels and second homes are missing.</strong> The national statistics count

@@ -13,6 +13,7 @@
 
 import {
   PARITY_FOR_CATEGORY,
+  priceFactor,
   spendingProfile,
   transportDefaults,
   type PriceParity,
@@ -36,10 +37,17 @@ export function defaultCarCount(
 
 export interface TransportInputs {
   cars: number;
+  /** The whole per-vehicle cost. Used only when the split below is absent. */
   annualCostPerVehicle: USD;
+  /** The car itself and its fuel. Absent on releases before the split. */
+  goodsPerVehicle?: USD;
+  /** Insurance, servicing, finance charges, licensing. */
+  servicesPerVehicle?: USD;
   transitSpending: USD;
-  /** Fuel and vehicle servicing track local goods prices. */
+  /** The car and its fuel track local goods prices. */
   goodsParity: number;
+  /** Everything else about running it tracks local service prices. */
+  servicesParity?: number;
 }
 
 /**
@@ -52,7 +60,22 @@ export interface TransportInputs {
  */
 export function computeTransport(inputs: TransportInputs): USD {
   const cars = Math.max(0, inputs.cars);
-  const perCar = Math.max(0, inputs.annualCostPerVehicle) * inputs.goodsParity;
+
+  /*
+   * A car and its petrol are goods. Its insurance, servicing, finance charges
+   * and licensing are not — they are services and financial products, priced by
+   * a different BEA index that runs up to nine points away from the goods one.
+   * The whole per-vehicle figure used to be multiplied by the goods index,
+   * which put several hundred dollars a car in the wrong column.
+   *
+   * Releases with no split fall back to the old single figure and index.
+   */
+  const perCar =
+    inputs.goodsPerVehicle !== undefined && inputs.servicesPerVehicle !== undefined
+      ? Math.max(0, inputs.goodsPerVehicle) * inputs.goodsParity +
+        Math.max(0, inputs.servicesPerVehicle) * (inputs.servicesParity ?? inputs.goodsParity)
+      : Math.max(0, inputs.annualCostPerVehicle) * inputs.goodsParity;
+
   return cars * perCar + Math.max(0, inputs.transitSpending);
 }
 
@@ -140,18 +163,47 @@ export function computeLiving(inputs: LivingInputs): LivingResult {
   const profile = spendingProfile(inputs.basketIncome, inputs.datasetVersion);
   const sizeFactor = equivalenceFactor(inputs.householdSize, profile.averageHouseholdSize);
 
+  /*
+   * Everything below is a 2024 figure, and the salary it is being subtracted
+   * from is today's. `inflation` restates it in today's money. See priceLevel.
+   */
+  const inflation = priceFactor('basket', inputs.datasetVersion);
+
   const scaledCategories = {} as SpendingCategories;
   for (const key of Object.keys(profile.categories) as (keyof SpendingCategories)[]) {
     const parityKey = PARITY_FOR_CATEGORY[key];
-    scaledCategories[key] = profile.categories[key] * inputs.priceParity[parityKey] * sizeFactor;
+    scaledCategories[key] =
+      profile.categories[key] * inputs.priceParity[parityKey] * sizeFactor * inflation;
   }
 
   const transport = computeTransport({
     cars: inputs.cars,
-    annualCostPerVehicle: profile.transport.annualCostPerVehicle,
-    transitSpending: profile.transport.transitSpending,
+    annualCostPerVehicle: profile.transport.annualCostPerVehicle * inflation,
+    goodsPerVehicle:
+      profile.transport.goodsPerVehicle === undefined
+        ? undefined
+        : profile.transport.goodsPerVehicle * inflation,
+    servicesPerVehicle:
+      profile.transport.servicesPerVehicle === undefined
+        ? undefined
+        : profile.transport.servicesPerVehicle * inflation,
+    transitSpending: profile.transport.transitSpending * inflation,
     goodsParity: inputs.priceParity.goods,
+    servicesParity: inputs.priceParity.otherServices,
   });
+
+  /*
+   * Giving, alimony and child support, at NATIONAL prices.
+   *
+   * These used to sit inside "other services" and be multiplied by the local
+   * services index, so a donation grew because local dentists and haircuts cost
+   * more. A gift to a charity is not bought at local prices and a support order
+   * is set by a court. Still scaled by household size and by income, because
+   * both of those genuinely move it.
+   *
+   * Zero on releases before the split, where it is still inside otherServices.
+   */
+  const cashContributions = (profile.cashContributions ?? 0) * sizeFactor * inflation;
 
   /*
    * SPLIT THE UTILITIES LINE, because most of it is already paid for.
@@ -172,10 +224,10 @@ export function computeLiving(inputs: LivingInputs): LivingResult {
    */
   const split = profile.utilitiesSplit;
   const utilities = split
-    ? split.telephone * inputs.priceParity.otherServices * sizeFactor
+    ? split.telephone * inputs.priceParity.otherServices * sizeFactor * inflation
     : scaledCategories.utilities;
   const utilitiesInsideRent = split
-    ? split.insideGrossRent * inputs.priceParity.utilities * sizeFactor
+    ? split.insideGrossRent * inputs.priceParity.utilities * sizeFactor * inflation
     : 0;
 
   /*
@@ -192,13 +244,13 @@ export function computeLiving(inputs: LivingInputs): LivingResult {
    * times an Austin one just because the land underneath does.
    */
   const ownerUpkeep = profile.ownerUpkeep
-    ? profile.ownerUpkeep.perOwner * inputs.priceParity.otherServices
+    ? profile.ownerUpkeep.perOwner * inputs.priceParity.otherServices * inflation
     : 0;
 
   // Map internal categories onto the breakdown the results page shows.
   const food = scaledCategories.food;
   const healthcare = scaledCategories.healthcare;
-  const other = scaledCategories.otherGoods + scaledCategories.otherServices;
+  const other = scaledCategories.otherGoods + scaledCategories.otherServices + cashContributions;
 
   return {
     food,

@@ -191,20 +191,21 @@ describe('renters', () => {
     expect(city(NEW_YORK, 'rent', 300_000).housing.maintenance).toBe(0);
   });
 
-  it('are completely unaffected by the change', () => {
-    const before = compare({
-      datasetVersion: '2026.9',
-      household: SINGLE,
-      origin: defaultCityInputs(CHICAGO, 100_000, SINGLE, 'rent', 0.068, '2026.9'),
-      destination: defaultCityInputs(AUSTIN, 100_000, SINGLE, 'rent', 0.068, '2026.9'),
-    });
-    const after = compare({
-      datasetVersion: undefined as unknown as string,
-      household: SINGLE,
-      origin: defaultCityInputs(CHICAGO, 100_000, SINGLE, 'rent'),
-      destination: defaultCityInputs(AUSTIN, 100_000, SINGLE, 'rent'),
-    });
-    expect(after.delta).toBeCloseTo(before.delta, 6);
+  /*
+   * 2026.9 is the release before upkeep existed and 2026.10 the one that added
+   * it, and nothing else changed between them. Comparing against the CURRENT
+   * release would fail for an unrelated reason — 2026.11 restates every 2024
+   * dollar in today's money, which moves renters too.
+   */
+  it('are completely unaffected by the change that introduced it', () => {
+    const at = (version: string) =>
+      compare({
+        datasetVersion: version,
+        household: SINGLE,
+        origin: defaultCityInputs(CHICAGO, 100_000, SINGLE, 'rent', 0.068, version),
+        destination: defaultCityInputs(AUSTIN, 100_000, SINGLE, 'rent', 0.068, version),
+      });
+    expect(at('2026.10').delta).toBeCloseTo(at('2026.9').delta, 6);
   });
 });
 

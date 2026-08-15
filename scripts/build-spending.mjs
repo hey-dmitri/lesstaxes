@@ -97,7 +97,7 @@ const CATEGORIES = {
       'Reading',
       'Education',
       'Miscellaneous',
-      'Cash contributions',
+      // 'Cash contributions' deliberately absent — see CASH_CONTRIBUTIONS_ROW.
     ],
   },
 };
@@ -122,11 +122,95 @@ const EXCLUDED = {
  * Public transport is kept separate: a household that gives up a car in a
  * transit-rich metro does not simply stop paying for travel.
  */
-const VEHICLE_COST_ROWS = [
-  'Vehicle purchases (net outlay)',
-  'Gasoline and other fuels',
+/*
+ * Running a car, split by which price index actually governs it.
+ *
+ * The whole per-vehicle figure used to be multiplied by the GOODS parity. A car
+ * and its petrol are goods. Insurance, servicing, finance charges and licensing
+ * are not — they are services and financial products, and BEA prices those
+ * separately. The two indexes differ by up to nine points between metros, so
+ * this was several hundred dollars a car in the wrong column.
+ */
+const VEHICLE_GOODS_ROWS = ['Vehicle purchases (net outlay)', 'Gasoline and other fuels'];
+const VEHICLE_SERVICE_ROWS = [
   'Other vehicle expenses', // insurance, maintenance, finance charges, licences
 ];
+const VEHICLE_COST_ROWS = [...VEHICLE_GOODS_ROWS, ...VEHICLE_SERVICE_ROWS];
+
+/*
+ * Giving, alimony and child support.
+ *
+ * These sat inside "other services" and were multiplied by the local services
+ * parity, so a donation grew because local haircuts and dentists cost more. A
+ * gift to a charity is not bought at local prices, and a support order is set
+ * by a court. They are now carried separately and priced nationally.
+ */
+const CASH_CONTRIBUTIONS_ROW = 'Cash contributions';
+
+/**
+ * Restating 2024 dollars in today's money.
+ *
+ * Every dollar figure behind this site was measured in 2024 — the Census rent
+ * and home-value tables, and this spending survey. The tax rules are 2026 and
+ * the salary is whatever the reader types in today. So the costs were roughly
+ * six per cent too low against a current salary.
+ *
+ * SIX PER CENT ON COSTS IS NOT SIX PER CENT ON THE ANSWER. Money left over is
+ * a small remainder of two large numbers, so the error lands on the remainder
+ * almost undiluted: for a Chicago renter on $100,000 it was 13% of the answer,
+ * and 27% for a buyer.
+ *
+ * Three indexes rather than one, because they have moved differently and using
+ * the wrong one is a knowingly worse number. All are the seasonally adjusted
+ * series, read at the latest published month against the 2024 annual average:
+ *
+ *   basket     CPIAUCSL       CPI-U all items          313.70 -> 332.813
+ *   rent       CUSR0000SAH1   CPI shelter              400.57 -> 429.098
+ *   homePrice  CSUSHPISA      Case-Shiller US national 321.36 -> 331.023
+ *
+ * The house price index is a repeat-sales measure and the right one for a home
+ * VALUE; CPI shelter measures the cost of renting and would be wrong here. The
+ * unadjusted Case-Shiller reads 1.0428 at the same date, but May is a strong
+ * month in a seasonal series, so the adjusted figure is the honest one.
+ *
+ * NOT adjusted: tax rules, which are already 2026; the salary, which the reader
+ * supplies; price parities and property tax rates, which are ratios, not money.
+ */
+const PRICE_LEVEL = {
+  baseYear: CES_YEAR,
+  asOf: '2026-07',
+  factors: {
+    basket: {
+      value: 332.813 / 313.7,
+      series: 'CPIAUCSL',
+      name: 'CPI-U, all items, seasonally adjusted',
+      base: 313.7,
+      current: 332.813,
+      currentMonth: '2026-07',
+    },
+    rent: {
+      value: 429.098 / 400.57,
+      series: 'CUSR0000SAH1',
+      name: 'CPI-U, shelter, seasonally adjusted',
+      base: 400.57,
+      current: 429.098,
+      currentMonth: '2026-07',
+    },
+    homePrice: {
+      value: 331.023 / 321.36,
+      series: 'CSUSHPISA',
+      name: 'S&P CoreLogic Case-Shiller US National Home Price Index, seasonally adjusted',
+      base: 321.36,
+      current: 331.023,
+      currentMonth: '2026-05',
+    },
+  },
+  source: {
+    name: 'Federal Reserve Bank of St. Louis (FRED), republishing BLS and S&P Dow Jones Indices',
+    url: 'https://fred.stlouisfed.org/',
+    note: 'Base is the average of the twelve monthly readings for the source vintage year. Current is the latest month published at the time this release was cut.',
+  },
+};
 const TRANSIT_ROW = 'Public and other transportation';
 
 /**
@@ -269,7 +353,15 @@ for (const bracket of incomeBrackets) {
     excluded[name] = Math.round(sumRows(labels, bracket));
   }
 
-  const livingTotal = Object.values(categories).reduce((a, b) => a + b, 0);
+  /*
+   * Cash contributions are spending and belong in the total. They are carried
+   * outside `categories` only because they take no local price parity — see
+   * CASH_CONTRIBUTIONS_ROW — and every category in that object is defined by
+   * the parity it scales with.
+   */
+  const cashContributions = Math.round(value(CASH_CONTRIBUTIONS_ROW, bracket));
+  const livingTotal =
+    Object.values(categories).reduce((a, b) => a + b, 0) + cashContributions;
   const publishedTotal = value('Average annual expenditures', bracket);
   const reconstructed = livingTotal + Object.values(excluded).reduce((a, b) => a + b, 0);
 
@@ -316,10 +408,17 @@ for (const bracket of incomeBrackets) {
     averageChildren: value('Average children under 18', bracket),
     categories,
     livingTotal,
+    /* Priced nationally, not at local service prices. See CASH_CONTRIBUTIONS_ROW. */
+    cashContributions,
     transport: {
       vehiclesPerHousehold,
       vehicleSpending: Math.round(vehicleSpending),
       annualCostPerVehicle: Math.round(vehicleSpending / vehiclesPerHousehold),
+      /* The same figure split by which price index governs it. */
+      goodsPerVehicle: Math.round(sumRows(VEHICLE_GOODS_ROWS, bracket) / vehiclesPerHousehold),
+      servicesPerVehicle: Math.round(
+        sumRows(VEHICLE_SERVICE_ROWS, bracket) / vehiclesPerHousehold,
+      ),
       vehicleInsurance: Math.round(value('Vehicle insurance', bracket)),
       transitSpending: Math.round(transitSpending),
     },
@@ -438,6 +537,19 @@ for (const p of profiles) {
   }
 }
 
+/*
+ * The inflation factors rescale every dollar on the site, and a fat finger here
+ * would fail nothing else. They must be uplifts, and they must be sane ones.
+ */
+for (const [name, f] of Object.entries(PRICE_LEVEL.factors)) {
+  if (!(f.value > 1 && f.value < 1.5)) {
+    throw new Error(`price level factor ${name} is ${f.value}, which is not a plausible uplift`);
+  }
+  if (Math.abs(f.value - f.current / f.base) > 1e-9) {
+    throw new Error(`price level factor ${name} does not match its own base and current readings`);
+  }
+}
+
 // Spending must rise with income.
 for (let i = 1; i < profiles.length; i++) {
   if (profiles[i].livingTotal < profiles[i - 1].livingTotal) {
@@ -480,6 +592,7 @@ writeFileSync(
        * sales tax included. The engine used to compute a separate sales tax on
        * top of this basket, which charged it twice.
        */
+      priceLevel: PRICE_LEVEL,
       salesTaxTreatment: {
         includedInCategories: true,
         note: 'CE expenditures are transaction costs including sales and excise tax. Where a respondent reported a price without tax, BLS adds it before publishing. A separate sales tax line on top of these figures is a double count.',

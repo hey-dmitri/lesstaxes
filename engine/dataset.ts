@@ -303,7 +303,14 @@ export function homePriceDefault(
   stateCode?: string,
 ): USD {
   const base = housingDefaults(metroId, version, stateCode).medianHomePrice;
-  return Math.round(base * homeValueFactorForIncome(income, metroId, version, stateCode));
+  // The published median is a 2024 figure; priceFactor restates it in today's
+  // money. Applied here rather than in housingDefaults so the data browser goes
+  // on showing exactly what the Census published.
+  return Math.round(
+    base *
+      homeValueFactorForIncome(income, metroId, version, stateCode) *
+      priceFactor('homePrice', version),
+  );
 }
 
 /**
@@ -328,7 +335,8 @@ export function rentDefault(
     ? localIncomeFactor(income, defaults.medianRenterIncome, curve.elasticity)
     : null;
   const factor = local ?? rentFactorForIncome(income, version);
-  return Math.round(base * factor);
+  // 2024 dollars restated in today's money. See homePriceDefault.
+  return Math.round(base * factor * priceFactor('rent', version));
 }
 
 // ---------------------------------------------------------------------------
@@ -409,6 +417,18 @@ export interface SpendingProfile {
    * Absent on releases cut before that was noticed, which charge owners nothing
    * for keeping the house standing.
    */
+  /**
+   * Giving, alimony and child support.
+   *
+   * Carried outside `categories` because it takes NO local price parity, and
+   * every entry in that object is defined by the parity it scales with. A gift
+   * to a charity is not bought at local prices and a support order is set by a
+   * court, but both still move with income and household size.
+   *
+   * Absent on releases where it is still inside otherServices, priced by the
+   * local services index — so a donation grew because local dentists did.
+   */
+  cashContributions?: USD;
   ownerUpkeep?: {
     /** As published: averaged over owners and renters together. */
     perConsumerUnit: USD;
@@ -423,6 +443,10 @@ export interface SpendingProfile {
   transport: {
     vehiclesPerHousehold: number;
     annualCostPerVehicle: USD;
+    /** The car and its fuel. Absent before the goods/services split. */
+    goodsPerVehicle?: USD;
+    /** Insurance, servicing, finance charges, licensing. */
+    servicesPerVehicle?: USD;
     transitSpending: USD;
   };
 }
@@ -443,6 +467,42 @@ export const PARITY_FOR_CATEGORY: Record<keyof SpendingCategories, keyof PricePa
 
 /** Linear blend between two numbers. */
 const lerp = (a: number, b: number, t: number): number => a + (b - a) * t;
+
+export interface PriceLevel {
+  baseYear: number;
+  asOf: string;
+  factors: Record<
+    'basket' | 'rent' | 'homePrice',
+    { value: number; series: string; name: string; currentMonth: string }
+  >;
+}
+
+/**
+ * How much to multiply this release's 2024 dollars by to state them in today's
+ * money, or 1 on releases cut before the lag was corrected.
+ *
+ * EVERY DOLLAR BEHIND THIS SITE WAS MEASURED IN 2024 — the Census rent and
+ * home-value tables and the BLS spending survey. The tax rules are 2026 and the
+ * salary is whatever the reader types today. So costs were about six per cent
+ * too low against a current salary, and that lands almost undiluted on money
+ * left over, which is a small remainder of two large numbers: 13% of the answer
+ * for a Chicago renter on $100,000, 27% for a buyer.
+ *
+ * Three factors, not one, because rent, house prices and the shopping basket
+ * have moved differently since 2024 and using one index for all three would be
+ * a knowingly worse number.
+ */
+export function priceLevel(version?: string): PriceLevel | undefined {
+  return (datasetBundle(version).spending as { priceLevel?: PriceLevel }).priceLevel;
+}
+
+/** The multiplier for one kind of dollar. 1 when this release has no factors. */
+export function priceFactor(
+  kind: 'basket' | 'rent' | 'homePrice',
+  version?: string,
+): number {
+  return priceLevel(version)?.factors[kind]?.value ?? 1;
+}
 
 /**
  * The spending profile for a household income.
@@ -543,6 +603,10 @@ export function spendingProfile(householdIncome: USD, version?: string): Spendin
             telephone: lerp(lower.utilitiesSplit.telephone, upper.utilitiesSplit.telephone, t),
           }
         : undefined,
+    cashContributions:
+      lower.cashContributions !== undefined && upper.cashContributions !== undefined
+        ? lerp(lower.cashContributions, upper.cashContributions, t)
+        : undefined,
     ownerUpkeep:
       lower.ownerUpkeep && upper.ownerUpkeep
         ? {
@@ -572,6 +636,16 @@ export function spendingProfile(householdIncome: USD, version?: string): Spendin
         upper.transport.annualCostPerVehicle,
         t,
       ),
+      goodsPerVehicle:
+        lower.transport.goodsPerVehicle !== undefined &&
+        upper.transport.goodsPerVehicle !== undefined
+          ? lerp(lower.transport.goodsPerVehicle, upper.transport.goodsPerVehicle, t)
+          : undefined,
+      servicesPerVehicle:
+        lower.transport.servicesPerVehicle !== undefined &&
+        upper.transport.servicesPerVehicle !== undefined
+          ? lerp(lower.transport.servicesPerVehicle, upper.transport.servicesPerVehicle, t)
+          : undefined,
       transitSpending: lerp(lower.transport.transitSpending, upper.transport.transitSpending, t),
     },
   };

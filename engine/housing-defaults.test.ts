@@ -8,6 +8,7 @@ import {
   homePriceDefault,
   housingDefaults,
   INCOME_RENT_CURVE,
+  priceFactor,
   rentDefault,
   rentFactorForIncome,
 } from './dataset';
@@ -186,11 +187,19 @@ describe('home price prefill', () => {
   });
 
   it('returns the local median for the income that median describes', () => {
-    // The anchor property: at the local median owner income the factor must be
-    // exactly 1, or the curve is claiming the typical owner is atypical.
+    // The anchor property: at the local median owner income the INCOME factor
+    // must be exactly 1, or the curve is claiming the typical owner is atypical.
+    //
+    // The published median is a 2024 figure and the prefill is stated in today's
+    // money, so the inflation factor is divided back out to test the curve
+    // rather than the restatement.
+    const inflation = priceFactor('homePrice');
     for (const id of [CHICAGO, AUSTIN]) {
       const ownerIncome = housingDefaults(id).medianOwnerIncome!;
-      expect(homePriceDefault(id, ownerIncome)).toBe(housingDefaults(id).medianHomePrice);
+      expect(homePriceDefault(id, ownerIncome) / inflation).toBeCloseTo(
+        housingDefaults(id).medianHomePrice,
+        0,
+      );
     }
   });
 

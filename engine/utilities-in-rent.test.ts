@@ -150,12 +150,16 @@ describe('links pinned to an older release', () => {
     expect(older.housing.utilities).toBe(0);
   });
 
-  it('and the current release leaves the renter better off by the difference', () => {
-    const older = computeCity(
-      defaultCityInputs(AUSTIN, 100_000, SINGLE, 'rent', 0.068, '2026.7'),
-      SINGLE,
-      { datasetVersion: '2026.7' },
-    );
-    expect(city(AUSTIN, 'rent').leftover).toBeGreaterThan(older.leftover);
+  /*
+   * Measured against 2026.8, the release that made this change, rather than the
+   * current one. Later releases restate every 2024 dollar in today's money,
+   * which raises costs again for its own good reasons and would mask this.
+   */
+  it('and 2026.8 left the renter better off by the difference', () => {
+    const at = (version: string) =>
+      computeCity(defaultCityInputs(AUSTIN, 100_000, SINGLE, 'rent', 0.068, version), SINGLE, {
+        datasetVersion: version,
+      });
+    expect(at('2026.8').leftover).toBeGreaterThan(at('2026.7').leftover);
   });
 });
