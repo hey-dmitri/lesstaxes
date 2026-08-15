@@ -822,16 +822,39 @@ export function computeStateTax(
        */
       federalEarnedIncomeCredit: 0,
     };
-    const first = computeStateTax(
-      {
-        ...half,
-        children: inputs.children,
-        federalEarnedIncomeCredit: inputs.federalEarnedIncomeCredit,
-      },
-      rules,
-    );
+    /*
+     * THE EARNED INCOME CREDIT BELONGS TO THE COMBINED RETURN, not to either
+     * half of it.
+     *
+     * Attaching the whole credit to the first half looked like the fix for
+     * counting it twice, and it was not: the credit is nonrefundable, so it is
+     * capped at whatever that artificial half owes. The unused remainder was
+     * thrown away while the second half still paid in full — worth $180.63 to
+     * a Missouri family at $52,240, which is the same figure the double-count
+     * cost, arriving from the opposite direction.
+     *
+     * Missouri caps it against MO-1040 line 36, the tax on the whole return.
+     * So both halves are computed WITHOUT it and it is applied once, against
+     * their sum.
+     */
+    const first = computeStateTax({ ...half, children: inputs.children }, rules);
     const second = computeStateTax(half, rules);
-    const combined = first.tax + second.tax;
+    const beforeEitc = first.tax + second.tax;
+
+    const splitEitcRules = rules.earnedIncomeCredit;
+    const splitFederalEitc = Math.max(0, inputs.federalEarnedIncomeCredit ?? 0);
+    const splitMatch = !splitEitcRules
+      ? 0
+      : splitEitcRules.byChildren !== null
+        ? (splitEitcRules.byChildren[Math.min(3, Math.floor(Math.max(0, inputs.children)))] ?? 0)
+        : (splitEitcRules.percentOfFederal ?? 0);
+    const splitEitc = Math.min(
+      splitFederalEitc * splitMatch,
+      splitEitcRules?.maxCredit ?? Number.POSITIVE_INFINITY,
+    );
+    const combined = splitEitcRules?.refundable
+      ? beforeEitc - splitEitc
+      : Math.max(0, beforeEitc - splitEitc);
 
     const joint = computeStateTax({ ...inputs, earners: 1 }, rules);
     if (combined < joint.tax) {

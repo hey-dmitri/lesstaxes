@@ -50,7 +50,7 @@ index, statutory rate or state average — on the [data page](https://packorstay
 | Social Security capped per worker, not per household | ✅ |
 | Name and domain — **Pack or Stay**, live at `packorstay.com` | ✅ |
 
-**969 tests**, including 24 golden values reproduced exactly from the IRS rate tables.
+The suite includes 24 golden values reproduced exactly from the published IRS rate tables, and every state figure is checked against the state's own publication.
 Total data cost: **$0**. No paid feeds, no runtime API calls.
 
 ### Known gaps, in priority order
@@ -87,27 +87,28 @@ Total data cost: **$0**. No paid feeds, no runtime API calls.
    stripping the embedded average out per category, which the survey does not
    publish. Worth a few hundred a year. The rates stay shipped and visible in
    the data browser, labelled reference-only, for when it can be done.
-4. **Every state that taxes wages has now been read off its own 2026
-   publication — 40 of 42, and the two left are waiting on the states.**
+4. **Every state that taxes wages has been read off its own publication —
+   42 of 42, on both counts.**
 
-   Two separate checks, kept separate because they answer different questions.
+   Two separate checks, because they answer different questions.
 
-   *Head of household: 42 of 42.* Nothing checked this before, and 24 states
-   were wrong — always against a single parent, by $75 to $2,559 a year. Six
-   different shapes turned up and there is no pattern to guess from, which is
-   why each one had to be read. Vermont was the last and was closed by noticing
-   something about our own data rather than by Vermont publishing anything: the
-   brackets shipped here are 2025 figures, so Vermont's 2025 head-of-household
-   schedule is exactly in step with them.
+   *Head of household.* Nothing checked this before, and 24 states were wrong —
+   always against a single parent, by $75 to $2,559 a year. Six different
+   shapes turned up and there is no pattern to guess from, which is why each
+   one had to be read. Vermont was the last, and it was closed by noticing
+   something about our own data rather than by Vermont publishing anything:
+   the brackets shipped here are 2025 figures, so Vermont's 2025
+   head-of-household schedule is exactly in step with them.
 
-   *Rates and allowances: 40 of 42, and 22 were wrong.* This is the stronger
-   claim — every bracket and every allowance compared against the state's own
-   2026 rate schedule, withholding guide or statute. **Ohio and Oregon are the
-   two outstanding, and neither is unexamined: neither state has published
-   anything for 2026 at all.**
+   *Rates and allowances.* The stronger claim — every bracket and every
+   allowance compared against the state's own rate schedule, withholding guide
+   or statute. 24 states were wrong. Ohio and Oregon were the last two and
+   both turned out to have published after all, just not where anyone looks:
+   Ohio's 2026 schedule is in the statute while its own rates page still stops
+   at 2025.
 
-   Each state now carries the date it was checked and the document it was
-   checked against, and the data browser shows both.
+   Each state carries the date it was checked and the document it was checked
+   against, and the data browser shows both.
 
 5. **Seven states changed the law after our bracket table was published, and
    the table is published once a year.** That is the failure this whole audit

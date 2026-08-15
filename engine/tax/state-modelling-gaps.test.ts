@@ -115,6 +115,16 @@ describe('stated modelling gaps', () => {
       ['a credit that is a share of tax', (s) => s.taxCreditFraction !== null, /personal (tax )?credit[^.]*not modelled/i],
       ['the federal tax subtraction', (s) => s.federalTaxDeduction !== null, /subtract[^.]*federal income tax[^.]*not modelled/i],
       ['property tax relief', (s) => s.propertyTaxRelief !== null, /property tax deduction[^.]*not modelled/i],
+      /*
+       * These four slipped past the first version of this guard, which only
+       * listed the capabilities that had gone stale by the time it was
+       * written. A guard built from the failures it already knows about is a
+       * guard that only ever catches those.
+       */
+      ['the payroll tax deduction', (s) => s.payrollTaxDeduction !== null, /social security and medicare[^.]*not modelled/i],
+      ['a credit for two-earner couples', (s) => s.taxCreditFraction?.requiresTwoEarners === true, /both work[^.]*not modelled|two-earner[^.]*not modelled/i],
+      ['a property tax credit', (s) => s.propertyTaxCredit !== null, /property tax credit[^.]*not modelled/i],
+      ['an allowance phase-out', (s) => s.allowancePhaseOut !== null, /phase[- ]out[^.]*not modelled/i],
     ];
 
     for (const code of ALL_STATE_CODES) {

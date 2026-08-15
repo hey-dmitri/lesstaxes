@@ -47,9 +47,20 @@ describe('what the README claims', () => {
     expect(readme).not.toMatch(/Baltimore and Portland do not yet/);
   });
 
-  it('quotes a test count that is not wildly stale', () => {
-    const claimed = Number(/\*\*(\d+) tests\*\*/.exec(readme)?.[1]);
-    expect(claimed).toBeGreaterThan(900);
+  /*
+   * NO HARD-CODED TEST COUNT, because it cannot be kept true.
+   *
+   * The first version of this asserted only "more than 900", which is why a
+   * stale 969 sailed past an actual 974 — a bound that loose asserts nothing,
+   * and it was written to catch drift while being the drift. Checking it
+   * properly would mean running the suite from inside the suite.
+   *
+   * So the number is gone from the README instead. A figure that changes on
+   * every commit and is verified by nobody is not evidence of anything; the
+   * badge on the repository already reports it, and always correctly.
+   */
+  it('does not quote a test count it cannot keep true', () => {
+    expect(readme).not.toMatch(/\*\*\d+ tests\*\*/);
   });
 });
 

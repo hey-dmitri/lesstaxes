@@ -107,22 +107,47 @@ describe('married filing separately', () => {
  * applied its 20% match twice.
  */
 describe('a combined separate return', () => {
-  it('counts the federal earned income credit once', () => {
-    const mo = stateRules('MO');
-    const at = (federalEarnedIncomeCredit: number) =>
-      computeStateTax(
-        {
-          grossSalary: 59_370,
-          filingStatus: 'marriedJointly',
-          children: 3,
-          earners: 2,
-          federalEarnedIncomeCredit,
-        },
-        mo,
-      ).tax;
+  const mo = stateRules('MO');
 
-    // Missouri matches 20%, once.
-    expect(at(0) - at(2_290)).toBeCloseTo(2_290 * 0.2, 0);
+  /*
+   * A SCENARIO WITH REAL SIGNAL. The first version of this test used a case
+   * where the residual was $0.13 and a loose tolerance swallowed it — so it
+   * passed while the credit was being applied at the wrong level. A regression
+   * test that cannot see the regression is worse than none.
+   *
+   * At $52,240 the credit is larger than the tax, so any mistake in where it
+   * is applied moves the answer by most of the bill.
+   */
+  const family = (federalEarnedIncomeCredit: number) => ({
+    grossSalary: 52_240,
+    filingStatus: 'marriedJointly' as const,
+    children: 2,
+    earners: 2,
+    federalEarnedIncomeCredit,
+  });
+
+  it('counts the federal earned income credit once', () => {
+    // Missouri matches 20%, once — not once per half-return.
+    expect(computeStateTax(family(0), mo).tax).toBeCloseTo(580.62, 2);
+    expect(computeStateTax(family(2_876.55), mo).tax).toBeCloseTo(580.62 - 575.31, 2);
+  });
+
+  /*
+   * And it is capped against the WHOLE return's tax, not one artificial half.
+   * The credit is nonrefundable, so applying it to a half-return throws away
+   * whatever that half cannot absorb while the other half still pays in full.
+   * Missouri caps it against MO-1040 line 36 — the tax on the combined return.
+   */
+  it('spends the credit against the whole bill, not half of it', () => {
+    const remaining = computeStateTax(family(2_876.55), mo).tax;
+    // $5.31, not the $185.94 that comes of stranding it on one half.
+    expect(remaining).toBeLessThan(10);
+    expect(remaining).toBeGreaterThan(0);
+  });
+
+  it('still stops at zero, because Missouri does not refund it', () => {
+    expect(mo.earnedIncomeCredit?.refundable).toBe(false);
+    expect(computeStateTax(family(10_000), mo).tax).toBe(0);
   });
 });
 

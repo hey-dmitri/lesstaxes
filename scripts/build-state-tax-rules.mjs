@@ -1966,7 +1966,7 @@ const STATE_OVERRIDES = {
     lumpSumTax: { above: 26_050, amount: 332 },
     source: 'https://codes.ohio.gov/ohio-revised-code/section-5747.02',
     checked: '2026-08-15',
-    note: "Ohio's personal exemption steps down with income — $2,400 up to $40,000, $2,150 to $80,000, $1,900 to $749,999 and nothing at all from $750,000 — and only the $2,400 is modelled, so Ohio tax shown here is slightly lower than the true figure above $40,000. Ohio also gives couples where both work a credit worth up to $650, which is not modelled, so their figure is higher than the true one.",
+    note: "Ohio's personal exemption steps down with income — $2,400 up to $40,000, $2,150 to $80,000, $1,900 to $749,999 and nothing at all from $750,000 — and only the $2,400 is used here, so Ohio tax shown is slightly lower than the true figure above $40,000. Ohio's joint filing credit is measured on income after exemptions and this uses gross, which can land a couple one band low and so overstate their tax slightly.",
   },
   Oregon: {
     /*
@@ -3302,15 +3302,16 @@ const output = {
     single: 'single',
     marriedJointly: 'marriedJointly',
     marriedSeparately: 'single',
-    headOfHousehold: 'single',
+    headOfHousehold: 'headOfHousehold',
     _note:
-      'The source publishes single and joint schedules only. MFS maps to single (correct in most states); head of household maps to single (a documented approximation — some states publish distinct HoH schedules).',
+      'The source table publishes single and joint columns only. Head of household is no longer mapped to single: every taxing state has been checked against its own publication, and each carries headOfHouseholdBasis saying which schedule and which allowance it actually gets. Married-filing-separately maps to single, which is correct in most states.',
   },
   limitations: [
-    'Income-based phase-outs of standard deductions, personal exemptions and credits are not modelled. They mainly affect high earners; affected states carry the source footnote in `notes`.',
-    'States allowing a deduction for federal income tax paid (AL, MO, OR) are flagged via `federalTaxDeductible` but the circular federal/state dependency is not yet resolved iteratively.',
+    'Income-based phase-outs of standard deductions, personal exemptions and credits are modelled in eight states — Alabama, Connecticut, Maryland, Maine, Minnesota, Rhode Island, South Carolina and Wisconsin — and in Colorado as a cliff. Where a state has one that is not modelled, the state carries a note saying so and which way it runs.',
+    'A deduction for federal income tax paid is modelled for Oregon. Alabama and Missouri also allow one and are not modelled: Alabama runs it through its itemised schedule and Missouri sets it as a percentage of federal tax that reaches zero above $125,000 of Missouri income. Both carry a note.',
     'Local income taxes are excluded here and handled separately; see local.json.',
-    'Alternative minimum taxes, recapture provisions and supplemental high-income surtaxes beyond the published bracket schedule are not modelled.',
+    'Alternative minimum taxes and supplemental high-income surtaxes beyond the published bracket schedules are not modelled. Connecticut\'s recapture IS modelled; New York\'s is not, and New York carries a note.',
+    'Every state that taxes wages has been read off its own publication for rates, allowances and head-of-household treatment. Ten states ship the prior year\'s figures because the state has not published this year\'s; each names itself in priorYearFigures.',
   ],
   states: byCode,
 };

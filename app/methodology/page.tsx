@@ -622,16 +622,15 @@ answer          =  in your pocket THERE  −  in your pocket HERE`}</pre>
           </li>
           <li>
             <strong>Alabama, Missouri and Oregon let you deduct federal tax</strong> from state
-            taxable income. Not modelled — it is circular and needs solving iteratively.
+            taxable income. Oregon&rsquo;s is calculated. Alabama&rsquo;s runs through its own
+            deduction schedule and Missouri&rsquo;s is a percentage that reaches zero above
+            $125,000 — neither is calculated, and both states say so on their own line in the list
+            above.
           </li>
           <li>
-            <strong>Head-of-household filers use each state&rsquo;s single schedule</strong>, because
-            most states publish only single and joint. This is conservative: it never invents a
-            better result than reality.
-          </li>
-          <li>
-            <strong>Income-based phase-outs</strong> of state deductions, exemptions and credits are
-            not modelled. They mainly affect high earners.
+            <strong>Income-based phase-outs</strong> of state deductions, exemptions and credits
+            are calculated in nine states. Where a state has one we do not calculate, that state
+            says so in the list above, along with which way it runs.
           </li>
           <li>
             <strong>Only wage income.</strong> No investment income, no self-employment, no rental
