@@ -166,9 +166,100 @@ describe('the whole city calculation', () => {
     expect(single.tax.federal).toBeGreaterThan(separately.tax.federal);
   });
 
-  it('does not split anything for a one-earner separate filer', () => {
+  /*
+   * This asserted the opposite until the community-property rule landed, and it
+   * asserted it in AUSTIN — which is in Texas, one of the nine states where a
+   * sole earner filing separately splits the income anyway. The test was
+   * pinning the bug rather than catching it.
+   *
+   * Chicago is the control: Illinois is not a community property state, so one
+   * earner filing separately really does put the whole salary on one return.
+   */
+  it('does not split a one-earner separate filer outside a community property state', () => {
+    const chicago = { ...city, metroId: '16980', stateCode: 'IL' };
+    const one = computeCity(chicago, household('marriedSeparately', 1));
+    const two = computeCity(chicago, household('marriedSeparately', 2));
+    expect(one.tax.federal).toBeGreaterThan(two.tax.federal);
+  });
+
+  it('splits a one-earner separate filer in Texas, because Texas says so', () => {
     const one = computeCity(city, household('marriedSeparately', 1));
     const two = computeCity(city, household('marriedSeparately', 2));
-    expect(one.tax.federal).toBeGreaterThan(two.tax.federal);
+    // Same income tax either way now: the income halves regardless of who
+    // earned it. What differs is payroll tax, which follows the earner — and
+    // it is the SOLE earner who pays LESS, because one person on $300,000 hits
+    // the Social Security cap once and stops, while two on $150,000 each stay
+    // under it and pay on every dollar. That asymmetry is the whole reason the
+    // wages cannot simply be halved along with the income.
+    expect(one.tax.federal).toBeCloseTo(two.tax.federal, 6);
+    expect(one.tax.fica).toBeLessThan(two.tax.fica);
+  });
+});
+
+/**
+ * COMMUNITY PROPERTY. Nine states — Arizona, California, Idaho, Louisiana,
+ * Nevada, New Mexico, Texas, Washington and Wisconsin — say a couple filing
+ * separately each report half the combined wages, whoever earned them.
+ *
+ * IRS Publication 555: "A spouse's wages, earnings, and net profits from a sole
+ * proprietorship are community income and must be evenly split."
+ *
+ * This engine split a couple's income when BOTH earned and treated one earner
+ * filing separately as a single return on the whole salary. Right in the other
+ * 41 states. In Texas at $150,000 it overstated federal tax by $9,394.
+ */
+describe('community property', () => {
+  const CP = { communityProperty: true };
+
+  it('splits a sole earner, which nothing else does', () => {
+    const plain = taxReturnsFor(household('marriedSeparately', 1), 150_000);
+    const texas = taxReturnsFor(household('marriedSeparately', 1), 150_000, CP);
+    expect(plain).toHaveLength(1);
+    expect(texas).toHaveLength(2);
+    expect(texas.map((r) => r.grossSalary)).toEqual([75_000, 75_000]);
+  });
+
+  /*
+   * The reported figure, to the dollar. This is the same arithmetic as the
+   * two-earner case at the top of this file — which is the point. The rule was
+   * already implemented; it was only ever reached when both spouses earned.
+   */
+  it('bills the reported Texas case as two $75,000 returns', () => {
+    const split = taxReturnsFor(household('marriedSeparately', 1), 150_000, CP).reduce(
+      (sum, r) => sum + federalOn(r.grossSalary, 'marriedSeparately'),
+      0,
+    );
+    expect(federalOn(150_000, 'marriedSeparately') - split).toBeCloseTo(9_394, 0);
+  });
+
+  /*
+   * THE PART THAT CANNOT BE FAKED BY PRETENDING THERE ARE TWO EARNERS.
+   * Publication 555 puts self-employment tax on the spouse carrying on the
+   * business, and Social Security and Medicare follow the same logic: they are
+   * levied on whoever did the work, not on whoever reports the income.
+   */
+  it('leaves the wages with whoever earned them', () => {
+    const [first, second] = taxReturnsFor(household('marriedSeparately', 1), 150_000, CP);
+    expect(first.grossSalary).toBe(75_000);
+    expect(first.wagesEarned).toBe(150_000);
+    expect(second.grossSalary).toBe(75_000);
+    expect(second.wagesEarned).toBe(0);
+    // The wages are never conjured or lost, whatever the income does.
+    expect(first.wagesEarned + second.wagesEarned).toBe(150_000);
+  });
+
+  it('halves the wages too when both of them really earn', () => {
+    const [first, second] = taxReturnsFor(household('marriedSeparately', 2), 150_000, CP);
+    expect(first.wagesEarned).toBe(75_000);
+    expect(second.wagesEarned).toBe(75_000);
+  });
+
+  it('leaves every other filing status alone', () => {
+    for (const status of ['single', 'marriedJointly', 'headOfHousehold'] as FilingStatus[]) {
+      const returns = taxReturnsFor(household(status, 1), 150_000, CP);
+      expect(returns).toHaveLength(1);
+      expect(returns[0].grossSalary).toBe(150_000);
+      expect(returns[0].wagesEarned).toBe(150_000);
+    }
   });
 });

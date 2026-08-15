@@ -145,10 +145,14 @@ export function computeCity(
   let deductionTaken = 0;
   let itemized = false;
 
-  for (const share of taxReturnsFor(household, gross)) {
+  for (const share of taxReturnsFor(household, gross, {
+    communityProperty: stateTaxRules.communityProperty,
+  })) {
     // FICA, per worker on that return
     ficaTotal += computeFica(
-      share.grossSalary,
+      // Wages earned, not income reported — they differ in a community
+      // property state, where the income halves and the payroll tax does not.
+      share.wagesEarned,
       household.filingStatus,
       payrollRules,
       share.earners,
@@ -175,7 +179,7 @@ export function computeCity(
      * wages. The deductible ones join state income tax in the SALT deduction
      * below, which is what the IRS does with them.
      */
-    const payroll = computeStatePayroll(share.grossSalary, stateTaxRules, share.earners);
+    const payroll = computeStatePayroll(share.wagesEarned, stateTaxRules, share.earners);
     statePayrollTotal += payroll.total;
 
     // 4. Local income tax — may be a surcharge on THIS return's state liability

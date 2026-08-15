@@ -60,6 +60,11 @@ export interface StateTaxRules {
    * they had left to spend.
    */
   payrollContributions: PayrollContribution[];
+  /**
+   * One of the nine states where a couple filing separately each report half
+   * the combined wages, whoever earned them. IRS Publication 555.
+   */
+  communityProperty: boolean;
   /** AL, MO, OR allow a deduction for federal income tax paid. Not yet modelled. */
   federalTaxDeductible: boolean;
   hasLocalIncomeTax: boolean;

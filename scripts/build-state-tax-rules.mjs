@@ -352,6 +352,47 @@ const PAYROLL_SOURCE = {
   checked: '2026-08-15',
 };
 
+
+/**
+ * COMMUNITY PROPERTY STATES.
+ *
+ * In these nine, a married couple filing separately does not each report what
+ * they earned. IRS Publication 555: "A spouse's wages, earnings, and net
+ * profits from a sole proprietorship are community income and must be evenly
+ * split." Each return carries half the combined wages, whichever spouse
+ * actually earned them.
+ *
+ * The engine already split a couple's income when BOTH of them earned. It
+ * treated one earner filing separately as a single return carrying the whole
+ * salary, which is right in the other 41 states and wrong here: in Texas at
+ * $150,000 that overstated federal tax by $9,394.
+ *
+ * PAYROLL TAX DOES NOT SPLIT. Publication 555 is explicit that self-employment
+ * tax follows the spouse carrying on the business, and the same logic holds for
+ * Social Security and Medicare: they are levied on the person who earned the
+ * wage, not on whoever reports it. So the income tax halves and the payroll tax
+ * does not, which is why this cannot be faked by pretending there are two
+ * earners.
+ *
+ * Alaska, Tennessee, South Dakota and Florida allow couples to ELECT community
+ * property treatment. Publication 555 explicitly does not address the election
+ * and it is not the default, so they are not included.
+ *
+ * Source: IRS Publication 555 (rev. December 2024).
+ * https://www.irs.gov/pub/irs-pdf/p555.pdf
+ */
+const COMMUNITY_PROPERTY = new Set([
+  'Arizona',
+  'California',
+  'Idaho',
+  'Louisiana',
+  'Nevada',
+  'New Mexico',
+  'Texas',
+  'Washington',
+  'Wisconsin',
+]);
+
 // --- post-process ----------------------------------------------------------
 
 const warnings = [];
@@ -399,6 +440,7 @@ function applyBracketsLocal(income, brackets) {
 for (const [name, s] of Object.entries(states)) {
   s.notes = s.footnotes.map((f) => footnoteText[f]).filter(Boolean);
 
+  s.communityProperty = COMMUNITY_PROPERTY.has(name);
   s.payrollContributions = PAYROLL_CONTRIBUTIONS[name] ?? [];
   for (const c of s.payrollContributions) {
     if (!(c.rate > 0 && c.rate < 0.05)) {
