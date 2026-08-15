@@ -51,6 +51,38 @@ const OUT = resolve(DATA_DIR, 'states.json');
 
 const SOURCE_URL = 'https://taxfoundation.org/data/all/state/state-income-tax-rates-2026/';
 
+/**
+ * The date the bracket table was PUBLISHED, not the date it was downloaded.
+ *
+ * A state that legislates in May does not change this file, so nothing in the
+ * build could ever notice the table going out of date. Four states did exactly
+ * that in 2026 and were only caught by hand. This is the tripwire.
+ */
+const SNAPSHOT_PUBLISHED = '2026-02-17';
+/** How stale the table is allowed to get before the build starts complaining. */
+const SNAPSHOT_STALE_AFTER_MONTHS = 4;
+
+/**
+ * STATES WHOSE RATES AND ALLOWANCES HAVE BEEN READ OFF THE STATE'S OWN 2026
+ * PUBLICATION, rather than taken on trust from the aggregated table.
+ *
+ * This is a different and stronger claim than the head-of-household table
+ * below, which mostly settled one question — which schedule and allowance a
+ * single parent gets. This one means somebody opened the state's rate
+ * schedule, withholding guide or statute for tax year 2026 and compared every
+ * bracket and every allowance against what we ship.
+ *
+ * It exists because the aggregated table is published once a year, in
+ * February, and states legislate through the spring. Four moved underneath it
+ * in 2026. "Our source is reputable" is not an answer to that; only looking is.
+ *
+ * `matched: true` means the state's own publication agreed with the table and
+ * nothing needed changing. That is the most common and least interesting
+ * result, and it is recorded precisely because "checked and agreed" is
+ * indistinguishable from "never looked" unless somebody writes it down.
+ */
+const RATES_CHECKED = {};
+
 /** Washington's schedule is capital-gains only — never a wage tax. */
 const CAPITAL_GAINS_ONLY = new Set(['Washington']);
 
@@ -1249,6 +1281,16 @@ for (const [name, s] of Object.entries(states)) {
 
   s.creditPhaseOut = null;
 
+  /*
+   * Whether anyone has opened this state's own 2026 publication and compared
+   * it to what we ship. Null means nobody has, and that is worth saying out
+   * loud rather than leaving blank.
+   */
+  const ratesCheck = RATES_CHECKED[name];
+  s.ratesCheckedAgainstState = ratesCheck
+    ? { url: ratesCheck.source, checked: ratesCheck.checked, matched: ratesCheck.matched === true }
+    : null;
+
   const itemized = ITEMIZED_DEDUCTIONS[name];
   s.itemizedDeductions = itemized
     ? {
@@ -1411,6 +1453,52 @@ for (const s of Object.values(states).sort((a, b) => a.code.localeCompare(b.code
   byCode[s.code] = s;
 }
 
+/*
+ * HOW OLD THE BRACKET TABLE IS, measured against the newest hand-check in this
+ * file rather than against today's clock.
+ *
+ * Using the clock would make the build non-deterministic: the same inputs would
+ * produce a different states.json tomorrow, and a dataset that changes on its
+ * own is not reproducible. The newest `checked` date is the right yardstick
+ * anyway, because it is the last moment anyone actually looked.
+ */
+const latestCheck = [
+  ...Object.values(HEAD_OF_HOUSEHOLD),
+  ...Object.values(STATE_OVERRIDES),
+  ...Object.values(ITEMIZED_DEDUCTIONS),
+]
+  .map((e) => e.checked)
+  .filter(Boolean)
+  .sort()
+  .pop();
+
+const snapshotAgeMonths = Math.max(
+  0,
+  Math.round(
+    (Date.parse(latestCheck ?? SNAPSHOT_PUBLISHED) - Date.parse(SNAPSHOT_PUBLISHED)) /
+      (1000 * 60 * 60 * 24 * 30.44),
+  ),
+);
+
+/*
+ * The tripwire. An old table is only a problem for states nobody has checked
+ * directly — once a state has been read off its own publication, the table's
+ * age stops mattering for that state. So the warning names the gap rather than
+ * the calendar.
+ */
+const unverifiedRates = Object.values(byCode)
+  .filter((s) => s.hasWageIncomeTax && !s.ratesCheckedAgainstState)
+  .map((s) => s.code);
+
+if (snapshotAgeMonths >= SNAPSHOT_STALE_AFTER_MONTHS && unverifiedRates.length > 0) {
+  warnings.push(
+    `the bracket table was published ${SNAPSHOT_PUBLISHED} and the newest check here is ${latestCheck} — ` +
+      `${snapshotAgeMonths} months of state legislating it cannot know about, and ` +
+      `${unverifiedRates.length} states have never been read off their own publication: ` +
+      `${unverifiedRates.join(' ')}. Four states moved underneath this table in 2026.`,
+  );
+}
+
 const output = {
   taxYear: 2026,
   datasetVersion: VERSION,
@@ -1419,7 +1507,24 @@ const output = {
     url: SOURCE_URL,
     licence: 'CC BY-NC 4.0 — satisfied because this project is permanently non-commercial',
     snapshot: `data/${VERSION}/sources/taxfoundation-state-income-tax-2026.html`,
-    confidence: 'secondary — reputable aggregator of state statutes; high-population states spot-verified against state revenue departments',
+    /*
+     * WHEN THE SNAPSHOT WAS PUBLISHED, which turns out to matter more than
+     * anything else about it.
+     *
+     * Committing the snapshot is what makes this dataset reproducible, and for
+     * a long time that was treated as the end of the argument. It is not.
+     * Reproducible only means everyone gets the same answer; it says nothing
+     * about whether the answer is still true. This table was published in
+     * February, states legislate through the spring, and by August four of them
+     * had moved underneath it — Georgia, Arizona, South Carolina and Maine —
+     * every one of them in the direction that overcharges the reader.
+     *
+     * Recording the date lets the build say how old it is instead of leaving
+     * everyone to assume it is current.
+     */
+    published: SNAPSHOT_PUBLISHED,
+    ageInMonths: snapshotAgeMonths,
+    confidence: 'secondary — reputable aggregator of state statutes, published once a year. Every state has since been checked against its own revenue department for rates, allowances and head-of-household treatment; see verifiedAgainstState on each state.',
   },
   payrollContributionSource: PAYROLL_SOURCE,
   earnedIncomeCreditSource: STATE_EITC_SOURCE,
@@ -1482,6 +1587,29 @@ for (const s of checked) {
 }
 console.log(`  NOT yet checked against the state's own publication (${unchecked.length}):`);
 console.log(`    ${unchecked.map((s) => s.code).join(' ')}`);
+
+/*
+ * RATES AND ALLOWANCES COVERAGE — a stronger claim than the one above.
+ *
+ * The head-of-household count says somebody settled which schedule and
+ * allowance a single parent gets. This one says somebody compared EVERY
+ * bracket and EVERY allowance against the state's own 2026 publication, which
+ * is the only defence against an annual table going stale mid-year.
+ */
+const ratesChecked = taxing.filter((s) => s.ratesCheckedAgainstState);
+const ratesCorrected = ratesChecked.filter((s) => !s.ratesCheckedAgainstState.matched);
+console.log(
+  `\n  RATES AND ALLOWANCES — ${ratesChecked.length} of ${taxing.length} read off the state's own 2026 publication`,
+);
+if (ratesCorrected.length) {
+  console.log(`    corrected as a result (${ratesCorrected.length}):`);
+  console.log(`      ${ratesCorrected.map((s) => s.code).join(' ')}`);
+}
+const ratesUnchecked = taxing.filter((s) => !s.ratesCheckedAgainstState);
+if (ratesUnchecked.length) {
+  console.log(`    still taken on trust from the aggregated table (${ratesUnchecked.length}):`);
+  console.log(`      ${ratesUnchecked.map((s) => s.code).join(' ')}`);
+}
 if (warnings.length) {
   console.log('\nWARNINGS:');
   for (const w of warnings) console.log(`  - ${w}`);

@@ -6,7 +6,9 @@
     "url": "https://taxfoundation.org/data/all/state/state-income-tax-rates-2026/",
     "licence": "CC BY-NC 4.0 — satisfied because this project is permanently non-commercial",
     "snapshot": "data/2026.26/sources/taxfoundation-state-income-tax-2026.html",
-    "confidence": "secondary — reputable aggregator of state statutes; high-population states spot-verified against state revenue departments"
+    "published": "2026-02-17",
+    "ageInMonths": 6,
+    "confidence": "secondary — reputable aggregator of state statutes, published once a year. Every state has since been checked against its own revenue department for rates, allowances and head-of-household treatment; see verifiedAgainstState on each state."
   },
   "payrollContributionSource": {
     "citation": "EY, \"2026 state disability, paid family and medical leave and long-term care insurance wage base and rates\" (5 January 2026), cross-checked against state labour departments",
@@ -60,6 +62,7 @@
       "notes": [],
       "earnedIncomeCredit": null,
       "creditPhaseOut": null,
+      "ratesCheckedAgainstState": null,
       "itemizedDeductions": null,
       "communityProperty": false,
       "payrollContributions": [],
@@ -128,6 +131,7 @@
       ],
       "earnedIncomeCredit": null,
       "creditPhaseOut": null,
+      "ratesCheckedAgainstState": null,
       "itemizedDeductions": null,
       "communityProperty": false,
       "payrollContributions": [],
@@ -194,6 +198,7 @@
       ],
       "earnedIncomeCredit": null,
       "creditPhaseOut": null,
+      "ratesCheckedAgainstState": null,
       "itemizedDeductions": null,
       "communityProperty": false,
       "payrollContributions": [],
@@ -249,6 +254,7 @@
       ],
       "earnedIncomeCredit": null,
       "creditPhaseOut": null,
+      "ratesCheckedAgainstState": null,
       "itemizedDeductions": null,
       "verifiedAgainstState": {
         "url": "https://www.azleg.gov/legtext/57leg/2R/summary/H.HB2785_012926_WM.DOCX.htm",
@@ -433,6 +439,7 @@
       ],
       "earnedIncomeCredit": null,
       "creditPhaseOut": null,
+      "ratesCheckedAgainstState": null,
       "itemizedDeductions": {
         "deductPropertyTax": true,
         "deductStateIncomeTax": false,
@@ -510,6 +517,7 @@
         "refundable": true
       },
       "creditPhaseOut": null,
+      "ratesCheckedAgainstState": null,
       "itemizedDeductions": null,
       "communityProperty": false,
       "payrollContributions": [
@@ -656,6 +664,7 @@
         "refundable": true
       },
       "creditPhaseOut": null,
+      "ratesCheckedAgainstState": null,
       "itemizedDeductions": null,
       "communityProperty": false,
       "payrollContributions": [
@@ -764,6 +773,7 @@
       ],
       "earnedIncomeCredit": null,
       "creditPhaseOut": null,
+      "ratesCheckedAgainstState": null,
       "itemizedDeductions": null,
       "communityProperty": false,
       "payrollContributions": [],
@@ -870,6 +880,7 @@
       ],
       "earnedIncomeCredit": null,
       "creditPhaseOut": null,
+      "ratesCheckedAgainstState": null,
       "itemizedDeductions": null,
       "communityProperty": false,
       "payrollContributions": [],
@@ -907,6 +918,7 @@
       "notes": [],
       "earnedIncomeCredit": null,
       "creditPhaseOut": null,
+      "ratesCheckedAgainstState": null,
       "itemizedDeductions": null,
       "communityProperty": false,
       "payrollContributions": [],
@@ -951,6 +963,7 @@
       "notes": [],
       "earnedIncomeCredit": null,
       "creditPhaseOut": null,
+      "ratesCheckedAgainstState": null,
       "itemizedDeductions": null,
       "verifiedAgainstState": {
         "url": "https://dor.georgia.gov/document/document/2026-employers-tax-guide/download",
@@ -1149,6 +1162,7 @@
         "refundable": true
       },
       "creditPhaseOut": null,
+      "ratesCheckedAgainstState": null,
       "itemizedDeductions": null,
       "communityProperty": false,
       "payrollContributions": [
@@ -1216,6 +1230,7 @@
         "refundable": true
       },
       "creditPhaseOut": null,
+      "ratesCheckedAgainstState": null,
       "itemizedDeductions": null,
       "communityProperty": false,
       "payrollContributions": [],
@@ -1284,6 +1299,7 @@
       ],
       "earnedIncomeCredit": null,
       "creditPhaseOut": null,
+      "ratesCheckedAgainstState": null,
       "itemizedDeductions": null,
       "communityProperty": true,
       "payrollContributions": [],
@@ -1342,6 +1358,7 @@
         "refundable": true
       },
       "creditPhaseOut": null,
+      "ratesCheckedAgainstState": null,
       "itemizedDeductions": null,
       "communityProperty": false,
       "payrollContributions": [],
@@ -1400,6 +1417,7 @@
         "refundable": true
       },
       "creditPhaseOut": null,
+      "ratesCheckedAgainstState": null,
       "itemizedDeductions": null,
       "communityProperty": false,
       "payrollContributions": [],
@@ -1466,6 +1484,7 @@
         "refundable": true
       },
       "creditPhaseOut": null,
+      "ratesCheckedAgainstState": null,
       "itemizedDeductions": null,
       "communityProperty": false,
       "payrollContributions": [],
@@ -1519,6 +1538,7 @@
       ],
       "earnedIncomeCredit": null,
       "creditPhaseOut": null,
+      "ratesCheckedAgainstState": null,
       "itemizedDeductions": null,
       "communityProperty": false,
       "payrollContributions": [],
@@ -1574,6 +1594,7 @@
         "refundable": true
       },
       "creditPhaseOut": null,
+      "ratesCheckedAgainstState": null,
       "itemizedDeductions": null,
       "communityProperty": true,
       "payrollContributions": [],
@@ -1636,6 +1657,7 @@
       ],
       "earnedIncomeCredit": null,
       "creditPhaseOut": null,
+      "ratesCheckedAgainstState": null,
       "itemizedDeductions": null,
       "communityProperty": false,
       "payrollContributions": [
@@ -1782,6 +1804,7 @@
         "refundable": true
       },
       "creditPhaseOut": null,
+      "ratesCheckedAgainstState": null,
       "itemizedDeductions": null,
       "communityProperty": false,
       "payrollContributions": [],
@@ -1893,6 +1916,7 @@
         "refundable": true
       },
       "creditPhaseOut": null,
+      "ratesCheckedAgainstState": null,
       "itemizedDeductions": null,
       "verifiedAgainstState": {
         "url": "https://www.maine.gov/revenue/sites/maine.gov.revenue/files/inline-files/ind_tax_rate_sched_2026.pdf",
@@ -1953,6 +1977,7 @@
         "refundable": true
       },
       "creditPhaseOut": null,
+      "ratesCheckedAgainstState": null,
       "itemizedDeductions": null,
       "communityProperty": false,
       "payrollContributions": [],
@@ -2053,6 +2078,7 @@
       ],
       "earnedIncomeCredit": null,
       "creditPhaseOut": null,
+      "ratesCheckedAgainstState": null,
       "itemizedDeductions": null,
       "communityProperty": false,
       "payrollContributions": [
@@ -2183,6 +2209,7 @@
         "refundable": false
       },
       "creditPhaseOut": null,
+      "ratesCheckedAgainstState": null,
       "itemizedDeductions": null,
       "communityProperty": false,
       "payrollContributions": [],
@@ -2243,6 +2270,7 @@
       ],
       "earnedIncomeCredit": null,
       "creditPhaseOut": null,
+      "ratesCheckedAgainstState": null,
       "itemizedDeductions": null,
       "communityProperty": false,
       "payrollContributions": [],
@@ -2321,6 +2349,7 @@
         "refundable": true
       },
       "creditPhaseOut": null,
+      "ratesCheckedAgainstState": null,
       "itemizedDeductions": null,
       "communityProperty": false,
       "payrollContributions": [],
@@ -2369,6 +2398,7 @@
       "notes": [],
       "earnedIncomeCredit": null,
       "creditPhaseOut": null,
+      "ratesCheckedAgainstState": null,
       "itemizedDeductions": null,
       "communityProperty": false,
       "payrollContributions": [],
@@ -2456,6 +2486,7 @@
       ],
       "earnedIncomeCredit": null,
       "creditPhaseOut": null,
+      "ratesCheckedAgainstState": null,
       "itemizedDeductions": null,
       "communityProperty": false,
       "payrollContributions": [],
@@ -2548,6 +2579,7 @@
         "refundable": true
       },
       "creditPhaseOut": null,
+      "ratesCheckedAgainstState": null,
       "itemizedDeductions": null,
       "communityProperty": false,
       "payrollContributions": [],
@@ -2585,6 +2617,7 @@
       "notes": [],
       "earnedIncomeCredit": null,
       "creditPhaseOut": null,
+      "ratesCheckedAgainstState": null,
       "itemizedDeductions": null,
       "communityProperty": false,
       "payrollContributions": [],
@@ -2686,6 +2719,7 @@
         "refundable": true
       },
       "creditPhaseOut": null,
+      "ratesCheckedAgainstState": null,
       "itemizedDeductions": null,
       "communityProperty": false,
       "payrollContributions": [
@@ -2802,6 +2836,7 @@
         "refundable": true
       },
       "creditPhaseOut": null,
+      "ratesCheckedAgainstState": null,
       "itemizedDeductions": null,
       "communityProperty": true,
       "payrollContributions": [],
@@ -2839,6 +2874,7 @@
       "notes": [],
       "earnedIncomeCredit": null,
       "creditPhaseOut": null,
+      "ratesCheckedAgainstState": null,
       "itemizedDeductions": null,
       "communityProperty": true,
       "payrollContributions": [],
@@ -2956,6 +2992,7 @@
         "refundable": true
       },
       "creditPhaseOut": null,
+      "ratesCheckedAgainstState": null,
       "itemizedDeductions": null,
       "communityProperty": false,
       "payrollContributions": [
@@ -3041,6 +3078,7 @@
         "refundable": false
       },
       "creditPhaseOut": null,
+      "ratesCheckedAgainstState": null,
       "itemizedDeductions": null,
       "communityProperty": false,
       "payrollContributions": [],
@@ -3123,6 +3161,7 @@
         "refundable": true
       },
       "creditPhaseOut": null,
+      "ratesCheckedAgainstState": null,
       "itemizedDeductions": null,
       "communityProperty": false,
       "payrollContributions": [],
@@ -3212,6 +3251,7 @@
       ],
       "earnedIncomeCredit": null,
       "creditPhaseOut": null,
+      "ratesCheckedAgainstState": null,
       "itemizedDeductions": null,
       "communityProperty": false,
       "payrollContributions": [
@@ -3269,6 +3309,7 @@
       "notes": [],
       "earnedIncomeCredit": null,
       "creditPhaseOut": null,
+      "ratesCheckedAgainstState": null,
       "itemizedDeductions": null,
       "communityProperty": false,
       "payrollContributions": [],
@@ -3345,6 +3386,7 @@
         "refundable": true
       },
       "creditPhaseOut": null,
+      "ratesCheckedAgainstState": null,
       "itemizedDeductions": null,
       "communityProperty": false,
       "payrollContributions": [
@@ -3434,6 +3476,7 @@
         "refundable": false
       },
       "creditPhaseOut": null,
+      "ratesCheckedAgainstState": null,
       "itemizedDeductions": null,
       "communityProperty": false,
       "payrollContributions": [],
@@ -3471,6 +3514,7 @@
       "notes": [],
       "earnedIncomeCredit": null,
       "creditPhaseOut": null,
+      "ratesCheckedAgainstState": null,
       "itemizedDeductions": null,
       "communityProperty": false,
       "payrollContributions": [],
@@ -3504,6 +3548,7 @@
       "notes": [],
       "earnedIncomeCredit": null,
       "creditPhaseOut": null,
+      "ratesCheckedAgainstState": null,
       "itemizedDeductions": null,
       "communityProperty": false,
       "payrollContributions": [],
@@ -3537,6 +3582,7 @@
       "notes": [],
       "earnedIncomeCredit": null,
       "creditPhaseOut": null,
+      "ratesCheckedAgainstState": null,
       "itemizedDeductions": null,
       "communityProperty": true,
       "payrollContributions": [],
@@ -3601,6 +3647,7 @@
           "headOfHousehold": 27320
         }
       },
+      "ratesCheckedAgainstState": null,
       "itemizedDeductions": null,
       "verifiedAgainstState": {
         "url": "https://incometax.utah.gov/credits/taxpayer-tax-credit",
@@ -3680,6 +3727,7 @@
       ],
       "earnedIncomeCredit": null,
       "creditPhaseOut": null,
+      "ratesCheckedAgainstState": null,
       "itemizedDeductions": null,
       "communityProperty": false,
       "payrollContributions": [],
@@ -3759,6 +3807,7 @@
       ],
       "earnedIncomeCredit": null,
       "creditPhaseOut": null,
+      "ratesCheckedAgainstState": null,
       "itemizedDeductions": null,
       "communityProperty": false,
       "payrollContributions": [],
@@ -3799,6 +3848,7 @@
       ],
       "earnedIncomeCredit": null,
       "creditPhaseOut": null,
+      "ratesCheckedAgainstState": null,
       "itemizedDeductions": null,
       "communityProperty": true,
       "payrollContributions": [
@@ -3893,6 +3943,7 @@
         "refundable": true
       },
       "creditPhaseOut": null,
+      "ratesCheckedAgainstState": null,
       "itemizedDeductions": null,
       "communityProperty": true,
       "payrollContributions": [],
@@ -3977,6 +4028,7 @@
       ],
       "earnedIncomeCredit": null,
       "creditPhaseOut": null,
+      "ratesCheckedAgainstState": null,
       "itemizedDeductions": null,
       "communityProperty": false,
       "payrollContributions": [],
@@ -4014,6 +4066,7 @@
       "notes": [],
       "earnedIncomeCredit": null,
       "creditPhaseOut": null,
+      "ratesCheckedAgainstState": null,
       "itemizedDeductions": null,
       "communityProperty": false,
       "payrollContributions": [],
