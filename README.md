@@ -18,7 +18,7 @@ index, statutory rate or state average — on the [data page](https://packorstay
 
 ## Status
 
-**Live** at [packorstay.com](https://packorstay.com). Current dataset: **2026.27**.
+**Live** at [packorstay.com](https://packorstay.com). Current dataset: **2026.28**.
 
 | Component | State |
 |---|---|
@@ -30,6 +30,7 @@ index, statutory rate or state average — on the [data page](https://packorstay
 | State itemised deductions | 14 states, plus NJ's property tax relief, WI's mortgage-interest credit and IL's property tax credit |
 | Local income tax — 13 named cities, state averages elsewhere | ✅ |
 | 387 metros + 51 rural fallbacks, price parities | ✅ |
+| Salary prefilled from local pay — median full-time earnings, per place | ✅ |
 | Rent and home price scaled to household and income, effective property tax | ✅ |
 | Housing, cars and tax sliced by state for the 43 split metros | ✅ |
 | Vehicles per adult, per-vehicle cost | ✅ |
@@ -224,7 +225,7 @@ Total data cost: **$0**. No paid feeds, no runtime API calls.
 
 ```bash
 node scripts/build-state-tax-rules.mjs     # 51 tax jurisdictions
-node scripts/build-metros.mjs              # 438 locations + price parities
+node scripts/build-metros.mjs              # 438 locations, price parities, local pay
 node scripts/build-housing-transport.mjs   # rent, homes, property tax, vehicles
 node scripts/build-spending.mjs            # BLS spending baselines
 node scripts/build-sales-tax.mjs           # sales tax + grocery rules

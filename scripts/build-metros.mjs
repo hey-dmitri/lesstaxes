@@ -3,11 +3,15 @@
  *
  *   node scripts/build-metros.mjs
  *
- * Combines two public-domain federal sources, both snapshotted into
+ * Combines three public-domain federal sources, all snapshotted into
  * data/<version>/sources/ so the build is reproducible offline:
  *
  *   Census CBSA delineation (2023)  county -> metro mapping, names, states
  *   BEA Regional Price Parities     price level by category, by metro (2024)
+ *   Census ACS 2024, table S2001    median earnings for a full-time worker
+ *
+ * The earnings table is fetched from the Census API the first time and cached
+ * into sources/ like everything else, so only a fresh release needs a key.
  *
  * Output covers every Metropolitan Statistical Area plus a "rest of <state>"
  * entry per state, so no user can hit a dead end (PROJECT.md D18).
@@ -30,7 +34,7 @@
  *     convention.
  */
 
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { CURRENT_DATASET_VERSION } from './lib/version.mjs';
@@ -188,6 +192,108 @@ const stateParities = loadParities('bea-rpp-state-2024.csv', (r) => {
   return STATE_CODES[name] ?? null;
 });
 
+// --- 2b. what a full-time worker earns here ---------------------------------
+
+/**
+ * MEDIAN EARNINGS FOR A FULL-TIME, YEAR-ROUND WORKER, PER PLACE.
+ *
+ * The salary box opened on the US median everywhere, which is a national
+ * figure standing in for 438 local ones — and pay is not national. Full-time
+ * median earnings run from about $47,000 in the cheapest metros to over
+ * $90,000 in the Bay Area, and the site quotes rent and house prices that
+ * scale with the salary in the box, so a single national figure was also
+ * quoting the wrong home to most people.
+ *
+ * Table S2001, column C01_013 — the same table and the same line the national
+ * default already came from, so the two cannot describe different populations.
+ * It is EARNINGS OF ONE FULL-TIME WORKER, deliberately not household income:
+ * the box asks what one person is paid, and B19013 would answer a different
+ * question with a bigger number.
+ *
+ * Subject tables live on a different API endpoint from the detailed tables the
+ * housing build uses, and they publish metro and state but NOT the metro-state
+ * parts. So a metro that straddles a state line gets one figure for both
+ * sides, where its rent and home prices are sliced. Disclosed on the data page.
+ *
+ * Cached into sources/ and committed, like every other upstream file here, so
+ * the build stays reproducible with no key and no network.
+ */
+const ACS_YEAR = 2024;
+const EARNINGS_VARIABLE = 'S2001_C01_013E';
+
+async function loadEarnings(cacheFile, forClause) {
+  const cachePath = resolve(SRC, cacheFile);
+  if (existsSync(cachePath)) return JSON.parse(readFileSync(cachePath, 'utf8'));
+
+  const key = process.env.CENSUS_API_KEY;
+  if (!key) {
+    throw new Error(
+      `CENSUS_API_KEY is not set and no cache exists at ${cacheFile}.\n` +
+        'Get a free key at https://api.census.gov/data/key_signup.html, ' +
+        'put it in .env.local, and re-run.',
+    );
+  }
+
+  const url =
+    `https://api.census.gov/data/${ACS_YEAR}/acs/acs5/subject` +
+    `?get=NAME,${EARNINGS_VARIABLE}` +
+    `&for=${encodeURIComponent(forClause)}` +
+    `&key=${key}`;
+
+  console.log(`  earnings: fetching ${cacheFile} from Census API...`);
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`Census API ${res.status} for ${cacheFile}: ${await res.text()}`);
+  const table = await res.json();
+  if (!Array.isArray(table) || table.length < 2) {
+    throw new Error(`Census API returned no rows for ${cacheFile}`);
+  }
+  // Cached without the key anywhere in it.
+  writeFileSync(cachePath, `${JSON.stringify(table)}\n`);
+  return table;
+}
+
+/** [header, ...rows] -> Map(geoid -> dollars), dropping suppressed cells. */
+function earningsByGeo(table) {
+  const [header, ...rows] = table;
+  const value = header.indexOf(EARNINGS_VARIABLE);
+  const geo = header.length - 1;
+  const out = new Map();
+  for (const row of rows) {
+    const dollars = Number(row[value]);
+    // The Census returns large negative sentinels for suppressed cells.
+    if (!Number.isFinite(dollars) || dollars <= 0) continue;
+    out.set(row[geo], Math.round(dollars));
+  }
+  return out;
+}
+
+const metroEarnings = earningsByGeo(
+  await loadEarnings(
+    `census-acs${ACS_YEAR}-earnings-metro.json`,
+    'metropolitan statistical area/micropolitan statistical area:*',
+  ),
+);
+const stateEarningsByFips = earningsByGeo(
+  await loadEarnings(`census-acs${ACS_YEAR}-earnings-state.json`, 'state:*'),
+);
+
+/** State FIPS -> postal code, from the delineation file already loaded. */
+const STATE_FIPS = {
+  '01': 'AL', '02': 'AK', '04': 'AZ', '05': 'AR', '06': 'CA', '08': 'CO', '09': 'CT',
+  '10': 'DE', '11': 'DC', '12': 'FL', '13': 'GA', '15': 'HI', '16': 'ID', '17': 'IL',
+  '18': 'IN', '19': 'IA', '20': 'KS', '21': 'KY', '22': 'LA', '23': 'ME', '24': 'MD',
+  '25': 'MA', '26': 'MI', '27': 'MN', '28': 'MS', '29': 'MO', '30': 'MT', '31': 'NE',
+  '32': 'NV', '33': 'NH', '34': 'NJ', '35': 'NM', '36': 'NY', '37': 'NC', '38': 'ND',
+  '39': 'OH', '40': 'OK', '41': 'OR', '42': 'PA', '44': 'RI', '45': 'SC', '46': 'SD',
+  '47': 'TN', '48': 'TX', '49': 'UT', '50': 'VT', '51': 'VA', '53': 'WA', '54': 'WV',
+  '55': 'WI', '56': 'WY',
+};
+const stateEarnings = new Map();
+for (const [fips, dollars] of stateEarningsByFips) {
+  const code = STATE_FIPS[fips];
+  if (code) stateEarnings.set(code, dollars);
+}
+
 // --- 3. assemble ------------------------------------------------------------
 
 /** "Chicago-Naperville-Elgin, IL-IN" -> { short: "Chicago, IL", primary: "IL" } */
@@ -220,6 +326,13 @@ for (const [code, m] of [...metros].sort((a, b) => a[0].localeCompare(b[0]))) {
     primaryState: primaryState || m.states[0],
     counties: m.counties,
     priceParity: parity,
+    /*
+     * Falls back to the metro's primary state where the Census suppressed the
+     * metro cell — a real published figure for a wider area, rather than a
+     * blank the interface would have to invent something for.
+     */
+    medianEarnings:
+      metroEarnings.get(code) ?? stateEarnings.get(primaryState || m.states[0]) ?? null,
   };
 }
 
@@ -238,6 +351,7 @@ for (const [stateName, stateCode] of Object.entries(STATE_CODES)) {
     primaryState: stateCode,
     counties: [],
     priceParity: parity,
+    medianEarnings: stateEarnings.get(stateCode) ?? null,
     note: 'Uses statewide price parities. BEA publishes no rural-only index, so this blends the state\'s metros back in and may slightly overstate rural costs.',
   };
 }
@@ -314,12 +428,20 @@ writeDataset(
           licence: 'US Government work — public domain',
           snapshot: `data/${VERSION}/sources/bea-rpp-metro-2024.csv`,
         },
+        {
+          name: `Census Bureau, ACS ${ACS_YEAR} 5-year, table S2001 — median earnings for full-time, year-round workers`,
+          url: `https://api.census.gov/data/${ACS_YEAR}/acs/acs5/subject`,
+          licence: 'US Government work — public domain',
+          snapshot: `data/${VERSION}/sources/census-acs${ACS_YEAR}-earnings-metro.json`,
+        },
       ],
       limitations: [
         'Micropolitan statistical areas are excluded because BEA publishes no price parities for them. Their residents are served by the "rest of <state>" entries.',
         'BEA publishes no rural-only price parity, so "rest of <state>" uses statewide figures, which blend that state\'s metros back in.',
         `Price parities are ${RPP_YEAR} data, the latest published.`,
         'US territories (Puerto Rico and others) are excluded: they have separate income tax systems and no BEA price parities.',
+        `Median earnings are for one full-time, year-round worker, not for a household. They are ${ACS_YEAR} figures and the app states them in today's money.`,
+        'The Census publishes median earnings for whole metros and for states, but not for the part of a metro inside one state — so the 43 metros that cross a state line carry one earnings figure for both sides, where their rent and home prices are sliced by state.',
       ],
       metros: output,
     },

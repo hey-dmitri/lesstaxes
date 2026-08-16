@@ -7,6 +7,7 @@ import {
   defaultCarCount,
   adultsIn,
   defaultRent,
+  defaultSalaryFor,
   formatUSD,
   homePriceDefault,
   housingDefaults,
@@ -92,10 +93,22 @@ export function housingFor(
       };
 }
 
+/**
+ * Whether the salary in the box is still the one the site put there.
+ *
+ * The same test rent and cars already use: a field is a prefill until it does
+ * not match what we would have filled in. Somebody who types the local median
+ * to the dollar is treated as not having typed it, which costs them nothing —
+ * the next city fills in its own figure, which is what they would have wanted.
+ */
+export function salaryIsPrefill(state: { metroId: string; grossSalary: number }): boolean {
+  return state.grossSalary === defaultSalaryFor(state.metroId || undefined);
+}
+
 /** Everything that must be re-derived when the location or household changes. */
 export function resetCityForLocation(
   metroId: string,
-  salary: number,
+  previous: { metroId: string; grossSalary: number },
   filingStatus: FilingStatus,
   tenure: 'rent' | 'own',
   children = 0,
@@ -106,6 +119,19 @@ export function resetCityForLocation(
   // local tax system and the sales tax rate.
   const state = resolveStateCode(metroId, stateCode);
   const options = localTaxOptions(metroId, undefined, state);
+  /*
+   * THE SALARY FOLLOWS THE PLACE, unless it was typed.
+   *
+   * A national median standing in for 438 local ones is wrong nearly
+   * everywhere, and it does not stop at the salary line: rent and the house
+   * price are both scaled by whatever is in this box, so a national figure in
+   * a cheap metro also quoted a home nobody there on that pay would look at.
+   *
+   * Anything typed by hand survives the change of city, exactly as a typed
+   * rent does. That is the case that matters most — somebody comparing their
+   * own offer against their own pay.
+   */
+  const salary = salaryIsPrefill(previous) ? defaultSalaryFor(metroId) : previous.grossSalary;
   return {
     metroId,
     stateCode: state,
@@ -141,7 +167,7 @@ export function CityPanel({
       value={state.metroId || null}
       onChange={(metroId) => {
         onChange(
-          resetCityForLocation(metroId, state.grossSalary, filingStatus, tenure, childCount),
+          resetCityForLocation(metroId, state, filingStatus, tenure, childCount),
         );
         setPicking(false);
       }}
@@ -291,7 +317,7 @@ export function CityPanel({
                 onChange(
                   resetCityForLocation(
                     state.metroId,
-                    state.grossSalary,
+                    state,
                     filingStatus,
                     state.housing.tenure,
                     childCount,
@@ -323,6 +349,14 @@ export function CityPanel({
           value={state.grossSalary}
           onChange={onSalaryChange}
           hint={salaryHint}
+          /*
+           * Two lines held open in both columns. The sentence is one line in
+           * one column and two in the other depending on the city name and
+           * whether the salary was typed, and the two panels are separate
+           * cards — so without this the rent box, the car stepper and every
+           * figure below them sit at different heights on the two sides.
+           */
+          hintLines={2}
           emphasis
         />
 
@@ -469,7 +503,18 @@ export function CityPanel({
                   &middot; <span className="tnum">{formatUSD(result.takeHome / 12)}</span>/mo
                 </span>
               </div>
-              <span className="text-[0.76rem] leading-snug" style={{ color: 'var(--faint)' }}>
+              {/*
+                Two lines held open, for the same reason the salary hint holds
+                two: this line names the taxes actually paid, so it is longer
+                in a state with an income tax and a disability contribution
+                than in one with neither — and the two columns are separate
+                cards, so a line that wraps on one side and not the other puts
+                every figure below it out of step.
+              */}
+              <span
+                className="text-[0.76rem] leading-snug"
+                style={{ color: 'var(--faint)', minHeight: '2.75em' }}
+              >
                 {takeHomeNote}
               </span>
             </div>

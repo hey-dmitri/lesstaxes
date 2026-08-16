@@ -38,6 +38,8 @@ export {
   allMetros,
   bedroomsFor,
   defaultLocalJurisdictions,
+  defaultSalaryFor,
+  medianEarnings,
   housingDefaults,
   homePriceDefault,
   homeValueCurve,

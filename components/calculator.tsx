@@ -2,7 +2,7 @@
 
 import { useMemo, useRef, useState } from 'react';
 
-import { CityPanel, housingFor, type CityFormState } from '@/components/city-panel';
+import { CityPanel, housingFor, salaryIsPrefill, type CityFormState } from '@/components/city-panel';
 import { InlineSelect, StepBadge } from '@/components/fields';
 import { Results } from '@/components/results';
 import { ShareBar } from '@/components/share-bar';
@@ -20,7 +20,8 @@ import {
   formatUSD,
   housingAtSalary,
   metro,
-  priceFactor,
+  cityName,
+  defaultSalaryFor,
   stateRules,
   type FilingStatus,
 } from '@/engine';
@@ -92,8 +93,13 @@ const TENURE_OPTIONS = [
  * an old wage measured against today's rent. Wages did not move with prices:
  * real median full-time earnings rose 2.3% while prices rose 6.1%, so the
  * nominal uplift is the product of the two.
+ *
+ * IT IS ONLY THE OPENING FIGURE NOW. The moment a city is chosen the box moves
+ * to what a full-time worker is actually paid there, which runs from $40,095
+ * to $108,768 across the 438 places — see defaultSalaryFor in the engine. This
+ * stays as the answer for the one state where no place has been chosen yet.
  */
-export const DEFAULT_SALARY = Math.round(61_657 * priceFactor('wage'));
+export const DEFAULT_SALARY = defaultSalaryFor();
 
 /**
  * A column with no city in it yet.
@@ -315,6 +321,39 @@ export function Calculator({ initial }: CalculatorProps) {
 
   const sameCity = bothChosen && origin.metroId === destination.metroId;
 
+  /**
+   * What to say under a salary box.
+   *
+   * BOTH COLUMNS SAY THE SAME KIND OF THING NOW, and that is the point. The
+   * left one used to explain the US median in two lines while the right one
+   * said "defaults to what you earn now" in one, so every field below them sat
+   * at a different height in the two columns — the rent boxes, the car
+   * steppers, the take-home figures, all of it half a line out.
+   *
+   * They also both say something truer than before: the box no longer opens on
+   * a national figure, it opens on what a full-time worker is actually paid in
+   * that place.
+   */
+  function salaryHint(city: CityFormState, whoseMoney: 'yours' | 'the offer') {
+    const typed = !salaryIsPrefill(city);
+    const place = city.metroId ? cityName(city.metroId) : null;
+    const versusNow =
+      city === destination && destination.grossSalary !== origin.grossSalary
+        ? ` ${formatUSD(destination.grossSalary - origin.grossSalary, { signed: true })} versus now.`
+        : '';
+
+    if (typed || !place) return `${salary.whose}${versusNow}`;
+    /*
+     * "Typical" rather than "median", and "in today's money" because it is NOT
+     * the published figure — the Census median is a 2024 number and this is
+     * that brought forward, so a reader who looks it up finds a different one
+     * and has no way to reconcile the two.
+     */
+    return `${salary.whose} ${formatUSD(city.grossSalary)} is typical full-time pay in ${place}, in today's money${
+      salary.combined ? ' for one worker' : ''
+    } — change it to ${whoseMoney}.${versusNow}`;
+  }
+
   // What the salary boxes are asking for. Changes with the household, because
   // "Salary" means one person's pay or two people's added together depending
   // on what was answered in step 1.
@@ -480,23 +519,7 @@ export function Calculator({ initial }: CalculatorProps) {
             onChange={setOrigin}
             onSalaryChange={changeSalary(origin, setOrigin)}
             salaryLabel={salary.here}
-            salaryHint={
-              origin.grossSalary === DEFAULT_SALARY
-                ? // The default is ONE worker's median, so it is the wrong
-                  // starting point the moment two people are earning. Name the
-                  // figure rather than saying "that", which by this point in
-                  // the sentence could be pointing at either of two things.
-                  // Says "in today's money" because it is NOT the published
-                  // figure: the Census median is $61,657 and this is that
-                  // brought forward, so a reader who looks the number up finds
-                  // a different one and has no way to reconcile them.
-                  `${salary.whose} ${formatUSD(DEFAULT_SALARY)} is the US median for ${
-                    salary.combined ? 'one full-time worker' : 'full-time work'
-                  }, in today's money — change it to ${
-                    salary.combined ? 'what the two of you make' : 'yours'
-                  }.`
-                : salary.whose
-            }
+            salaryHint={salaryHint(origin, 'yours')}
             result={result?.origin ?? null}
             takeHomeNote={takeHomeNote(result?.origin ?? null)}
           />
@@ -520,11 +543,7 @@ export function Calculator({ initial }: CalculatorProps) {
             result={result?.destination ?? null}
             takeHomeNote={takeHomeNote(result?.destination ?? null)}
             salaryLabel={salary.there}
-            salaryHint={
-              destination.grossSalary !== origin.grossSalary
-                ? `${salary.whose} ${formatUSD(destination.grossSalary - origin.grossSalary, { signed: true })} versus now.`
-                : `${salary.whose} Defaults to what you earn now.`
-            }
+            salaryHint={salaryHint(destination, 'the offer')}
           />
         </div>
 

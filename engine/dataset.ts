@@ -37,6 +37,13 @@ export interface Metro {
   states: string[];
   primaryState: string;
   priceParity: PriceParity;
+  /**
+   * Median earnings for a full-time, year-round worker here, in the dollars of
+   * the year the release was built from. Absent on releases cut before local
+   * pay was shipped, which is why every reader of it goes through
+   * `medianEarnings` below rather than touching it.
+   */
+  medianEarnings?: number;
 }
 
 const metros = (version?: string) =>
@@ -49,6 +56,59 @@ export function metro(id: string, version?: string): Metro {
   if (!m) throw new Error(`unknown location id: ${id}`);
   return m;
 }
+
+/**
+ * WHAT ONE FULL-TIME WORKER IS TYPICALLY PAID HERE, in today's money.
+ *
+ * The salary box opened on the US median in every one of the 438 places, and
+ * pay is the least national thing on this site: the same job is $40,095 at the
+ * bottom of this table and $108,768 at the top. Worse, the box seeds the rent
+ * and the house price, so a national salary in a cheap metro quoted a home
+ * that nobody there on that salary would be looking at.
+ *
+ * Brought forward from the survey year exactly as the national default is —
+ * wages did not move with prices, so the wage factor is its own index and not
+ * the shopping basket's.
+ *
+ * Null on releases cut before this shipped, and on nothing else: every one of
+ * the 438 places has a published figure, metros falling back to their primary
+ * state where the Census suppressed the metro cell. A caller that gets null is
+ * replaying an old shared link and should use whatever that release used.
+ */
+export function medianEarnings(metroId: string, version?: string): number | null {
+  const published = metro(metroId, version).medianEarnings;
+  if (!published) return null;
+  return Math.round(published * priceFactor('wage', version));
+}
+
+/**
+ * WHAT THE SALARY BOX SHOULD OPEN ON for a place — the local figure where
+ * there is one, and the national median where there is not.
+ *
+ * Called with no place before either city is chosen, which is the only time
+ * the national figure is the right answer, and on a share link pinned to a
+ * release cut before local pay shipped, where it is the answer that release
+ * gave.
+ */
+export function defaultSalaryFor(metroId?: string, version?: string): number {
+  if (metroId) {
+    const local = medianEarnings(metroId, version);
+    if (local) return local;
+  }
+  return Math.round(NATIONAL_MEDIAN_EARNINGS * priceFactor('wage', version));
+}
+
+/**
+ * Median earnings for a full-time, year-round worker across the United States,
+ * as published: Census ACS 2024 5-year, table S2001, line C01_013 — the same
+ * table and line as every local figure beside it, so the fallback and the
+ * thing it falls back from measure the same population.
+ *
+ * Hard-coded rather than shipped in a dataset file because it is one number
+ * that belongs to no place, and the per-place table above already carries the
+ * 438 that do.
+ */
+const NATIONAL_MEDIAN_EARNINGS = 61_657;
 
 /** Every selectable location, sorted for a picker. */
 export function allMetros(version?: string): Metro[] {

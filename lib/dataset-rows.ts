@@ -20,6 +20,7 @@ import {
   housingDefaults,
   localTaxOptions,
   localJurisdiction,
+  medianEarnings,
   salesTaxRules,
   stateRules,
   transportDefaults,
@@ -53,6 +54,17 @@ export interface DatasetRow {
   /** Whose households the local medians describe — the anchor for both curves. */
   ownerIncome: number;
   renterIncome: number;
+  /**
+   * Median earnings for one full-time, year-round worker here, in today's
+   * money — the figure the salary box fills in with when this place is picked.
+   *
+   * This page says of itself that it shows every number the calculator uses,
+   * and this one now decides the starting salary and, through it, the rent and
+   * the house price the reader is quoted. It is a METRO figure even on a state
+   * part: the Census publishes earnings for whole metros and for states, but
+   * not for the piece of a metro inside one state.
+   */
+  typicalPay: number;
   propertyTaxRate: number;
   vehiclesPerAdult: number;
   parityAll: number;
@@ -123,6 +135,7 @@ export const DATASET_ROWS: DatasetRow[] = allMetros().flatMap((m) => {
       homePrice: housing.medianHomePrice,
       ownerIncome: housing.medianOwnerIncome ?? 0,
       renterIncome: housing.medianRenterIncome ?? 0,
+      typicalPay: medianEarnings(m.id) ?? 0,
       propertyTaxRate: housing.effectivePropertyTaxRate,
       vehiclesPerAdult: transport.vehiclesPerAdult,
       parityAll: m.priceParity.allItems,

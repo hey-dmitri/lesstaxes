@@ -48,6 +48,7 @@ function Row({ row }: { row: DatasetRow }) {
       <td className={td} style={{ color: 'var(--ink)' }}>{formatUSD(row.rent1br)}</td>
       <td className={td} style={{ color: 'var(--ink)' }}>{formatUSD(row.rent3br)}</td>
       <td className={td} style={{ color: 'var(--muted)' }}>{formatUSD(row.renterIncome)}</td>
+      <td className={td} style={{ color: 'var(--ink)' }}>{formatUSD(row.typicalPay)}</td>
       <td className={td} style={{ color: 'var(--ink)' }}>{formatUSD(row.homePrice)}</td>
       <td className={td} style={{ color: 'var(--ink)' }}>{pct(row.propertyTaxRate, 2)}</td>
       <td className={td} style={{ color: 'var(--ink)' }}>{row.vehiclesPerAdult.toFixed(2)}</td>
@@ -162,6 +163,10 @@ export function DatasetBrowser() {
                 ['1 bed', 'Median gross rent for a one-bedroom'],
                 ['3 bed', 'Median gross rent for a three-bedroom'],
                 ['Renter inc', 'Median income of renter households — the anchor for the rent prefill'],
+                [
+                  'Typical pay',
+                  "Median earnings for one full-time, year-round worker here, in today's money. This is what the salary box fills in with, and it is a whole-metro figure even on a state part",
+                ],
                 ['Home price', 'Median home value'],
                 ['Prop tax', 'Effective rate actually paid'],
                 ['Cars/adult', 'Vehicles per adult'],

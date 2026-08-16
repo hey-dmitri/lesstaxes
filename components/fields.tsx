@@ -36,10 +36,24 @@ export function StepBadge({ n, done }: { n: number; done?: boolean }) {
   );
 }
 
-/** Text shown under a field when its value came from the dataset, not the user. */
-export function PrefillNote({ children }: { children: React.ReactNode }) {
+/**
+ * The grey line under a field, saying where its number came from.
+ *
+ * `lines` RESERVES HEIGHT, and it exists because the two city columns are
+ * separate cards rather than rows of one grid: nothing makes a field in the
+ * left column line up with the same field on the right, so a hint that wrapped
+ * to two lines in one and one line in the other pushed everything below it
+ * half a line out of step — the rent boxes, the car steppers, the take-home
+ * figures, all of it. Reserving the same space in both keeps them level
+ * whatever either sentence happens to say.
+ */
+export function PrefillNote({ children, lines }: { children: React.ReactNode; lines?: number }) {
   return (
-    <p className="mt-0.5 text-[0.76rem] leading-snug" style={{ color: 'var(--muted)' }}>
+    <p
+      className="mt-0.5 text-[0.76rem] leading-snug"
+      // leading-snug is 1.375, so a line is 1.375em of this element's own size.
+      style={{ color: 'var(--muted)', minHeight: lines ? `${lines * 1.375}em` : undefined }}
+    >
       {children}
     </p>
   );
@@ -55,6 +69,8 @@ interface MoneyFieldProps {
   max?: number;
   /** The salary is the field the whole column turns on, so it renders larger. */
   emphasis?: boolean;
+  /** Reserve this many lines under the field. See PrefillNote. */
+  hintLines?: number;
 }
 
 export function MoneyField({
@@ -66,6 +82,7 @@ export function MoneyField({
   min = 0,
   max = 100_000_000,
   emphasis = false,
+  hintLines,
 }: MoneyFieldProps) {
   const id = useId();
   return (
@@ -103,7 +120,7 @@ export function MoneyField({
           </span>
         )}
       </div>
-      {hint && <PrefillNote>{hint}</PrefillNote>}
+      {hint && <PrefillNote lines={hintLines}>{hint}</PrefillNote>}
     </div>
   );
 }

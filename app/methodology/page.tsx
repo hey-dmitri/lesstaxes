@@ -9,6 +9,8 @@ import { PageShell, Prose } from '@/components/page-shell';
  */
 import {
   ALL_STATE_CODES,
+  allMetros,
+  medianEarnings,
   TOO_CLOSE_FLOOR,
   TOO_CLOSE_SHARE,
   formatUSD,
@@ -61,6 +63,21 @@ const COVERAGE = {
   itemising: TAXING.filter((s) => s.itemizedDeductions).length,
   earnedIncomeCredit: TAXING.filter((s) => s.earnedIncomeCredit).length,
 };
+
+/**
+ * The two ends of the local pay table, read from the data.
+ *
+ * Written out by hand they would be wrong at the next Census release, and the
+ * sentence they sit in exists to say how far apart local pay is — which is
+ * exactly the claim a stale pair of numbers would quietly stop supporting.
+ */
+const LOCAL_PAY = (() => {
+  const paid = allMetros()
+    .map((m) => ({ place: m.shortName, amount: medianEarnings(m.id) ?? 0 }))
+    .filter((p) => p.amount > 0)
+    .sort((a, b) => a.amount - b.amount);
+  return { lowest: paid[0], highest: paid[paid.length - 1] };
+})();
 
 const STATES_ON_PRIOR_YEAR = ALL_STATE_CODES.map((code) => stateRules(code))
   .filter((s) => s.priorYearFigures)
@@ -492,19 +509,37 @@ answer          =  in your pocket THERE  −  in your pocket HERE`}</pre>
 
         <h2>What the form starts you on</h2>
         <p>
-          The salary box opens on <strong>{formatUSD(DEFAULT_SALARY)}</strong>. The published
-          median for someone working full time all year is <strong>$61,657</strong>, from the same
-          Census release as everything else here (ACS 2024, table S2001), and like every other
-          2024 figure on this site it is brought forward to today&rsquo;s money &mdash; which is
-          where the difference comes from. It was $150,000 until August 2026, which is roughly the 90th percentile of
-          American full-time earnings.
+          <strong>The salary box fills in with what a full-time worker is actually paid in the
+          city you picked</strong> — and it is one of the least national numbers on this site.
+          The same measure runs from <strong>{formatUSD(LOCAL_PAY.lowest.amount)}</strong> in{' '}
+          {LOCAL_PAY.lowest.place} to <strong>{formatUSD(LOCAL_PAY.highest.amount)}</strong> in{' '}
+          {LOCAL_PAY.highest.place}, in today&rsquo;s money. Each column fills in
+          from its own city, so the two boxes usually start on different figures, and both are
+          yours to change: type your pay on the left and the offer on the right.
         </p>
         <p>
-          That mattered more than a starting number usually does, because rent and home price both
-          scale with income: opening on a salary most visitors will never earn quoted them a house
-          and a rent to match, and made every figure on the page a well-paid person&rsquo;s answer
-          until they noticed. Median rather than mean, because earnings have a long tail at the
-          top and the mean describes almost nobody.
+          Before either city is chosen there is nothing local to use, so the box opens on the US
+          median of <strong>{formatUSD(DEFAULT_SALARY)}</strong>. The published figure is{' '}
+          <strong>$61,657</strong> — Census ACS 2024, table S2001, median earnings for full-time,
+          year-round workers, the same release as everything else here — and like every other 2024
+          figure on this site it is brought forward to today&rsquo;s money, which is where the
+          difference comes from.
+        </p>
+        <p>
+          <strong>Earnings for one worker, not income for a household.</strong> The box asks what
+          one person is paid, so a household figure would answer a different question with a much
+          bigger number. Median rather than mean, because earnings have a long tail at the top and
+          the mean describes almost nobody. The Census publishes this for whole metros and for
+          states, but not for the part of a metro inside one state — so the 43 cities that cross a
+          state line start both sides on the same figure, even though their rent and house prices
+          are split by state.
+        </p>
+        <p>
+          The starting figure matters more than a starting figure usually does, because rent and
+          home price both scale with it: a national salary in a cheap metro quoted a house and a
+          rent that nobody there on that pay would be looking at. It was $150,000 until August
+          2026 — roughly the 90th percentile of American full-time earnings — then the national
+          median, and now the local one.
         </p>
 
         <h2>Credits, and who counts as an earner</h2>
