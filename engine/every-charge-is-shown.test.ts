@@ -135,6 +135,34 @@ describe('the results table', () => {
    * contribution and owner upkeep — were in leftover and missing from the
    * explanation, which is exactly what a residual here would catch.
    */
+  /*
+   * THE PHONE BILL LOST ITS OWN ROW, and the money did not go anywhere.
+   *
+   * Two cities differ by tens of dollars a year on a phone contract, so a row
+   * of its own gave it the same weight as rent, which differs by thousands. It
+   * belongs in "Everything else". The check that matters is that folding it in
+   * moved it rather than dropped it — the row above already proves the total
+   * still reconciles, and this proves which line absorbed it.
+   */
+  it('folds the phone bill into everything else rather than losing it', () => {
+    const household = HOUSEHOLDS[0];
+    const result = compare({
+      datasetVersion: CURRENT_DATASET_VERSION,
+      household,
+      origin: defaultCityInputs('35620', 120_000, household, 'rent'),
+      destination: defaultCityInputs('19100', 120_000, household, 'rent'),
+    });
+
+    const rows = differenceRows(result);
+    expect(rows.living.map((r) => r.key)).not.toContain('phone');
+
+    const everythingElse = rows.living.find((r) => r.key === 'other');
+    expect(everythingElse?.origin).toBeCloseTo(
+      result.origin.living.other + result.origin.living.utilities,
+      2,
+    );
+  });
+
   it.each(PLACES)('itemises the whole difference in %s', (metroId) => {
     for (const household of HOUSEHOLDS) {
       for (const tenure of ['rent', 'own'] as const) {

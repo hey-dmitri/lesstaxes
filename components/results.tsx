@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 
-import { useState } from 'react';
+import { useId, useState } from 'react';
 
 import {
   breakEvenNarrative,
@@ -261,6 +261,8 @@ function Disclosure({
  */
 function Gap({ result }: { result: ComparisonResult }) {
   const [showLiving, setShowLiving] = useState(false);
+  const [showFederal, setShowFederal] = useState(false);
+  const federalNoteId = useId();
   const from = cityName(result.origin.metroId, result.datasetVersion);
   const to = cityName(result.destination.metroId, result.datasetVersion);
   // Federal tax differing between two cities looks like a bug unless the page
@@ -382,15 +384,48 @@ function Gap({ result }: { result: ComparisonResult }) {
       </div>
 
       <div className={`${row} pt-2`}>
-        <span className="text-[0.82rem] font-semibold" style={{ color: 'var(--ink)' }}>
+        <span className="flex items-baseline gap-1.5 text-[0.82rem] font-semibold" style={{ color: 'var(--ink)' }}>
           Taxes on your pay
+          {/*
+            THE NOTE SITS ON THE HEADING NOW, not loose under the rows.
+            Unattached, it read as a caption for the whole table when it is
+            about one line of it — why federal tax moved at all, when this site
+            says everywhere else that federal rules are the same in every
+            state.
+
+            A BUTTON RATHER THAN A HOVER TOOLTIP. The same argument as the data
+            page's source links: a phone cannot hover and a keyboard cannot
+            reach a title attribute, so on the two devices most likely to be
+            used the explanation would simply not be there.
+          */}
+          {federalNote && (
+            <button
+              type="button"
+              onClick={() => setShowFederal((open) => !open)}
+              aria-expanded={showFederal}
+              aria-controls={federalNoteId}
+              aria-label={showFederal ? 'Hide why federal tax changes' : 'Why does federal tax change?'}
+              className="inline-flex h-[1.05rem] w-[1.05rem] shrink-0 items-center justify-center rounded-full border text-[0.66rem] font-bold leading-none"
+              style={{
+                borderColor: 'var(--accent)',
+                color: showFederal ? '#ffffff' : 'var(--accent)',
+                background: showFederal ? 'var(--accent)' : 'transparent',
+              }}
+            >
+              i
+            </button>
+          )}
         </span>
         {monthly(taxTotal)}
         {cell(taxTotal, 'cost', { bold: true })}
       </div>
       {rows.taxes.map(detailRow)}
-      {federalNote && (
-        <p className="mt-1 pl-3 text-[0.74rem] leading-snug" style={{ color: 'var(--muted)' }}>
+      {federalNote && showFederal && (
+        <p
+          id={federalNoteId}
+          className="mt-1 rounded px-2 py-1.5 text-[0.74rem] leading-snug"
+          style={{ color: 'var(--ink-soft)', background: 'var(--surface-sunken)' }}
+        >
           {federalNote}
         </p>
       )}

@@ -743,19 +743,30 @@ export function differenceRows(result: ComparisonResult): DifferenceRows {
     ),
     cost('transport', 'Cars & transport', o.living.transport, d.living.transport),
     cost('food', 'Food', o.living.food, d.living.food),
-    cost(
-      'phone',
-      /*
-       * Before release 2026.9 this field carried gas, electricity, water and
-       * heating as well, and a shared link replays its own release — so the
-       * label follows the data rather than being fixed at "Phone".
-       */
-      utilitiesAreSplitOut(result.datasetVersion) ? 'Phone' : 'Utilities & phone',
-      o.living.utilities,
-      d.living.utilities,
-    ),
+    /*
+     * THE PHONE BILL IS NOT ITS OWN LINE, because the difference between two
+     * cities is tens of dollars a year — a row of its own gave it the same
+     * weight as rent, which moves by thousands. It joins "Everything else",
+     * which is what a catch-all is for.
+     *
+     * EXCEPT ON A LINK MADE BEFORE 2026.8, where this same field is the whole
+     * energy bill — gas, electricity, water and heating, over $2,000 a year —
+     * because the split into the housing line had not happened yet. Folding
+     * THAT into "Everything else" would bury the second largest household cost
+     * inside a word that promises small change. A shared link replays its own
+     * release, so the shape of the list has to follow the data as the label
+     * already does.
+     */
+    ...(utilitiesAreSplitOut(result.datasetVersion)
+      ? []
+      : [cost('phone', 'Utilities & phone', o.living.utilities, d.living.utilities)]),
     cost('healthcare', 'Healthcare', o.living.healthcare, d.living.healthcare),
-    cost('other', 'Everything else', o.living.other, d.living.other),
+    cost(
+      'other',
+      'Everything else',
+      o.living.other + (utilitiesAreSplitOut(result.datasetVersion) ? o.living.utilities : 0),
+      d.living.other + (utilitiesAreSplitOut(result.datasetVersion) ? d.living.utilities : 0),
+    ),
     /*
      * Zero in every current release — the spending figures already contain the
      * sales tax those households paid — but old links carry a real number here
