@@ -12,6 +12,25 @@ import { applyBrackets, type Bracket } from './brackets';
 /** The schedules states actually publish. */
 export type PublishedStatus = 'single' | 'marriedJointly' | 'headOfHousehold';
 
+/**
+ * Where a figure was read from, and when.
+ *
+ * `quote` is words copied out of that document. It exists because a URL is not
+ * evidence: New Mexico shipped a release cited to its revenue department's own
+ * "Personal Income Tax Rates" page, which carries a heading, a menu and no
+ * figures at all, and every check passed it because every check was really
+ * about the host name. An empty page cannot supply a quotation, and the test
+ * suite matches the figures inside one against the figures actually shipped.
+ *
+ * Absent on releases cut before a mechanism existed, which is why every field
+ * here is optional to read.
+ */
+export interface RuleSource {
+  url: string;
+  checked: string;
+  quote?: string;
+}
+
 export interface StateTaxRules {
   code: string;
   name: string;
@@ -52,9 +71,7 @@ export interface StateTaxRules {
    * changing. Recorded on purpose: "checked and agreed" and "never looked"
    * produce identical numbers, and only a written record tells them apart.
    */
-  ratesCheckedAgainstState: {
-    url: string;
-    checked: string;
+  ratesCheckedAgainstState: (RuleSource & {
     matched: boolean;
     /**
      * Present only where the document settles LESS than the whole state, and
@@ -68,13 +85,13 @@ export interface StateTaxRules {
      * here in that position.
      */
     confirms?: string;
-  } | null;
+  }) | null;
   /**
    * The document this state's head-of-household treatment was read from, and
    * when. Separate from the rates check because it answers a narrower
    * question and was settled first.
    */
-  headOfHouseholdSource: { url: string; checked: string } | null;
+  headOfHouseholdSource: RuleSource | null;
   personalExemption: {
     single: USD;
     marriedJointly: USD;
@@ -123,6 +140,43 @@ export interface StateTaxRules {
    * which is exactly the family it is aimed at.
    */
   earnedIncomeCredit: StateEitcRules | null;
+  /**
+   * The state's own credit for having children, where it has one.
+   *
+   * NEW MEXICO IS THE FIRST ONE MODELLED AND IT IS NOT SMALL. Its child income
+   * tax credit is refundable and pays $637 a child below $25,000 of income,
+   * $424 to $50,000, and something all the way up — a head of household on
+   * $50,000 with one child was being shown about $424 a year too much tax.
+   *
+   * Separate from the earned income credit above, and from the flat dependent
+   * figures in `personalCredit`, because it is neither: it is a share of
+   * nothing, it varies by income band rather than by the federal credit, and
+   * it is paid out below zero tax.
+   */
+  childCredit: ChildCredit | null;
+  /**
+   * An exemption granted PER PERSON ON THE RETURN that shrinks as income rises
+   * and stops dead above a ceiling.
+   *
+   * NEW MEXICO'S LOW- AND MIDDLE-INCOME EXEMPTION IS THE ONE, and it could not
+   * be written as an allowance phase-out: the amount is per exemption — the
+   * filer, the spouse and every dependent — so it grows with the household,
+   * while `allowancePhaseOut` may only taper a FIXED figure. A family of four
+   * gets four of them.
+   */
+  perPersonExemption: PerPersonExemption | null;
+  /**
+   * Who may claim the dependent exemption, and how many dependents it ignores.
+   *
+   * NEW MEXICO GIVES $4,000 "FOR ALL BUT ONE" DEPENDENT, and only on a joint
+   * or head-of-household return. Counting every child handed a one-child
+   * family $4,000 of deduction New Mexico does not allow, which is the
+   * flattering direction — about $188 a year of tax that is really owed.
+   *
+   * Null means every dependent counts for every filer, which is the ordinary
+   * case and what every other state here does.
+   */
+  dependentExemptionLimits: DependentExemptionLimits | null;
   /**
    * A personal credit that shrinks as income rises, where the state has one.
    *
@@ -445,6 +499,8 @@ export interface StateItemizedRules {
    * It is not a state or local tax, so no SALT cap touches it.
    */
   deductPayrollTax: boolean;
+  /** The document these rules were read out of. */
+  source?: RuleSource;
 }
 
 /**
@@ -488,6 +544,73 @@ export interface StateEitcRules {
    * several times over.
    */
   maxCredit: USD | null;
+}
+
+/**
+ * A statement about the filer that a state figure can depend on, including the
+ * separate return the published schedules never have a column for.
+ *
+ * Married-filing-separately is mapped to the single schedule everywhere else
+ * here, and for brackets that is right in most states. It is NOT right for New
+ * Mexico's low- and middle-income exemption, whose separate-return figures are
+ * half the joint ones rather than the single ones — using single would hand a
+ * separate filer an exemption that runs $9,167 further up the income scale
+ * than the statute allows.
+ */
+export type ExemptionStatus = PublishedStatus | 'marriedSeparately';
+
+/** A figure that differs by filing status, with single as the fallback. */
+export type ByStatus<T> = Partial<Record<ExemptionStatus, T>> & { single: T };
+
+/**
+ * See StateTaxRules.childCredit.
+ *
+ * `bands` are [income at or below which it applies, credit per child], in
+ * ascending order; `beyondLastBand` is what a child is worth above the last of
+ * them. New Mexico's table really does keep paying at every income — $26 a
+ * child above $350,000 — so a band list that simply ran out would be wrong
+ * rather than merely incomplete.
+ */
+export interface ChildCredit {
+  bands: Array<[number, number]>;
+  beyondLastBand: USD;
+  /** The document this table was read out of. */
+  source?: RuleSource;
+  /**
+   * Whether it pays out below zero tax. New Mexico's does, and that is most of
+   * its value to the households it is aimed at: a family whose bill is already
+   * near nothing receives the difference as a refund.
+   */
+  refundable: boolean;
+}
+
+/**
+ * See StateTaxRules.perPersonExemption.
+ *
+ * The exemption is `max` per person, less `perDollar` for every dollar of
+ * income above `start`, and nothing at all above `unavailableAbove` — a
+ * ceiling the statute states outright rather than a point the taper happens to
+ * reach. New Mexico's three sets of figures meet exactly at that ceiling, so
+ * the cliff never actually bites; it is carried because the state writes it
+ * that way and a later amendment could move one without the other.
+ */
+export interface PerPersonExemption {
+  /** The document this worksheet was read out of. */
+  source?: RuleSource;
+  max: USD;
+  start: ByStatus<USD>;
+  perDollar: ByStatus<number>;
+  unavailableAbove: ByStatus<USD>;
+}
+
+/** See StateTaxRules.dependentExemptionLimits. */
+export interface DependentExemptionLimits {
+  /** The document these limits were read out of. */
+  source?: RuleSource;
+  /** Dependents the state does not count. New Mexico ignores the first. */
+  ignoreFirst: number;
+  /** The filing statuses that may claim it at all. */
+  statuses: FilingStatus[];
 }
 
 /**
@@ -759,6 +882,8 @@ export interface StateTaxResult {
   credits: USD;
   /** The state's own earned income credit, if it has one. */
   earnedIncomeCredit: USD;
+  /** The state's own credit for children, if it has one. */
+  childCredit: USD;
   tax: USD;
 }
 
@@ -821,6 +946,20 @@ export function adultsIn(filingStatus: FilingStatus): 1 | 2 {
   return filingStatus === 'marriedJointly' || filingStatus === 'marriedSeparately' ? 2 : 1;
 }
 
+/**
+ * The state's own credit for children, read off a band of income.
+ *
+ * A function rather than an inline lookup because a state that taxes a couple
+ * as two people needs it applied ONCE to the household's own income, not once
+ * per artificial half at half the income — see the split branch below.
+ */
+function childCreditFor(gross: USD, children: number, rules: ChildCredit | null): USD {
+  if (!rules || children <= 0) return 0;
+  return (
+    children * (rules.bands.find(([upper]) => gross <= upper)?.[1] ?? rules.beyondLastBand)
+  );
+}
+
 export function computeStateTax(
   inputs: StateTaxInputs,
   rules: StateTaxRules,
@@ -878,9 +1017,26 @@ export function computeStateTax(
      * So both halves are computed WITHOUT it and it is applied once, against
      * their sum.
      */
-    const first = computeStateTax({ ...half, children: inputs.children }, rules);
-    const second = computeStateTax(half, rules);
-    const beforeEitc = first.tax + second.tax;
+    /*
+     * A CREDIT FOR CHILDREN BELONGS TO THE COMBINED RETURN TOO, and for a
+     * sharper reason than the earned income credit: its value is read off a
+     * band of income, and each half of a split return shows half the income.
+     * Left in place it would pay a couple at a band their household is not in.
+     *
+     * No state has both today. It is written this way so that the day one
+     * does, the answer is right rather than quietly one band too generous.
+     */
+    const halfRules = { ...rules, childCredit: null };
+    const first = computeStateTax({ ...half, children: inputs.children }, halfRules);
+    const second = computeStateTax(half, halfRules);
+    const splitChild = childCreditFor(
+      Math.max(0, inputs.grossSalary),
+      Math.max(0, inputs.children),
+      rules.childCredit ?? null,
+    );
+    const beforeEitc = rules.childCredit?.refundable
+      ? first.tax + second.tax - splitChild
+      : Math.max(0, first.tax + second.tax - splitChild);
 
     const splitEitcRules = rules.earnedIncomeCredit;
     const splitFederalEitc = Math.max(0, inputs.federalEarnedIncomeCredit ?? 0);
@@ -921,6 +1077,7 @@ export function computeStateTax(
       taxBeforeCredits: 0,
       credits: 0,
       earnedIncomeCredit: 0,
+      childCredit: 0,
       tax: 0,
     };
   }
@@ -1165,11 +1322,66 @@ export function computeStateTax(
 
   const itemized = itemizedTotal > standardDeduction;
   const deductions = itemized ? itemizedTotal : standardDeduction;
-  const exemptions = phaseOutAllowance(
-    (rules.personalExemption[allowanceKey] ?? rules.personalExemption[otherwise]) +
-      rules.personalExemption.dependent * children,
-    'personalExemption',
-  );
+
+  /*
+   * How many dependents this state's exemption actually counts.
+   *
+   * New Mexico counts all but one, and only on a joint or head-of-household
+   * return — "a deduction of $4,000 for all but one of a taxpayer's
+   * dependents". Everywhere else every dependent counts for every filer, which
+   * is what a null here means.
+   */
+  const dependentLimits = rules.dependentExemptionLimits ?? null;
+  const dependentsCounted =
+    dependentLimits && !dependentLimits.statuses.includes(inputs.filingStatus)
+      ? 0
+      : Math.max(0, children - (dependentLimits?.ignoreFirst ?? 0));
+
+  /*
+   * An exemption for everybody on the return, tapering with income. New
+   * Mexico's low- and middle-income exemption is the one, and it is a
+   * different shape from every allowance above: the amount is per person, so
+   * it grows with the household, and it stops at a ceiling the statute states
+   * outright.
+   *
+   * Measured on gross income, this engine's stand-in for the federal adjusted
+   * gross income the worksheet actually reads.
+   */
+  const perPerson = rules.perPersonExemption ?? null;
+  let perPersonExemption = 0;
+  if (perPerson) {
+    /*
+     * Looked up by FILING STATUS rather than by schedule, because a separate
+     * return has its own figures here and is not a single filer: New Mexico
+     * halves the joint thresholds for it, where the single ones sit well above
+     * half. `byStatus` falls back to single, which is the ordinary case.
+     */
+    const key: ExemptionStatus =
+      inputs.filingStatus === 'marriedSeparately' ? 'marriedSeparately' : allowanceKey;
+    const byStatus = <T,>(m: ByStatus<T>): T => m[key] ?? m[otherwise] ?? m.single;
+
+    if (gross <= byStatus(perPerson.unavailableAbove)) {
+      const each = Math.max(
+        0,
+        perPerson.max - byStatus(perPerson.perDollar) * Math.max(0, gross - byStatus(perPerson.start)),
+      );
+      /*
+       * People on THIS RETURN, which is not the same as people in the
+       * household: two spouses filing separately file two returns of one
+       * person each. Children ride on one return, exactly as they do federally
+       * and exactly as the dependent exemption above treats them.
+       */
+      const onReturn = (inputs.filingStatus === 'marriedJointly' ? 2 : 1) + children;
+      perPersonExemption = each * onReturn;
+    }
+  }
+
+  const exemptions =
+    phaseOutAllowance(
+      (rules.personalExemption[allowanceKey] ?? rules.personalExemption[otherwise]) +
+        rules.personalExemption.dependent * dependentsCounted,
+      'personalExemption',
+    ) + perPersonExemption;
 
   /*
    * New Jersey's property tax relief, which is not itemising and is the only
@@ -1321,6 +1533,20 @@ export function computeStateTax(
   );
 
   /*
+   * The state's own credit for children, where it has one.
+   *
+   * Read off gross income, which is what New Mexico's table reads — the
+   * adjusted gross income on line 9 of the return, before any state deduction
+   * or exemption. Reading it off taxable income would put a family one or two
+   * bands too low and pay them more than the state does.
+   *
+   * Kept apart from the personal and dependent credits for the same reason the
+   * earned income credit is: this one is refundable and those stop at zero.
+   */
+  const childRules = rules.childCredit ?? null;
+  const childCredit = childCreditFor(gross, children, childRules);
+
+  /*
    * Personal and dependent credits stop at zero. The state EITC stops at zero
    * too UNLESS the state made it refundable, in which case it keeps going and
    * the household is paid the difference. Four states — Missouri, Ohio, South
@@ -1401,15 +1627,28 @@ export function computeStateTax(
     ? taxBeforeCredits - creditsWithRelief
     : Math.max(0, taxBeforeCredits - creditsWithRelief);
   /*
-   * The final floor has to respect BOTH kinds of refundability, and it did
-   * not. Idaho has no earned income credit, so this line clamped its grocery
-   * credit straight back to zero — undoing the refund two lines after granting
-   * it. A floor applied at the end silently overrides every decision before it.
+   * NONREFUNDABLE CREDITS, THEN THE FLOOR, THEN THE REFUNDABLE ONES — sorted
+   * by what each credit IS rather than by which line it arrived on.
+   *
+   * The floor at the end is the dangerous part and it has already gone wrong
+   * once: Idaho has no earned income credit, so a blanket clamp put its
+   * refundable grocery credit back to zero, undoing the refund two lines after
+   * granting it. Now a second refundable credit exists — New Mexico's for
+   * children — and it could reach any state whose earned income credit is not
+   * refundable. Splitting the two piles is the only arrangement that stays
+   * right whichever combination a state has.
    */
-  const anythingRefundable = eitcRules?.refundable === true || rules.personalCreditRefundable;
-  const tax = anythingRefundable
-    ? afterCredits - earnedIncomeCredit
-    : Math.max(0, afterCredits - earnedIncomeCredit);
+  const refundable =
+    (eitcRules?.refundable === true ? earnedIncomeCredit : 0) +
+    (childRules?.refundable === true ? childCredit : 0);
+  const nonRefundable =
+    (eitcRules && !eitcRules.refundable ? earnedIncomeCredit : 0) +
+    (childRules && !childRules.refundable ? childCredit : 0);
+
+  const afterNonRefundable = rules.personalCreditRefundable
+    ? afterCredits - nonRefundable
+    : Math.max(0, afterCredits - nonRefundable);
+  const tax = afterNonRefundable - refundable;
 
   return {
     stateCode: rules.code,
@@ -1421,6 +1660,7 @@ export function computeStateTax(
     taxBeforeCredits,
     credits,
     earnedIncomeCredit,
+    childCredit,
     tax,
   };
 }

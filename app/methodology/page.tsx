@@ -2,7 +2,18 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 
 import { PageShell, Prose } from '@/components/page-shell';
-import { ALL_STATE_CODES, formatUSD, stateRules } from '@/engine';
+/*
+ * The verdict threshold is read from the engine, never typed into the prose.
+ * It was written out as "1.5%" in three places, and when it moved to 5% two of
+ * them would have gone on describing a rule the site no longer follows.
+ */
+import {
+  ALL_STATE_CODES,
+  TOO_CLOSE_FLOOR,
+  TOO_CLOSE_SHARE,
+  formatUSD,
+  stateRules,
+} from '@/engine';
 import { DEFAULT_SALARY } from '@/components/calculator';
 import { ReportProblem } from '@/components/report-problem';
 import { DATASET_VERSION } from '@/engine';
@@ -309,6 +320,16 @@ answer          =  in your pocket THERE  −  in your pocket HERE`}</pre>
             things this site knows — property tax and mortgage interest — so if you also give to
             charity or have large medical bills, you will do better than this says.
           </li>
+          <li>
+            <strong>Fifteen states and Washington DC pay you for having children</strong>, on top
+            of the federal credit, and until August 2026 not one of them was counted. New
+            Mexico&rsquo;s is now: it pays $637 a child below $25,000 of income, $424 up to
+            $50,000, and something at every income above that, and it is <em>refundable</em> —
+            paid out even when you owe nothing. A single parent on $50,000 in Albuquerque with one
+            child was being shown $500 of New Mexico tax where the figure is really $172. The
+            other fourteen are still missing, and each of those states now says so in the list at
+            the bottom of this page.
+          </li>
         </ul>
         <p>
           <strong>
@@ -322,6 +343,17 @@ answer          =  in your pocket THERE  −  in your pocket HERE`}</pre>
           checked, and that date links to the document it was checked against.
         </p>
         <p>
+          <strong>A link to a document is not proof there is anything in it.</strong> New Mexico
+          spent a release cited to its own revenue department&rsquo;s &ldquo;Personal Income Tax
+          Rates&rdquo; page, which turns out to be a heading, a menu and a footer with not one
+          figure anywhere on it. Nothing noticed, because everything that checked the citation was
+          really checking the web address. New Mexico&rsquo;s figures now cite the
+          department&rsquo;s own rate table and return instructions, and each citation carries the
+          words copied out of the document — which a test compares against the numbers actually
+          shipped, so a citation to the wrong page fails as loudly as no citation at all. The
+          other states are still cited by address alone, and that is being worked through.
+        </p>
+        <p>
           <strong>{COVERAGE.itemising} states</strong> now let a homeowner claim mortgage interest
           and property tax on the state return, and we calculate all of them. Three more do
           something different with the same idea: New Jersey relieves property tax without
@@ -333,6 +365,28 @@ answer          =  in your pocket THERE  −  in your pocket HERE`}</pre>
         <p>
           The &ldquo;What this gets wrong&rdquo; list below names every state with a rule we know
           about and do not yet model, and says which way each one runs.
+        </p>
+
+        <h3>What the state calculation counts, and what it does not</h3>
+        <p>
+          A short version of the two lists, because &ldquo;state income tax&rdquo; hides a great
+          deal. <strong>Counted:</strong> every state&rsquo;s rate schedule and the schedule a
+          head of household actually files on; standard deductions and personal and dependent
+          exemptions, including the ones that shrink or vanish as income rises; itemised
+          deductions in the {COVERAGE.itemising} states that allow them, for property tax and
+          mortgage interest only; the earned income credit in {COVERAGE.earnedIncomeCredit}{' '}
+          states; New Mexico&rsquo;s child credit and its low- and middle-income exemption;
+          disability and paid-leave contributions in eleven states; the states that tax a couple
+          as two people; and city income taxes.
+        </p>
+        <p>
+          <strong>Not counted:</strong> almost every other state credit. Credits and rebates that
+          turn on your age, your medical bills, childcare receipts, veteran status, adoption or
+          disability are not calculated at all, because this site never asks about any of them —
+          it asks for a salary, a household and a housing situation. The child credits of fourteen
+          more places are missing for a different reason: they could be calculated and are not yet.
+          Every one of these means the same thing when it applies to you — the tax shown is higher
+          than what you would really pay, so the city that levies it looks worse than it is.
         </p>
 
         <h2>What year the dollars are in</h2>
@@ -485,6 +539,14 @@ answer          =  in your pocket THERE  −  in your pocket HERE`}</pre>
           credit of their own on top; {COVERAGE.earnedIncomeCredit} of them are calculated here,
           and the list below says which are not and why.
         </p>
+        <p>
+          <strong>States also give credits for children, and that is a separate thing.</strong>{' '}
+          Fifteen states and Washington DC have one, and they are not a share of the federal
+          credit — each has its own table, its own age limits and its own income limits. Only New
+          Mexico&rsquo;s is calculated here. In the other fourteen, a household with children is
+          shown more state tax than it will really pay, and each of those states says so by name
+          in the list below.
+        </p>
 
         <h2>Metro areas that cross a state line</h2>
         <p>
@@ -532,20 +594,39 @@ answer          =  in your pocket THERE  −  in your pocket HERE`}</pre>
           want to live there.
         </p>
         <p>
-          There is a third answer, and it is the honest one more often than you would think. Every
-          cost here is a <em>median</em> for the local area, and real households scatter widely
-          around every one of them. So when the difference is smaller than{' '}
-          <strong>1.5% of the salary you are paid today</strong> &mdash; $2,250 a year on $150,000
-          &mdash; neither word lights up: the page says <em>too close to call</em> and shows you the
-          figure anyway.
+          There is a third answer, and it is the honest one far more often than you would think.
+          Neither word lights up until the difference is at least{' '}
+          <strong>{Math.round(TOO_CLOSE_SHARE * 100)}% of the salary you are paid today</strong>{' '}
+          &mdash; {formatUSD(90_000 * TOO_CLOSE_SHARE)} a year on $90,000,{' '}
+          {formatUSD(150_000 * TOO_CLOSE_SHARE)} on $150,000 &mdash; and never less than{' '}
+          <strong>{formatUSD(TOO_CLOSE_FLOOR)}</strong> however small the salary. Below that the
+          page says <em>too close to call</em> and shows you the figure anyway.
         </p>
         <p>
-          A share rather than a fixed amount, because the uncertainty scales with the household: a
-          $300 gap means something different on $50,000 than on $400,000. A share of{' '}
-          <em>gross salary</em> rather than of leftover money, because leftover is at or below zero
-          for a great many real households and a percentage of zero is not a threshold at all. And
-          the salary you have now rather than the one on offer, so the bar does not move every time
-          you try a different number in the box you came here to experiment with.
+          <strong>Two different reasons sit behind that bar, and they bind at different
+          incomes.</strong> One is precision: every cost here is a <em>median</em> for the local
+          area and real households scatter widely around every one of them, so a small difference
+          is inside the scatter rather than a result. The other is that this is a question about
+          whether to move house. A difference has to be worth the move, and $1,000 a year on
+          $90,000 is not &mdash; it is about $19 a week, against uprooting a life.
+        </p>
+        <p>
+          <strong>The bar used to be 1.5%, and that was too low</strong> for the second reason
+          rather than the first. On $90,000 it called a winner over $1,350 a year. The arithmetic
+          could see that gap; no household would act on it, and a verdict nobody would act on
+          should not be printed as one. At 5% the same household needs $4,500 &mdash; a difference
+          that is actually a decision.
+        </p>
+        <p>
+          A share rather than a flat amount, because the same dollars mean different things at
+          different incomes: $3,000 is a fortnight&rsquo;s pay on $80,000 and a rounding error on
+          $400,000. A share of <em>gross salary</em> rather than of leftover money, because
+          leftover is at or below zero for a great many real households and a percentage of zero is
+          not a threshold at all. The salary you have now rather than the one on offer, so the bar
+          does not move every time you try a different number in the box you came here to
+          experiment with. And a floor in dollars underneath it all, because below about $50,000
+          the share shrinks back into the range where the local medians genuinely cannot tell two
+          cities apart.
         </p>
 
         <h2>Share links</h2>
@@ -576,7 +657,12 @@ answer          =  in your pocket THERE  −  in your pocket HERE`}</pre>
           ))}
         </ul>
         <p>
-          Every other state has been read off its own publication with nothing left outstanding.
+          Every other state has been read off its own publication with nothing outstanding{' '}
+          <em>that we know of</em> — which is a weaker claim than the one this paragraph used to
+          make, and the honest one. A rule nobody has looked for does not appear on a list of
+          rules we know about. State credits for children were exactly that until August 2026:
+          fifteen states and Washington DC have one, none was calculated, and no state said so.
+          Fourteen of them now do.{' '}
           {STATES_ON_PRIOR_YEAR.length} of the {COVERAGE.taxing} are checked against the
           state&rsquo;s most recent figures
           rather than a 2026 document, because those states have published nothing for 2026 — they

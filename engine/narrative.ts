@@ -20,16 +20,38 @@ import type { ComparisonResult, USD } from './types';
 // ---------------------------------------------------------------------------
 
 /**
- * Below this share, the two cities are not distinguishable and the site should
- * not pretend otherwise.
+ * Below this share, the site does not call a winner.
  *
- * Every figure here describes a whole area rather than a household — a median
- * rent, an average grocery bill, an average number of cars — and real
- * households scatter widely around each one. A difference smaller than this is
- * comfortably inside that scatter, so calling a winner would be reading
- * precision into an estimate that does not have any.
+ * TWO REASONS, AND THE SECOND ONE IS WHY IT IS 5% RATHER THAN 1.5%.
+ *
+ * The first is precision. Every figure here describes a whole area rather than
+ * a household — a median rent, an average grocery bill, an average number of
+ * cars — and real households scatter widely around each one. A difference
+ * inside that scatter is not a win.
+ *
+ * The second is that this is a question about whether to move house, and the
+ * threshold has to be worth moving for. At 1.5% a household on $90,000 was
+ * told to pack over $1,400 a year — $27 a week, against uprooting a life. That
+ * is a difference the arithmetic can see and no one would act on, and a verdict
+ * nobody would act on is a verdict that should not be printed. 5% of $90,000 is
+ * $4,500, which is a decision.
+ *
+ * The number stays a SHARE because the same dollars mean different things at
+ * different incomes: $3,000 is a fortnight's pay on $80,000 and a rounding
+ * error on $400,000.
  */
-export const TOO_CLOSE_SHARE = 0.015;
+export const TOO_CLOSE_SHARE = 0.05;
+
+/**
+ * ...and never less than this in dollars, however small the salary.
+ *
+ * A share alone reaches $750 at $15,000, which is back inside the range where
+ * a median rent cannot tell two cities apart — the first reason above does not
+ * scale with income the way the second one does. The floor is where the two
+ * reasons cross: below about $50,000 of salary, precision binds before
+ * significance does.
+ */
+export const TOO_CLOSE_FLOOR: USD = 2_500;
 
 /**
  * What the threshold is a share OF: the salary you are paid today.
@@ -67,16 +89,26 @@ export interface Verdict {
  * nothing about the job, the people, or the weather.
  */
 export function verdict(result: ComparisonResult): Verdict {
-  const threshold = tooCloseScale(result) * TOO_CLOSE_SHARE;
+  const share = tooCloseScale(result) * TOO_CLOSE_SHARE;
+  const threshold = Math.max(TOO_CLOSE_FLOOR, share);
 
   if (Math.abs(result.delta) < threshold) {
     return {
       kind: 'too-close',
       threshold,
+      /*
+       * The sentence has to say which of the two rules produced the number, or
+       * a reader on $40,000 does the arithmetic, gets $2,000, and finds the
+       * page quoting $2,500 at them.
+       */
       qualifier:
-        `The gap is under ${(TOO_CLOSE_SHARE * 100).toFixed(1)}% of your salary ` +
-        `(${formatUSD(threshold)} a year) — closer than area medians and averages can ` +
-        `really tell apart.`,
+        share >= TOO_CLOSE_FLOOR
+          ? `The gap is under ${(TOO_CLOSE_SHARE * 100).toFixed(0)}% of your salary ` +
+            `(${formatUSD(threshold)} a year) — not enough to move house for, and closer ` +
+            `than area medians and averages can really tell apart.`
+          : `The gap is under ${formatUSD(threshold)} a year, which is the least this ` +
+            `site will call a winner over — closer than area medians and averages can ` +
+            `really tell apart.`,
     };
   }
   return result.delta > 0

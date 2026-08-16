@@ -68,10 +68,46 @@ describe('verdict', () => {
     expect(verdict({ ...base, delta: -(t + 1) }).kind).toBe('stay');
   });
 
-  it('is 1.5% of gross salary, so the margin grows with the money involved', () => {
-    expect(verdict(run(CHICAGO, AUSTIN, 60_000)).threshold).toBeCloseTo(900, 6);
-    expect(verdict(run(CHICAGO, AUSTIN, 150_000)).threshold).toBeCloseTo(2_250, 6);
-    expect(verdict(run(CHICAGO, AUSTIN, 400_000)).threshold).toBeCloseTo(6_000, 6);
+  /*
+   * 5%, RAISED FROM 1.5%, because the old bar was one the arithmetic could
+   * clear and a household never would: $1,350 a year on $90,000 is $26 a week,
+   * and nobody moves house for $26 a week. A verdict nobody would act on
+   * should not be printed as a verdict.
+   */
+  it('is 5% of gross salary, so the margin grows with the money involved', () => {
+    expect(verdict(run(CHICAGO, AUSTIN, 60_000)).threshold).toBeCloseTo(3_000, 6);
+    expect(verdict(run(CHICAGO, AUSTIN, 150_000)).threshold).toBeCloseTo(7_500, 6);
+    expect(verdict(run(CHICAGO, AUSTIN, 400_000)).threshold).toBeCloseTo(20_000, 6);
+  });
+
+  /*
+   * ...and never below $2,500 in dollars. A share alone keeps shrinking with
+   * the salary, and below about $50,000 it drops back inside the range where a
+   * median rent cannot tell two cities apart — so the reason for the bar stops
+   * being "not worth moving for" and goes back to being "we cannot see it".
+   */
+  it('never calls a winner over less than $2,500, however small the salary', () => {
+    expect(verdict(run(CHICAGO, AUSTIN, 20_000)).threshold).toBeCloseTo(2_500, 6);
+    expect(verdict(run(CHICAGO, AUSTIN, 40_000)).threshold).toBeCloseTo(2_500, 6);
+    // $50,000 is where the two rules cross, and above it the share takes over.
+    expect(verdict(run(CHICAGO, AUSTIN, 50_000)).threshold).toBeCloseTo(2_500, 6);
+    expect(verdict(run(CHICAGO, AUSTIN, 51_000)).threshold).toBeCloseTo(2_550, 6);
+  });
+
+  /*
+   * And it says WHICH rule produced the figure. A reader on $40,000 who works
+   * out 5% and gets $2,000 must not find the page quoting $2,500 at them with
+   * no explanation.
+   */
+  it('names the rule the threshold came from', () => {
+    const low = verdict({ ...run(CHICAGO, AUSTIN, 40_000), delta: 100 });
+    expect(low.kind).toBe('too-close');
+    expect(low.qualifier).toContain('$2,500');
+    expect(low.qualifier).not.toContain('% of your salary');
+
+    const high = verdict({ ...run(CHICAGO, AUSTIN, 150_000), delta: 100 });
+    expect(high.qualifier).toContain('5% of your salary');
+    expect(high.qualifier).toContain('$7,500');
   });
 
   it('measures against the salary you have now, not the one on offer', () => {
@@ -88,7 +124,7 @@ describe('verdict', () => {
     // would have made this case nonsense rather than merely tight.
     const broke = run(CHICAGO, AUSTIN, 60_000, 60_000, family);
     expect(broke.origin.leftover).toBeLessThan(0);
-    expect(verdict(broke).threshold).toBeCloseTo(900, 6);
+    expect(verdict(broke).threshold).toBeCloseTo(3_000, 6);
     expect(['pack', 'stay', 'too-close']).toContain(verdict(broke).kind);
   });
 

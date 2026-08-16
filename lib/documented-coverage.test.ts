@@ -73,7 +73,13 @@ describe('what the README claims', () => {
   it('states the real number of states carrying a gap note', () => {
     const withGaps = taxing.filter((s) => s.modellingGaps.length > 0).length;
     const words = ['Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen',
-      'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen', 'Twenty'];
+      'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen', 'Twenty', 'Twenty-one',
+      'Twenty-two', 'Twenty-three', 'Twenty-four', 'Twenty-five', 'Twenty-six',
+      'Twenty-seven', 'Twenty-eight', 'Twenty-nine', 'Thirty'];
+    // The list ran out at twenty and the count reached twenty-five, which made
+    // the assertion read "undefined states carry a note" — a test that fails
+    // for the right reason by accident is still a test that stopped checking.
+    expect(words[withGaps - 10], `no word for ${withGaps}`).toBeTruthy();
     expect(readme).toContain(`${words[withGaps - 10]} states carry a note`);
   });
 
@@ -150,8 +156,19 @@ describe('every Indiana metro carries a county rate', () => {
  * sentence was stronger than the evidence twice over.
  */
 describe('what a recorded source actually is', () => {
+  /*
+   * The last pattern is New Mexico's, and it is a state document on a host
+   * that is not the state's. tax.newmexico.gov serves every form and booklet
+   * through a contracted document service, under an account identifier that
+   * appears in the department's own forms page — so the paper is the state
+   * speaking and only the delivery is outsourced. It is spelled out to that
+   * account rather than to the whole service, so nothing else on that host
+   * could ever pass as New Mexico's.
+   *
+   * Kept in step with OFFICIAL_HOST in scripts/build-state-tax-rules.mjs.
+   */
   const official =
-    /\.gov(\/|$|:)|\.state\.[a-z]{2}\.us|legislature\.|\blegis\.|capitol\.|revisor\.|ksrevisor\.|mca\.legmt/i;
+    /\.gov(\/|$|:)|\.state\.[a-z]{2}\.us|legislature\.|\blegis\.|capitol\.|revisor\.|ksrevisor\.|mca\.legmt|klvg4oyd4j\.execute-api\.us-west-2\.amazonaws\.com\/prod\/PublicFiles\/34821a9573ca43e7b06dfad20f5183fd\//i;
 
   const sources = taxing.flatMap((s) =>
     [
@@ -170,15 +187,20 @@ describe('what a recorded source actually is', () => {
   });
 
   /*
-   * Not zero — New Mexico's revenue department serves its forms through
-   * JavaScript that cannot be fetched, so its booklet is recorded from a
-   * mirror. The point is that the number stays small and visible rather than
-   * being absorbed into a claim that everything came from the state.
+   * Zero now, and it was two: New Mexico sat on a forms aggregator and a
+   * commercial law site, then on its department's own site, and the department
+   * page turned out to carry no figures. It is now on the department's own
+   * rate table and booklets, delivered by the document service the department
+   * uses — which is why that host is named above rather than treated as a
+   * republisher.
+   *
+   * The bound stays rather than being tightened to zero, because a republisher
+   * is sometimes the only thing that exists and the honest response is to
+   * record it and keep the number small and visible.
    */
   it('keeps republished sources few, and never claims they are the state', () => {
     const republished = sources.filter((s) => !official.test(s.url));
     expect(republished.length).toBeLessThanOrEqual(2);
-    for (const s of republished) expect(s.code).toBe('NM');
   });
 
   /*
@@ -229,6 +251,170 @@ describe('what a recorded source actually is', () => {
       // only in a field.
       expect(s.priorYearFigures ?? s.notes.join(' '), s.code).toMatch(/not in that document|no rate table|rest on the annual compilation|rather than on/i);
     }
+  });
+
+  /*
+   * A URL THAT LOOKS OFFICIAL IS NOT EVIDENCE THAT ANYTHING IS ON IT.
+   *
+   * New Mexico shipped a whole release cited to its own department's "Personal
+   * Income Tax Rates" page — a heading, a navigation menu and a footer, with
+   * not one figure anywhere on it. Every check here passed it, because every
+   * check here was about the host name. The state was counted among the 42
+   * "read off the state's own publication" while the paper said nothing at
+   * all.
+   *
+   * So a source may now carry `quote`: words copied out of the document. An
+   * empty page cannot produce one, and these tests check the numbers inside
+   * the quotation against the numbers the dataset actually ships — so a
+   * quotation from the wrong document fails as loudly as no quotation.
+   *
+   * Coverage is deliberately not required of every state. Demanding it today
+   * would mean re-opening 42 documents before anything could ship; the build
+   * reports how many carry one, and it can only go up.
+   */
+  describe('sources that quote the document', () => {
+    /** Every number in a string, commas and dollar signs stripped. */
+    const numbersIn = (text: string) =>
+      new Set(
+        (text.match(/\d[\d,]*(?:\.\d+)?/g) ?? []).map((n) => Number(n.replace(/,/g, ''))),
+      );
+
+    /** Every figure this state ships that a citation might be quoting. */
+    const figuresOf = (s: ReturnType<typeof stateRules>) => {
+      const figures = new Set<number>();
+      for (const brackets of Object.values(s.brackets)) {
+        for (const b of brackets ?? []) {
+          figures.add(b.from);
+          // Rates are quoted as percentages: 4.9%, not 0.049.
+          figures.add(Math.round(b.rate * 1000) / 10);
+        }
+      }
+      for (const amount of [
+        ...Object.values(s.standardDeduction),
+        ...Object.values(s.personalExemption),
+        ...Object.values(s.personalCredit),
+      ]) {
+        if (typeof amount === 'number') figures.add(amount);
+      }
+      return figures;
+    };
+
+    const quoted = taxing.flatMap((s) =>
+      (
+        [
+          ['rates', s.ratesCheckedAgainstState],
+          ['head of household', s.headOfHouseholdSource],
+          ['itemising', s.itemizedDeductions?.source],
+          ['child credit', s.childCredit?.source],
+          ['low-income exemption', s.perPersonExemption?.source],
+          ['dependent exemption', s.dependentExemptionLimits?.source],
+        ] as const
+      )
+        .filter(([, src]) => src?.quote)
+        .map(([what, src]) => ({ code: s.code, what, state: s, quote: src!.quote as string })),
+    );
+
+    it('has some, or these tests are checking nothing', () => {
+      expect(quoted.length).toBeGreaterThan(0);
+    });
+
+    it('quotes enough of the document to be worth reading', () => {
+      for (const q of quoted) {
+        expect(q.quote.length, `${q.code} ${q.what}`).toBeGreaterThan(60);
+      }
+    });
+
+    /*
+     * The point of the whole mechanism: a quotation has to contain a figure
+     * this dataset ships. A page that carries no figures cannot satisfy this,
+     * and neither can a quotation lifted from the wrong state.
+     */
+    /*
+     * Only where the claim IS a figure. An itemising citation settles a rule —
+     * "you must add back the state and local tax deduction on Schedule A line
+     * 5a" — and there is no number in that sentence to check. Demanding one
+     * would push the next person to quote a number that is not the evidence,
+     * which is the same mistake as citing a URL that is not the document.
+     */
+    const NUMERIC = ['rates', 'child credit', 'low-income exemption', 'dependent exemption'];
+
+    it('quotes a figure the dataset actually ships for that state', () => {
+      for (const q of quoted.filter((x) => NUMERIC.includes(x.what))) {
+        const inQuote = numbersIn(q.quote);
+        const shipped = [
+          ...figuresOf(q.state),
+          ...(q.state.childCredit?.bands.flat() ?? []),
+          ...(q.state.perPersonExemption
+            ? [
+                q.state.perPersonExemption.max,
+                ...Object.values(q.state.perPersonExemption.start),
+                ...Object.values(q.state.perPersonExemption.unavailableAbove),
+              ]
+            : []),
+        ];
+        expect(
+          shipped.some((figure) => inQuote.has(figure)),
+          `${q.code} ${q.what}: nothing in the quotation is a figure this dataset ships`,
+        ).toBe(true);
+      }
+    });
+
+    /*
+     * Where the citation IS a table of figures, every one of them has to be in
+     * the quotation. A credit table quoted down to its first band would prove
+     * only that the first band was read.
+     */
+    it('quotes every band of a credit or exemption table it is cited for', () => {
+      for (const s of taxing) {
+        const credit = s.childCredit;
+        if (credit?.source?.quote) {
+          const inQuote = numbersIn(credit.source.quote);
+          for (const [upper, perChild] of credit.bands) {
+            expect(inQuote.has(upper), `${s.code}: band $${upper} is not in the quotation`).toBe(true);
+            expect(inQuote.has(perChild), `${s.code}: credit $${perChild} is not in the quotation`).toBe(
+              true,
+            );
+          }
+          expect(inQuote.has(credit.beyondLastBand), s.code).toBe(true);
+        }
+
+        const exemption = s.perPersonExemption;
+        if (exemption?.source?.quote) {
+          const inQuote = numbersIn(exemption.source.quote);
+          const every = [
+            exemption.max,
+            ...Object.values(exemption.start),
+            ...Object.values(exemption.unavailableAbove),
+            ...Object.values(exemption.perDollar),
+          ];
+          for (const figure of every) {
+            expect(inQuote.has(figure), `${s.code}: ${figure} is not in the quotation`).toBe(true);
+          }
+        }
+      }
+    });
+
+    /*
+     * New Mexico is pinned by name because it is the state this happened to,
+     * and because the page it was cited to is still there and still empty.
+     */
+    it('leaves New Mexico on documents rather than on a landing page', () => {
+      const nm = stateRules('NM');
+      const sources = [
+        nm.ratesCheckedAgainstState,
+        nm.headOfHouseholdSource,
+        nm.itemizedDeductions?.source,
+        nm.childCredit?.source,
+        nm.perPersonExemption?.source,
+        nm.dependentExemptionLimits?.source,
+      ];
+
+      for (const src of sources) {
+        expect(src?.url).toBeTruthy();
+        expect(src!.url).not.toContain('current-historic-tax-rates-overview');
+        expect(src!.quote, src!.url).toBeTruthy();
+      }
+    });
   });
 
   it('does not describe prior-year figures as this year\'s document', () => {

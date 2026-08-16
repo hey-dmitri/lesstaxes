@@ -118,6 +118,17 @@ const PRIOR_YEAR_FIGURES = {
   Alabama: 'Alabama has published nothing for 2026. Its rates, exemptions and deduction charts here are the 2025 figures, all of which are fixed in statute rather than indexed.',
   Oklahoma: "Oklahoma's rates for 2026 come from the enacted law, but its standard deduction and exemptions here are the 2025 figures. They are not indexed, so they should carry unchanged.",
   'Rhode Island': "Rhode Island's 2026 figures here come from a form the state published carrying a draft watermark. They are internally consistent and are the state's own, but they should be re-checked against the final booklet.",
+  /*
+   * NEW MEXICO IS ON THIS LIST FOR ONE FIGURE, not for the state.
+   *
+   * Its brackets are fixed in statute for 2025 and forward and are not indexed,
+   * so they carry into 2026 unchanged. The child income tax credit is the
+   * exception: the statute indexes it every year, which is why the amounts are
+   * $637 and $424 rather than the round $600 and $400 the 2023 law set, and the
+   * 2026 table appears only in return instructions that are not out.
+   */
+  'New Mexico':
+    "New Mexico's brackets, deduction and exemptions here are 2026 figures — the state fixed them in statute for 2025 and forward and does not index them. Its child income tax credit amounts are the published 2025 ones, because New Mexico indexes that credit for inflation every year and has not published 2026. The 2026 credit will be slightly larger, so the tax shown here is slightly high.",
 };
 
 /**
@@ -548,11 +559,36 @@ const RATES_CHECKED = {
     checked: '2026-08-15',
   },
   'New Mexico': {
-    // Head-of-household deduction was missing, and it fell back to the JOINT
-    // figure rather than the single one — an undercharge.
+    /*
+     * Head-of-household deduction was missing, and it fell back to the JOINT
+     * figure rather than the single one — an undercharge.
+     *
+     * THE SOURCE WAS AN EMPTY PAGE FOR A WHOLE RELEASE, and it got there by
+     * chasing the domain rather than the evidence. The department's
+     * "Personal Income Tax Rates" page is a section landing page: heading,
+     * navigation, footer, and not one figure. It replaced a forms aggregator
+     * that at least carried the booklet, and everything downstream — the test,
+     * the build report, the coverage sentence — passed it, because all any of
+     * them asked was whether the host looked governmental.
+     *
+     * This is the department's own 2025 tax rate table, which is a table.
+     * Every one of its 1,002 rows was reproduced by the brackets shipped here:
+     * the joint column exactly, the single column within the dollar its rows
+     * are rounded to, and the head-of-household column is identical to the
+     * joint one all the way up.
+     *
+     * ITS OWN SUMMARY LINE IS $2 BELOW ITS OWN TABLE, and that is not an error
+     * in the brackets. The page above $100,000 prints "Single … $4,356 plus
+     * 4.9%", where the schedule gives exactly $4,358.00 at $100,000. The $4,356
+     * is the value of the table's last row, whose bands are $100 wide and are
+     * read at their midpoint. Nobody should "correct" our figures towards it.
+     */
     matched: false,
-    source: 'https://www.tax.newmexico.gov/all-nm-taxes/current-historic-tax-rates-overview/personal-income-tax-rates/',
-    checked: '2026-08-15',
+    source:
+      'https://klvg4oyd4j.execute-api.us-west-2.amazonaws.com/prod/PublicFiles/34821a9573ca43e7b06dfad20f5183fd/3138d8e6-3d90-4fc8-a0af-ee15d3b395f5/2025trt.pdf',
+    checked: '2026-08-16',
+    quote:
+      '2025 TAX RATE TABLE Based on Taxable Income … 25,300 25,400 815 679 886 679 … If line 17 of Form PIT-1 (Taxable Income) is over $100,000 use the following table to compute your tax. Single $210,000 $4,356 4.9% $100,000; Married Filing Jointly $315,000 $4,087 4.9% $100,000; Head of Household $315,000 $4,087 4.9% $100,000 … Single over $210,000 $9,746 5.9%; Married Filing Jointly over $315,000 $14,622 5.9%',
   },
   'New Jersey': {
     matched: false,
@@ -1346,12 +1382,23 @@ const HEAD_OF_HOUSEHOLD = {
     checked: '2026-08-15',
   },
   'New Mexico': {
-    // Statute 7-2-7, effective 1 January 2025: one table for "married
-    // individuals filing joint returns, heads of household and surviving
-    // spouses".
+    /*
+     * Statute 7-2-7, effective 1 January 2025, prints one table for "married
+     * individuals filing joint returns, heads of household and surviving
+     * spouses" — HB 252 of the 2024 session, which is where this used to be
+     * cited from.
+     *
+     * The department's own rate table settles it more directly, and it is the
+     * document actually opened: it prints four columns, and the head-of-
+     * household column equals the married-filing-jointly column on every one
+     * of its 1,002 rows.
+     */
     basis: 'marriedJointly',
-    source: 'https://www.nmlegis.gov/sessions/24%20Regular/bills/house/HB0252.HTML',
-    checked: '2026-08-15',
+    source:
+      'https://klvg4oyd4j.execute-api.us-west-2.amazonaws.com/prod/PublicFiles/34821a9573ca43e7b06dfad20f5183fd/3138d8e6-3d90-4fc8-a0af-ee15d3b395f5/2025trt.pdf',
+    checked: '2026-08-16',
+    quote:
+      '2025 TAX RATE TABLE … And you are: Single, Married Filing Jointly*, Married Filing Separately, Head of Household … 25,300 25,400 815 679 886 679 … Head of Household $315,000 $4,087 4.9% $100,000',
   },
   Oregon: {
     /*
@@ -2201,8 +2248,11 @@ const STATE_OVERRIDES = {
      * have shown up as an obviously wrong number.
      */
     standardDeduction: { headOfHousehold: 24_150 },
-    source: 'https://www.tax.newmexico.gov/all-nm-taxes/current-historic-tax-rates-overview/personal-income-tax-rates/',
-    checked: '2026-08-15',
+    source:
+      'https://klvg4oyd4j.execute-api.us-west-2.amazonaws.com/prod/PublicFiles/34821a9573ca43e7b06dfad20f5183fd/2d774fd0-be97-4b57-8dae-68aed999da0f/2025pit-1-ins.pdf',
+    checked: '2026-08-16',
+    quote:
+      'LINE 12. Federal Standard or Itemized Deduction Amount. If you did not itemize deductions on your 2025 federal return, enter the allowable federal standard deduction from federal Form 1040 or 1040SR, line 12.',
   },
   'New Jersey': {
     // 5.525%, not 5.53%. Worth about $2 a year, and wrong is wrong.
@@ -2672,13 +2722,25 @@ const ITEMIZED_DEDUCTIONS = {
     checked: '2026-08-15',
   },
   'New Mexico': {
+    /*
+     * New Mexico taxes federal adjusted gross income less the FEDERAL
+     * deduction, so itemising for New Mexico is not a separate calculation at
+     * all — it is whatever the federal return did. What the state adds is an
+     * add-back of the state and local INCOME tax on Schedule A line 5a, which
+     * leaves property tax and mortgage interest standing. That is exactly the
+     * pair this engine knows, which is why the shape below fits.
+     */
     deductPropertyTax: true,
     deductStateIncomeTax: false,
     mortgageDebtLimit: 750_000,
     saltCap: null,
     requiresFederalItemising: true,
-    source: 'https://www.tax.newmexico.gov/all-nm-taxes/current-historic-tax-rates-overview/personal-income-tax-rates/',
-    checked: '2026-08-15',
+    note: "New Mexico's itemised deductions here cover property tax and mortgage interest only, because they are the two figures this site knows. Charitable giving, medical costs and the rest of the federal schedule are not asked about and are not included, so New Mexico tax shown here is higher than the true figure for anyone who has them.",
+    source:
+      'https://klvg4oyd4j.execute-api.us-west-2.amazonaws.com/prod/PublicFiles/34821a9573ca43e7b06dfad20f5183fd/2d774fd0-be97-4b57-8dae-68aed999da0f/2025pit-1-ins.pdf',
+    checked: '2026-08-16',
+    quote:
+      'LINE 10. Itemized State and Local Tax Deduction. If you itemized deductions on your 2025 federal income tax return, on your PIT-1 Return you must add back all or part of the amount shown for Taxes You Paid (state and local) on federal Schedule A, line 5a.',
   },
   Idaho: {
     // See REFUNDABLE_PERSONAL_CREDIT for the grocery credit that rides on top.
@@ -2894,6 +2956,181 @@ const STATE_EITC_SOURCE = {
   checked: '2026-08-15',
 };
 
+/**
+ * A STATE'S OWN CREDIT FOR HAVING CHILDREN, by band of income.
+ *
+ * Fifteen states and Washington DC give one. Exactly one is calculated here,
+ * and the rest are named on their own state in CHILD_CREDIT_GAPS below rather
+ * than left for a reader to discover, because every one of them means the tax
+ * shown for a family is higher than the truth.
+ *
+ * NEW MEXICO IS THE ONE, and it was found by an audit rather than by anything
+ * in this build: the state's 25% earned income match was modelled and its
+ * separate child income tax credit was not, so a head of household on $50,000
+ * with one child was shown about $424 a year too much. The credit is
+ * refundable, and it does not taper to nothing — even above $350,000 a child
+ * is worth $26 — so a band table that simply stopped would be wrong rather
+ * than merely short.
+ *
+ * The amounts are indexed for inflation, which is why they are not the round
+ * $600/$400/$200 figures the 2023 statute set. These are the department's own
+ * published 2025 table; New Mexico has not published a 2026 one, so this is a
+ * prior-year figure and says so on the state.
+ */
+const CHILD_CREDIT = {
+  'New Mexico': {
+    // "Table 4. 2025 Child Income Tax Credit Income Table", by adjusted gross
+    // income from PIT-1 line 9 — one table for every filing status.
+    bands: [
+      [25_000, 637],
+      [50_000, 424],
+      [75_000, 212],
+      [100_000, 106],
+      [200_000, 79],
+      [350_000, 53],
+    ],
+    beyondLastBand: 26,
+    refundable: true,
+    source:
+      'https://klvg4oyd4j.execute-api.us-west-2.amazonaws.com/prod/PublicFiles/34821a9573ca43e7b06dfad20f5183fd/60712e95-e253-4b88-9283-36b2484e541e/2025pit-rc-ins.pdf',
+    checked: '2026-08-16',
+    quote:
+      'Table 4. 2025 Child Income Tax Credit Income Table … $0 $25,000 $637 25,001 50,000 424 50,001 75,000 212 75,001 100,000 106 100,001 200,000 79 200,001 350,000 53 350,001 26',
+  },
+};
+
+/**
+ * AN EXEMPTION FOR EVERY PERSON ON THE RETURN, tapering with income.
+ *
+ * New Mexico's low- and middle-income exemption is the only one modelled and
+ * it does not fit any allowance shape already here: $2,500 per exemption — the
+ * filer, the spouse and every dependent — reduced by cents on every dollar of
+ * income above a threshold, and unavailable outright above a ceiling. It grows
+ * with the household, which `allowancePhaseOut` deliberately cannot do.
+ *
+ * The separate-return column is carried rather than folded into single. New
+ * Mexico halves the joint figures for a separate filer ($15,000 and 20 cents),
+ * where the single ones are $20,000 and 15 cents — so the usual "separate maps
+ * to single" would run the exemption $9,167 further up the income scale than
+ * the statute allows.
+ */
+const PER_PERSON_EXEMPTION = {
+  'New Mexico': {
+    max: 2_500,
+    start: { single: 20_000, marriedJointly: 30_000, headOfHousehold: 30_000, marriedSeparately: 15_000 },
+    perDollar: { single: 0.15, marriedJointly: 0.1, headOfHousehold: 0.1, marriedSeparately: 0.2 },
+    unavailableAbove: {
+      single: 36_667,
+      marriedJointly: 55_000,
+      headOfHousehold: 55_000,
+      marriedSeparately: 27_500,
+    },
+    source:
+      'https://klvg4oyd4j.execute-api.us-west-2.amazonaws.com/prod/PublicFiles/34821a9573ca43e7b06dfad20f5183fd/2d774fd0-be97-4b57-8dae-68aed999da0f/2025pit-1-ins.pdf',
+    checked: '2026-08-16',
+    quote:
+      'New Mexico Low- and Middle-Income Tax Exemption Worksheet … You are eligible to claim the New Mexico low- and middle-income tax exemption if … Single $36,667 or less; Married filing jointly or Surviving Spouse $55,000 or less; Head of household $55,000 or less; Married filing separately $27,500 or less … 2. If your filing status on PIT-1, line 7 is: Single, enter $20,000. Married filing jointly or Surviving Spouse, enter $30,000. Head of household, enter $30,000. Married filing separately, enter $15,000. … 4. Single, enter 0.15. Married filing jointly or Surviving Spouse, enter 0.10. Head of household, enter 0.10. Married filing separately, enter 0.20. … 6. Subtract line 5 from $2,500. 7. Enter the number of exemptions reported on PIT-1, line 5. 8. Multiply line 6 by line 7.',
+  },
+};
+
+/**
+ * WHO MAY CLAIM THE DEPENDENT EXEMPTION, AND HOW MANY DEPENDENTS IT COUNTS.
+ *
+ * New Mexico's $4,000 is "for all but one" dependent and only on a joint or
+ * head-of-household return. The source table's own footnote said so in plain
+ * words — "a deduction of $4,000 for all but one of a taxpayer's dependents" —
+ * and the build read the $4,000 and ignored the sentence, handing a one-child
+ * family a deduction New Mexico does not give and a single parent filing as
+ * single one they cannot claim.
+ */
+const DEPENDENT_EXEMPTION_LIMITS = {
+  'New Mexico': {
+    ignoreFirst: 1,
+    statuses: ['marriedJointly', 'headOfHousehold'],
+    source:
+      'https://klvg4oyd4j.execute-api.us-west-2.amazonaws.com/prod/PublicFiles/34821a9573ca43e7b06dfad20f5183fd/2d774fd0-be97-4b57-8dae-68aed999da0f/2025pit-1-ins.pdf',
+    checked: '2026-08-16',
+    quote:
+      'LINE 13. Deduction for Certain Dependents. A taxpayer who is not a dependent of another individual and files a return as a head of household or married filing jointly may claim a deduction from net income in an amount of $4000 for certain dependents. … 4. Qualified dependents. Subtract "1" from total dependents entered in line 3.',
+  },
+};
+
+/**
+ * STATES WHOSE CHILD CREDIT WE DO NOT CALCULATE, named on the state itself.
+ *
+ * The methodology page promises that every rule we know a state has and do not
+ * model appears in its own list. Child credits were a whole category missing
+ * from that promise: fifteen states and DC have one, one of them is calculated
+ * here, and until now none of the other fourteen said so anywhere.
+ *
+ * Only the existence, the shape and the DIRECTION are claimed. Amounts appear
+ * where the source states them; where it does not, the sentence says nothing
+ * it cannot support. A credit that is not calculated always means the same
+ * thing — the tax shown is higher than the truth for a household with children
+ * — and that is the part a reader can act on.
+ *
+ * Arizona and Massachusetts are absent because both already carry a note
+ * naming their own credit. New Mexico is absent because it is now modelled.
+ *
+ * Source: ITEP, "State Child Tax Credits Boosted Financial Security for
+ * Families and Children in 2025" (11 September 2025, updated February 2026),
+ * cross-checked against each state's own credit page where one exists.
+ */
+const CHILD_CREDIT_GAPS = {
+  California:
+    "California's young child tax credit is refundable and worth up to $1,189 for 2025 — once per return rather than once per child — to a household with a child under six and earnings low enough to qualify for California's own earned income credit. It is not calculated here, so California tax shown for such a household is higher than the true figure.",
+  Colorado:
+    "Colorado's child tax credit is refundable and reaches as much as $3,200 a child at the lowest incomes, tapering as income rises. It is not calculated here, so Colorado tax shown for a family with young children is higher than the true figure.",
+  Georgia:
+    'Georgia created a nonrefundable child tax credit of $250 for each child under six, first claimable for 2026. It is not calculated here, so Georgia tax shown for a family with young children is higher than the true figure.',
+  Maine:
+    "Maine's dependent exemption tax credit is refundable and worth $315 a child, $630 for a child under six, up to $165,500 of income. It is not calculated here, so Maine tax shown for a family with children is higher than the true figure.",
+  Maryland:
+    "Maryland's refundable child tax credit reaches families with low incomes and a child under six or a child with a disability. It is not calculated here, so Maryland tax shown for those families is higher than the true figure.",
+  Minnesota:
+    "Minnesota's child tax credit is refundable and among the largest in the country at up to $1,750 a child, phasing out with income. It is not calculated here, so Minnesota tax shown for a family with children is higher than the true figure.",
+  'New Jersey':
+    "New Jersey's child tax credit is refundable and worth up to $1,000 for each child under six at incomes below $30,000, falling in steps to $200 at $80,000. It is not calculated here, so New Jersey tax shown for such a family is higher than the true figure.",
+  'New York':
+    "New York's Empire State child credit is refundable and pays $1,000 for each child under four and $500 for each child from four to sixteen for 2026. It is not calculated here, so New York tax shown for a family with children is higher than the true figure.",
+  Oklahoma:
+    "Oklahoma's child tax credit is nonrefundable and available only below $100,000 of income, at 5% of the federal child tax credit or 20% of the federal child care credit, whichever is worth more. It is not calculated here, so Oklahoma tax shown for a family with children is higher than the true figure.",
+  Oregon:
+    "Oregon's kids credit is refundable and worth $1,000 for each child under six, phasing out above $25,000 of income. It is not calculated here, so Oregon tax shown for such a family is higher than the true figure.",
+  Utah:
+    "Utah's child tax credit is nonrefundable and worth up to $1,000 for each child aged one to five, tapering as income rises. It is not calculated here, so Utah tax shown for a family with young children is higher than the true figure.",
+  Vermont:
+    "Vermont's child tax credit is refundable and worth $1,000 for each child aged six or younger, in full up to $125,000 of income and in part to $175,000. It is not calculated here, so Vermont tax shown for such a family is higher than the true figure.",
+  'Washington DC':
+    "The District's child tax credit is refundable and worth $1,000 for each child under eighteen for households within its income limits. It is not calculated here, so DC tax shown for a family with children is higher than the true figure.",
+};
+
+/**
+ * OTHER RULES A STATE HAS THAT THIS ENGINE DOES NOT CALCULATE.
+ *
+ * Most gap notes here are produced by the mechanism that fails to cover them —
+ * an itemising note, a child credit note. These are the leftovers: real rules,
+ * found by reading the state's own booklet, that no table above would ever
+ * generate a sentence for.
+ *
+ * Every one says which way it runs, because that is the only part of an
+ * admission a reader can act on.
+ */
+const MODELLING_GAPS = {
+  'New Mexico': [
+    "New Mexico's low income comprehensive tax rebate pays up to $839 to a household with modified gross income of $36,000 or less, on a table that widens with the number of exemptions, and it is refundable. It is not calculated here, so New Mexico tax shown for a household under that income is higher than the true figure.",
+    'New Mexico gives a child day care credit, a property tax rebate, a refundable medical care credit and an extra $8,000 exemption to people aged 65 or over on modest incomes. This site never asks your age or what you spend on care, so none of them is calculated and New Mexico tax shown is higher than the true figure for the households they reach.',
+    "New Mexico publishes a fourth rate schedule for a married person filing separately, and it is harsher than the single one this engine uses for that status — $136 a year more at $95,850 of taxable income. That schedule is not modelled, so New Mexico tax shown for a separate filer is lower than the true figure.",
+  ],
+};
+
+const CHILD_CREDIT_GAP_SOURCE = {
+  citation:
+    'ITEP, "State Child Tax Credits Boosted Financial Security for Families and Children in 2025" (11 September 2025; updated February 2026 for the District of Columbia)',
+  url: 'https://itep.org/state-child-tax-credits-2025/',
+  checked: '2026-08-16',
+};
+
 // --- post-process ----------------------------------------------------------
 
 const warnings = [];
@@ -2966,13 +3203,25 @@ for (const [label, table] of [
 
   ['ITEMIZED_DEDUCTIONS', 'const ITEMIZED_DEDUCTIONS = {'],
   ['STATE_EITC', 'const STATE_EITC = {'],
+  ['CHILD_CREDIT', 'const CHILD_CREDIT = {'],
+  ['PER_PERSON_EXEMPTION', 'const PER_PERSON_EXEMPTION = {'],
+  ['DEPENDENT_EXEMPTION_LIMITS', 'const DEPENDENT_EXEMPTION_LIMITS = {'],
+  ['CHILD_CREDIT_GAPS', 'const CHILD_CREDIT_GAPS = {'],
+  ['MODELLING_GAPS', 'const MODELLING_GAPS = {'],
+  ['PRIOR_YEAR_FIGURES', 'const PRIOR_YEAR_FIGURES = {'],
 ]) {
   const source = readFileSync(new URL(import.meta.url), 'utf8');
   const start = source.indexOf(table);
   if (start < 0) continue;
   const body = source.slice(start, source.indexOf('\n};', start));
   const seen = new Set();
-  for (const m of body.matchAll(/^  '?([A-Z][A-Za-z ]+)'?: \{/gm)) {
+  /*
+   * Matched up to the colon rather than to an opening brace, because half
+   * these tables hold strings and arrays rather than objects — and a guard
+   * that only sees objects is a guard that stops working the moment somebody
+   * adds a table of sentences.
+   */
+  for (const m of body.matchAll(/^  '?([A-Z][A-Za-z ]+)'?:/gm)) {
     if (seen.has(m[1])) throw new Error(`${label}: ${m[1]} appears twice — the later one silently wins`);
     seen.add(m[1]);
   }
@@ -3014,6 +3263,106 @@ for (const [name, s] of Object.entries(states)) {
   s.personalCreditRefundable = REFUNDABLE_PERSONAL_CREDIT.has(name);
   s.propertyTaxCredit = PROPERTY_TAX_CREDIT[name] ?? null;
   s.payrollTaxDeduction = PAYROLL_TAX_DEDUCTION[name] ?? null;
+
+  /*
+   * The state's own credit for children, where it has one and we calculate it.
+   * Bands are [income at or below which it applies, credit per child]; the
+   * amount beyond the last band is separate, because New Mexico's table keeps
+   * paying at every income rather than running out.
+   */
+  const childCredit = CHILD_CREDIT[name];
+  s.childCredit = childCredit
+    ? {
+        bands: childCredit.bands,
+        beyondLastBand: childCredit.beyondLastBand,
+        refundable: childCredit.refundable === true,
+        source: {
+          url: childCredit.source,
+          checked: childCredit.checked,
+          ...(childCredit.quote ? { quote: childCredit.quote } : {}),
+        },
+      }
+    : null;
+  if (childCredit) {
+    let previous = -1;
+    let richest = Infinity;
+    for (const [upper, amount] of childCredit.bands) {
+      if (upper <= previous) throw new Error(`${name}: child credit bands out of order at ${upper}`);
+      // A credit for children that RISES with income would be a transcription
+      // error in every state that has one — they all taper.
+      if (amount > richest) throw new Error(`${name}: child credit rises with income at ${upper}`);
+      if (!(amount >= 0 && amount <= 5_000)) {
+        throw new Error(`${name}: implausible child credit ${amount}`);
+      }
+      previous = upper;
+      richest = amount;
+    }
+    if (!(childCredit.beyondLastBand >= 0 && childCredit.beyondLastBand <= richest)) {
+      throw new Error(`${name}: child credit above the last band must not exceed the last band`);
+    }
+  }
+
+  /*
+   * An exemption for every person on the return, tapering with income. New
+   * Mexico's low- and middle-income exemption is the only one.
+   */
+  const perPerson = PER_PERSON_EXEMPTION[name];
+  s.perPersonExemption = perPerson
+    ? {
+        max: perPerson.max,
+        start: perPerson.start,
+        perDollar: perPerson.perDollar,
+        unavailableAbove: perPerson.unavailableAbove,
+        source: {
+          url: perPerson.source,
+          checked: perPerson.checked,
+          ...(perPerson.quote ? { quote: perPerson.quote } : {}),
+        },
+      }
+    : null;
+  if (perPerson) {
+    for (const status of Object.keys(perPerson.start)) {
+      const start = perPerson.start[status];
+      const rate = perPerson.perDollar[status];
+      const ceiling = perPerson.unavailableAbove[status];
+      if (!(rate > 0 && rate <= 1)) throw new Error(`${name}: implausible ${status} taper ${rate}`);
+      if (!(ceiling > start)) {
+        throw new Error(`${name}: ${status} exemption ceiling ${ceiling} is not above its start ${start}`);
+      }
+      /*
+       * The taper must not still be paying at the ceiling, or the two rules
+       * disagree and the engine would be handing out an exemption the statute
+       * has already ended. New Mexico's three sets meet it exactly.
+       */
+      const atCeiling = perPerson.max - rate * (ceiling - start);
+      if (atCeiling > 1) {
+        throw new Error(
+          `${name}: ${status} exemption is still worth $${atCeiling.toFixed(2)} at the ceiling`,
+        );
+      }
+    }
+  }
+
+  /*
+   * Who may claim the dependent exemption, and how many dependents it counts.
+   * Null everywhere but New Mexico, which gives it for all but one dependent
+   * and only on a joint or head-of-household return.
+   */
+  const dependentLimits = DEPENDENT_EXEMPTION_LIMITS[name];
+  s.dependentExemptionLimits = dependentLimits
+    ? {
+        ignoreFirst: dependentLimits.ignoreFirst,
+        statuses: dependentLimits.statuses,
+        source: {
+          url: dependentLimits.source,
+          checked: dependentLimits.checked,
+          ...(dependentLimits.quote ? { quote: dependentLimits.quote } : {}),
+        },
+      }
+    : null;
+  if (dependentLimits && !(s.personalExemption.dependent > 0)) {
+    throw new Error(`${name}: dependent exemption limits recorded but there is no dependent exemption`);
+  }
   /*
    * Rules we know this state has and do not model, in plain words, each saying
    * which way it runs. Kept apart from `notes` — which carries the source
@@ -3021,6 +3370,23 @@ for (const [name, s] of Object.entries(states)) {
    * mixing them into somebody else's annotations.
    */
   s.modellingGaps = [];
+  /*
+   * Rules found by reading the state's own booklet that no mechanism here
+   * would ever generate a sentence for, and the child credits of the fifteen
+   * states and the District that have one and are not calculated.
+   *
+   * A state may not appear in CHILD_CREDIT_GAPS and CHILD_CREDIT at once: one
+   * says the credit is missing, the other calculates it, and shipping both
+   * would put a false admission on the methodology page — the exact failure
+   * that made those admissions generated rather than typed.
+   */
+  s.modellingGaps.push(...(MODELLING_GAPS[name] ?? []));
+  if (CHILD_CREDIT_GAPS[name]) {
+    if (CHILD_CREDIT[name]) {
+      throw new Error(`${name}: has a modelled child credit and a note saying it has none`);
+    }
+    s.modellingGaps.push(CHILD_CREDIT_GAPS[name]);
+  }
   /*
    * Figures that are last year's because the state has not published this
    * year's. Real, published numbers — just a year old. See PRIOR_YEAR_FIGURES.
@@ -3043,6 +3409,12 @@ for (const [name, s] of Object.entries(states)) {
         // table at all, so saying only "checked" would have been a stronger
         // claim than the paper supports.
         ...(ratesCheck.confirms ? { confirms: ratesCheck.confirms } : {}),
+        /*
+         * WORDS COPIED OUT OF THE DOCUMENT. See EVIDENCE QUOTES below: a page
+         * with no figures on it cannot produce one of these, which is the only
+         * check here that a URL cannot pass by looking official.
+         */
+        ...(ratesCheck.quote ? { quote: ratesCheck.quote } : {}),
       }
     : null;
 
@@ -3060,7 +3432,11 @@ for (const [name, s] of Object.entries(states)) {
         requiresFederalItemising: itemized.requiresFederalItemising === true,
         highIncomeReduction: itemized.highIncomeReduction ?? null,
         shareKeptCurve: itemized.shareKeptCurve ?? null,
-        source: { url: itemized.source, checked: itemized.checked },
+        source: {
+          url: itemized.source,
+          checked: itemized.checked,
+          ...(itemized.quote ? { quote: itemized.quote } : {}),
+        },
       }
     : null;
   if (itemized?.highIncomeReduction) {
@@ -3202,7 +3578,11 @@ for (const [name, s] of Object.entries(states)) {
       }
       s.creditPhaseOut = override.creditPhaseOut;
     }
-    s.verifiedAgainstState = { url: override.source, checked: override.checked };
+    s.verifiedAgainstState = {
+      url: override.source,
+      checked: override.checked,
+      ...(override.quote ? { quote: override.quote } : {}),
+    };
     if (override.note) {
       s.notes.push(override.note);
       s.modellingGaps.push(override.note);
@@ -3229,7 +3609,13 @@ for (const [name, s] of Object.entries(states)) {
   if (hoh?.personalExemption !== undefined) {
     s.personalExemption.headOfHousehold = hoh.personalExemption;
   }
-  if (hoh) s.headOfHouseholdSource = { url: hoh.source, checked: hoh.checked };
+  if (hoh) {
+    s.headOfHouseholdSource = {
+      url: hoh.source,
+      checked: hoh.checked,
+      ...(hoh.quote ? { quote: hoh.quote } : {}),
+    };
+  }
   validateHeadOfHousehold(name, s);
 
   /*
@@ -3412,6 +3798,13 @@ const output = {
   },
   payrollContributionSource: PAYROLL_SOURCE,
   earnedIncomeCreditSource: STATE_EITC_SOURCE,
+  /*
+   * The list the child-credit admissions were built from. The credit that IS
+   * calculated carries its own source on the state; this one is here to say
+   * where the knowledge of the other fourteen came from, so a reader can check
+   * that the list of states is complete rather than convenient.
+   */
+  childCreditSource: CHILD_CREDIT_GAP_SOURCE,
   filingStatusMapping: {
     single: 'single',
     marriedJointly: 'marriedJointly',
@@ -3426,6 +3819,8 @@ const output = {
     'Local income taxes are excluded here and handled separately; see local-income-tax.json.',
     'Alternative minimum taxes and supplemental high-income surtaxes beyond the published bracket schedules are not modelled. Connecticut\'s recapture IS modelled; New York\'s is not, and New York carries a note.',
     'Every state that taxes wages has been read off its own publication for rates, allowances and head-of-household treatment. Ten states ship the prior year\'s figures because the state has not published this year\'s; each names itself in priorYearFigures.',
+    'Credits for having children are modelled in New Mexico alone, whose refundable child income tax credit runs from $637 a child at the lowest incomes to $26 above $350,000. Fifteen states and the District of Columbia have one; Arizona\'s is carried as a dependent credit, and every other state that has one says so on its own line in modellingGaps. An unmodelled credit always means the same thing — the tax shown for a household with children is higher than the truth.',
+    'A married person filing separately is put on the single schedule, which is right in most states. New Mexico publishes a fourth schedule for that status and it is harsher than the single one; that state says so in modellingGaps.',
   ],
   states: byCode,
 };
@@ -3443,6 +3838,10 @@ console.log(`  flat tax (1 bracket): ${withTax.filter((s) => s.brackets.single.l
 console.log(`  federal tax deductible: ${Object.values(byCode).filter((s) => s.federalTaxDeductible).map((s) => s.code).join(', ')}`);
 console.log(`  have local income tax:  ${Object.values(byCode).filter((s) => s.hasLocalIncomeTax).map((s) => s.code).join(', ')}`);
 console.log(`  top marginal rate:      ${(topRate * 100).toFixed(2)}%`);
+console.log(
+  `  child credit modelled:  ${Object.values(byCode).filter((s) => s.childCredit).map((s) => s.code).join(', ') || 'none'}` +
+    ` (${Object.keys(CHILD_CREDIT_GAPS).length} more states carry a note saying theirs is not)`,
+);
 
 /*
  * HEAD OF HOUSEHOLD COVERAGE, printed every build.
@@ -3475,8 +3874,21 @@ console.log(`  top marginal rate:      ${(topRate * 100).toFixed(2)}%`);
  * source is that the next person can re-check it — and a mirror can go away,
  * or lag, without the state changing anything.
  */
+/*
+ * NEW MEXICO'S FORMS DO NOT LIVE ON A .GOV HOST AND ARE STILL THE STATE'S OWN.
+ *
+ * tax.newmexico.gov serves every form and instruction booklet through a
+ * document service, RealFile, under an account of the department's own: the
+ * account identifier in these URLs is the same one the department's forms page
+ * carries in its markup. So the document is the state speaking; only the
+ * delivery is contracted out.
+ *
+ * Recorded here rather than left to fail the check, because the alternative
+ * was what actually happened — a .gov URL was found that satisfied the regex
+ * and carried no figures at all.
+ */
 const OFFICIAL_HOST =
-  /\.gov(\/|$|:)|\.state\.[a-z]{2}\.us|legislature\.|\blegis\.|capitol\.|revisor\.|ksrevisor\.|mca\.legmt/i;
+  /\.gov(\/|$|:)|\.state\.[a-z]{2}\.us|legislature\.|\blegis\.|capitol\.|revisor\.|ksrevisor\.|mca\.legmt|klvg4oyd4j\.execute-api\.us-west-2\.amazonaws\.com\/prod\/PublicFiles\/34821a9573ca43e7b06dfad20f5183fd\//i;
 
 const secondarySources = [];
 for (const s of Object.values(byCode)) {
@@ -3528,6 +3940,47 @@ if (ratesCorrected.length) {
   console.log(`    corrected as a result (${ratesCorrected.length}):`);
   console.log(`      ${ratesCorrected.map((s) => s.code).join(' ')}`);
 }
+
+/*
+ * EVIDENCE QUOTES — the only provenance check a URL cannot pass by looking
+ * official.
+ *
+ * New Mexico spent a release cited to its department's own "Personal Income
+ * Tax Rates" page, which is a heading, a navigation menu and a footer. Nothing
+ * caught it: the host was .gov, the date was recent, the state was in every
+ * count of "read off the state's own publication". Provenance had been reduced
+ * to a question about the domain name.
+ *
+ * A quote is words copied out of the document. An empty page cannot supply
+ * one, and the test suite checks that the figures inside each quote are the
+ * figures this dataset actually ships — so a quote from the wrong document
+ * fails as loudly as no quote at all.
+ *
+ * Coverage is reported rather than required. Requiring it today would mean
+ * re-opening 42 documents before anything else could ship; reporting it means
+ * the number is visible, the pages that describe it read it from here, and it
+ * can only go up.
+ */
+const quotedSources = [];
+const unquotedSources = [];
+for (const s of taxing) {
+  for (const [what, src] of [
+    ['rates', s.ratesCheckedAgainstState],
+    ['head of household', s.headOfHouseholdSource],
+    ['itemising', s.itemizedDeductions?.source],
+    ['child credit', s.childCredit?.source],
+    ['low-income exemption', s.perPersonExemption?.source],
+    ['dependent exemption', s.dependentExemptionLimits?.source],
+  ]) {
+    if (!src?.url) continue;
+    (src.quote ? quotedSources : unquotedSources).push(`${s.code} ${what}`);
+  }
+}
+console.log(
+  `\n  EVIDENCE — ${quotedSources.length} of ${quotedSources.length + unquotedSources.length} recorded sources carry words quoted out of the document`,
+);
+if (quotedSources.length) console.log(`    quoted: ${quotedSources.join(', ')}`);
+console.log(`    cited on the URL alone: ${unquotedSources.length}`);
 const ratesUnchecked = taxing.filter((s) => !s.ratesCheckedAgainstState);
 if (ratesUnchecked.length) {
   console.log(`    still taken on trust from the aggregated table (${ratesUnchecked.length}):`);

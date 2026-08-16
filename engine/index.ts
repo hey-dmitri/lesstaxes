@@ -77,6 +77,7 @@ export {
   whySentence,
   verdict,
   TOO_CLOSE_SHARE,
+  TOO_CLOSE_FLOOR,
   type BreakEvenNarrative,
   type Shortfall,
   type Verdict,

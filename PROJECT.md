@@ -470,8 +470,17 @@ Rendered in the user's current theme. Filename should be descriptive, e.g.
    rental or investment income handling.
 2. Destination salary defaults to current salary.
 3. Tax model covers: federal brackets, standard vs. itemized (larger wins), SALT cap, FICA, CTC,
-   state brackets/deductions/exemptions/child credits, local income tax. **Not** modeled: AMT,
-   obscure state credits, itemized state deductions.
+   EITC; state brackets, deductions, exemptions and their income phase-outs, state itemized
+   deductions in the 14 states that allow them, state earned income credits in 23 states, state
+   disability and paid-leave contributions, and local income tax. **Not** modeled: AMT and
+   high-income surtaxes beyond the published schedules, and most state credits — including the
+   child credits that 15 states and DC now give, of which only New Mexico's is calculated.
+
+   This line said "state … child credits" were modeled and "itemized state deductions" were not,
+   and both halves were backwards: no state child credit was calculated anywhere in the engine,
+   while state itemising had been shipped for fourteen states. Every state rule known to be
+   missing is now written on that state in `modellingGaps`, which the methodology page renders
+   directly, so this paragraph can never again be the only place a limitation is recorded.
 4. Tax year = most recent fully published rules.
 5. Lifestyle transfers — the same basket of goods is re-priced in the new city. The site does not
    assume the user changes how they live (cars excepted, per §6 Step 6).

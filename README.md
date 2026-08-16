@@ -18,14 +18,15 @@ index, statutory rate or state average — on the [data page](https://packorstay
 
 ## Status
 
-**Live** at [packorstay.com](https://packorstay.com). Current dataset: **2026.26**.
+**Live** at [packorstay.com](https://packorstay.com). Current dataset: **2026.27**.
 
 | Component | State |
 |---|---|
 | Bracket arithmetic, FICA, federal income tax, CTC, EITC | ✅ |
 | State income tax — all 50 states + DC | ✅ |
-| Every taxing state has a recorded source — rates, allowances, head of household | 42 of 42, all on the state's own site |
-| ...of which against a 2026 document | 30; the other 12 against the state's most recent, because it has published no 2026 figures |
+| Every taxing state has a recorded source — rates, allowances, head of household | 42 of 42, all the state's own publication |
+| ...of which against a 2026 document | 29; the other 13 against the state's most recent, because it has published no 2026 figures |
+| ...of which quote the words they were read from | New Mexico's six, after one of its citations turned out to be an empty page |
 | State itemised deductions | 14 states, plus NJ's property tax relief, WI's mortgage-interest credit and IL's property tax credit |
 | Local income tax — 13 named cities, state averages elsewhere | ✅ |
 | 387 metros + 51 rural fallbacks, price parities | ✅ |
@@ -80,7 +81,25 @@ Total data cost: **$0**. No paid feeds, no runtime API calls.
    where sources disagree or the credit is mid-change; Oregon, whose higher rate
    depends on a child's age this site never asks for. New York City's own credit
    is not modelled.
-3. **Sales tax differences between states are invisible.** There is no sales
+3. **State child credits cover one state of sixteen.** Fifteen states and DC
+   give a credit for having children, and none of them was calculated until
+   August 2026 — nor named anywhere, which was the worse half: the methodology
+   page promised that every state rule we know about and do not model is
+   written on that state, and a whole category was missing from the promise.
+   New Mexico's is now calculated, refundable, $637 a child at the lowest
+   incomes down to $26 above $350,000; Arizona's is carried as a dependent
+   credit; the other fourteen each carry a note naming the credit and saying
+   that the tax shown for a family is higher than the truth.
+
+   New Mexico came out of an audit, not out of this build. The state's 25%
+   earned income match was modelled and its separate child credit was not, so a
+   single parent on $50,000 in Albuquerque with one child was shown $499.54 of
+   state tax against $171.54. Two other New Mexico rules were wrong in opposite
+   directions and cancelled part of it: the low- and middle-income exemption
+   was missing, and the $4,000 dependent deduction — which the state gives for
+   "all but one" dependent, and only on a joint or head-of-household return —
+   was being handed out for every child to every filer.
+4. **Sales tax differences between states are invisible.** There is no sales
    tax line at all any more: BLS expenditures already include the tax paid at
    the till, so charging it again was a double count. But what the basket
    carries is a NATIONAL blend, so Oregon (no sales tax) and Louisiana (the
@@ -88,7 +107,7 @@ Total data cost: **$0**. No paid feeds, no runtime API calls.
    stripping the embedded average out per category, which the survey does not
    publish. Worth a few hundred a year. The rates stay shipped and visible in
    the data browser, labelled reference-only, for when it can be done.
-4. **Every state that taxes wages has been read off its own publication —
+5. **Every state that taxes wages has been read off its own publication —
    42 of 42, on both counts.**
 
    Two separate checks, because they answer different questions.
@@ -111,7 +130,17 @@ Total data cost: **$0**. No paid feeds, no runtime API calls.
    Each state carries the date it was checked and the document it was checked
    against, and the data browser shows both.
 
-5. **Seven states changed the law after our bracket table was published, and
+   *A citation is not evidence.* New Mexico shipped a release cited to its own
+   department's "Personal Income Tax Rates" page, which renders a heading, a
+   menu and a footer and not one figure — and it replaced a forms aggregator
+   that at least carried the booklet. Nothing caught it, because every check
+   was really a check on the host name. A source may now carry `quote`: words
+   copied out of the document, whose figures a test matches against the figures
+   actually shipped. An empty page cannot supply one. New Mexico's six
+   citations carry theirs; the rest of the states are still cited by address
+   alone, and the build prints how many of each.
+
+6. **Seven states changed the law after our bracket table was published, and
    the table is published once a year.** That is the failure this whole audit
    existed to find. February's table cannot know about a law signed in May.
 
@@ -129,7 +158,7 @@ Total data cost: **$0**. No paid feeds, no runtime API calls.
    quiet about it: it warns until every state has been read off its own
    publication, and names the ones that have not been.
 
-6. **Errors ran BOTH ways, and the ones that flattered are the ones that
+7. **Errors ran BOTH ways, and the ones that flattered are the ones that
    mattered.** Ten states were charging too little, because we handed out
    allowances the state takes away as income rises. Wisconsin's standard
    deduction reaches zero by $136,000 and we gave it in full — a Wisconsin
@@ -141,8 +170,8 @@ Total data cost: **$0**. No paid feeds, no runtime API calls.
    that fall in steps, allowances that stop at a floor, and credits that vanish
    at a cliff.
 
-7. **What is still not modelled is written on the state, not buried here.**
-   Twenty states carry a note naming the rule that is missing and which way
+8. **What is still not modelled is written on the state, not buried here.**
+   Twenty-five states carry a note naming the rule that is missing and which way
    it runs — New York's recapture from high earners, Missouri's and Alabama's
    federal-tax deductions, Connecticut's property tax credit, Colorado's
    interaction with itemising, and the rest. Those notes are rendered on the
@@ -156,15 +185,18 @@ Total data cost: **$0**. No paid feeds, no runtime API calls.
    interest while ignoring property tax entirely, and Illinois credits 5% of
    property tax until income passes $250,000, when it stops dead.
 
-8. **Twelve states are on last year's figures, because they have not published
+9. **Thirteen states are on last year's figures, because they have not published
    this year's.** States index on their own timetable and many wait for the
    return forms, which for 2026 means late 2026 or early 2027. The calculator
    has to answer today, so where 2026 does not exist we ship the state's last
    published figures and name the state.
 
-   Alabama, California, Connecticut, Delaware, Idaho, Mississippi, Oklahoma,
-   Oregon, Rhode Island, South Carolina, Utah and Vermont, each with a sentence
-   saying which figures are affected and why.
+   Alabama, California, Connecticut, Delaware, Idaho, Mississippi, New Mexico,
+   Oklahoma, Oregon, Rhode Island, South Carolina, Utah and Vermont, each with a
+   sentence saying which figures are affected and why. New Mexico is on the list
+   for one figure rather than for the state: its brackets are fixed in statute
+   for 2025 and forward, but it indexes its child credit every year and the 2026
+   amounts are not out.
 
    Connecticut and Delaware joined the list after their cited documents were
    opened rather than trusted. Both source URLs sat in a `/2025/` folder, which
@@ -179,7 +211,7 @@ Total data cost: **$0**. No paid feeds, no runtime API calls.
    little MORE tax than is really owed. The error runs against us, not against
    the reader, and it is stated on the methodology page rather than left to be
    discovered.
-9. **Local income tax outside the 13 named cities** is still each state's
+10. **Local income tax outside the 13 named cities** is still each state's
    average, which is fair where rates are uniform and wrong where they are not.
    Indiana is no longer among them: every Indiana metro now carries its own
    counties' rates weighted by population, and the Indiana sides of Chicago,
