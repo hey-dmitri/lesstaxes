@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 
-import { useId, useState } from 'react';
+import { useState } from 'react';
 
 import {
   breakEvenNarrative,
@@ -24,6 +24,7 @@ import {
   type ComparisonResult,
   type DifferenceRow,
 } from '@/engine';
+import { InfoDot } from '@/components/fields';
 import { ReportProblem } from '@/components/report-problem';
 import { useCountUp } from '@/lib/use-count-up';
 
@@ -261,8 +262,6 @@ function Disclosure({
  */
 function Gap({ result }: { result: ComparisonResult }) {
   const [showLiving, setShowLiving] = useState(false);
-  const [showFederal, setShowFederal] = useState(false);
-  const federalNoteId = useId();
   const from = cityName(result.origin.metroId, result.datasetVersion);
   const to = cityName(result.destination.metroId, result.datasetVersion);
   // Federal tax differing between two cities looks like a bug unless the page
@@ -352,8 +351,15 @@ function Gap({ result }: { result: ComparisonResult }) {
 
   const detailRow = (r: DifferenceRow) => (
     <div key={r.key} className={`${row} py-[3px]`}>
-      <span className="pl-3 text-[0.82rem]" style={{ color: 'var(--ink-soft)' }}>
+      <span className="flex items-baseline gap-1.5 pl-3 text-[0.82rem]" style={{ color: 'var(--ink-soft)' }}>
         {r.label}
+        {/*
+          "Everything else" is the only label on the page that is a shrug, and
+          it sits over a figure that runs to five figures a year. What is
+          inside it comes from the engine, beside the sum, so the words and the
+          arithmetic cannot drift.
+        */}
+        {r.note && <InfoDot label={`What is in ${r.label.toLowerCase()}?`}>{r.note}</InfoDot>}
       </span>
       {monthly(r.delta)}
       {cell(r.delta, 'cost', { small: true })}
@@ -387,48 +393,23 @@ function Gap({ result }: { result: ComparisonResult }) {
         <span className="flex items-baseline gap-1.5 text-[0.82rem] font-semibold" style={{ color: 'var(--ink)' }}>
           Taxes on your pay
           {/*
-            THE NOTE SITS ON THE HEADING NOW, not loose under the rows.
-            Unattached, it read as a caption for the whole table when it is
-            about one line of it — why federal tax moved at all, when this site
+            The note sits ON the line it explains and opens OVER the table.
+            Loose underneath it read as a caption for the whole thing, when it
+            is about one row — why federal tax moved at all, on a site that
             says everywhere else that federal rules are the same in every
-            state.
-
-            A BUTTON RATHER THAN A HOVER TOOLTIP. The same argument as the data
-            page's source links: a phone cannot hover and a keyboard cannot
-            reach a title attribute, so on the two devices most likely to be
-            used the explanation would simply not be there.
+            state. Expanded in place it pushed every row below it down, which
+            is the last thing a table built for skimming should do.
           */}
           {federalNote && (
-            <button
-              type="button"
-              onClick={() => setShowFederal((open) => !open)}
-              aria-expanded={showFederal}
-              aria-controls={federalNoteId}
-              aria-label={showFederal ? 'Hide why federal tax changes' : 'Why does federal tax change?'}
-              className="inline-flex h-[1.05rem] w-[1.05rem] shrink-0 items-center justify-center rounded-full border text-[0.66rem] font-bold leading-none"
-              style={{
-                borderColor: 'var(--accent)',
-                color: showFederal ? '#ffffff' : 'var(--accent)',
-                background: showFederal ? 'var(--accent)' : 'transparent',
-              }}
-            >
-              i
-            </button>
+            <InfoDot label="Why does federal tax change between two cities?">
+              {federalNote}
+            </InfoDot>
           )}
         </span>
         {monthly(taxTotal)}
         {cell(taxTotal, 'cost', { bold: true })}
       </div>
       {rows.taxes.map(detailRow)}
-      {federalNote && showFederal && (
-        <p
-          id={federalNoteId}
-          className="mt-1 rounded px-2 py-1.5 text-[0.74rem] leading-snug"
-          style={{ color: 'var(--ink-soft)', background: 'var(--surface-sunken)' }}
-        >
-          {federalNote}
-        </p>
-      )}
 
       <div className={`${row} pt-2`}>
         <button

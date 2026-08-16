@@ -679,6 +679,16 @@ export interface DifferenceRow {
    */
   origin: USD;
   destination: USD;
+  /**
+   * What the row covers, where the label cannot say it.
+   *
+   * "Everything else" is the only one that needs it, and it needs it badly:
+   * the label is a shrug over a figure that can run to five figures a year,
+   * and a reader is entitled to ask what is inside before they believe it.
+   * Written here beside the arithmetic that builds the row rather than in the
+   * interface, so the words and the sum cannot drift apart.
+   */
+  note?: string;
 }
 
 export interface DifferenceRows {
@@ -698,12 +708,13 @@ export function differenceRows(result: ComparisonResult): DifferenceRows {
    * hand below rather than through this so the sign is visible where it
    * matters.
    */
-  const cost = (key: string, label: string, a: USD, b: USD): DifferenceRow => ({
+  const cost = (key: string, label: string, a: USD, b: USD, note?: string): DifferenceRow => ({
     key,
     label,
     delta: a - b,
     origin: a,
     destination: b,
+    ...(note ? { note } : {}),
   });
 
   const salary: DifferenceRow = {
@@ -766,6 +777,12 @@ export function differenceRows(result: ComparisonResult): DifferenceRows {
       'Everything else',
       o.living.other + (utilitiesAreSplitOut(result.datasetVersion) ? o.living.utilities : 0),
       d.living.other + (utilitiesAreSplitOut(result.datasetVersion) ? d.living.utilities : 0),
+      'Clothes, furniture and household supplies, entertainment, personal care, ' +
+        'education, reading, hotels on a trip, gifts and giving' +
+        (utilitiesAreSplitOut(result.datasetVersion)
+          ? ' — and the phone bill, which differs too little between two cities to earn a line of its own.'
+          : '.') +
+        ' It is what US households at your income actually spend, re-priced for each city.',
     ),
     /*
      * Zero in every current release — the spending figures already contain the

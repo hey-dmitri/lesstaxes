@@ -1,6 +1,6 @@
 'use client';
 
-import { useId, useRef } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 
 const labelClass = 'mb-1 block text-[0.72rem] font-semibold uppercase tracking-[0.09em]';
 const labelStyle = { color: 'var(--muted)' } as const;
@@ -56,6 +56,87 @@ export function PrefillNote({ children, lines }: { children: React.ReactNode; li
     >
       {children}
     </p>
+  );
+}
+
+/**
+ * A small ⓘ that opens a note over the page, and closes on the next click.
+ *
+ * IT MUST NOT ADD A LINE TO THE TABLE. The first version expanded the note in
+ * place, which pushed every row below it down and made a table built to be
+ * skimmed reflow whenever somebody asked a question about one line of it. A
+ * note about a row should not rearrange the rows.
+ *
+ * A BUTTON, NOT A HOVER TOOLTIP. The same argument that moved the data page's
+ * source links out of a `title` attribute: a phone cannot hover and a keyboard
+ * cannot reach one, so on the two devices most likely to be used the
+ * explanation would not be there at all.
+ *
+ * ANY click closes it, not only a click outside — an explanation that takes
+ * two gestures to dismiss is worse than one that takes one, and there is
+ * nothing inside to interact with. Escape closes it too, and the listener is
+ * attached a tick late so the click that opened it does not immediately shut
+ * it again.
+ */
+export function InfoDot({ label, children }: { label: string; children: React.ReactNode }) {
+  const [open, setOpen] = useState(false);
+  const id = useId();
+
+  useEffect(() => {
+    if (!open) return;
+    const close = () => setOpen(false);
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setOpen(false);
+    };
+    const timer = window.setTimeout(() => {
+      document.addEventListener('click', close);
+      document.addEventListener('keydown', onKey);
+    }, 0);
+    return () => {
+      window.clearTimeout(timer);
+      document.removeEventListener('click', close);
+      document.removeEventListener('keydown', onKey);
+    };
+  }, [open]);
+
+  return (
+    <span className="relative inline-flex align-baseline">
+      <button
+        type="button"
+        onClick={() => setOpen((was) => !was)}
+        aria-expanded={open}
+        aria-controls={open ? id : undefined}
+        aria-label={label}
+        className="inline-flex h-[1.05rem] w-[1.05rem] shrink-0 items-center justify-center rounded-full border text-[0.66rem] font-bold leading-none"
+        style={{
+          borderColor: 'var(--accent)',
+          color: open ? '#ffffff' : 'var(--accent)',
+          background: open ? 'var(--accent)' : 'transparent',
+        }}
+      >
+        i
+      </button>
+      {open && (
+        <span
+          id={id}
+          role="note"
+          /*
+           * Anchored to the marker and floating over the rows. Right-aligned
+           * would run off a narrow panel; the marker is always near the left
+           * edge of its column, so opening rightward from it is safe.
+           */
+          className="absolute left-0 top-[1.4rem] z-30 w-[min(17rem,70vw)] rounded-lg border p-2.5 text-left text-[0.76rem] font-normal leading-snug shadow-lg"
+          style={{
+            borderColor: 'var(--rule-strong)',
+            background: 'var(--surface-raised)',
+            color: 'var(--ink-soft)',
+            boxShadow: '0 8px 24px rgba(0, 0, 0, 0.14)',
+          }}
+        >
+          {children}
+        </span>
+      )}
+    </span>
   );
 }
 
