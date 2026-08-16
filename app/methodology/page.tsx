@@ -589,9 +589,17 @@ answer          =  in your pocket THERE  −  in your pocket HERE`}</pre>
 
         <h2>Pack, stay, or too close to call</h2>
         <p>
-          The one-word verdict is the sign of that final difference, and nothing more. It is about
-          money only &mdash; this calculator knows nothing about the job, the people, or whether you
-          want to live there.
+          The verdict &mdash; <em>stay in</em> one city, <em>pack and move to</em> the other, or
+          neither &mdash; is the sign of that final difference and nothing more. It is about money
+          only: this calculator knows nothing about the job, the people, or whether you want to
+          live there.
+        </p>
+        <p>
+          The figure under it is a <strong>difference</strong>, not a balance. Each city panel
+          prints its own leftover money; the verdict panel prints the gap between the two, and
+          says which way it points before it shows the number. It used to be labelled &ldquo;what
+          is left over&rdquo; over a figure ten times smaller than any real leftover, which is the
+          kind of label that makes a reader distrust everything under it.
         </p>
         <p>
           There is a third answer, and it is the honest one far more often than you would think.

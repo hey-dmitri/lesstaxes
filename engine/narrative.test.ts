@@ -128,6 +128,27 @@ describe('verdict', () => {
     expect(['pack', 'stay', 'too-close']).toContain(verdict(broke).kind);
   });
 
+  /*
+   * "Pack" on its own asks the reader which city they typed into which box, at
+   * the moment they are looking for the answer. Naming it costs three words.
+   * The short form survives for the share card, which has no room and prints
+   * both cities two lines below it.
+   */
+  it('names the city it is pointing at', () => {
+    const pack = verdict(run(CHICAGO, AUSTIN, 150_000, 400_000));
+    expect(pack.kind).toBe('pack');
+    expect(pack.headline).toBe('Pack and move to Austin');
+    expect(pack.word).toBe('Pack');
+
+    const stay = verdict(run(CHICAGO, AUSTIN, 150_000, 40_000));
+    expect(stay.kind).toBe('stay');
+    expect(stay.headline).toBe('Stay in Chicago');
+    expect(stay.word).toBe('Stay');
+
+    const close = verdict({ ...run(CHICAGO, AUSTIN, 150_000), delta: 100 });
+    expect(close.headline).toBe('Too close to call');
+  });
+
   it('never states the verdict without saying it is money only', () => {
     for (const delta of [50_000, -50_000, 0]) {
       const v = verdict({ ...run(CHICAGO, AUSTIN, 150_000), delta });

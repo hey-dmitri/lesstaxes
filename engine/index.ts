@@ -12,11 +12,14 @@ export {
   computeCity,
   defaultCityInputs,
   defaultRent,
+  differenceRows,
   housingAtSalary,
   housingIsPrefill,
   housingLabel,
   breakEvenSalary,
   quickCompare,
+  type DifferenceRow,
+  type DifferenceRows,
 } from './compare';
 
 export {
@@ -69,6 +72,7 @@ export {
   breakEvenNarrative,
   breakEvenReference,
   breakEvenSentence,
+  cityName,
   federalMovedReason,
   percentIsMeaningful,
   shortfalls,

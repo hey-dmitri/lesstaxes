@@ -42,6 +42,7 @@ import {
   spendingIncludesSalesTax,
   taxableShares,
   transportDefaults,
+  utilitiesAreSplitOut,
   DATASET_VERSION,
 } from './dataset';
 import { computeHousing } from './housing';
@@ -642,6 +643,133 @@ function buildBreakdown(origin: CityResult, destination: CityResult): CategoryDe
     }))
     .filter((row) => Math.abs(row.delta) >= 1)
     .sort((a, b) => Math.abs(b.delta) - Math.abs(a.delta));
+}
+
+/**
+ * THE SAME DIFFERENCE, ITEMISED DOWN TO EVERY CATEGORY THE ENGINE CHARGES.
+ *
+ * `breakdown` above answers "what were the big levers" — it is sorted by size,
+ * it drops rows under a dollar, and it lumps food, phone, healthcare and the
+ * rest into one row. That is right for the share card, which has room for
+ * seven lines and is read at a glance.
+ *
+ * It is wrong for the panel, where the reader is checking our work. There the
+ * order has to be stable, a tax that is identical in both cities has to print
+ * $0 rather than vanish — "did you count local income tax?" deserves an answer
+ * — and every living category has to be nameable, because the whole promise of
+ * the site is that it counted the things a cost-of-living index does not.
+ *
+ * THE THREE PARTS SUM TO `delta`. That is what the test pins, and it is the
+ * property that broke twice before: the state disability contribution was
+ * charged in leftover and missing from the rows, and so was owner upkeep. A
+ * hand-written list of categories beside a computed total is exactly the shape
+ * that goes quietly out of date.
+ */
+export interface DifferenceRow {
+  key: string;
+  label: string;
+  /** Positive means better off in the destination. */
+  delta: USD;
+  /**
+   * What each city was actually charged, so a caller can tell "the same in
+   * both" from "not charged at all". A renter has no property tax anywhere,
+   * and a row of $0 against a category that could never apply to them is
+   * clutter; a state income tax that happens to match in both cities is not,
+   * because somebody wanted to know.
+   */
+  origin: USD;
+  destination: USD;
+}
+
+export interface DifferenceRows {
+  salary: DifferenceRow;
+  taxes: DifferenceRow[];
+  living: DifferenceRow[];
+  /** salary + every tax + every living row. Equals the headline difference. */
+  total: USD;
+}
+
+export function differenceRows(result: ComparisonResult): DifferenceRows {
+  const o = result.origin;
+  const d = result.destination;
+  /*
+   * A cost row: more of it is WORSE in the destination, hence the inversion.
+   * The salary row is the only one that runs the other way, and it is built by
+   * hand below rather than through this so the sign is visible where it
+   * matters.
+   */
+  const cost = (key: string, label: string, a: USD, b: USD): DifferenceRow => ({
+    key,
+    label,
+    delta: a - b,
+    origin: a,
+    destination: b,
+  });
+
+  const salary: DifferenceRow = {
+    key: 'salary',
+    label: 'Salary',
+    delta: d.grossSalary - o.grossSalary,
+    origin: o.grossSalary,
+    destination: d.grossSalary,
+  };
+
+  const taxes: DifferenceRow[] = [
+    cost('federalTax', 'Federal income tax', o.tax.federal, d.tax.federal),
+    cost('stateTax', 'State income tax', o.tax.state, d.tax.state),
+    cost('localTax', 'Local income tax', o.tax.local, d.tax.local),
+    cost('fica', 'Social Security & Medicare', o.tax.fica, d.tax.fica),
+    cost('statePayroll', 'State disability & paid leave', o.tax.statePayroll, d.tax.statePayroll),
+  ];
+
+  /*
+   * In the order money leaves a household rather than by size: the roof, what
+   * it costs to keep standing, the car, then the till. Sorting these by size
+   * made the list rearrange itself on every keystroke.
+   */
+  const living: DifferenceRow[] = [
+    cost(
+      'housing',
+      housingLabel(o.housing.tenure, d.housing.tenure),
+      o.housing.shelter + o.housing.utilities,
+      d.housing.shelter + d.housing.utilities,
+    ),
+    cost('propertyTax', 'Property tax', o.housing.propertyTax, d.housing.propertyTax),
+    cost(
+      'maintenance',
+      'Upkeep, repairs & insurance',
+      o.housing.maintenance + o.housing.insurance,
+      d.housing.maintenance + d.housing.insurance,
+    ),
+    cost('transport', 'Cars & transport', o.living.transport, d.living.transport),
+    cost('food', 'Food', o.living.food, d.living.food),
+    cost(
+      'phone',
+      /*
+       * Before release 2026.9 this field carried gas, electricity, water and
+       * heating as well, and a shared link replays its own release — so the
+       * label follows the data rather than being fixed at "Phone".
+       */
+      utilitiesAreSplitOut(result.datasetVersion) ? 'Phone' : 'Utilities & phone',
+      o.living.utilities,
+      d.living.utilities,
+    ),
+    cost('healthcare', 'Healthcare', o.living.healthcare, d.living.healthcare),
+    cost('other', 'Everything else', o.living.other, d.living.other),
+    /*
+     * Zero in every current release — the spending figures already contain the
+     * sales tax those households paid — but old links carry a real number here
+     * and the rows have to keep adding up for them.
+     */
+    cost('salesTax', 'Sales tax', o.salesTax, d.salesTax),
+  ];
+
+  const total =
+    salary.delta +
+    taxes.reduce((sum, r) => sum + r.delta, 0) +
+    living.reduce((sum, r) => sum + r.delta, 0);
+
+  return { salary, taxes, living, total };
 }
 
 /**

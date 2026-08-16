@@ -74,28 +74,45 @@ function tooCloseScale(result: ComparisonResult): USD {
 
 export interface Verdict {
   kind: 'pack' | 'stay' | 'too-close';
-  /** What follows the word, so it can never be read as advice. */
+  /**
+   * The verdict as an instruction, naming the city it points at.
+   *
+   * "Pack" on its own asks the reader to remember which of the two cities they
+   * typed into which box, at the exact moment they are looking for an answer.
+   * Naming it costs three words and removes the question.
+   */
+  headline: string;
+  /**
+   * The same verdict where there is no room for a city name — the share card
+   * and the link preview, which already print both cities beside it.
+   */
+  word: string;
+  /** What follows the verdict, so it can never be read as advice. */
   qualifier: string;
   /** The dollar figure the difference had to clear, for the reader to check. */
   threshold: USD;
 }
 
 /**
- * Pack or stay — the question the site is named after, answered in a word.
+ * Pack or stay — the question the site is named after, answered in a phrase.
  *
  * The panel led with a signed dollar amount, which is the evidence rather than
  * the conclusion, and left the reader to work out which way it pointed. The
- * word is money-only by construction and says so: this calculation knows
+ * answer is money-only by construction and says so: this calculation knows
  * nothing about the job, the people, or the weather.
  */
 export function verdict(result: ComparisonResult): Verdict {
   const share = tooCloseScale(result) * TOO_CLOSE_SHARE;
   const threshold = Math.max(TOO_CLOSE_FLOOR, share);
+  const from = cityName(result.origin.metroId);
+  const to = cityName(result.destination.metroId);
 
   if (Math.abs(result.delta) < threshold) {
     return {
       kind: 'too-close',
       threshold,
+      headline: 'Too close to call',
+      word: 'Too close to call',
       /*
        * The sentence has to say which of the two rules produced the number, or
        * a reader on $40,000 does the arithmetic, gets $2,000, and finds the
@@ -112,8 +129,32 @@ export function verdict(result: ComparisonResult): Verdict {
     };
   }
   return result.delta > 0
-    ? { kind: 'pack', threshold, qualifier: 'On money alone, the move comes out ahead.' }
-    : { kind: 'stay', threshold, qualifier: 'On money alone, staying comes out ahead.' };
+    ? {
+        kind: 'pack',
+        threshold,
+        headline: `Pack and move to ${to}`,
+        word: 'Pack',
+        qualifier: 'On money alone, the move comes out ahead.',
+      }
+    : {
+        kind: 'stay',
+        threshold,
+        headline: `Stay in ${from}`,
+        word: 'Stay',
+        qualifier: 'On money alone, staying comes out ahead.',
+      };
+}
+
+/**
+ * The city, short enough to sit inside a sentence: the short name without its
+ * state suffix. "Albany-Schenectady-Troy, NY" is already shortened to
+ * "Albany, NY" in the dataset, and this drops the last two characters too.
+ *
+ * The hyphen is left alone on purpose. Cutting at it would look right on the
+ * Census names and would turn Winston-Salem into Winston.
+ */
+export function cityName(metroId: string, version?: string): string {
+  return metro(metroId, version).shortName.replace(/,.*$/, '');
 }
 
 // ---------------------------------------------------------------------------

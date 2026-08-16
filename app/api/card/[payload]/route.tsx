@@ -141,10 +141,13 @@ export async function GET(_request: Request, { params }: { params: Promise<{ pay
       salaryLabel: salaryWording(shared.filingStatus, shared.earners ?? 1).combined
         ? 'Both salaries'
         : 'Salary',
-      verdict: {
-        word: v.kind === 'pack' ? 'Pack' : v.kind === 'stay' ? 'Stay' : 'Too close to call',
-        tooClose: v.kind === 'too-close',
-      },
+      /*
+       * The SHORT form, from the engine rather than rebuilt here. The card
+       * prints both city names two lines below this, so it does not need the
+       * page's "Pack and move to Bangor" — and at 38px it has nowhere to put
+       * it. What matters is that neither string is invented in this file.
+       */
+      verdict: { word: v.word, tooClose: v.kind === 'too-close' },
       breakEven,
       origin: city('origin'),
       destination: city('destination'),

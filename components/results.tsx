@@ -2,9 +2,12 @@
 
 import Link from 'next/link';
 
+import { useState } from 'react';
+
 import {
-  biggestReason,
   breakEvenNarrative,
+  cityName,
+  differenceRows,
   federalMovedReason,
   breakEvenReference,
   formatPercent,
@@ -18,6 +21,7 @@ import {
   whyClause,
   whyNarrative,
   type ComparisonResult,
+  type DifferenceRow,
 } from '@/engine';
 import { ReportProblem } from '@/components/report-problem';
 import { useCountUp } from '@/lib/use-count-up';
@@ -26,13 +30,18 @@ import { useCountUp } from '@/lib/use-count-up';
 const FEDERAL_ROWS = new Set(['federalTax', 'fica']);
 
 /**
- * The answer in a word.
+ * The answer, naming the city it points at.
  *
  * This showed both words with the winner lit — "Pack or Stay", one green, one
  * grey — on the theory that seeing the question beside its answer would help.
  * It did the opposite: the reader met the site's name again where they were
  * expecting a result, and had to work out which of the two was being said.
- * The panel is already headed "The verdict". A verdict is one word.
+ *
+ * Then it showed one word, and that had a quieter version of the same problem:
+ * "Pack" asks which city you were considering, at the moment you are looking
+ * for the answer. It now says "Pack and move to Bangor" — the wording comes
+ * from the engine, so this panel, the share card and the link preview cannot
+ * describe the same move three different ways.
  */
 function VerdictLine({ result }: { result: ComparisonResult }) {
   const v = verdict(result);
@@ -41,10 +50,10 @@ function VerdictLine({ result }: { result: ComparisonResult }) {
   return (
     <div className="flex flex-col gap-1.5">
       <span
-        className="font-display text-[2.4rem] font-bold leading-none tracking-[-0.035em]"
+        className="font-display text-[2.1rem] font-bold leading-[1.05] tracking-[-0.035em] xl:text-[2.4rem]"
         style={{ color: tooClose ? 'var(--ink-soft)' : 'var(--accent)' }}
       >
-        {tooClose ? 'Too close to call' : v.kind === 'pack' ? 'Pack' : 'Stay'}
+        {v.headline}
       </span>
       <p className="text-[0.86rem] leading-snug" style={{ color: 'var(--ink-soft)' }}>
         {v.qualifier}
@@ -56,19 +65,20 @@ function VerdictLine({ result }: { result: ComparisonResult }) {
 /**
  * The evidence behind the verdict.
  *
- * The two city columns already end in their own leftover figures, so this does
- * not repeat them — it states the difference, then answers the two questions
- * that follow it: what salary would make this a wash, and which single line is
- * doing most of the work.
+ * THE BIG NUMBER IS A DIFFERENCE, NOT A BALANCE, and it was labelled as one
+ * for months: "What's left over, Bangor vs Albany" over "+$3,224" reads as the
+ * money you would have left in Bangor, which is wrong by an order of
+ * magnitude. Each city panel already prints its own leftover figure. This is
+ * the gap between them, and it now says which way the gap points before it
+ * shows the figure.
  */
 function Headline({ result, animate }: { result: ComparisonResult; animate: boolean }) {
   const better = result.delta >= 0;
   const rolled = useCountUp(result.delta, animate);
   const colour = better ? 'var(--good)' : 'var(--bad)';
-  const from = metro(result.origin.metroId).shortName.replace(/,.*$/, '');
-  const to = metro(result.destination.metroId).shortName.replace(/,.*$/, '');
+  const from = cityName(result.origin.metroId, result.datasetVersion);
+  const to = cityName(result.destination.metroId, result.datasetVersion);
   const breakEven = breakEvenNarrative(result);
-  const biggest = biggestReason(result);
   const salaryChanged = result.destination.grossSalary !== result.origin.grossSalary;
   const payGap = result.destination.grossSalary - result.origin.grossSalary;
 
@@ -80,7 +90,7 @@ function Headline({ result, animate }: { result: ComparisonResult; animate: bool
       >
         <VerdictLine result={result} />
 
-        {/* The evidence for the word above: how much, and over what. */}
+        {/* The evidence for the verdict above: how much, and which way. */}
         <div
           className="flex flex-col gap-0.5 border-t pt-3"
           style={{ borderColor: 'var(--rule)' }}
@@ -89,16 +99,16 @@ function Headline({ result, animate }: { result: ComparisonResult; animate: bool
             className="font-display text-[0.7rem] font-medium uppercase tracking-[0.2em]"
             style={{ color: 'var(--muted)' }}
           >
-            What&rsquo;s left over, {to} vs {from}
+            {better ? `You'd be better off in ${to}` : `You'd be worse off in ${to}`}
           </span>
           <span
             className="tnum text-[3.2rem] font-bold leading-[1.04] tracking-[-0.04em] xl:text-[3.6rem]"
             style={{ color: colour }}
           >
-            {formatUSD(rolled, { signed: true })}
+            {formatUSD(Math.abs(rolled))}
           </span>
           <span className="text-[1.05rem] font-medium" style={{ color: 'var(--ink)' }}>
-            a year {better ? 'more to spend or save' : 'less to spend or save'}{' '}
+            a year{' '}
             <span style={{ color: 'var(--muted)' }}>
               &middot; <span className="tnum">{formatUSD(Math.abs(result.deltaMonthly))}</span> a
               month
@@ -110,49 +120,32 @@ function Headline({ result, animate }: { result: ComparisonResult; animate: bool
               )}
             </span>
           </span>
+          {!better && (
+            <span className="text-[0.84rem]" style={{ color: 'var(--ink-soft)' }}>
+              That is what the move costs you a year. Staying in {from} keeps it.
+            </span>
+          )}
         </div>
       </div>
 
-      <div className="flex flex-wrap gap-2.5">
-        {breakEven && (
-          <div
-            className="flex min-w-56 flex-1 flex-col gap-0.5 rounded-xl border px-3.5 py-2.5"
-            style={{ borderColor: 'var(--rule-strong)', background: 'var(--surface-raised)' }}
-          >
-            <span className="eyebrow" style={{ color: 'var(--muted)' }}>
-              {breakEven.kind === 'wins-at-any-salary'
-                ? `No salary needed in ${to}`
-                : `Break-even in ${to}`}
-            </span>
-            <span className="tnum text-[1.35rem] font-semibold" style={{ color: 'var(--ink)' }}>
-              {breakEven.kind === 'wins-at-any-salary' ? 'None' : formatUSD(breakEven.salary)}
-            </span>
-            <span className="text-[0.8rem]" style={{ color: 'var(--ink-soft)' }}>
-              <BreakEvenLine breakEven={breakEven} to={to} />
-            </span>
-          </div>
-        )}
-
-        {biggest && (
-          <div
-            className="flex min-w-56 flex-1 flex-col gap-0.5 rounded-xl border px-3.5 py-2.5"
-            style={{ borderColor: 'var(--rule-strong)', background: 'var(--surface-raised)' }}
-          >
-            <span className="eyebrow" style={{ color: 'var(--muted)' }}>
-              Biggest single reason
-            </span>
-            <span
-              className="tnum text-[1.35rem] font-semibold"
-              style={{ color: biggest.delta >= 0 ? 'var(--good)' : 'var(--bad)' }}
-            >
-              {formatUSD(biggest.delta, { signed: true })}
-            </span>
-            <span className="text-[0.8rem]" style={{ color: 'var(--ink-soft)' }}>
-              {biggest.sentence}
-            </span>
-          </div>
-        )}
-      </div>
+      {breakEven && (
+        <div
+          className="flex flex-col gap-0.5 rounded-xl border px-3.5 py-2.5"
+          style={{ borderColor: 'var(--rule-strong)', background: 'var(--surface-raised)' }}
+        >
+          <span className="eyebrow" style={{ color: 'var(--muted)' }}>
+            {breakEven.kind === 'wins-at-any-salary'
+              ? `No salary needed in ${to}`
+              : `Salary needed in ${to} to break even`}
+          </span>
+          <span className="tnum text-[1.35rem] font-semibold" style={{ color: 'var(--ink)' }}>
+            {breakEven.kind === 'wins-at-any-salary' ? 'None' : formatUSD(breakEven.salary)}
+          </span>
+          <span className="text-[0.8rem]" style={{ color: 'var(--ink-soft)' }}>
+            <BreakEvenLine breakEven={breakEven} to={to} />
+          </span>
+        </div>
+      )}
     </div>
   );
 }
@@ -243,100 +236,135 @@ function Disclosure({
 }
 
 /**
- * "What makes up the gap", split into pay-and-tax against living costs.
+ * Every line of the difference: the pay, each tax, and living costs.
  *
- * One list sorted by size forced the reader to hold two different kinds of news
- * in their head at once — a pay change and a cost change are not the same sort
- * of fact. Each half totals separately and the two totals reconcile to the
- * headline at the bottom.
+ * THREE THINGS THIS USED TO DO AND NO LONGER DOES.
+ *
+ * It sorted by size, so the tax lines arrived in a different order for every
+ * comparison and a reader could not tell whether a tax was missing or simply
+ * equal in both cities. Every tax now has a fixed row and prints $0 when the
+ * two cities agree, which is itself an answer: somebody looked.
+ *
+ * It hid the living detail inside one "Food, phone, healthcare, other" row.
+ * That row is the largest thing on the page for most comparisons and it named
+ * four categories out of eight. It is now a total that opens.
+ *
+ * And it repeated the headline as a total at the bottom, under a third name
+ * for the same number. The figure above is that figure.
  */
 function Gap({ result }: { result: ComparisonResult }) {
+  const [showLiving, setShowLiving] = useState(false);
   // Federal tax differing between two cities looks like a bug unless the page
   // says why, and the page says everywhere else that federal rules are the same.
   const federalNote = federalMovedReason(result);
-  const groups = [
-    { key: 'payAndTax' as const, label: 'Pay and tax' },
-    { key: 'living' as const, label: 'Living costs' },
-  ];
+
   const row = 'grid grid-cols-[1fr_5.5rem_6rem] items-baseline gap-3';
-  const money = (v: number) => (
+
+  /*
+   * The rows come from the engine, not from this file. Built here they would
+   * be a hand-written list of categories sitting beside a computed total —
+   * which is how the state disability contribution and owner upkeep both ended
+   * up charged in the answer and missing from the explanation. A test pins
+   * that these three parts add up to the headline.
+   */
+  const rows = differenceRows(result);
+  /*
+   * A LIVING ROW APPEARS WHERE THE HOUSEHOLD IS CHARGED SOMETHING, in either
+   * city — not where the two cities differ.
+   *
+   * The two rules land differently and both are wanted. A tax that is
+   * identical in both cities keeps its row and prints $0, because "is local
+   * income tax the same in both?" is a question this list should answer. A
+   * renter's property tax is not the same question: it is zero everywhere,
+   * always, and a row for it is a category the household was never charged.
+   *
+   * Sales tax falls out here too — every current release folds it into the
+   * spending figures, so both sides are zero. Old shared links carry a real
+   * number and get the row back.
+   */
+  const livingRows = rows.living.filter((r) => r.origin !== 0 || r.destination !== 0);
+  const taxTotal = rows.taxes.reduce((sum, r) => sum + r.delta, 0);
+  const livingTotal = livingRows.reduce((sum, r) => sum + r.delta, 0);
+  const salary = rows.salary.delta;
+
+  /** A figure in the year column: green up, red down, grey when nothing moved. */
+  const money = (v: number, bold: boolean) => (
     <span
-      className="tnum text-right text-[0.85rem] font-semibold"
-      style={{ color: v >= 0 ? 'var(--good)' : 'var(--bad)' }}
+      className={`tnum text-right text-[0.85rem] ${bold ? 'font-semibold' : ''}`}
+      style={{ color: Math.abs(v) < 1 ? 'var(--muted)' : v > 0 ? 'var(--good)' : 'var(--bad)' }}
     >
       {formatUSD(v, { signed: true })}
     </span>
   );
 
+  const detailRow = (r: DifferenceRow) => (
+    <div key={r.key} className={`${row} py-[3px]`}>
+      <span className="pl-3 text-[0.82rem]" style={{ color: 'var(--ink-soft)' }}>
+        {r.label}
+      </span>
+      <span className="tnum text-right text-[0.8rem]" style={{ color: 'var(--muted)' }}>
+        {formatUSD(r.delta / 12, { signed: true })}
+      </span>
+      <span
+        className="tnum text-right text-[0.8rem]"
+        style={{ color: Math.abs(r.delta) < 1 ? 'var(--muted)' : r.delta > 0 ? 'var(--good)' : 'var(--bad)' }}
+      >
+        {formatUSD(r.delta, { signed: true })}
+      </span>
+    </div>
+  );
+
   return (
     <div className="flex flex-col gap-1">
       <div className={`${row} border-b pb-1`} style={{ borderColor: 'var(--rule-strong)' }}>
-        <span className="eyebrow">What makes up the gap</span>
+        <span className="eyebrow">What makes up the difference</span>
         <span className="eyebrow text-right">A month</span>
         <span className="eyebrow text-right">A year</span>
       </div>
 
-      {groups.map(({ key, label }) => {
-        const rows = result.breakdown.filter((b) => b.group === key);
-        if (rows.length === 0) return null;
-        const total = rows.reduce((sum, b) => sum + b.delta, 0);
-        return (
-          <div key={key} className="flex flex-col">
-            <div className={`${row} pt-2`}>
-              <span className="text-[0.82rem] font-semibold" style={{ color: 'var(--ink)' }}>
-                {label}
-              </span>
-              <span />
-              {money(total)}
-            </div>
-            {rows.map((b) => (
-              <div key={b.key} className={`${row} py-[3px]`}>
-                <span className="pl-3 text-[0.82rem]" style={{ color: 'var(--ink-soft)' }}>
-                  {b.label}
-                </span>
-                <span className="tnum text-right text-[0.8rem]" style={{ color: 'var(--muted)' }}>
-                  {formatUSD(b.delta / 12, { signed: true })}
-                </span>
-                <span
-                  className="tnum text-right text-[0.8rem]"
-                  style={{ color: b.delta >= 0 ? 'var(--good)' : 'var(--bad)' }}
-                >
-                  {formatUSD(b.delta, { signed: true })}
-                </span>
-              </div>
-            ))}
-            {key === 'payAndTax' && federalNote && (
-              <p
-                className="mt-1 pl-3 text-[0.74rem] leading-snug"
-                style={{ color: 'var(--muted)' }}
-              >
-                {federalNote}
-              </p>
-            )}
-          </div>
-        );
-      })}
-
-      <div
-        className={`${row} mt-1 border-t pt-2`}
-        style={{ borderColor: 'var(--rule-strong)' }}
-      >
-        <span className="text-[0.85rem] font-bold" style={{ color: 'var(--ink)' }}>
-          {result.delta >= 0 ? 'More left over' : 'Less left over'}
+      {/* Pay first, because every tax below it is a share of this line. */}
+      <div className={`${row} pt-2`}>
+        <span className="text-[0.82rem] font-semibold" style={{ color: 'var(--ink)' }}>
+          Salary
         </span>
-        <span
-          className="tnum text-right text-[0.85rem] font-bold"
-          style={{ color: result.delta >= 0 ? 'var(--good)' : 'var(--bad)' }}
-        >
-          {formatUSD(result.deltaMonthly, { signed: true })}
-        </span>
-        <span
-          className="tnum text-right text-[0.85rem] font-bold"
-          style={{ color: result.delta >= 0 ? 'var(--good)' : 'var(--bad)' }}
-        >
-          {formatUSD(result.delta, { signed: true })}
-        </span>
+        {money(salary / 12, false)}
+        {money(salary, true)}
       </div>
+
+      <div className={`${row} pt-2`}>
+        <span className="text-[0.82rem] font-semibold" style={{ color: 'var(--ink)' }}>
+          Taxes on your pay
+        </span>
+        {money(taxTotal / 12, false)}
+        {money(taxTotal, true)}
+      </div>
+      {rows.taxes.map(detailRow)}
+      {federalNote && (
+        <p className="mt-1 pl-3 text-[0.74rem] leading-snug" style={{ color: 'var(--muted)' }}>
+          {federalNote}
+        </p>
+      )}
+
+      <div className={`${row} pt-2`}>
+        <button
+          type="button"
+          onClick={() => setShowLiving((open) => !open)}
+          aria-expanded={showLiving}
+          className="flex items-baseline gap-1.5 text-left text-[0.82rem] font-semibold"
+          style={{ color: 'var(--ink)' }}
+        >
+          <span aria-hidden="true" style={{ color: 'var(--accent)' }}>
+            {showLiving ? '−' : '+'}
+          </span>
+          Living expenses
+          <span className="text-[0.74rem] font-normal" style={{ color: 'var(--accent)' }}>
+            {showLiving ? 'hide' : "what's in this"}
+          </span>
+        </button>
+        {money(livingTotal / 12, false)}
+        {money(livingTotal, true)}
+      </div>
+      {showLiving && livingRows.map(detailRow)}
     </div>
   );
 }

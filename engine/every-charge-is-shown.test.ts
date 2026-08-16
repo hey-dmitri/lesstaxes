@@ -26,7 +26,7 @@
 
 import { describe, expect, it } from 'vitest';
 
-import { compare, defaultCityInputs } from './compare';
+import { compare, defaultCityInputs, differenceRows } from './compare';
 import { CURRENT_DATASET_VERSION } from './datasets';
 import type { CityResult, FilingStatus } from './types';
 
@@ -117,6 +117,48 @@ describe('the results table', () => {
           side.tax.fica -
           side.tax.statePayroll;
         expect(Math.abs(shown - side.takeHome)).toBeLessThan(0.01);
+      }
+    }
+  });
+
+  /*
+   * AND THE SAME QUESTION OF THE DIFFERENCE, which is the figure the panel
+   * actually leads with.
+   *
+   * The verdict panel lists the salary, every tax and every living cost, and
+   * prints a difference above them. Those rows are the reader's only way to
+   * check the difference, so their sum has to BE the difference — to the cent,
+   * not approximately.
+   *
+   * It is a separate check from the two above because the rows are a separate
+   * list. Both of the charges this file was written for — the state disability
+   * contribution and owner upkeep — were in leftover and missing from the
+   * explanation, which is exactly what a residual here would catch.
+   */
+  it.each(PLACES)('itemises the whole difference in %s', (metroId) => {
+    for (const household of HOUSEHOLDS) {
+      for (const tenure of ['rent', 'own'] as const) {
+        // Including a salary change, because the salary row is the one line
+        // that runs the other way and it is easy to sign wrongly.
+        for (const [salary, offer] of [
+          [60_000, 60_000],
+          [150_000, 165_000],
+          [400_000, 350_000],
+        ]) {
+          const result = compare({
+            datasetVersion: CURRENT_DATASET_VERSION,
+            household,
+            origin: defaultCityInputs(metroId, salary, household, tenure),
+            destination: defaultCityInputs('19100', offer, household, tenure),
+          });
+
+          const rows = differenceRows(result);
+          expect(
+            Math.abs(rows.total - result.delta),
+            `${metroId} ${household.filingStatus} ${tenure} $${salary}→$${offer}: the rows ` +
+              `add to ${rows.total.toFixed(2)} and the headline says ${result.delta.toFixed(2)}`,
+          ).toBeLessThan(0.01);
+        }
       }
     }
   });
