@@ -7,6 +7,7 @@ import {
   metro,
   percentIsMeaningful,
   verdict,
+  changeInWords,
 } from '@/engine';
 import { salaryWording } from '@/lib/salary-wording';
 import { decodeComparison } from '@/lib/share-link';
@@ -58,7 +59,9 @@ interface CardCity {
 interface CardGroup {
   label: string;
   total: number;
-  rows: Array<{ label: string; delta: number }>;
+  rows: Array<{ label: string; delta: number; kind: 'cost' | 'pay' }>;
+  /** How to word the group's own total. See changeInWords. */
+  kind: 'cost' | 'mixed';
 }
 
 export async function GET(_request: Request, { params }: { params: Promise<{ payload: string }> }) {
@@ -108,7 +111,18 @@ export async function GET(_request: Request, { params }: { params: Promise<{ pay
         const rows = result.breakdown.filter((b) => b.group === key);
         return {
           label,
-          rows: rows.map((r) => ({ label: r.label, delta: r.delta })),
+          rows: rows.map((r) => ({
+            label: r.label,
+            delta: r.delta,
+            kind: r.key === 'salary' ? ('pay' as const) : ('cost' as const),
+          })),
+          /*
+           * "Pay and tax" holds a pay change and a tax change, which move in
+           * opposite directions, so its subtotal is neither "less" nor "more"
+           * of anything — it says better or worse. With no salary row in it,
+           * every line is a cost and the plainer word is true again.
+           */
+          kind: rows.some((r) => r.key === 'salary') ? ('mixed' as const) : ('cost' as const),
           total: rows.reduce((sum, r) => sum + r.delta, 0),
         };
       })
@@ -318,7 +332,11 @@ export async function GET(_request: Request, { params }: { params: Promise<{ pay
           <div style={{ display: 'flex', flexDirection: 'column', flex: 1.18 }}>
             {/* Explicit, because the first group heading's own margin does not
                 clear the eyebrow once the dense setting tightens it. */}
-            <div style={{ ...eyebrow, paddingBottom: dense ? 14 : 4 }}>What makes up the gap</div>
+            {/* Names the direction, as the panel's table heading does. Every
+                line below is the destination compared with now, and a reader
+                who supplies their own point of view reads "less tax" as "more
+                tax" — which is exactly what happened. */}
+            <div style={{ ...eyebrow, paddingBottom: dense ? 14 : 4 }}>What changes if you move</div>
 
             {card.groups.map((group) => (
               <div key={group.label} style={{ display: 'flex', flexDirection: 'column' }}>
@@ -330,7 +348,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ pay
                 >
                   <div style={{ display: 'flex' }}>{group.label}</div>
                   <div style={{ display: 'flex', color: group.total >= 0 ? GOOD : BAD }}>
-                    {formatUSD(group.total, { signed: true })}
+                    {changeInWords(group.total, group.kind).text}
                   </div>
                 </div>
                 {group.rows.map((row) => (
@@ -343,7 +361,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ pay
                   >
                     <div style={{ display: 'flex', color: MUTED }}>{row.label}</div>
                     <div style={{ display: 'flex', color: row.delta >= 0 ? GOOD : BAD }}>
-                      {formatUSD(row.delta, { signed: true })}
+                      {changeInWords(row.delta, row.kind).text}
                     </div>
                   </div>
                 ))}
@@ -360,8 +378,10 @@ export async function GET(_request: Request, { params }: { params: Promise<{ pay
               <div style={{ display: 'flex' }}>
                 {better ? 'More left over' : 'Less left over'}
               </div>
+              {/* No sign: the label beside it already says more or less, and
+                  "Less left over  −$3,326" reads as a double negative. */}
               <div style={{ display: 'flex', color: accent }}>
-                {formatUSD(card.delta, { signed: true })}
+                {formatUSD(Math.abs(card.delta))}
               </div>
             </div>
 

@@ -4,6 +4,7 @@ import { defaultCityInputs, compare } from './compare';
 import { CURRENT_DATASET_VERSION } from './datasets';
 import {
   breakEvenNarrative,
+  changeInWords,
   federalMovedReason,
   breakEvenSentence,
   percentIsMeaningful,
@@ -147,6 +148,49 @@ describe('verdict', () => {
 
     const close = verdict({ ...run(CHICAGO, AUSTIN, 150_000), delta: 100 });
     expect(close.headline).toBe('Too close to call');
+  });
+
+  /*
+   * "+$4,055" in green beside the word TAXES was read as "you will pay more
+   * tax" by the first person who saw it. It meant the opposite: you keep
+   * $4,055 more because the tax is lower. The sign convention is right and
+   * stays — every row is what the move does to your pocket, so they add up to
+   * the answer — but nobody translates a plus into "less tax" on sight.
+   */
+  it('says less or more of the thing the row is about', () => {
+    // A cost that improves gets SMALLER.
+    expect(changeInWords(4_055, 'cost').text).toBe('$4,055 less');
+    expect(changeInWords(-1_200, 'cost').text).toBe('$1,200 more');
+    // Pay that improves gets BIGGER, from the same positive number.
+    expect(changeInWords(4_055, 'pay').text).toBe('$4,055 more');
+    expect(changeInWords(-1_200, 'pay').text).toBe('$1,200 less');
+  });
+
+  it('colours by better or worse, whichever word it used', () => {
+    for (const kind of ['cost', 'pay'] as const) {
+      expect(changeInWords(500, kind).better).toBe(true);
+      expect(changeInWords(-500, kind).better).toBe(false);
+    }
+  });
+
+  /*
+   * A subtotal that adds a pay change to a tax change is neither less nor more
+   * of anything, because its parts move in opposite directions. The share card
+   * has one such line.
+   */
+  it('says better or worse where the parts pull opposite ways', () => {
+    expect(changeInWords(4_055, 'mixed').text).toBe('$4,055 better');
+    expect(changeInWords(-4_055, 'mixed').text).toBe('$4,055 worse');
+  });
+
+  it('says "the same" rather than a signed zero', () => {
+    for (const kind of ['cost', 'pay', 'mixed'] as const) {
+      const same = changeInWords(0, kind);
+      expect(same.text).toBe('the same');
+      expect(same.unchanged).toBe(true);
+      // Sub-dollar differences are rounding, not news.
+      expect(changeInWords(0.4, kind).unchanged).toBe(true);
+    }
   });
 
   it('never states the verdict without saying it is money only', () => {

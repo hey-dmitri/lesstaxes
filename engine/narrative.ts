@@ -146,6 +146,74 @@ export function verdict(result: ComparisonResult): Verdict {
 }
 
 /**
+ * A LINE OF THE BREAKDOWN, IN THE WORDS SOMEBODY WOULD SAY OUT LOUD.
+ *
+ * "Taxes on your pay  +$4,055", in green, was read exactly backwards by the
+ * first person who looked at it: a plus sign against the word TAXES says you
+ * will pay more tax. What it meant was that you keep $4,055 more BECAUSE the
+ * tax is lower. Same trap on living expenses, and worse there, because the
+ * figure is bigger.
+ *
+ * The sign convention itself is right and stays — every row is what the move
+ * does to your pocket, so they add up to the answer above them. What was
+ * missing is that a reader does not translate "+" into "less tax" on sight,
+ * and should not have to.
+ *
+ * So each row says LESS or MORE of its own thing. A cost row that improves
+ * says "less" — less tax, less rent — and a pay row that improves says "more".
+ * The colour still means better or worse, which now agrees with the word
+ * instead of contradicting it.
+ */
+export interface ChangeInWords {
+  /** Unsigned. The word beside it carries the direction. */
+  amount: USD;
+  /** 'less' | 'more' | '' — empty when nothing moved. */
+  word: string;
+  /** The whole thing, ready to print: "$4,055 less", or "the same". */
+  text: string;
+  /** True when this row leaves the household better off in the destination. */
+  better: boolean;
+  /** Neither better nor worse: the two cities charge the same. */
+  unchanged: boolean;
+}
+
+export function changeInWords(
+  /** Positive means better off in the destination, as everywhere else here. */
+  delta: USD,
+  /**
+   * Whether the line is money going OUT (tax, rent, food), money coming IN
+   * (pay), or a total of both. It decides the word, not the colour: a cost
+   * that improves gets smaller and a wage that improves gets bigger.
+   *
+   * 'mixed' exists for a subtotal that adds a pay change to a tax change,
+   * where neither "less" nor "more" is true of the whole thing — the share
+   * card has one. It says better or worse instead, which is the only honest
+   * word for a figure whose parts move in opposite directions.
+   */
+  kind: 'cost' | 'pay' | 'mixed',
+): ChangeInWords {
+  // Under a dollar a year is a rounding difference, not a change worth a word.
+  if (Math.abs(delta) < 1) {
+    return { amount: 0, word: '', text: 'the same', better: false, unchanged: true };
+  }
+  const better = delta > 0;
+  const word =
+    kind === 'cost'
+      ? better
+        ? 'less'
+        : 'more'
+      : kind === 'pay'
+        ? better
+          ? 'more'
+          : 'less'
+        : better
+          ? 'better'
+          : 'worse';
+  const amount = Math.abs(delta);
+  return { amount, word, text: `${formatUSD(amount)} ${word}`, better, unchanged: false };
+}
+
+/**
  * The city, short enough to sit inside a sentence: the short name without its
  * state suffix. "Albany-Schenectady-Troy, NY" is already shortened to
  * "Albany, NY" in the dataset, and this drops the last two characters too.

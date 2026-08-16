@@ -6,6 +6,7 @@ import { useState } from 'react';
 
 import {
   breakEvenNarrative,
+  changeInWords,
   cityName,
   differenceRows,
   federalMovedReason,
@@ -180,6 +181,12 @@ function WhatThisMeans({ result }: { result: ComparisonResult }) {
 
   return (
     <div className="flex flex-col gap-1.5 text-[0.84rem] leading-snug">
+      <p style={{ color: 'var(--muted-strong)' }}>
+        <strong style={{ color: 'var(--ink-soft)' }}>The table reads one way round:</strong> every
+        line is {to} compared with {from}. &ldquo;Less&rdquo; means you would pay less of that
+        thing there, &ldquo;more&rdquo; means you would pay more, and green means the change leaves
+        you better off. The lines add up to the difference at the top.
+      </p>
       {percentIsMeaningful(result) && (
         <p style={{ color: 'var(--ink-soft)' }}>
           That is{' '}
@@ -254,6 +261,8 @@ function Disclosure({
  */
 function Gap({ result }: { result: ComparisonResult }) {
   const [showLiving, setShowLiving] = useState(false);
+  const from = cityName(result.origin.metroId, result.datasetVersion);
+  const to = cityName(result.destination.metroId, result.datasetVersion);
   // Federal tax differing between two cities looks like a bug unless the page
   // says why, and the page says everywhere else that federal rules are the same.
   const federalNote = federalMovedReason(result);
@@ -287,13 +296,55 @@ function Gap({ result }: { result: ComparisonResult }) {
   const livingTotal = livingRows.reduce((sum, r) => sum + r.delta, 0);
   const salary = rows.salary.delta;
 
-  /** A figure in the year column: green up, red down, grey when nothing moved. */
-  const money = (v: number, bold: boolean) => (
-    <span
-      className={`tnum text-right text-[0.85rem] ${bold ? 'font-semibold' : ''}`}
-      style={{ color: Math.abs(v) < 1 ? 'var(--muted)' : v > 0 ? 'var(--good)' : 'var(--bad)' }}
-    >
-      {formatUSD(v, { signed: true })}
+  /**
+   * One cell: "$4,055 less", "$1,200 more", or "the same".
+   *
+   * "+$4,055" in green against the word TAXES was read as "you will pay more
+   * tax" by the first person who saw it. It meant the opposite — you keep
+   * $4,055 more because the tax is lower — and no colour fixes a sentence that
+   * says the wrong thing. The word now carries the direction and the colour
+   * agrees with it.
+   */
+  const cell = (
+    value: number,
+    kind: 'cost' | 'pay',
+    { bold = false, small = false }: { bold?: boolean; small?: boolean } = {},
+  ) => {
+    const change = changeInWords(value, kind);
+    return (
+      <span
+        className={`text-right ${small ? 'text-[0.8rem]' : 'text-[0.85rem]'} ${bold ? 'font-semibold' : ''}`}
+        style={{
+          color: change.unchanged
+            ? 'var(--muted)'
+            : change.better
+              ? 'var(--good)'
+              : 'var(--bad)',
+        }}
+      >
+        {change.unchanged ? (
+          'the same'
+        ) : (
+          <>
+            <span className="tnum">{formatUSD(change.amount)}</span>{' '}
+            <span className="text-[0.92em] font-normal">{change.word}</span>
+          </>
+        )}
+      </span>
+    );
+  };
+
+  /**
+   * The month column is quieter and carries no word.
+   *
+   * Both columns are the same fact at two scales, so saying "less" twice on
+   * every line reads as a stutter. The year column is the emphasised one and
+   * the one the word belongs to; the month figure sits beside it as a
+   * conversion, in grey, and takes its direction from its neighbour.
+   */
+  const monthly = (value: number) => (
+    <span className="tnum text-right text-[0.8rem]" style={{ color: 'var(--muted)' }}>
+      {Math.abs(value) < 12 ? '—' : formatUSD(Math.abs(value) / 12)}
     </span>
   );
 
@@ -302,22 +353,21 @@ function Gap({ result }: { result: ComparisonResult }) {
       <span className="pl-3 text-[0.82rem]" style={{ color: 'var(--ink-soft)' }}>
         {r.label}
       </span>
-      <span className="tnum text-right text-[0.8rem]" style={{ color: 'var(--muted)' }}>
-        {formatUSD(r.delta / 12, { signed: true })}
-      </span>
-      <span
-        className="tnum text-right text-[0.8rem]"
-        style={{ color: Math.abs(r.delta) < 1 ? 'var(--muted)' : r.delta > 0 ? 'var(--good)' : 'var(--bad)' }}
-      >
-        {formatUSD(r.delta, { signed: true })}
-      </span>
+      {monthly(r.delta)}
+      {cell(r.delta, 'cost', { small: true })}
     </div>
   );
 
   return (
     <div className="flex flex-col gap-1">
+      {/*
+        THE HEADING NAMES THE DIRECTION. Without it every row is a number with
+        no stated point of view, and a reader supplies their own — which is how
+        "+$4,055" beside the word TAXES came to mean "more tax" to the first
+        person who read it.
+      */}
       <div className={`${row} border-b pb-1`} style={{ borderColor: 'var(--rule-strong)' }}>
-        <span className="eyebrow">What makes up the difference</span>
+        <span className="eyebrow">In {to}, compared with {from}</span>
         <span className="eyebrow text-right">A month</span>
         <span className="eyebrow text-right">A year</span>
       </div>
@@ -327,16 +377,16 @@ function Gap({ result }: { result: ComparisonResult }) {
         <span className="text-[0.82rem] font-semibold" style={{ color: 'var(--ink)' }}>
           Salary
         </span>
-        {money(salary / 12, false)}
-        {money(salary, true)}
+        {monthly(salary)}
+        {cell(salary, 'pay', { bold: true })}
       </div>
 
       <div className={`${row} pt-2`}>
         <span className="text-[0.82rem] font-semibold" style={{ color: 'var(--ink)' }}>
           Taxes on your pay
         </span>
-        {money(taxTotal / 12, false)}
-        {money(taxTotal, true)}
+        {monthly(taxTotal)}
+        {cell(taxTotal, 'cost', { bold: true })}
       </div>
       {rows.taxes.map(detailRow)}
       {federalNote && (
@@ -361,8 +411,8 @@ function Gap({ result }: { result: ComparisonResult }) {
             {showLiving ? 'hide' : "what's in this"}
           </span>
         </button>
-        {money(livingTotal / 12, false)}
-        {money(livingTotal, true)}
+        {monthly(livingTotal)}
+        {cell(livingTotal, 'cost', { bold: true })}
       </div>
       {showLiving && livingRows.map(detailRow)}
     </div>
