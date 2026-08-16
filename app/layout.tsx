@@ -162,7 +162,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               Built by{' '}
               <a
                 href="https://heydmitri.com/"
-                className="underline underline-offset-2"
+                className="font-semibold underline underline-offset-2"
                 style={{ color: 'var(--accent)' }}
               >
                 Dmitri

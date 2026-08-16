@@ -81,6 +81,7 @@ function Headline({ result, animate }: { result: ComparisonResult; animate: bool
   const from = cityName(result.origin.metroId, result.datasetVersion);
   const to = cityName(result.destination.metroId, result.datasetVersion);
   const breakEven = breakEvenNarrative(result);
+  const why = whyNarrative(result);
   const salaryChanged = result.destination.grossSalary !== result.origin.grossSalary;
   const payGap = result.destination.grossSalary - result.origin.grossSalary;
 
@@ -92,7 +93,7 @@ function Headline({ result, animate }: { result: ComparisonResult; animate: bool
       >
         <VerdictLine result={result} />
 
-        {/* The evidence for the verdict above: how much, and which way. */}
+        {/* The evidence for the verdict above: how much, which way, and why. */}
         <div
           className="flex flex-col gap-0.5 border-t pt-3"
           style={{ borderColor: 'var(--rule)' }}
@@ -103,30 +104,58 @@ function Headline({ result, animate }: { result: ComparisonResult; animate: bool
           >
             {better ? `You'd be better off in ${to}` : `You'd be worse off in ${to}`}
           </span>
-          <span
-            className="tnum text-[3.2rem] font-bold leading-[1.04] tracking-[-0.04em] xl:text-[3.6rem]"
-            style={{ color: colour }}
-          >
-            {formatUSD(Math.abs(rolled))}
-          </span>
-          <span className="text-[1.05rem] font-medium" style={{ color: 'var(--ink)' }}>
-            a year{' '}
-            <span style={{ color: 'var(--muted)' }}>
-              &middot; <span className="tnum">{formatUSD(Math.abs(result.deltaMonthly))}</span> a
-              month
-              {salaryChanged && (
-                <>
-                  , on <span className="tnum">{formatUSD(Math.abs(payGap))}</span>{' '}
-                  {payGap < 0 ? 'less' : 'more'} pay
-                </>
-              )}
-            </span>
-          </span>
-          {!better && (
-            <span className="text-[0.84rem]" style={{ color: 'var(--ink-soft)' }}>
-              That is what the move costs you a year. Staying in {from} keeps it.
-            </span>
-          )}
+          {/*
+            THE REASON SITS BESIDE THE FIGURE, not in a disclosure three
+            sections down. It was the first line of "Why it works out this way",
+            which is a strange place for the one sentence that explains the
+            number somebody is looking at — and that section's other line
+            repeated the break-even card word for word, so the whole thing is
+            gone.
+          */}
+          <div className="flex flex-wrap items-end gap-x-5 gap-y-1">
+            <div className="flex flex-col gap-0.5">
+              <span
+                className="tnum text-[3.2rem] font-bold leading-[1.04] tracking-[-0.04em] xl:text-[3.6rem]"
+                style={{ color: colour }}
+              >
+                {formatUSD(Math.abs(rolled))}
+              </span>
+              <span className="text-[1.05rem] font-medium" style={{ color: 'var(--ink)' }}>
+                a year{' '}
+                <span style={{ color: 'var(--muted)' }}>
+                  &middot; <span className="tnum">{formatUSD(Math.abs(result.deltaMonthly))}</span>{' '}
+                  a month
+                  {salaryChanged && (
+                    <>
+                      , on <span className="tnum">{formatUSD(Math.abs(payGap))}</span>{' '}
+                      {payGap < 0 ? 'less' : 'more'} pay
+                    </>
+                  )}
+                </span>
+              </span>
+            </div>
+            <p
+              className="min-w-[13rem] flex-1 pb-1.5 text-[0.86rem] leading-snug"
+              style={{ color: 'var(--ink-soft)' }}
+            >
+              {to} is{' '}
+              <strong style={{ color: why.cityCheaper ? 'var(--good)' : 'var(--bad)' }}>
+                <span className="tnum">{formatUSD(why.cityAmount)}</span>{' '}
+                {why.cityCheaper ? 'cheaper' : 'pricier'}
+              </strong>{' '}
+              a year to live in
+              {/*
+                The clause comes from the engine so that this panel, the share
+                card and the link preview cannot drift apart. It distinguishes
+                effects that OPPOSE each other from ones that COMPOUND — saying
+                a pay cut into a pricier city "does not outweigh" the expense
+                told the reader the two partly cancelled, when in fact they add
+                up.
+              */}
+              {whyClause(why)}
+              {!better && ` Staying in ${from} keeps the difference.`}
+            </p>
+          </div>
         </div>
       </div>
 
@@ -140,12 +169,19 @@ function Headline({ result, animate }: { result: ComparisonResult; animate: bool
               ? `No salary needed in ${to}`
               : `Salary needed in ${to} to break even`}
           </span>
-          <span className="tnum text-[1.35rem] font-semibold" style={{ color: 'var(--ink)' }}>
-            {breakEven.kind === 'wins-at-any-salary' ? 'None' : formatUSD(breakEven.salary)}
-          </span>
-          <span className="text-[0.8rem]" style={{ color: 'var(--ink-soft)' }}>
-            <BreakEvenLine breakEven={breakEven} to={to} />
-          </span>
+          {/*
+            The figure and its qualifier share a line. Stacked, this card was
+            three lines tall for two facts, and every one of them pushed the
+            table — the thing people actually read — further down the panel.
+          */}
+          <div className="flex flex-wrap items-baseline gap-x-2.5 gap-y-0.5">
+            <span className="tnum text-[1.35rem] font-semibold" style={{ color: 'var(--ink)' }}>
+              {breakEven.kind === 'wins-at-any-salary' ? 'None' : formatUSD(breakEven.salary)}
+            </span>
+            <span className="text-[0.8rem]" style={{ color: 'var(--ink-soft)' }}>
+              <BreakEvenLine breakEven={breakEven} to={to} />
+            </span>
+          </div>
         </div>
       )}
     </div>
@@ -472,78 +508,6 @@ function Shortfall({ result }: { result: ComparisonResult }) {
   );
 }
 
-function Why({ result }: { result: ComparisonResult }) {
-  const to = metro(result.destination.metroId).shortName;
-  const why = whyNarrative(result);
-  const breakEven = breakEvenNarrative(result);
-
-  return (
-    <div className="flex flex-col gap-1">
-      <p className="text-[0.8rem] leading-snug" style={{ color: 'var(--ink-soft)' }}>
-        {to} is{' '}
-        <strong style={{ color: why.cityCheaper ? 'var(--good)' : 'var(--bad)' }}>
-          <span className="tnum">{formatUSD(why.cityAmount)}</span>{' '}
-          {why.cityCheaper ? 'cheaper' : 'pricier'}
-        </strong>{' '}
-        a year to live in
-        {/*
-          The clause comes from the engine so that this panel, the share card
-          and the link preview cannot drift apart. It distinguishes effects that
-          OPPOSE each other from ones that COMPOUND — saying a pay cut into a
-          pricier city "does not outweigh" the expense told the reader the two
-          partly cancelled, when in fact they add up.
-        */}
-        {whyClause(why)}
-      </p>
-      {breakEven && (
-        <p className="text-[0.8rem] leading-snug" style={{ color: 'var(--ink-soft)' }}>
-          {breakEven.kind === 'wins-at-any-salary' && (
-            <>
-              There is <strong style={{ color: 'var(--good)' }}>no salary you&rsquo;d need</strong>{' '}
-              in {to} &mdash; it comes out ahead even on no income at all.
-            </>
-          )}
-          {breakEven.kind === 'level' && (
-            <>
-              You&rsquo;d break even in {to} at{' '}
-              <strong style={{ color: 'var(--ink)' }}>
-                about {breakEvenReference(breakEven)}
-              </strong>
-              .
-            </>
-          )}
-          {breakEven.kind === 'needs-more' && (
-            <>
-              You&rsquo;d need{' '}
-              <strong className="tnum" style={{ color: 'var(--ink)' }}>
-                {formatUSD(breakEven.salary)}
-              </strong>{' '}
-              in {to} to break even &mdash;{' '}
-              <strong className="tnum" style={{ color: 'var(--bad)' }}>
-                {formatUSD(Math.abs(breakEven.gap))}
-              </strong>{' '}
-              more than {breakEvenReference(breakEven)}.
-            </>
-          )}
-          {breakEven.kind === 'has-headroom' && (
-            <>
-              You&rsquo;d break even in {to} at{' '}
-              <strong className="tnum" style={{ color: 'var(--ink)' }}>
-                {formatUSD(breakEven.salary)}
-              </strong>{' '}
-              &mdash;{' '}
-              <strong className="tnum" style={{ color: 'var(--good)' }}>
-                {formatUSD(Math.abs(breakEven.gap))}
-              </strong>{' '}
-              less than {breakEvenReference(breakEven)}, so there is room to spare.
-            </>
-          )}
-        </p>
-      )}
-    </div>
-  );
-}
-
 function DetailTable({ result }: { result: ComparisonResult }) {
   const from = metro(result.origin.metroId).shortName;
   const to = metro(result.destination.metroId).shortName;
@@ -717,9 +681,6 @@ export function Results({
       <div className="flex flex-col gap-1.5">
         <Disclosure summary="What these numbers mean">
           <WhatThisMeans result={result} />
-        </Disclosure>
-        <Disclosure summary="Why it works out this way">
-          <Why result={result} />
         </Disclosure>
         <Disclosure summary="The full numbers, line by line">
           <DetailTable result={result} />
