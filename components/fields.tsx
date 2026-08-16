@@ -80,6 +80,17 @@ export function PrefillNote({ children, lines }: { children: React.ReactNode; li
  */
 export function InfoDot({ label, children }: { label: string; children: React.ReactNode }) {
   const [open, setOpen] = useState(false);
+  /*
+   * Which way it opens, decided when it opens rather than guessed.
+   *
+   * These markers sit in narrow columns — the property tax one is in the last
+   * third of a card — so a note that always opened rightward ran off the edge
+   * of a phone and took the page's horizontal scroll with it. Measured at the
+   * moment of opening, because the same marker is on the right on a phone and
+   * in the middle on a laptop.
+   */
+  const [alignRight, setAlignRight] = useState(false);
+  const button = useRef<HTMLButtonElement>(null);
   const id = useId();
 
   useEffect(() => {
@@ -102,8 +113,14 @@ export function InfoDot({ label, children }: { label: string; children: React.Re
   return (
     <span className="relative inline-flex align-baseline">
       <button
+        ref={button}
         type="button"
-        onClick={() => setOpen((was) => !was)}
+        onClick={() => {
+          const box = button.current?.getBoundingClientRect();
+          // 272px is the widest the note gets; 8px of margin off the edge.
+          if (box) setAlignRight(box.left + 272 > window.innerWidth - 8);
+          setOpen((was) => !was);
+        }}
         aria-expanded={open}
         aria-controls={open ? id : undefined}
         aria-label={label}
@@ -121,11 +138,12 @@ export function InfoDot({ label, children }: { label: string; children: React.Re
           id={id}
           role="note"
           /*
-           * Anchored to the marker and floating over the rows. Right-aligned
-           * would run off a narrow panel; the marker is always near the left
-           * edge of its column, so opening rightward from it is safe.
+           * Anchored to the marker and floating over the rows, opening away
+           * from whichever edge it would otherwise fall off.
            */
-          className="absolute left-0 top-[1.4rem] z-30 w-[min(17rem,70vw)] rounded-lg border p-2.5 text-left text-[0.76rem] font-normal leading-snug shadow-lg"
+          className={`absolute top-[1.4rem] z-30 w-[min(17rem,70vw)] rounded-lg border p-2.5 text-left text-[0.76rem] font-normal leading-snug shadow-lg ${
+            alignRight ? 'right-0' : 'left-0'
+          }`}
           style={{
             borderColor: 'var(--rule-strong)',
             background: 'var(--surface-raised)',
@@ -212,6 +230,14 @@ interface PercentFieldProps {
   value: number;
   onChange: (value: number) => void;
   hint?: React.ReactNode;
+  /**
+   * Where the prefilled figure came from, behind an ⓘ on the label.
+   *
+   * These three fields are the ones a reader is most likely to challenge —
+   * "where did you get 6.8%?" — and the answer used to be either a shared note
+   * under all three, which could only describe one of them, or nothing at all.
+   */
+  info?: React.ReactNode;
   max?: number;
   step?: number;
   /**
@@ -231,6 +257,7 @@ export function PercentField({
   value,
   onChange,
   hint,
+  info,
   max = 100,
   step = 0.01,
   compact = false,
@@ -238,15 +265,16 @@ export function PercentField({
   const id = useId();
   return (
     <div>
-      <label
-        htmlFor={id}
-        className={
-          compact ? 'mb-1 block text-[0.74rem] font-medium leading-tight' : labelClass
-        }
-        style={labelStyle}
-      >
-        {label}
-      </label>
+      <span className="mb-1 flex items-center gap-1">
+        <label
+          htmlFor={id}
+          className={compact ? 'block text-[0.74rem] font-medium leading-tight' : labelClass}
+          style={{ ...labelStyle, marginBottom: 0 }}
+        >
+          {label}
+        </label>
+        {info && <InfoDot label={`Where does the ${label.toLowerCase()} come from?`}>{info}</InfoDot>}
+      </span>
       <div className="relative">
         <input
           id={id}

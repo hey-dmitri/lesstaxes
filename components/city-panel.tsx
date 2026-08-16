@@ -25,7 +25,6 @@ import {
   CountField,
   MoneyField,
   PercentField,
-  PrefillNote,
   Segmented,
   StepBadge,
   Checkbox,
@@ -409,6 +408,22 @@ export function CityPanel({
                   max={25}
                   step={0.05}
                   compact
+                  /*
+                   * SAID PLAINLY, INCLUDING THE PART THAT IS NOT FLATTERING.
+                   * Every other figure on this site comes from a federal
+                   * source and can be traced to it. This one cannot: it is a
+                   * round starting number, and pretending otherwise here —
+                   * where a reader has come to ask exactly that — would be the
+                   * one place the site lied about its own provenance.
+                   */
+                  info={
+                    <>
+                      A starting figure for a 30-year fixed loan, not a quote and not fetched from
+                      anywhere &mdash; this site makes no live calls. Rates barely differ between
+                      cities, so nothing here is local; what yours will be depends on your credit,
+                      your deposit and your lender. Put your own in and every figure below follows.
+                    </>
+                  }
                 />
                 <PercentField
                   label="Property tax"
@@ -417,12 +432,18 @@ export function CityPanel({
                   max={10}
                   step={0.01}
                   compact
+                  info={
+                    <>
+                      <strong>{(defaults.effectivePropertyTaxRate * 100).toFixed(2)}%</strong> is
+                      the <em>effective</em> rate here &mdash; what owners actually pay, worked out
+                      as the median property tax bill over the median home value in this area
+                      (Census ACS). That is more honest than a headline millage rate, which ignores
+                      assessment ratios, homestead exemptions and caps. Your own bill turns on your
+                      assessment.
+                    </>
+                  }
                 />
               </div>
-              <PrefillNote>
-                {(defaults.effectivePropertyTaxRate * 100).toFixed(2)}% property tax is the
-                effective rate here.
-              </PrefillNote>
             </div>
           </>
         )}

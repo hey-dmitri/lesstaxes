@@ -112,7 +112,7 @@ function Headline({ result, animate }: { result: ComparisonResult; animate: bool
             repeated the break-even card word for word, so the whole thing is
             gone.
           */}
-          <div className="flex flex-wrap items-end gap-x-5 gap-y-1">
+          <div className="flex flex-wrap items-end gap-x-8 gap-y-1">
             <div className="flex flex-col gap-0.5">
               <span
                 className="tnum text-[3.2rem] font-bold leading-[1.04] tracking-[-0.04em] xl:text-[3.6rem]"
@@ -134,9 +134,16 @@ function Headline({ result, animate }: { result: ComparisonResult; animate: bool
                 </span>
               </span>
             </div>
+            {/*
+              Bottom-aligned with the line under the figure, not floated above
+              it. `items-end` on the row lines the two boxes up; the sentence
+              then has to carry the same line-height as that line, or the
+              half-leading differs and the last line sits a couple of pixels
+              proud of the one it is meant to sit beside.
+            */}
             <p
-              className="min-w-[13rem] flex-1 pb-1.5 text-[0.86rem] leading-snug"
-              style={{ color: 'var(--ink-soft)' }}
+              className="min-w-[14rem] flex-1 text-[0.86rem]"
+              style={{ color: 'var(--ink-soft)', lineHeight: 1.5 }}
             >
               {to} is{' '}
               <strong style={{ color: why.cityCheaper ? 'var(--good)' : 'var(--bad)' }}>
@@ -174,7 +181,7 @@ function Headline({ result, animate }: { result: ComparisonResult; animate: bool
             three lines tall for two facts, and every one of them pushed the
             table — the thing people actually read — further down the panel.
           */}
-          <div className="flex flex-wrap items-baseline gap-x-2.5 gap-y-0.5">
+          <div className="flex flex-wrap items-baseline gap-x-4 gap-y-0.5">
             <span className="tnum text-[1.35rem] font-semibold" style={{ color: 'var(--ink)' }}>
               {breakEven.kind === 'wins-at-any-salary' ? 'None' : formatUSD(breakEven.salary)}
             </span>
