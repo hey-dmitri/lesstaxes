@@ -82,6 +82,37 @@ export function medianEarnings(metroId: string, version?: string): number | null
 }
 
 /**
+ * WHAT THE MORTGAGE RATE FIELD SHOULD OPEN ON.
+ *
+ * Freddie Mac's weekly national average for a 30-year fixed loan, averaged
+ * over the most recent complete quarter — see the housing build. It is the one
+ * figure on this site that moves weekly, and until now it was the only one
+ * with no source at all: a hard-coded 6.8% sitting in front of the mortgage
+ * payment, the interest deduction and the federal bill that deduction changes.
+ *
+ * NOT LOCAL, on purpose. Rates barely differ between metros; what any one
+ * borrower is offered turns on their credit, their deposit and their lender,
+ * which is what the note beside the field says.
+ *
+ * Falls back to the old constant on releases cut before the series shipped, so
+ * a pinned link still answers exactly as it did.
+ */
+export function defaultMortgageRate(version?: string): Rate {
+  const housing = datasetBundle(version).housing as { mortgageRate?: { rate: number } };
+  return housing.mortgageRate?.rate ?? 0.068;
+}
+
+/** Where that rate came from, for the note beside the field. */
+export function mortgageRateSource(
+  version?: string,
+): { rate: number; quarter: string; weeks: number } | null {
+  const housing = datasetBundle(version).housing as {
+    mortgageRate?: { rate: number; quarter: string; weeks: number };
+  };
+  return housing.mortgageRate ?? null;
+}
+
+/**
  * WHAT THE SALARY BOX SHOULD OPEN ON for a place — the local figure where
  * there is one, and the national median where there is not.
  *

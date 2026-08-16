@@ -80,9 +80,20 @@ describe('what the salary box opens on', () => {
     const older = ALL_DATASET_VERSIONS.filter((v) => v !== CURRENT_DATASET_VERSION);
     expect(older.length).toBeGreaterThan(0);
     for (const version of older) {
-      expect(() => defaultSalaryFor('16980', version)).not.toThrow();
-      expect(defaultSalaryFor('16980', version)).toBeGreaterThan(0);
-      expect(medianEarnings('16980', version)).toBeNull();
+      expect(() => defaultSalaryFor('16980', version), version).not.toThrow();
+      expect(defaultSalaryFor('16980', version), version).toBeGreaterThan(0);
+    }
+  });
+
+  /*
+   * Local pay shipped with 2026.28. Releases cut before it have no figure at
+   * all, and the accessor has to say so rather than inventing one — that is
+   * what keeps a pinned link answering exactly as it did the day it was sent.
+   */
+  it('has nothing to say about releases cut before it shipped', () => {
+    for (const version of ['2026.25', '2026.26', '2026.27']) {
+      expect(medianEarnings('16980', version), version).toBeNull();
+      expect(defaultSalaryFor('16980', version), version).toBe(defaultSalaryFor(undefined, version));
     }
   });
 });

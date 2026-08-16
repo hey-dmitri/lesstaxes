@@ -70,6 +70,29 @@ const REFRESHABLE = [
     // noisy. The build script's own validation is the real gate.
     noisy: true,
   },
+  {
+    /*
+     * THE MORTGAGE RATE, WHICH IS THE ONLY FIGURE HERE THAT MOVES WEEKLY.
+     *
+     * It was a hard-coded 6.8% — the one number on the site with no source
+     * behind it, sitting in a field that drives the mortgage payment, the
+     * interest deduction and therefore the federal bill. It is now Freddie
+     * Mac's Primary Mortgage Market Survey, the weekly national average for a
+     * 30-year fixed loan, taken through FRED because FRED serves it as a plain
+     * CSV with no key and the whole history in one file.
+     *
+     * The build averages the most recent COMPLETE calendar quarter, so the
+     * figure is stable between refreshes rather than jumping with whichever
+     * Thursday the dataset happened to be cut on.
+     */
+    file: 'fred-mortgage30us.csv',
+    label: 'Freddie Mac 30-year fixed mortgage rate (weekly, via FRED)',
+    url: 'https://fred.stlouisfed.org/graph/fredgraph.csv?id=MORTGAGE30US',
+    transform: (buffer) => buffer,
+    // A new weekly observation lands every Thursday, so a byte diff is always
+    // "changed" and says nothing. The quarter average is what matters.
+    noisy: true,
+  },
 ];
 
 /**

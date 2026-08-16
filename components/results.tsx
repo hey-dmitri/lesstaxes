@@ -112,7 +112,7 @@ function Headline({ result, animate }: { result: ComparisonResult; animate: bool
             repeated the break-even card word for word, so the whole thing is
             gone.
           */}
-          <div className="flex flex-wrap items-end gap-x-8 gap-y-1">
+          <div className="flex flex-wrap items-center gap-x-8 gap-y-1">
             <div className="flex flex-col gap-0.5">
               <span
                 className="tnum text-[3.2rem] font-bold leading-[1.04] tracking-[-0.04em] xl:text-[3.6rem]"
@@ -135,15 +135,15 @@ function Headline({ result, animate }: { result: ComparisonResult; animate: bool
               </span>
             </div>
             {/*
-              Bottom-aligned with the line under the figure, not floated above
-              it. `items-end` on the row lines the two boxes up; the sentence
-              then has to carry the same line-height as that line, or the
-              half-leading differs and the last line sits a couple of pixels
-              proud of the one it is meant to sit beside.
+              CENTRED AGAINST THE FIGURE, not hung off its baseline. Bottom-
+              aligning the two boxes lined the sentence up with the small print
+              under the number and left it looking like a footnote to that line
+              rather than the explanation of the number itself — and it broke
+              differently at one line, two lines and three.
             */}
             <p
-              className="min-w-[14rem] flex-1 text-[0.86rem]"
-              style={{ color: 'var(--ink-soft)', lineHeight: 1.5 }}
+              className="min-w-[14rem] flex-1 text-[0.98rem]"
+              style={{ color: 'var(--ink-soft)', lineHeight: 1.45 }}
             >
               {to} is{' '}
               <strong style={{ color: why.cityCheaper ? 'var(--good)' : 'var(--bad)' }}>

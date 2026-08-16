@@ -487,7 +487,12 @@ Rendered in the user's current theme. Filename should be descriptive, e.g.
 6. Health insurance assumed employer-sponsored and roughly portable; sits inside the general
    healthcare category.
 7. Home and renters insurance folded into housing, at **state** granularity (§6.1).
-8. Mortgages assumed 30-year fixed.
+8. Mortgages assumed 30-year fixed. The rate the field opens on is Freddie Mac's Primary Mortgage
+   Market Survey (MORTGAGE30US via FRED), averaged over the most recent complete calendar quarter
+   and refreshed with the rest of the dataset. It was a hard-coded 6.8% until August 2026 — the one
+   figure on the site with no source behind it, in front of the mortgage payment, the interest
+   deduction and the federal bill that deduction changes. It is national: rates barely differ
+   between metros, and what one borrower is offered turns on their credit and their lender.
 9. United States only. USD only. English only.
 10. No accounts, no login, no saved history — the share link *is* the save mechanism.
 11. No capital-gains tax on home sale (belongs with deferred moving-costs feature).

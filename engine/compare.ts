@@ -43,6 +43,7 @@ import {
   taxableShares,
   transportDefaults,
   utilitiesAreSplitOut,
+  defaultMortgageRate,
   DATASET_VERSION,
 } from './dataset';
 import { computeHousing } from './housing';
@@ -499,7 +500,13 @@ export function defaultCityInputs(
   grossSalary: USD,
   household: Household,
   tenure: 'rent' | 'own' = 'rent',
-  mortgageRate = 0.068,
+  /*
+   * Defaults to the published national average for a 30-year fixed loan — the
+   * most recent complete quarter of Freddie Mac's weekly survey, from this
+   * release. It was a hard-coded 6.8% here and in the interface, which is the
+   * one figure on this site that had no source behind it.
+   */
+  mortgageRate?: number,
   version?: string,
 ): CityInputs {
   const stateCode = metro(metroId, version).primaryState;
@@ -520,7 +527,7 @@ export function defaultCityInputs(
             tenure: 'own',
             homePrice: homePriceDefault(metroId, grossSalary, version, stateCode),
             downPayment: 0.2,
-            mortgageRate,
+            mortgageRate: mortgageRate ?? defaultMortgageRate(version),
             propertyTaxRate: h.effectivePropertyTaxRate,
           },
   };

@@ -18,7 +18,7 @@ index, statutory rate or state average — on the [data page](https://packorstay
 
 ## Status
 
-**Live** at [packorstay.com](https://packorstay.com). Current dataset: **2026.28**.
+**Live** at [packorstay.com](https://packorstay.com). Current dataset: **2026.29**.
 
 | Component | State |
 |---|---|
@@ -31,6 +31,7 @@ index, statutory rate or state average — on the [data page](https://packorstay
 | Local income tax — 13 named cities, state averages elsewhere | ✅ |
 | 387 metros + 51 rural fallbacks, price parities | ✅ |
 | Salary prefilled from local pay — median full-time earnings, per place | ✅ |
+| Mortgage rate prefilled from Freddie Mac's weekly survey, quarterly average | ✅ |
 | Rent and home price scaled to household and income, effective property tax | ✅ |
 | Housing, cars and tax sliced by state for the 43 split metros | ✅ |
 | Vehicles per adult, per-vehicle cost | ✅ |
@@ -286,8 +287,8 @@ npm run build      # production build
 ## Data
 
 Every number comes from a free, public source: BEA Regional Price Parities, Census ACS, BLS
-Consumer Expenditure Survey, IRS, SSA, the Tax Foundation, and individual city revenue
-departments. HUD Fair Market Rents were specified originally and rejected — HUD publishes on
+Consumer Expenditure Survey, Freddie Mac's mortgage rate survey (via FRED), IRS, SSA, the Tax
+Foundation, and individual city revenue departments. HUD Fair Market Rents were specified originally and rejected — HUD publishes on
 its own areas, which do not map cleanly onto the metros used here. Nothing is paid for, and
 there are no runtime API calls: datasets are committed to this repo and bundled at build time.
 

@@ -16,7 +16,10 @@ import type { FilingStatus, Household } from '../types';
  *
  * In an expensive metro that was thousands of dollars of tax. On this site's
  * own default home price for San Jose, a single filer on $300,000 borrows
- * $1.30M and was deducting $88,197 of interest instead of about $50,756.
+ * $1.30M and was deducting every dollar of first-year interest instead of the
+ * 58% of it the limit allows — $88,197 against $50,756 at the 6.8% the field
+ * used to open on. The rate is published data now and moves each quarter, so
+ * the tests below check the rule rather than those two figures.
  *
  * IRC 163(h)(3)(F), as amended by OBBBA (PL 119-21), which made the $750,000
  * limit permanent. IRS Publication 936.
@@ -94,15 +97,25 @@ describe('the reported San Jose case', () => {
     expect(principal).toBeGreaterThan(1_200_000);
   });
 
-  it('deducts roughly $50,756 of interest instead of $88,197', () => {
+  /*
+   * CHECKS THE RULE, NOT A FIGURE FROZEN AT ONE RATE. This used to assert
+   * $88,197 of interest and about $50,756 deducted, both computed at the
+   * hard-coded 6.8% the field opened on. The rate is published data now and
+   * moves every quarter, so those numbers went stale the first time it did —
+   * and a golden value that has to be re-typed every refresh is a golden value
+   * nobody trusts. What does not move is the shape: the deduction is the
+   * interest on the first $750,000 and nothing beyond it.
+   */
+  it('deducts only the interest on the first $750,000', () => {
     const interest = firstYearInterest(principal, housing.mortgageRate);
     const debt = firstYearAverageBalance(principal, housing.mortgageRate);
-    expect(interest).toBeGreaterThan(85_000);
+    expect(interest).toBeGreaterThan(60_000);
 
     const deducted = deductibleMortgageInterest(interest, debt, 'single', rules.mortgageInterest);
-    // Interest on $750,000 at this rate, whatever the loan actually is.
-    expect(deducted).toBeGreaterThan(48_000);
-    expect(deducted).toBeLessThan(53_000);
+    expect(deducted).toBeCloseTo(interest * (750_000 / debt), 2);
+    // Well under half the loan is deductible on this house, whatever the rate.
+    expect(deducted).toBeLessThan(interest * 0.62);
+    expect(interest - deducted).toBeGreaterThan(25_000);
   });
 
   it('raises federal tax by about $10,000', () => {

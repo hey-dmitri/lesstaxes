@@ -6,8 +6,10 @@ import {
   bedroomsFor,
   defaultCarCount,
   adultsIn,
+  defaultMortgageRate,
   defaultRent,
   defaultSalaryFor,
+  mortgageRateSource,
   formatUSD,
   homePriceDefault,
   housingDefaults,
@@ -87,7 +89,7 @@ export function housingFor(
         tenure: 'own',
         homePrice: homePriceDefault(metroId, salary, undefined, stateCode),
         downPayment: 0.2,
-        mortgageRate: 0.068,
+        mortgageRate: defaultMortgageRate(),
         propertyTaxRate: h.effectivePropertyTaxRate,
       };
 }
@@ -215,6 +217,12 @@ export function CityPanel({
   const m = metro(state.metroId);
   const stateCode = resolveStateCode(state.metroId, state.stateCode);
   const defaults = housingDefaults(state.metroId, undefined, stateCode);
+  /*
+   * Null only on a share link pinned to a release cut before the survey
+   * shipped, where the field holds that release's flat figure and saying which
+   * quarter it came from would be a claim about data that release never had.
+   */
+  const rateSource = mortgageRateSource();
   const transport = transportDefaults(state.metroId, undefined, stateCode);
   const allLocals = localTaxOptions(state.metroId, undefined, stateCode);
   const optionalLocals = allLocals.filter((o) => o.optional && !o.group);
@@ -418,10 +426,18 @@ export function CityPanel({
                    */
                   info={
                     <>
-                      A starting figure for a 30-year fixed loan, not a quote and not fetched from
-                      anywhere &mdash; this site makes no live calls. Rates barely differ between
-                      cities, so nothing here is local; what yours will be depends on your credit,
-                      your deposit and your lender. Put your own in and every figure below follows.
+                      {rateSource ? (
+                        <>
+                          The US average for a 30-year fixed loan across{' '}
+                          {rateSource.quarter}, from Freddie Mac&rsquo;s weekly survey. Yours
+                          depends on your credit and your lender.
+                        </>
+                      ) : (
+                        <>
+                          A starting figure for a 30-year fixed loan. Yours depends on your credit
+                          and your lender.
+                        </>
+                      )}
                     </>
                   }
                 />

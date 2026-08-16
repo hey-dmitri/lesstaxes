@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
+import { defaultMortgageRate, mortgageRateSource } from './dataset';
 import { computeHousing, firstYearInterest, monthlyMortgagePayment } from './housing';
 
 describe('monthlyMortgagePayment', () => {
@@ -110,5 +111,42 @@ describe('computeHousing — owning', () => {
     const small = computeHousing({ housing: { ...own, downPayment: 0.05 } });
     const large = computeHousing({ housing: { ...own, downPayment: 0.5 } });
     expect(large.total).toBeLessThan(small.total);
+  });
+});
+
+/**
+ * THE MORTGAGE RATE WAS THE ONE FIGURE ON THIS SITE WITH NO SOURCE.
+ *
+ * A hard-coded 6.8%, sitting in front of the mortgage payment, the interest
+ * deduction and — through that deduction — the federal bill. It is Freddie
+ * Mac's weekly national average for a 30-year fixed loan now, averaged over
+ * the most recent complete quarter, and it refreshes with everything else.
+ */
+describe('the mortgage rate the field opens on', () => {
+  it('is the published quarter average, not a round number somebody typed', () => {
+    const published = mortgageRateSource();
+    expect(published).not.toBeNull();
+    expect(defaultMortgageRate()).toBe(published!.rate);
+    // A quarter holds twelve or thirteen weekly prints; fewer means a
+    // part-quarter was averaged and published as a whole one.
+    expect(published!.weeks).toBeGreaterThanOrEqual(11);
+    expect(published!.quarter).toMatch(/^20\d\d Q[1-4]$/);
+  });
+
+  it('is a plausible rate, so a parsing slip cannot ship', () => {
+    const rate = defaultMortgageRate();
+    expect(rate).toBeGreaterThan(0.02);
+    expect(rate).toBeLessThan(0.2);
+  });
+
+  /*
+   * Releases cut before the series shipped have no rate in them, and a pinned
+   * link has to keep answering with the flat figure it was built on.
+   */
+  it('falls back to the old flat figure on older releases', () => {
+    for (const version of ['2026.26', '2026.27', '2026.28']) {
+      expect(mortgageRateSource(version), version).toBeNull();
+      expect(defaultMortgageRate(version), version).toBe(0.068);
+    }
   });
 });

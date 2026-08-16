@@ -11,8 +11,10 @@ import {
   ALL_STATE_CODES,
   allMetros,
   medianEarnings,
+  mortgageRateSource,
   TOO_CLOSE_FLOOR,
   TOO_CLOSE_SHARE,
+  formatPercent,
   formatUSD,
   stateRules,
 } from '@/engine';
@@ -78,6 +80,13 @@ const LOCAL_PAY = (() => {
     .sort((a, b) => a.amount - b.amount);
   return { lowest: paid[0], highest: paid[paid.length - 1] };
 })();
+
+/**
+ * The rate the mortgage field opens on, read from the release rather than
+ * typed here. It was a hard-coded 6.8% in three places — the engine, the form
+ * and this page — and it is published data now, so it moves every quarter.
+ */
+const MORTGAGE_RATE = mortgageRateSource() ?? { rate: 0.068, quarter: 'the year it was written' };
 
 const STATES_ON_PRIOR_YEAR = ALL_STATE_CODES.map((code) => stateRules(code))
   .filter((s) => s.priorYearFigures)
@@ -184,7 +193,10 @@ answer          =  in your pocket THERE  −  in your pocket HERE`}</pre>
         <h2>Housing</h2>
         <p>
           Every housing field is pre-filled and editable. If you rent, we use your rent. If you own,
-          we amortise a 30-year fixed mortgage, add property tax at the <strong>effective</strong>{' '}
+          we amortise a 30-year fixed mortgage at{' '}
+          <strong>{formatPercent(MORTGAGE_RATE.rate)}</strong> &mdash; the US average across{' '}
+          {MORTGAGE_RATE.quarter}, from Freddie Mac&rsquo;s weekly survey, refreshed with the rest
+          of the data &mdash; add property tax at the <strong>effective</strong>{' '}
           rate — what is actually paid, after assessment ratios, homestead exemptions and caps — and
           compute first-year interest for the itemisation test.
         </p>

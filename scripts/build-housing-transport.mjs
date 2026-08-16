@@ -561,9 +561,81 @@ function derive(row, header, idColumn) {
   };
 }
 
+// --- the mortgage rate ------------------------------------------------------
+
+/**
+ * THE ONE FIGURE ON THIS SITE THAT MOVES WEEKLY, and the one that used to have
+ * no source at all.
+ *
+ * The mortgage rate field was a hard-coded 6.8%, sitting in front of the
+ * mortgage payment, the interest deduction and — through that deduction — the
+ * federal tax bill. Every other number here traces to a federal publication.
+ *
+ * Freddie Mac's Primary Mortgage Market Survey is the standard series: the
+ * national average contract rate on a 30-year fixed loan, published weekly.
+ * FRED serves the whole history as a keyless CSV, which is why it is fetched
+ * from there rather than from Freddie Mac's own page.
+ *
+ * AVERAGED OVER THE MOST RECENT COMPLETE CALENDAR QUARTER. A single week's
+ * print would make the figure jump with whichever Thursday the release was cut
+ * on, and a rolling three months would move every refresh for no reason a
+ * reader could follow. A quarter is also the cadence this dataset is rebuilt
+ * on, so the number changes exactly when everything else does.
+ */
+function mortgageRateFromSurvey() {
+  const csv = readFileSync(resolve(SRC, 'fred-mortgage30us.csv'), 'utf8').trim().split('\n');
+  const byQuarter = new Map();
+
+  for (const line of csv.slice(1)) {
+    const [date, value] = line.split(',');
+    const rate = Number(value);
+    // FRED writes "." for a week it has no print for.
+    if (!Number.isFinite(rate) || rate <= 0) continue;
+    const year = Number(date.slice(0, 4));
+    const quarter = Math.floor((Number(date.slice(5, 7)) - 1) / 3) + 1;
+    const key = `${year} Q${quarter}`;
+    if (!byQuarter.has(key)) byQuarter.set(key, { year, quarter, weeks: [] });
+    byQuarter.get(key).weeks.push(rate);
+  }
+
+  /*
+   * The last quarter with a FULL set of weekly prints. A quarter holds twelve
+   * or thirteen Thursdays, so anything short of eleven is the quarter we are
+   * currently in — averaging that would publish a part-quarter as a quarter.
+   */
+  const complete = [...byQuarter.entries()]
+    .filter(([, q]) => q.weeks.length >= 11)
+    .sort(([, a], [, b]) => a.year - b.year || a.quarter - b.quarter);
+  const [label, latest] = complete[complete.length - 1];
+
+  const mean = latest.weeks.reduce((sum, r) => sum + r, 0) / latest.weeks.length;
+  const rate = Math.round(mean * 100) / 10000; // 6.415% -> 0.0642
+
+  if (!(rate > 0.02 && rate < 0.2)) {
+    throw new Error(`implausible mortgage rate ${rate} from ${label}`);
+  }
+
+  return {
+    rate,
+    quarter: label,
+    weeks: latest.weeks.length,
+    source: {
+      name: 'Freddie Mac Primary Mortgage Market Survey, 30-year fixed rate (MORTGAGE30US), via FRED',
+      url: 'https://fred.stlouisfed.org/series/MORTGAGE30US',
+      licence: 'US Government work — public domain',
+      snapshot: `data/${VERSION}/sources/fred-mortgage30us.csv`,
+    },
+  };
+}
+
 // --- run ---------------------------------------------------------------------
 
 console.log(`Building housing + transport from ACS ${ACS_YEAR} 5-year estimates`);
+
+const mortgageRate = mortgageRateFromSurvey();
+console.log(
+  `  mortgage rate: ${(mortgageRate.rate * 100).toFixed(2)}% — ${mortgageRate.quarter} average of ${mortgageRate.weeks} weekly prints`,
+);
 
 const metroJson = await loadGeography(GEOGRAPHIES[0]);
 const stateJson = await loadGeography(GEOGRAPHIES[1]);
@@ -804,10 +876,12 @@ writeDataset(
         'homeValueCurve does the same for buying (B25121). The metro median home value is what the MEDIAN owner owns, and property tax is derived from it, so a high earner was quoted both a cheaper house and a smaller tax bill than they would really face.',
         'Its lowest two income bands are forced down to keep the curve non-decreasing: households reporting almost no income own unusually valuable homes because that group is mostly retirees, and this site models wage income only.',
         'Figures are metro-wide medians. A specific home may differ substantially, which is why every housing field is editable in the interface.',
+        `mortgageRate is the national average contract rate on a 30-year fixed loan, averaged across every weekly print of the most recent complete quarter (${mortgageRate.quarter}). It is not local: rates barely differ between metros, and what any one borrower is offered turns on their credit and their lender.`,
         'byMetroState carries the same figures for one state\'s slice of a metro that crosses a state line (ACS summary level 311). A state part is a smaller sample than its metro, so individual cells are suppressed more often; the engine falls back to the whole metro FIELD BY FIELD rather than discarding the whole entry.',
       ],
       incomeCurve,
       homeValueCurve,
+      mortgageRate,
       byMetro: housing,
       byMetroState: housingByState,
     },
