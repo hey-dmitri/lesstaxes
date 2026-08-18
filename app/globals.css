@@ -3,7 +3,8 @@
 /*
  * Pack or Stay design tokens.
  *
- * From the Turn 3 redesign (Claude Design project "Lesstaxes design refresh").
+ * From the Claude Design project "LessTaxes Redesign" — Turn 3 set the palette,
+ * Turn 5 set the two-screen structure the interface is built on now.
  * The design is specified DARK ONLY: a near-black ground, warm off-white ink,
  * a single green for "you keep this" and a coral for "this is spent". Green
  * and coral remain semantic — never decorative — and are never the sole
@@ -38,9 +39,16 @@
   --accent: #2FD196;
   --accent-bright: #5FE3B2;
   --accent-dim: #253A32;
+  /* The tint behind an active option in the picker, and a chosen row. */
+  --accent-soft: #16241F;
   --good: #2FD196;
   --bad: #FF7A5C;
   --focus: #2FD196;
+  /* The lift behind the setup screen's opening band. */
+  --hero-glow: #16203A;
+  /* The destination column's ground: greener than a card, still a card. */
+  --picked: linear-gradient(#16241F, #141B29);
+  --picked-rule: #2FD19644;
 }
 
 /*
@@ -64,9 +72,13 @@
   --accent: #0B7A55;
   --accent-bright: #096444;
   --accent-dim: #DCF0E6;
+  --accent-soft: #EAF6F0;
   --good: #0B7A55;
   --bad: #C0432A;
   --focus: #0B7A55;
+  --hero-glow: #E9F1EC;
+  --picked: linear-gradient(#F1FAF5, #FFFFFF);
+  --picked-rule: #0B7A5544;
 }
 
 @media (prefers-color-scheme: light) {
@@ -86,9 +98,13 @@
     --accent: #0B7A55;
     --accent-bright: #096444;
     --accent-dim: #DCF0E6;
+    --accent-soft: #EAF6F0;
     --good: #0B7A55;
     --bad: #C0432A;
     --focus: #0B7A55;
+    --hero-glow: #E9F1EC;
+    --picked: linear-gradient(#F1FAF5, #FFFFFF);
+    --picked-rule: #0B7A5544;
   }
 }
 
@@ -134,6 +150,8 @@ body {
 }
 
 @keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+/* The "Change anything" panel dropping out from under the context strip. */
+@keyframes drop { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: none; } }
 @keyframes pop {
   0% { opacity: 0; transform: translateY(24px) scale(0.94); }
   60% { transform: translateY(0) scale(1.02); }

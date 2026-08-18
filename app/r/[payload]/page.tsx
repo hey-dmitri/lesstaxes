@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 
-import { Calculator } from '@/components/calculator';
+import { Answer } from '@/components/answer';
 import { cardPath } from '@/lib/share-card';
 import { comparisonFromShared, describeComparison } from '@/lib/shared-comparison';
 import { decodeComparison, type SharedComparison } from '@/lib/share-link';
@@ -74,7 +74,7 @@ export default async function SharedResult({
     reason = error instanceof Error ? error.message : 'it could not be read';
   }
 
-  if (comparison) return <Calculator initial={comparison} />;
+  if (comparison) return <Answer initial={comparison} />;
 
   return (
     <main className="flex min-h-0 flex-1 items-center justify-center px-4 py-10">

@@ -22,7 +22,7 @@ const space = Space_Grotesk({
   display: 'swap',
 });
 import { ThemeToggle } from '@/components/theme-toggle';
-import { DATASET_VERSION } from '@/engine';
+import { ALL_METRO_IDS, DATASET_VERSION } from '@/engine';
 import { SITE_DOMAIN, SITE_NAME, SITE_SLUG, TAGLINE } from '@/lib/site';
 
 /**
@@ -127,15 +127,24 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             >
               {SITE_NAME}
             </Link>
-            <nav className="ml-auto flex items-baseline gap-5 text-[0.82rem]" aria-label="About this site">
+            <nav className="ml-auto flex flex-wrap items-baseline gap-x-5 gap-y-2 text-[0.82rem]" aria-label="About this site">
               <Link href="/methodology" style={{ color: 'var(--accent)' }}>
                 How it works
               </Link>
               <Link href="/data" style={{ color: 'var(--accent)' }}>
                 The data
               </Link>
-              <span className="tnum text-[0.72rem]" style={{ color: 'var(--muted)' }}>
-                Dataset {DATASET_VERSION}
+              {/*
+                The size of the data and the release it came from, in one pill.
+                The count is the credibility claim a first-time visitor needs
+                and the version is what a shared link is pinned to, so neither
+                is decoration.
+              */}
+              <span
+                className="tnum rounded-full border px-2.5 py-0.5 text-[0.72rem]"
+                style={{ borderColor: 'var(--rule-strong)', color: 'var(--muted)' }}
+              >
+                {ALL_METRO_IDS.length} places &middot; {DATASET_VERSION}
               </span>
               <ThemeToggle />
             </nav>

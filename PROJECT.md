@@ -109,7 +109,7 @@ result, not a footnote. It turns the tool into something usable in a salary nego
 | D10 | Percentage denominator | **% of current leftover money** | Matches lived experience of spare cash. |
 | D11 | Time unit | **Both — annual leading, monthly beneath** | Annual matches salary talk; monthly matches budgeting. |
 | D12 | Context line | **Yes — show pure city-cost comparison + break-even salary** | Explains *why*, and gives an actionable target. |
-| D13 | Page flow | **Form → reveal → live-editable results** | Reveal moment for sharing, plus fast what-if exploration. |
+| D13 | Page flow | **Setup screen → answer screen, with the inputs editable in place on the answer** | Revised 2026-08-18 with the Turn 5 redesign. Was *form → reveal → live-editable results* on one page, which made the form and the answer share a width and gave the answer the narrower half. They are two pages now: `/` frames the question and takes the inputs, `/r/<payload>` is the answer at full width and is the address that gets shared. The what-ifs did not move — "Change anything" opens every field on the answer screen, the figures update as you type, and the address follows, so trying $135,000 never means going back. |
 | D14 | Animation | **Presentational reveal only — no artificial delay** | Result is computed in <1ms. Nothing is withheld. `prefers-reduced-motion` respected. |
 | D15 | Theme | **Follow system, with light/auto/dark toggle, remembered** | No flash of wrong theme on load. |
 | D16 | Device priority | **Desktop-first (1440px), adapted down** | Research mode happens at a computer. Mobile must still be genuinely good — share links open on phones. |
@@ -120,7 +120,7 @@ result, not a footnote. It turns the tool into something usable in a salary nego
 | D21 | Methodology | **Dedicated `/methodology` page; results stay clean** | Credibility without UI clutter. Joined by `/data` — see D26. |
 | D22 | Destinations per comparison | **One at a time** | Matches the real decision; clean share card. Ranked multi-city deferred to v2. |
 | D23 | Analytics | **None whatsoever** | No scripts, no cookies, no banner, nothing to leak. |
-| D24 | Name | **Pack or Stay** — `packorstay.com`, public GitHub repo `packorstay` | Chosen 2026-08-13, superseding **LessTaxes** (chosen 2026-08-11) for the reason the original entry had already flagged: a tax-first name foregrounds the very thing §2 exists to argue is *not* the whole story, since housing, cars and cost of living often outweigh the tax difference. "Pack or Stay" is built around the decision rather than the calculation, and still reads correctly when the answer is *stay* — which it often is. Tagline: **"Will moving actually leave you with more money?"** Button copy: **"Run the numbers"** — originally "Do the move math", changed 2026-08-14 because it made the reader parse a coined noun before they could press it. Runners-up, all verified unregistered on 2026-08-13: `isitreallycheaper.com`, `shouldipack.com`, `cheaperthough.com`, `keptmore.com`, `richer.city`. The original entry claimed the name "lives in a single config value and is trivial to change"; that was aspirational — it was hardcoded in a dozen places. Made true during this rename: see `lib/site.ts`. |
+| D24 | Name | **Pack or Stay** — `packorstay.com`, public GitHub repo `packorstay` | Chosen 2026-08-13, superseding **LessTaxes** (chosen 2026-08-11) for the reason the original entry had already flagged: a tax-first name foregrounds the very thing §2 exists to argue is *not* the whole story, since housing, cars and cost of living often outweigh the tax difference. "Pack or Stay" is built around the decision rather than the calculation, and still reads correctly when the answer is *stay* — which it often is. Tagline: **"Will moving actually leave you with more money?"** Button copy: **"See the answer"** — originally "Do the move math", then "Run the numbers" from 2026-08-14 because the first made the reader parse a coined noun before they could press it, then the current wording from 2026-08-18 when the interface became two screens and the button became the door between them. Runners-up, all verified unregistered on 2026-08-13: `isitreallycheaper.com`, `shouldipack.com`, `cheaperthough.com`, `keptmore.com`, `richer.city`. The original entry claimed the name "lives in a single config value and is trivial to change"; that was aspirational — it was hardcoded in a dozen places. Made true during this rename: see `lib/site.ts`. |
 | D26 | Public `/data` page | **Yes — a searchable dataset browser, a first-class page beside `/methodology`** | Added 2026-08-11 after reviewing the Stage 2 prototype. `/methodology` explains *how the calculation works*; `/data` shows *every number it uses* and where each came from. Together they are the site's credibility argument, and the thing paid competitors cannot easily match. |
 | D27 | Rent prefill basis | **Local median for the household's bedroom count (ACS B25031), scaled by a national income curve (ACS B25074)** | Added 2026-08-12. The plain metro median (B25064) quoted a single person and a family of four the same rent, and quoted a $150k earner 11% of pay in Chicago. PROJECT.md §7 named HUD Fair Market Rents for the size fix; ACS B25031 was used instead — same CBSA geography, same vintage, same API, where HUD publishes on HMFA areas that do not map cleanly. The income curve is national, not per-metro: burden varies far less between cities than rent does, so a per-metro anchor would compress the very difference this site measures. |
 | D25 | Mortgage principal | **Counted as an outflow, with no annotation** | Cash-flow view: leftover equals the cash actually available. Keeps the headline honest and the UI simple. Accepted trade-off: owning looks slightly worse than it is economically, and the site does not explain why. |
@@ -356,12 +356,29 @@ Rules:
   (The one real exception: federal tax *can* differ between states via the SALT deduction, but
   only for filers who itemise. The marker is applied only when the middle column confirms no
   movement.)
-- Breakdown rows sorted by **absolute impact**, largest first. Small items must not visually
-  compete with large ones.
 - Positive = better off in destination. Negative = worse off. Consistent colour coding, and
   never rely on colour alone (accessibility).
 - Every input remains editable in place; results recompute instantly on change.
-- Sales tax will usually be a small number. Show it honestly at its true size.
+
+**Superseded by the Turn 5 redesign, 2026-08-18.** The sketch above is the Stage 3 shape and three
+of its rules no longer hold. Recorded here rather than redrawn, because the answer screen is now
+too wide to draw in a box:
+
+- **There is no sales tax row.** It moved into the spending figures in 2026.7 — the basket already
+  contains the tax paid at the till, so a separate line double-counted it. Old share links replay
+  their own release and get the row back.
+- **The rows are not sorted by impact.** Sorting them meant the tax lines arrived in a different
+  order for every comparison, and a reader could not tell a missing tax from one that happens to be
+  equal in both cities. Every tax has a fixed row and prints "the same" when the two cities agree,
+  which is itself an answer: somebody looked.
+- **The breakdown is two tables side by side, not one list.** Left: the salary and every tax on it.
+  Right: everything the household spends. Each is headed with the direction it is measured in and
+  its own total; the line underneath adds the two together, which is the headline figure. Each row
+  carries a glyph, a monthly figure and a yearly one, and the yearly one says LESS or MORE in words
+  as well as in colour — see the 2026-08-16 commit for why the sign alone was read backwards.
+- Beside the headline figure sit two cards: the **salary needed to break even** and the **biggest
+  single reason**, both written by `engine/narrative.ts` so this screen, the share card and the link
+  preview cannot describe the same move three different ways.
 
 ---
 
@@ -369,8 +386,8 @@ Rules:
 
 | Route | Purpose |
 |---|---|
-| `/` | The calculator — form, reveal, results |
-| `/r/<payload>` | A shared result. Same page as `/`, hydrated from the URL |
+| `/` | The setup screen — the question, then the household and the two cities. Submitting navigates to the answer |
+| `/r/<payload>` | The answer, at full width, with every input editable behind "Change anything". Also where a shared link opens |
 | `/methodology` | How the calculation works: the formula, the order of operations, every assumption and known limitation |
 | `/data` | Searchable browser over every figure in the dataset — all 438 locations, their price parities, housing, vehicles and tax treatment, with the source and vintage of each |
 

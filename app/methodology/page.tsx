@@ -18,7 +18,7 @@ import {
   formatUSD,
   stateRules,
 } from '@/engine';
-import { DEFAULT_SALARY } from '@/components/calculator';
+import { DEFAULT_SALARY } from '@/lib/use-comparison-form';
 import { ReportProblem } from '@/components/report-problem';
 import { DATASET_VERSION } from '@/engine';
 import { SITE_NAME } from '@/lib/site';

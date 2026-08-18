@@ -28,10 +28,15 @@ export const SITE_SLUG = 'packorstay';
 export const TAGLINE = 'Will moving actually leave you with more money?';
 
 /**
- * The one button on the site. Names the act, not the product — "do the move
- * math" made the reader parse a coined noun before they could press it.
+ * The one button on the site, at the bottom of the setup screen.
+ *
+ * It has been "Do the move math" (a coined noun the reader had to parse before
+ * they could press it), then "Run the numbers" (an act, which was the fix), and
+ * is now what the Turn 5 design calls it. The interface is two screens: this
+ * button is the door between them, so it says where it goes rather than what it
+ * does. The arrow is added at the call site, not stored here — it is painting.
  */
-export const ACTION = 'Run the numbers';
+export const ACTION = 'See the answer';
 
 /**
  * The live domain — see PROJECT.md D24.

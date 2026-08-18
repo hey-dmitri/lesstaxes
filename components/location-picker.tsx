@@ -135,7 +135,7 @@ export function LocationPicker({ id, label, value, onChange, placeholder }: Prop
         onKeyDown={onKeyDown}
         className="w-full rounded border px-2.5 py-1.5 text-sm"
         style={{
-          background: 'var(--surface)',
+          background: 'var(--ground)',
           borderColor: open ? 'var(--accent)' : 'var(--rule-strong)',
           color: 'var(--ink)',
         }}

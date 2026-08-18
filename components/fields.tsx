@@ -6,8 +6,13 @@ const labelClass = 'mb-1 block text-[0.72rem] font-semibold uppercase tracking-[
 const labelStyle = { color: 'var(--muted)' } as const;
 
 const inputClass = 'w-full rounded border px-2.5 py-1.5 text-sm tnum';
+/*
+ * Inputs sit on the page's darkest ground, not on the card's. Every box in the
+ * Turn 5 design is a well cut into the card it sits in — a field that shares
+ * its card's colour reads as a label until you click it.
+ */
 const inputStyle = {
-  background: 'var(--surface)',
+  background: 'var(--ground)',
   borderColor: 'var(--rule-strong)',
   color: 'var(--ink)',
 } as const;
@@ -163,11 +168,22 @@ interface MoneyFieldProps {
   value: number;
   onChange: (value: number) => void;
   hint?: React.ReactNode;
-  suffix?: string;
+  /**
+   * What sits at the right-hand end of the box: "a year, gross", "1-bed", or
+   * the signed gap against the other city. A node rather than a string,
+   * because the gap carries its own colour.
+   */
+  suffix?: React.ReactNode;
   min?: number;
   max?: number;
   /** The salary is the field the whole column turns on, so it renders larger. */
   emphasis?: boolean;
+  /**
+   * The destination column's salary is the field people come back to change,
+   * so the design rings it in green — on both screens, so that moving between
+   * them does not move the reader's eye.
+   */
+  highlight?: boolean;
   /** Reserve this many lines under the field. See PrefillNote. */
   hintLines?: number;
 }
@@ -181,17 +197,22 @@ export function MoneyField({
   min = 0,
   max = 100_000_000,
   emphasis = false,
+  highlight = false,
   hintLines,
 }: MoneyFieldProps) {
   const id = useId();
   return (
     <div>
-      <label htmlFor={id} className={labelClass} style={labelStyle}>
+      <label
+        htmlFor={id}
+        className={labelClass}
+        style={highlight ? { color: 'var(--accent)' } : labelStyle}
+      >
         {label}
       </label>
       <div className="relative">
         <span
-          className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-sm"
+          className={`pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 ${emphasis ? 'text-base' : 'text-sm'}`}
           style={{ color: 'var(--muted)' }}
           aria-hidden="true"
         >
@@ -201,8 +222,14 @@ export function MoneyField({
           id={id}
           type="text"
           inputMode="numeric"
-          className={`${inputClass} pl-6 ${suffix ? 'pr-12' : ''} ${emphasis ? 'py-2.5 text-xl font-semibold' : ''}`}
-          style={emphasis ? { ...inputStyle, borderColor: 'var(--rule-input)' } : inputStyle}
+          className={`${inputClass} pl-6 ${suffix ? 'pr-16' : ''} ${emphasis ? 'py-2.5 text-[1.4rem] font-semibold' : ''}`}
+          style={{
+            ...inputStyle,
+            ...(emphasis ? { borderColor: 'var(--rule-input)' } : {}),
+            ...(highlight
+              ? { borderColor: 'var(--accent)', boxShadow: '0 0 0 3px var(--accent-soft)' }
+              : {}),
+          }}
           value={value === 0 ? '' : value.toLocaleString('en-US')}
           onChange={(e) => {
             const digits = e.target.value.replace(/[^0-9]/g, '');
@@ -313,17 +340,19 @@ interface CountFieldProps {
   value: number;
   onChange: (value: number) => void;
   hint?: React.ReactNode;
+  /** Reserve this many lines under the field. See PrefillNote. */
+  hintLines?: number;
   max?: number;
 }
 
-export function CountField({ label, value, onChange, hint, max = 12 }: CountFieldProps) {
+export function CountField({ label, value, onChange, hint, hintLines, max = 12 }: CountFieldProps) {
   const id = useId();
   return (
     <div>
       <label htmlFor={id} className={labelClass} style={labelStyle}>
         {label}
       </label>
-      <div className="flex items-stretch rounded border" style={{ borderColor: 'var(--rule-strong)', background: 'var(--surface)' }}>
+      <div className="flex items-stretch rounded border" style={{ borderColor: 'var(--rule-strong)', background: 'var(--ground)' }}>
         <button
           type="button"
           aria-label={`Decrease ${label.toLowerCase()}`}
@@ -357,7 +386,7 @@ export function CountField({ label, value, onChange, hint, max = 12 }: CountFiel
           +
         </button>
       </div>
-      {hint && <PrefillNote>{hint}</PrefillNote>}
+      {hint && <PrefillNote lines={hintLines}>{hint}</PrefillNote>}
     </div>
   );
 }

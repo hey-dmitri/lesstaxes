@@ -39,8 +39,8 @@ index, statutory rate or state average — on the [data page](https://packorstay
 | Sales tax rates + grocery treatment | reference only — already inside the spending basket |
 | Housing (rent, mortgage, property tax), cars, living costs | ✅ |
 | Leftover, city/salary decomposition, break-even solver | ✅ |
-| Input form — pickers, housing, cars, theme | ✅ |
-| Results: headline, breakdown, break-even, reveal | ✅ |
+| Setup screen — pickers, housing, cars, theme; answer screen with the inputs editable in place | ✅ |
+| Results: verdict, headline figure, two-table breakdown, break-even | ✅ |
 | Share links — URL-encoded, dataset version pinned | ✅ |
 | Share card PNG + rich link previews | ✅ |
 | `/methodology` and public `/data` browser | ✅ |
@@ -267,7 +267,8 @@ See `BUILD_PLAN.md` for the stages and `PROJECT.md` for the full specification.
 | `engine/` | The calculation core. **Framework-free** — see `engine/README.md` |
 | `data/` | Immutable dated datasets. **Never hand-edited** — see `data/README.md` |
 | `scripts/` | The data pipeline that generates `data/` — see `scripts/README.md` |
-| `lib/` | UI-side helpers (share-link encoding, formatting adapters) |
+| `lib/` | UI-side helpers (share-link encoding, formatting adapters, the shared form state) |
+| `components/` | The two screens — `setup.tsx` and `answer.tsx` — and the fields they share |
 | `app/` | Next.js App Router pages |
 | `PROJECT.md` | Full product specification, decisions and rationale |
 | `BUILD_PLAN.md` | Ten build stages and what is reviewable at each |
