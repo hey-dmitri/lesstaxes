@@ -199,7 +199,7 @@ function Gap({ amount, kind }: { amount: number; kind: 'pay' | 'cost' }) {
   const better = kind === 'pay' ? amount > 0 : amount < 0;
   return (
     <span
-      className="tnum text-[0.72rem] font-semibold"
+      className="tnum text-[0.8rem] font-semibold"
       style={{ color: better ? 'var(--good)' : 'var(--bad)' }}
     >
       {formatUSD(amount, { signed: true })}
@@ -208,19 +208,28 @@ function Gap({ amount, kind }: { amount: number; kind: 'pay' | 'cost' }) {
 }
 
 /**
- * The fields that only some cities need, shared by both arrangements.
+ * The fields that only some cities need.
  *
  * Which state inside a metro that crosses a line, the three terms of a
  * mortgage, and the local income taxes that have to be opted into. None of
  * them appear for most comparisons and all of them decide the answer outright
  * for the ones where they do.
+ *
+ * `scope` splits them across the two screens the same way everything else is
+ * split. The setup screen asks only WHERE — and the state question is part of
+ * where, because Newark and Manhattan are one metro here and two completely
+ * different tax bills. Everything to do with money and housing waits for the
+ * answer screen, where it can be changed against a figure that moves.
  */
 function ExtraFields({
   state,
   filingStatus,
   childCount,
   onChange,
-}: Pick<Props, 'state' | 'filingStatus' | 'childCount' | 'onChange'>) {
+  scope,
+}: Pick<Props, 'state' | 'filingStatus' | 'childCount' | 'onChange'> & {
+  scope: 'place' | 'everything';
+}) {
   const m = metro(state.metroId);
   const stateCode = resolveStateCode(state.metroId, state.stateCode);
   const defaults = housingDefaults(state.metroId, undefined, stateCode);
@@ -242,11 +251,11 @@ function ExtraFields({
   const setHousing = (patch: Partial<Housing>) =>
     set({ housing: { ...state.housing, ...patch } as Housing });
 
+  const askDetails = scope === 'everything';
   const nothingToAsk =
     m.states.length <= 1 &&
-    state.housing.tenure === 'rent' &&
-    localGroups.length === 0 &&
-    optionalLocals.length === 0;
+    (!askDetails ||
+      (state.housing.tenure === 'rent' && localGroups.length === 0 && optionalLocals.length === 0));
   if (nothingToAsk) return null;
 
   return (
@@ -260,10 +269,11 @@ function ExtraFields({
       */}
       {m.states.length > 1 && (
         <div
-          className="flex flex-col gap-2 rounded-lg border p-3"
+          className="rounded-lg border px-3 py-2"
           style={{ borderColor: 'var(--accent)', background: 'var(--surface-sunken)' }}
         >
           <Segmented
+            compact
             label="Which state do you live in?"
             value={stateCode}
             onChange={(next) =>
@@ -279,13 +289,15 @@ function ExtraFields({
               )
             }
             options={m.states.map((s) => ({ value: s, label: s }))}
+            info={
+              <>
+                This metro crosses a state line, and the two sides are not alike. Your state sets
+                the income tax, any city tax, and the rent and home prices you are quoted. The gap
+                can be large: in the New York metro the two sides differ by more than $170,000 of
+                median home value.
+              </>
+            }
           />
-          <span className="text-[0.76rem] leading-snug" style={{ color: 'var(--muted)' }}>
-            This metro crosses a state line, and the two sides are not alike. Your state sets the
-            income tax, any city tax, and the rent and home prices you are quoted. The gap can be
-            large: in the New York metro the two sides differ by more than $170,000 of median home
-            value.
-          </span>
         </div>
       )}
 
@@ -294,7 +306,7 @@ function ExtraFields({
         grid with property tax orphaned underneath, which read as two unrelated
         decisions; the shared note now sits under all three.
       */}
-      {state.housing.tenure === 'own' && (
+      {askDetails && state.housing.tenure === 'own' && (
         <div className="grid grid-cols-3 items-end gap-1.5">
           <PercentField
             label="Down payment"
@@ -351,7 +363,8 @@ function ExtraFields({
         </div>
       )}
 
-      {localGroups.map(({ group, members }) => {
+      {askDetails &&
+        localGroups.map(({ group, members }) => {
         const selected =
           members.find((mem) => state.localOptIns[mem.jurisdictionId] === true) ??
           members.find((mem) => mem.defaultApplies)!;
@@ -378,7 +391,7 @@ function ExtraFields({
         );
       })}
 
-      {optionalLocals.length > 0 && (
+      {askDetails && optionalLocals.length > 0 && (
         <div
           className="flex flex-col gap-2 rounded-lg border p-3"
           style={{ borderColor: 'var(--rule)', background: 'var(--surface-sunken)' }}
@@ -438,20 +451,33 @@ function ChosenCity({
   const m = metro(state.metroId);
   const stateCode = resolveStateCode(state.metroId, state.stateCode);
 
+  const change = (
+    <button
+      type="button"
+      onClick={onPick}
+      aria-expanded={picking}
+      className="shrink-0 border-b border-dashed text-[0.82rem]"
+      style={{ borderColor: 'var(--rule-input)', color: 'var(--muted)' }}
+    >
+      {picking ? 'done' : 'change'}
+    </button>
+  );
+
   return (
     <div className="flex min-w-0 flex-col gap-1.5">
-      <div className="flex items-baseline gap-2">
-        <span className="eyebrow">City</span>
-        <button
-          type="button"
-          onClick={onPick}
-          aria-expanded={picking}
-          className="ml-auto border-b border-dashed text-[0.74rem]"
-          style={{ borderColor: 'var(--rule-input)', color: 'var(--muted)' }}
-        >
-          {picking ? 'done' : 'change'}
-        </button>
-      </div>
+      {/*
+        No "CITY" label on the tall card. The box has a map pin in it and a
+        place name set at 1.4rem — nothing about it needs saying, and the label
+        row cost a line of the one screen this page is supposed to fit in. The
+        compact row keeps its label, where the box is small enough to be
+        mistaken for anything.
+      */}
+      {size === 'small' && (
+        <div className="flex items-baseline gap-2">
+          <span className="eyebrow">City</span>
+          <span className="ml-auto">{change}</span>
+        </div>
+      )}
       <div
         className={`flex items-center gap-2 rounded-[0.6rem] border ${
           size === 'large' ? 'px-3.5 py-3' : 'px-3 py-2'
@@ -476,9 +502,10 @@ function ChosenCity({
             {stateCode}
           </span>
         </span>
+        {size === 'large' && <span className="ml-auto">{change}</span>}
       </div>
       {size === 'large' && (
-        <span className="truncate text-[0.75rem]" style={{ color: 'var(--faint)' }}>
+        <span className="truncate text-[0.84rem]" style={{ color: 'var(--faint)' }}>
           {m.name}
         </span>
       )}
@@ -511,9 +538,8 @@ function EmptyCity({
       </h3>
       {picker}
       {!compact && (
-        <p className="text-[0.8rem] leading-snug" style={{ color: 'var(--muted)' }}>
-          Any of 387 metro areas, or &ldquo;rest of&rdquo; a state for somewhere rural &mdash; 438
-          places in all. Salary, rent and cars fill in with real local figures once you pick.
+        <p className="text-[0.88rem] leading-snug" style={{ color: 'var(--muted)' }}>
+          387 metro areas, or &ldquo;rest of&rdquo; a state for somewhere rural &mdash; 438 places.
         </p>
       )}
     </Frame>
@@ -542,12 +568,26 @@ function useCityFields(props: Props) {
 }
 
 /**
- * A city on the setup screen: the tall card, name set large.
+ * A city on the setup screen: the place, and what it pays.
  *
- * Artboard 5a. This card used to end in the city's take-home, living costs and
- * leftover — three figures computed from inputs the reader was still typing.
- * They have moved to the answer screen, where the design puts them, and where
- * they are no longer a spoiler for the button underneath them.
+ * Artboard 5a. Two rounds of things have left this card, and both left for the
+ * same reason — the setup screen asks one question, WHERE, and everything it
+ * asks besides that is a reason not to answer.
+ *
+ * First went take-home, living costs and leftover: three figures computed from
+ * inputs the reader was still typing, printed directly above the button that
+ * offers to compute them. They are on the answer screen now.
+ *
+ * Then went rent, cars, the home price and the three mortgage terms. They are
+ * all prefilled from real local figures, so nobody has to touch them to get a
+ * true answer — and every one of them is a box asking to be checked, on the
+ * screen where the reader has the least reason to care and the least idea what
+ * a good answer looks like. They are on the answer screen too, behind "Change
+ * anything", where the figure moves as you change them and the question
+ * "should I put my real rent in?" has a visible point.
+ *
+ * What is left is the city and the salary, which are the only two things this
+ * site cannot derive for you.
  */
 export function CityCard(props: Props) {
   const {
@@ -570,17 +610,9 @@ export function CityCard(props: Props) {
   }
 
   const stateCode = resolveStateCode(state.metroId, state.stateCode);
-  const transport = transportDefaults(state.metroId, undefined, stateCode);
-  const household: Household = { filingStatus, children: childCount };
-  const bedrooms = bedroomsFor(adultsIn(filingStatus), childCount);
-  const suggestedRent = defaultRent(state.metroId, state.grossSalary, household, undefined, stateCode);
-
-  const set = (patch: Partial<CityFormState>) => onChange({ ...state, ...patch });
-  const setHousing = (patch: Partial<Housing>) =>
-    set({ housing: { ...state.housing, ...patch } as Housing });
 
   return (
-    <Frame highlight={highlight} className="gap-4 px-5 py-4">
+    <Frame highlight={highlight} className="gap-2.5 px-5 py-3">
       <div className="flex items-center justify-between gap-3">
         <span
           className="eyebrow"
@@ -589,10 +621,10 @@ export function CityCard(props: Props) {
           {title}
         </span>
         <span
-          className="shrink-0 rounded-full px-2.5 py-0.5 text-[0.7rem]"
+          className="shrink-0 rounded-full px-3 py-1 text-[0.82rem] font-medium"
           style={{ background: 'var(--accent-dim)', color: 'var(--accent)' }}
         >
-          {stateCode} &middot; {stateTaxBadge(stateCode, filingStatus)}
+          {stateTaxBadge(stateCode, filingStatus)}
         </span>
       </div>
 
@@ -605,78 +637,32 @@ export function CityCard(props: Props) {
         onChange={onSalaryChange}
         hint={salaryHint}
         /*
-         * Two lines held open in both columns. The sentence is one line in one
-         * column and two in the other depending on the city name and whether
-         * the salary was typed, and the two panels are separate cards — so
-         * without this the rent box, the car stepper and everything below them
-         * sit at different heights on the two sides.
+         * No reserved second line any more. It existed because the rent box,
+         * the car stepper and three money figures sat underneath and had to
+         * stay level across two separate cards. All of that is on the answer
+         * screen now, so a hint that wraps in one column and not the other
+         * costs nothing — and holding a blank line open in both cost a line of
+         * the one screen this page has to fit in.
          */
-        hintLines={2}
         emphasis
         highlight={highlight}
         suffix={
           against ? (
             <Gap amount={state.grossSalary - against.grossSalary} kind="pay" />
           ) : (
-            <span className="text-[0.72rem]" style={{ color: 'var(--faint)' }}>
+            <span className="text-[0.8rem]" style={{ color: 'var(--faint)' }}>
               a year, gross
             </span>
           )
         }
       />
 
-      <div className="grid grid-cols-[minmax(0,1fr)_6rem] items-start gap-2.5">
-        {state.housing.tenure === 'rent' ? (
-          /*
-            "With utilities" is not decoration. The figure behind this box is
-            Census GROSS rent, which is the rent plus the gas, electricity,
-            water and heating the tenant pays. Somebody who types their rent
-            alone, having read a bare "Rent a month", enters a smaller number
-            than the one the comparison is built from.
-          */
-          <MoneyField
-            label="Rent a month, with utilities"
-            value={state.housing.monthlyRent}
-            onChange={(monthlyRent) => setHousing({ monthlyRent })}
-            suffix={
-              against ? (
-                <Gap amount={state.housing.monthlyRent - against.monthlyRent} kind="cost" />
-              ) : (
-                <span className="text-[0.72rem]" style={{ color: 'var(--faint)' }}>
-                  {bedrooms}-bed
-                </span>
-              )
-            }
-            hint={
-              state.housing.monthlyRent === suggestedRent
-                ? `${bedrooms}-bed, typical at this salary. Includes gas, electricity, water and heating.`
-                : `${formatUSD(suggestedRent)} typical for ${bedrooms} bed, with utilities`
-            }
-            hintLines={2}
-          />
-        ) : (
-          <MoneyField
-            label="Home price"
-            value={state.housing.homePrice}
-            onChange={(homePrice) => setHousing({ homePrice })}
-            hint={`${formatUSD(homePriceDefault(state.metroId, state.grossSalary, undefined, stateCode))} typical at this salary`}
-            hintLines={2}
-          />
-        )}
-        <CountField
-          label="Cars"
-          value={state.cars}
-          onChange={(cars) => set({ cars })}
-          hint={`${transport.vehiclesPerAdult.toFixed(2)} per adult`}
-          hintLines={2}
-        />
-      </div>
-
       <ExtraFields
         state={state}
         filingStatus={filingStatus}
         childCount={childCount}
         onChange={onChange}
+        scope="place"
       />
     </Frame>
   );
@@ -685,9 +671,14 @@ export function CityCard(props: Props) {
 /**
  * A city inside the answer screen's "Change anything" panel: one row.
  *
- * Artboard 5c. Same fields, no hints and no prose — the panel is open over an
- * answer the reader is watching change, so every line it costs is a line of
- * the thing they came for.
+ * Artboard 5c, plus the fields the setup screen handed over. Rent, cars, the
+ * home price and the three mortgage terms are only asked here now, so this is
+ * the only place their explanations can live — and they are not decoration.
+ * "Rent a month" alone gets a smaller number than the comparison is built
+ * from: the figure behind the box is Census GROSS rent, which already contains
+ * the gas, electricity, water and heating. One line under the row, rather than
+ * a note under each box, because the panel is open over an answer the reader
+ * is watching change and every line it costs is a line of that answer.
  */
 export function CityRow(props: Props) {
   const {
@@ -709,6 +700,12 @@ export function CityRow(props: Props) {
   }
 
   const stateCode = resolveStateCode(state.metroId, state.stateCode);
+  const household: Household = { filingStatus, children: childCount };
+  const bedrooms = bedroomsFor(adultsIn(filingStatus), childCount);
+  const suggestedRent = defaultRent(state.metroId, state.grossSalary, household, undefined, stateCode);
+  const suggestedPrice = homePriceDefault(state.metroId, state.grossSalary, undefined, stateCode);
+  const transport = transportDefaults(state.metroId, undefined, stateCode);
+
   const set = (patch: Partial<CityFormState>) => onChange({ ...state, ...patch });
   const setHousing = (patch: Partial<Housing>) =>
     set({ housing: { ...state.housing, ...patch } as Housing });
@@ -719,8 +716,8 @@ export function CityRow(props: Props) {
         <span className="eyebrow" style={highlight ? { color: 'var(--accent)' } : undefined}>
           {title}
         </span>
-        <span className="text-[0.7rem]" style={{ color: 'var(--muted)' }}>
-          {stateCode} &middot; {stateTaxBadge(stateCode, filingStatus)}
+        <span className="text-[0.8rem]" style={{ color: 'var(--muted-strong)' }}>
+          {stateTaxBadge(stateCode, filingStatus)}
         </span>
       </div>
 
@@ -742,10 +739,10 @@ export function CityRow(props: Props) {
             suffix={against ? <Gap amount={state.grossSalary - against.grossSalary} kind="pay" /> : undefined}
           />
         </div>
-        <div className="w-[7rem]">
+        <div className="w-[8rem]">
           {state.housing.tenure === 'rent' ? (
             <MoneyField
-              label="Rent"
+              label="Rent a month"
               value={state.housing.monthlyRent}
               onChange={(monthlyRent) => setHousing({ monthlyRent })}
             />
@@ -762,6 +759,25 @@ export function CityRow(props: Props) {
         </div>
       </div>
 
+      {/*
+        What the two prefills are, in one line. "With utilities" is the half
+        that matters: the rent figure behind that box is Census GROSS rent, so
+        somebody who reads a bare "Rent a month" and types their rent alone
+        enters a smaller number than the comparison is built from — and the
+        site used to charge those utilities a second time on top.
+      */}
+      <p className="text-[0.84rem] leading-snug" style={{ color: 'var(--muted)' }}>
+        {state.housing.tenure === 'rent' ? (
+          <>
+            Rent here is {formatUSD(suggestedRent)} for a {bedrooms}-bed at this salary, with gas,
+            electricity, water and heating in it.
+          </>
+        ) : (
+          <>A {formatUSD(suggestedPrice)} home is typical at this salary here.</>
+        )}{' '}
+        Households here run {transport.vehiclesPerAdult.toFixed(2)} cars per adult.
+      </p>
+
       {picking && picker}
 
       <ExtraFields
@@ -769,6 +785,7 @@ export function CityRow(props: Props) {
         filingStatus={filingStatus}
         childCount={childCount}
         onChange={onChange}
+        scope="everything"
       />
     </Frame>
   );

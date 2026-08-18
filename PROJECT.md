@@ -386,10 +386,20 @@ too wide to draw in a box:
 
 | Route | Purpose |
 |---|---|
-| `/` | The setup screen — the question, then the household and the two cities. Submitting navigates to the answer |
+| `/` | The setup screen — the question, the household, and the two cities with their salaries. Sized to fit one screen without scrolling; everything else is asked on the answer |
 | `/r/<payload>` | The answer, at full width, with every input editable behind "Change anything". Also where a shared link opens |
 | `/methodology` | How the calculation works: the formula, the order of operations, every assumption and known limitation |
 | `/data` | Searchable browser over every figure in the dataset — all 438 locations, their price parities, housing, vehicles and tax treatment, with the source and vintage of each |
+
+**Which screen asks for what, revised 2026-08-18.** The setup screen asks only what this site
+cannot derive for you: the household, the two places, and the two salaries. Rent, cars, the home
+price and the three mortgage terms are all prefilled from real local figures, so nobody has to
+touch them to get a true answer — and every one of them was a box asking to be checked on the
+screen where the reader has the least reason to care and the least idea what a good answer looks
+like. They live on the answer screen now, behind "Change anything", where the figure moves as they
+are changed and "should I put my real rent in?" has a visible point. The one exception is the state
+question for the 43 metros that cross a state line, which stays on setup: it is part of choosing
+the place, and Newark and Manhattan are one metro here and two completely different tax bills.
 
 `/methodology` answers *"how did you get this number?"*. `/data` answers *"where did your numbers
 come from, and what do you think my city costs?"*. They are deliberately separate: one is prose,

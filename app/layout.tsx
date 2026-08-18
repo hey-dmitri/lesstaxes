@@ -119,7 +119,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             sentence. Each page states its own subject instead, and the home
             page's h1 is the question this site answers.
           */}
-          <header className="flex shrink-0 flex-wrap items-baseline gap-x-6 gap-y-2 pb-5">
+          <header className="flex shrink-0 flex-wrap items-baseline gap-x-6 gap-y-2 pb-4">
             <Link
               href="/"
               className="font-display text-[1.5rem] font-bold leading-none tracking-[-0.035em]"
@@ -153,7 +153,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           {children}
 
           <footer
-            className="flex shrink-0 flex-wrap items-center gap-x-4 gap-y-1 pt-2 text-[0.76rem] leading-snug"
+            className="flex shrink-0 flex-wrap items-center gap-x-4 gap-y-1 pt-1.5 text-[0.8rem] leading-snug"
             style={{ color: 'var(--muted)' }}
           >
             <nav className="flex gap-4" aria-label="More about this site">

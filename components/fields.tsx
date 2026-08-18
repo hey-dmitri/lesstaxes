@@ -2,7 +2,7 @@
 
 import { useEffect, useId, useRef, useState } from 'react';
 
-const labelClass = 'mb-1 block text-[0.72rem] font-semibold uppercase tracking-[0.09em]';
+const labelClass = 'mb-1 block text-[0.8rem] font-semibold uppercase tracking-[0.09em]';
 const labelStyle = { color: 'var(--muted)' } as const;
 
 const inputClass = 'w-full rounded border px-2.5 py-1.5 text-sm tnum';
@@ -55,7 +55,7 @@ export function StepBadge({ n, done }: { n: number; done?: boolean }) {
 export function PrefillNote({ children, lines }: { children: React.ReactNode; lines?: number }) {
   return (
     <p
-      className="mt-0.5 text-[0.76rem] leading-snug"
+      className="mt-1 text-[0.84rem] leading-snug"
       // leading-snug is 1.375, so a line is 1.375em of this element's own size.
       style={{ color: 'var(--muted)', minHeight: lines ? `${lines * 1.375}em` : undefined }}
     >
@@ -146,7 +146,7 @@ export function InfoDot({ label, children }: { label: string; children: React.Re
            * Anchored to the marker and floating over the rows, opening away
            * from whichever edge it would otherwise fall off.
            */
-          className={`absolute top-[1.4rem] z-30 w-[min(17rem,70vw)] rounded-lg border p-2.5 text-left text-[0.76rem] font-normal leading-snug shadow-lg ${
+          className={`absolute top-[1.4rem] z-30 w-[min(17rem,70vw)] rounded-lg border p-2.5 text-left text-[0.84rem] font-normal leading-snug shadow-lg ${
             alignRight ? 'right-0' : 'left-0'
           }`}
           style={{
@@ -239,7 +239,7 @@ export function MoneyField({
         />
         {suffix && (
           <span
-            className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-xs"
+            className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-[0.8rem]"
             style={{ color: 'var(--muted)' }}
           >
             {suffix}
@@ -295,7 +295,7 @@ export function PercentField({
       <span className="mb-1 flex items-center gap-1">
         <label
           htmlFor={id}
-          className={compact ? 'block text-[0.74rem] font-medium leading-tight' : labelClass}
+          className={compact ? 'block text-[0.82rem] font-medium leading-tight' : labelClass}
           style={{ ...labelStyle, marginBottom: 0 }}
         >
           {label}
@@ -429,6 +429,17 @@ interface SegmentedProps<T extends string> {
   value: T;
   onChange: (value: T) => void;
   options: Array<{ value: T; label: string }>;
+  /** The explanation, behind an ⓘ, when it is too long to sit under the group. */
+  info?: React.ReactNode;
+  /**
+   * Label and buttons on one line.
+   *
+   * The state question for a metro that crosses a state line was a stacked
+   * label, a row of buttons and a three-line paragraph — about 145px, on the
+   * one screen that has to fit without scrolling, for a question 43 of the 438
+   * places ask. Same control, one row, and the paragraph moved behind the ⓘ.
+   */
+  compact?: boolean;
 }
 
 /**
@@ -442,7 +453,14 @@ interface SegmentedProps<T extends string> {
  * only the selected option is tabbable, which is the roving tabindex the
  * pattern requires.
  */
-export function Segmented<T extends string>({ label, value, onChange, options }: SegmentedProps<T>) {
+export function Segmented<T extends string>({
+  label,
+  value,
+  onChange,
+  options,
+  info,
+  compact = false,
+}: SegmentedProps<T>) {
   const groupRef = useRef<HTMLDivElement>(null);
 
   function move(delta: number) {
@@ -484,16 +502,22 @@ export function Segmented<T extends string>({ label, value, onChange, options }:
   }
 
   return (
-    <div>
-      <span className={labelClass} style={labelStyle}>
-        {label}
+    <div className={compact ? 'flex flex-wrap items-center gap-x-3 gap-y-1.5' : undefined}>
+      <span
+        className={compact ? 'flex items-center gap-1.5' : undefined}
+        style={compact ? undefined : { display: 'block' }}
+      >
+        <span className={labelClass} style={{ ...labelStyle, marginBottom: compact ? 0 : undefined }}>
+          {label}
+        </span>
+        {info && <InfoDot label={label}>{info}</InfoDot>}
       </span>
       <div
         ref={groupRef}
         role="radiogroup"
         aria-label={label}
         onKeyDown={onKeyDown}
-        className="flex rounded border p-0.5"
+        className={`flex rounded border p-0.5 ${compact ? 'flex-1' : ''}`}
         style={{ borderColor: 'var(--rule-strong)', background: 'var(--surface-sunken)' }}
       >
         {options.map((option) => {

@@ -19,7 +19,7 @@ type CopyStatus = 'idle' | 'copied' | 'manual';
 type SaveStatus = 'idle' | 'saving' | 'saved' | 'failed';
 
 const buttonClass =
-  'inline-flex items-center gap-2 rounded border px-3 py-1.5 text-[0.8rem] font-medium';
+  'inline-flex items-center gap-2 rounded border px-3.5 py-2 text-[0.88rem] font-medium';
 
 /*
  * Inline SVG rather than an icon font or a package: the site makes no
@@ -203,7 +203,7 @@ export function ShareBar({ path, payload, slug, error }: Props) {
           {saveLabel}
         </button>
       </div>
-      <span aria-live="polite" className="text-[0.76rem] leading-snug" style={{ color: 'var(--muted)' }}>
+      <span aria-live="polite" className="text-[0.84rem] leading-snug" style={{ color: 'var(--muted)' }}>
         {copyStatus === 'copied'
           ? 'Whoever opens it sees exactly these numbers — and the result shows up in the message itself.'
           : saveStatus === 'saved'

@@ -143,7 +143,7 @@ function Verdict({ result, animate }: { result: ComparisonResult; animate: boole
           {!better && !tooClose && ` Staying in ${from} keeps the difference.`}
         </p>
         {/* Never advice. The engine writes this line for the same reason. */}
-        <p className="text-[0.8rem]" style={{ color: 'var(--muted)' }}>
+        <p className="text-[0.88rem]" style={{ color: 'var(--muted)' }}>
           {v.qualifier}
         </p>
       </div>
@@ -210,7 +210,7 @@ function StatCard({
       <span className="tnum text-[1.35rem] font-semibold" style={{ color: figureColour ?? 'var(--ink)' }}>
         {figure}
       </span>
-      <span className="text-[0.82rem] leading-snug" style={{ color: 'var(--ink-soft)' }}>
+      <span className="text-[0.88rem] leading-snug" style={{ color: 'var(--ink-soft)' }}>
         {children}
       </span>
     </div>
@@ -336,7 +336,7 @@ function CitySummaries({ result }: { result: ComparisonResult }) {
               spending basket re-priced for this metro and scaled to a household
               of this size and income.
             */}
-            <span className="text-[0.75rem] leading-snug" style={{ color: 'var(--faint)' }}>
+            <span className="text-[0.82rem] leading-snug" style={{ color: 'var(--faint)' }}>
               Your housing, plus what a household your size usually spends here. Not your own
               budget.
             </span>
@@ -354,7 +354,7 @@ function WhatThisMeans({ result }: { result: ComparisonResult }) {
   const to = metro(result.destination.metroId).shortName.replace(/,.*$/, '');
 
   return (
-    <div className="flex flex-col gap-1.5 text-[0.84rem] leading-snug">
+    <div className="flex flex-col gap-1.5 text-[0.9rem] leading-snug">
       <p style={{ color: 'var(--muted-strong)' }}>
         <strong style={{ color: 'var(--ink-soft)' }}>Both tables read one way round:</strong> every
         line is {to} compared with {from}. &ldquo;Less&rdquo; means you would pay less of that thing
@@ -402,7 +402,7 @@ function Disclosure({
   return (
     <details className="group border-t pt-2.5" style={{ borderColor: 'var(--rule)' }}>
       <summary
-        className="cursor-pointer list-none text-[0.82rem] font-medium marker:content-none"
+        className="cursor-pointer list-none text-[0.9rem] font-medium marker:content-none"
         style={{ color: 'var(--accent)' }}
       >
         <span aria-hidden="true" className="inline-block w-4">
@@ -439,7 +439,7 @@ function cell(
   const change = changeInWords(value, kind);
   return (
     <span
-      className={`text-right text-[0.85rem] ${bold ? 'font-semibold' : ''}`}
+      className={`text-right text-[0.88rem] ${bold ? 'font-semibold' : ''}`}
       style={{
         color: change.unchanged ? 'var(--muted)' : change.better ? 'var(--good)' : 'var(--bad)',
       }}
@@ -466,7 +466,7 @@ function cell(
  */
 function monthly(value: number) {
   return (
-    <span className="tnum text-right text-[0.78rem]" style={{ color: 'var(--muted)' }}>
+    <span className="tnum text-right text-[0.82rem]" style={{ color: 'var(--muted)' }}>
       {Math.abs(value) < 12 ? '—' : formatUSD(Math.abs(value) / 12)}
     </span>
   );
@@ -498,7 +498,7 @@ function Table({
       >
         <span className="eyebrow">{heading}</span>
         <span
-          className="tnum text-[0.82rem] font-semibold"
+          className="tnum text-[0.88rem] font-semibold"
           style={{
             color: change.unchanged ? 'var(--muted)' : change.better ? 'var(--good)' : 'var(--bad)',
           }}
@@ -523,7 +523,7 @@ function Table({
             {glyphFor(row)}
           </span>
           <span
-            className="flex items-baseline gap-1.5 text-[0.85rem]"
+            className="flex items-baseline gap-1.5 text-[0.88rem]"
             style={{ color: 'var(--ink-soft)' }}
           >
             {row.label}
@@ -656,7 +656,7 @@ function Breakdown({ result }: { result: ComparisonResult }) {
           </span>
         </div>
       </div>
-      <p className="text-[0.76rem] leading-snug" style={{ color: 'var(--muted)' }}>
+      <p className="text-[0.84rem] leading-snug" style={{ color: 'var(--muted)' }}>
         Both tables are {to} against {from}, and every line is what the move does to your pocket.
         Add the two totals together and you get the figure at the top.
       </p>
@@ -683,7 +683,7 @@ function Shortfall({ result }: { result: ComparisonResult }) {
       className="rounded-lg border px-4 py-3"
       style={{ borderColor: 'var(--rule-strong)', background: 'var(--surface-sunken)' }}
     >
-      <p className="text-[0.82rem] leading-snug" style={{ color: 'var(--ink-soft)' }}>
+      <p className="text-[0.88rem] leading-snug" style={{ color: 'var(--ink-soft)' }}>
         <strong>
           {short.length === 2
             ? 'Both cities come out short.'

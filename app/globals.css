@@ -135,9 +135,16 @@ body {
   font-variant-numeric: tabular-nums;
 }
 
-/* Section eyebrows: small, wide-tracked, uppercase. */
+/*
+ * Section eyebrows: small, wide-tracked, uppercase.
+ *
+ * 0.6875rem is 11px, which is below the size a lot of people can read
+ * comfortably — and uppercase with wide tracking is already harder than
+ * sentence case. Raised to 12px, which is the floor for anything on this site
+ * that is meant to be read rather than glanced at.
+ */
 .eyebrow {
-  font-size: 0.6875rem;
+  font-size: 0.75rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--muted-strong);

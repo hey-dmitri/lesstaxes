@@ -203,7 +203,7 @@ export function Answer({ initial }: { initial: SharedComparison }) {
 
           <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
             <span
-              className="inline-flex items-center gap-2 rounded-lg border px-3 py-1.5 text-[0.82rem]"
+              className="inline-flex items-center gap-2 rounded-lg border px-3 py-1.5 text-[0.88rem]"
               style={{
                 borderColor: 'var(--picked-rule)',
                 background: 'var(--accent-dim)',
@@ -217,13 +217,13 @@ export function Answer({ initial }: { initial: SharedComparison }) {
               />
               The answer updates as you type
             </span>
-            <span className="text-[0.82rem]" style={{ color: 'var(--muted)' }}>
+            <span className="text-[0.88rem]" style={{ color: 'var(--muted)' }}>
               The address in your bar changes too, so the link you copy is this version.
             </span>
             <button
               type="button"
               onClick={() => setEditing(false)}
-              className="ml-auto border-b border-dashed text-[0.86rem]"
+              className="ml-auto border-b border-dashed text-[0.92rem]"
               style={{ borderColor: 'var(--rule-input)', color: 'var(--muted-strong)' }}
             >
               Done
@@ -264,10 +264,10 @@ export function Answer({ initial }: { initial: SharedComparison }) {
       )}
 
       <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-        <span className="text-[0.8rem]" style={{ color: 'var(--muted)' }}>
+        <span className="text-[0.88rem]" style={{ color: 'var(--muted)' }}>
           This page has its own address &mdash; the link carries every input and the data version.
         </span>
-        <Link href="/" className="ml-auto text-[0.86rem] underline underline-offset-4" style={{ color: 'var(--accent)' }}>
+        <Link href="/" className="ml-auto text-[0.92rem] underline underline-offset-4" style={{ color: 'var(--accent)' }}>
           Start over
         </Link>
       </div>

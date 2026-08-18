@@ -41,27 +41,52 @@ function writeDraft(comparison: SharedComparison | null) {
   }
 }
 
-/** One thing still outstanding, in the list beside the button. */
-function Waiting({ done, children }: { done: boolean; children: React.ReactNode }) {
-  return (
-    <li className="flex items-center gap-2" style={{ color: done ? 'var(--muted)' : 'var(--ink)' }}>
-      <span aria-hidden="true" style={{ color: done ? 'var(--accent)' : 'var(--muted)' }}>
-        {done ? '✓' : '·'}
-      </span>
-      <span style={{ textDecoration: done ? 'line-through' : undefined }}>{children}</span>
-    </li>
-  );
-}
-
 /** A promise the site can keep, with a tick against it. */
 function Tick({ children }: { children: React.ReactNode }) {
   return (
-    <span className="inline-flex items-center gap-2 text-[0.86rem]" style={{ color: 'var(--muted-strong)' }}>
+    <span className="inline-flex items-center gap-2 text-[0.92rem]" style={{ color: 'var(--muted-strong)' }}>
       <span aria-hidden="true" style={{ color: 'var(--accent)' }}>
         ✓
       </span>
       {children}
     </span>
+  );
+}
+
+/**
+ * A numbered step heading.
+ *
+ * One component, because the two were written out separately and drifted the
+ * moment step 1 was given a card of its own: its ① sat inside the card's
+ * padding while ② sat on the bare page, so the two numbers were twenty pixels
+ * apart in a list of two. Both headings now sit on the page and the card
+ * begins underneath — same left edge, and the eye can run straight down the
+ * numbers.
+ */
+function Step({
+  n,
+  done,
+  title,
+  children,
+}: {
+  n: number;
+  done?: boolean;
+  title: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+      <StepBadge n={n} done={done} />
+      <h2
+        className="font-display text-[1.3rem] font-semibold tracking-[-0.01em]"
+        style={{ color: 'var(--ink)' }}
+      >
+        {title}
+      </h2>
+      <span className="text-[0.92rem]" style={{ color: 'var(--muted)' }}>
+        {children}
+      </span>
+    </div>
   );
 }
 
@@ -109,7 +134,7 @@ export function Setup() {
   }
 
   return (
-    <main id="main" className="flex flex-1 flex-col gap-5 pb-8">
+    <main id="main" className="flex flex-1 flex-col gap-[clamp(0.55rem,1.4vh,0.9rem)] pb-2">
       {/*
         The question, at the size of a question. The h1 is the thing a stranger
         can act on — not the brand, which is already in the header — and the
@@ -117,7 +142,7 @@ export function Setup() {
         nobody has to infer the product from a form.
       */}
       <section
-        className="flex flex-col gap-4 rounded-2xl border px-6 py-10 sm:px-10 sm:py-14"
+        className="flex flex-col gap-[clamp(0.45rem,1.05vh,0.72rem)] rounded-2xl border px-6 py-[clamp(1rem,3.6vh,1.9rem)] sm:px-9"
         style={{
           borderColor: 'var(--rule)',
           background:
@@ -125,25 +150,25 @@ export function Setup() {
         }}
       >
         <span
-          className="font-display text-[0.72rem] font-medium uppercase tracking-[0.2em]"
+          className="font-display text-[0.8rem] font-medium uppercase tracking-[0.2em]"
           style={{ color: 'var(--accent)' }}
         >
           Compare any two US cities
         </span>
         <h1
-          className="max-w-[22ch] font-display text-[2.2rem] font-bold leading-[1.04] tracking-[-0.037em] sm:text-[3rem] xl:text-[3.6rem]"
+          className="max-w-[24ch] font-display text-[2rem] font-bold leading-[1.05] tracking-[-0.035em] sm:text-[clamp(2rem,4.4vh,2.75rem)]"
           style={{ color: 'var(--ink)', textWrap: 'pretty' }}
         >
           {TAGLINE}
         </h1>
         <p
-          className="max-w-[44ch] text-[1.05rem] leading-snug sm:text-[1.15rem]"
+          className="max-w-[76ch] text-[1.05rem] leading-snug sm:text-[1.12rem]"
           style={{ color: 'var(--ink-soft)', textWrap: 'pretty' }}
         >
           Pick two cities and a salary. See what you&rsquo;d have left over each year, after tax,
           housing, cars and everyday costs.
         </p>
-        <div className="flex flex-wrap gap-x-6 gap-y-2 pt-1">
+        <div className="flex flex-wrap gap-x-7 gap-y-2 pt-0.5">
           <Tick>Free, no account</Tick>
           <Tick>Nothing leaves your browser</Tick>
           <Tick>Public federal data, cited</Tick>
@@ -162,43 +187,27 @@ export function Setup() {
         value on change and none of them is required, so there is nothing left
         for browser validation to do except that.
       */}
-      <form onSubmit={onSubmit} noValidate className="flex flex-col gap-5">
-        <section
-          className="flex flex-col gap-3 rounded-2xl border px-5 py-4 sm:px-6"
-          style={{ borderColor: 'var(--rule-strong)', background: 'var(--surface-sunken)' }}
-        >
-          <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-            <StepBadge n={1} />
-            <h2
-              className="font-display text-[1.25rem] font-semibold tracking-[-0.01em]"
-              style={{ color: 'var(--ink)' }}
-            >
-              About you
-            </h2>
-            <span className="text-[0.84rem]" style={{ color: 'var(--muted)' }}>
-              applies to both cities &middot; filing status alone can swing this by thousands
+      <form onSubmit={onSubmit} noValidate className="flex flex-col gap-[clamp(0.55rem,1.4vh,0.9rem)]">
+        <section className="flex flex-col gap-2.5">
+          <Step n={1} title="About you">
+            applies to both cities &middot; filing status alone can swing this by thousands
+          </Step>
+          <div
+            className="flex flex-wrap items-baseline gap-x-4 gap-y-1 rounded-2xl border px-5 py-3 sm:px-6"
+            style={{ borderColor: 'var(--rule-strong)', background: 'var(--surface-sunken)' }}
+          >
+            <HouseholdSentence form={form} />
+            <span className="text-[0.88rem]" style={{ color: 'var(--muted)' }}>
+              Tap any green word to change it.
             </span>
           </div>
-          <HouseholdSentence form={form} />
-          <span className="text-[0.8rem]" style={{ color: 'var(--muted)' }}>
-            Tap any green word to change it.
-          </span>
         </section>
 
-        <section className="flex flex-col gap-3">
-          <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-            <StepBadge n={2} done={bothChosen} />
-            <h2
-              className="font-display text-[1.25rem] font-semibold tracking-[-0.01em]"
-              style={{ color: 'var(--ink)' }}
-            >
-              The two cities
-            </h2>
-            <span className="text-[0.84rem]" style={{ color: 'var(--muted)' }}>
-              salary, rent and cars fill in with real local figures once you pick &mdash; change
-              them to yours
-            </span>
-          </div>
+        <section className="flex flex-col gap-2.5">
+          <Step n={2} done={bothChosen} title="The two cities">
+            the salary fills in with real local pay once you pick &mdash; rent, cars and the rest
+            wait for the next screen
+          </Step>
 
           <div className="grid items-start gap-4 lg:grid-cols-2">
             <CityCard
@@ -249,14 +258,16 @@ export function Setup() {
           <div className="flex flex-wrap items-center gap-x-5 gap-y-3">
             <button
               type="submit"
-              className="rounded-xl px-7 py-4 font-display text-[1.15rem] font-bold disabled:opacity-45"
+              className="rounded-xl px-7 py-3.5 font-display text-[1.15rem] font-bold disabled:opacity-45"
               style={{ background: 'var(--accent)', color: '#ffffff' }}
               disabled={!ready}
             >
               {ACTION} <span aria-hidden="true">→</span>
             </button>
-            <span className="max-w-[34ch] text-[0.86rem]" style={{ color: 'var(--muted)' }}>
-              You can change any of this on the next screen without coming back here.
+            <span className="max-w-[42ch] text-[0.92rem]" style={{ color: 'var(--muted)' }}>
+              {bothChosen
+                ? 'Rent, cars and everything else are on the next screen, and change the answer as you edit them.'
+                : 'Pick both cities and this lights up. Everything else is on the next screen.'}
             </span>
           </div>
 
@@ -265,24 +276,22 @@ export function Setup() {
             The prompts match the headings on the cards above, so the reader is
             told where to look, not just that something is missing.
           */}
+          {/*
+            The outstanding step, named — but not as a checklist. That list
+            repeated "Where do you live now" and "Where you're thinking of
+            going", which are the two headings set at 1.35rem on the cards
+            directly above it. Two lines saying what the reader is already
+            looking at, on the one screen that has to fit without scrolling.
+          */}
           {sameCity ? (
-            <p className="text-[0.9rem]" style={{ color: 'var(--bad)' }}>
+            <p className="text-[0.95rem]" style={{ color: 'var(--bad)' }}>
               Both cities are the same. Pick a different place to move to.
             </p>
           ) : share.error ? (
-            <p className="text-[0.9rem]" style={{ color: 'var(--bad)' }}>
+            <p className="text-[0.95rem]" style={{ color: 'var(--bad)' }}>
               This comparison can&rsquo;t be turned into a link: {share.error}
             </p>
-          ) : (
-            !bothChosen && (
-              <ul className="flex flex-col gap-1 text-[0.9rem]">
-                <Waiting done={origin.metroId !== ''}>Where you live now</Waiting>
-                <Waiting done={destination.metroId !== ''}>
-                  Where you&rsquo;re thinking of going
-                </Waiting>
-              </ul>
-            )
-          )}
+          ) : null}
         </div>
       </form>
     </main>
