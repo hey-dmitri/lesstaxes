@@ -12,7 +12,7 @@
  */
 
 import { metro } from './dataset';
-import { formatUSD } from './money';
+import { formatUSD, formatUSDShort } from './money';
 import type { ComparisonResult, USD } from './types';
 
 // ---------------------------------------------------------------------------
@@ -271,7 +271,10 @@ export function whyNarrative(result: ComparisonResult): WhyNarrative {
 export function whyClause(why: WhyNarrative): string {
   if (!why.salaryChanged) return ' at the same salary.';
 
-  const amount = formatUSD(why.salaryAmount);
+  // Abbreviated, because this clause finishes a sentence that opens with an
+  // abbreviated figure — "$5,317 cheaper ... but the pay cut costs $12,152"
+  // wrote the same kind of quantity two different ways inside one sentence.
+  const amount = formatUSDShort(why.salaryAmount);
   const change = why.paidMore ? 'pay rise' : 'pay cut';
 
   // Compounding: both forces push the same way, so nothing is being offset.
@@ -297,7 +300,7 @@ export function whySentence(result: ComparisonResult): string {
   const why = whyNarrative(result);
   const to = metro(result.destination.metroId).shortName;
   const direction = why.cityCheaper ? 'cheaper' : 'pricier';
-  return `${to} is ${formatUSD(why.cityAmount)} ${direction} a year to live in${whyClause(why)}`;
+  return `${to} is ${formatUSDShort(why.cityAmount)} ${direction} a year to live in${whyClause(why)}`;
 }
 
 // ---------------------------------------------------------------------------
@@ -394,11 +397,17 @@ export function breakEvenSentence(result: ComparisonResult): string | null {
     : `You'd break even in ${to} at ${formatUSD(be.salary)} — ${gap} less than ${reference}.`;
 }
 
-/** What the gap is measured against, named so the reader can check it. */
+/**
+ * What the gap is measured against, named so the reader can check it.
+ *
+ * Not "the offer": there may not be one. Plenty of people run this before
+ * anyone has offered them anything, and the setup screen is careful not to
+ * assume otherwise — see the "Moving to" column.
+ */
 export function breakEvenReference(be: BreakEvenNarrative): string {
   return be.againstIsCurrentPay
     ? 'you earn now'
-    : `the ${formatUSD(be.against)} you'd be paid there`;
+    : `the ${formatUSDShort(be.against)} you'd be paid there`;
 }
 
 // ---------------------------------------------------------------------------
@@ -448,12 +457,24 @@ export function shortfalls(result: ComparisonResult): Shortfall[] {
 // ---------------------------------------------------------------------------
 
 /**
- * Why the answer came out the way it did, in one clause.
+ * Why the answer came out the way it did, in one sentence.
  *
- * The redesign puts the largest breakdown row beside the verdict, which means
- * the label alone has to carry a sentence. "Salary." does not; "The pay on
- * offer is $40,000 higher." does. Written here rather than in the component so
- * the card, the share text and any future surface agree.
+ * The card beside the verdict shows the largest single row of the breakdown,
+ * which means the label alone has to carry a sentence: "Salary." does not.
+ * Written here rather than in the component so the card, the share text and any
+ * future surface agree.
+ *
+ * EVERY SENTENCE NAMES A CITY, and none of them says "the offer".
+ *
+ * It used to read "The pay on offer is $20,984 lower." Two things wrong with
+ * that, and the second is worse than the first. There may be no offer — plenty
+ * of people run this before anyone has offered them anything, moving for a
+ * partner, for family, for the weather, and the setup screen is careful not to
+ * assume one. And "lower" than what? The card sits between two city names and
+ * gave neither, so the one line on the page whose job is to say what did this
+ * left the reader to work out which of the two places it was talking about.
+ *
+ * "Lafayette pays $21K less than Raleigh" cannot be misread.
  */
 export function biggestReason(
   result: ComparisonResult,
@@ -461,33 +482,32 @@ export function biggestReason(
   const row = result.breakdown[0];
   if (!row) return null;
 
+  const from = cityName(result.origin.metroId, result.datasetVersion);
+  const to = cityName(result.destination.metroId, result.datasetVersion);
   // The states actually used, not the metros' primary states — for a metro
   // that crosses a state line those can differ, and naming the wrong one in a
   // sentence about state income tax is the whole bug this guards against.
   const toState = result.destination.stateCode;
   const fromState = result.origin.stateCode;
-  const amount = formatUSD(Math.abs(row.delta));
+  // Short, because this is a sentence rather than a column: "$21K less" reads
+  // in one beat where "$20,984 less" is read digit by digit.
+  const amount = formatUSDShort(Math.abs(row.delta));
   const better = row.delta >= 0;
+  const sentence = (text: string) => ({ delta: row.delta, sentence: text });
 
   switch (row.key) {
     case 'salary':
-      return {
-        delta: row.delta,
-        sentence: `The pay on offer is ${amount} ${better ? 'higher' : 'lower'}.`,
-      };
+      return sentence(`${to} pays ${amount} ${better ? 'more' : 'less'} than ${from}.`);
     case 'stateTax':
-      return {
-        delta: row.delta,
-        sentence:
-          result.destination.tax.state === 0
-            ? `${fromState} income tax, which ${toState} doesn’t charge.`
-            : `State income tax is ${amount} ${better ? 'lower' : 'higher'} in ${toState}.`,
-      };
+      return sentence(
+        result.destination.tax.state === 0
+          ? `${fromState} charges income tax and ${toState} does not, which is worth ${amount} a year.`
+          : `State income tax is ${amount} a year ${better ? 'lower' : 'higher'} in ${toState} than in ${fromState}.`,
+      );
     case 'localTax':
-      return {
-        delta: row.delta,
-        sentence: `Local income tax is ${amount} ${better ? 'lower' : 'higher'} there.`,
-      };
+      return sentence(
+        `Local income tax is ${amount} a year ${better ? 'lower' : 'higher'} in ${to} than in ${from}.`,
+      );
     case 'housing':
       /*
        * The row's own label, not "rent or mortgage".
@@ -495,29 +515,17 @@ export function biggestReason(
        * Everywhere else this figure is labelled by `housingLabel()`, which
        * says "Rent + utilities" or "Mortgage + utilities" — because the reader
        * should not have to work out which half applies to them, and because
-       * the utility bill is inside the number. The headline card was still
-       * using the retired wording, so it and the row three inches below it
-       * gave the same figure two different names.
+       * the utility bill is inside the number.
        */
-      return {
-        delta: row.delta,
-        sentence: `${row.label} is ${amount} ${better ? 'cheaper' : 'dearer'} a year.`,
-      };
+      return sentence(
+        `${row.label} in ${to} ${better ? 'costs' : 'costs'} ${amount} a year ${better ? 'less' : 'more'} than in ${from}.`,
+      );
     case 'propertyTax':
-      return {
-        delta: row.delta,
-        sentence: `Property tax is ${amount} ${better ? 'lower' : 'higher'}.`,
-      };
+      return sentence(`Property tax in ${to} is ${amount} a year ${better ? 'lower' : 'higher'} than in ${from}.`);
     case 'transport':
-      return {
-        delta: row.delta,
-        sentence: `Cars and transport cost ${amount} ${better ? 'less' : 'more'}.`,
-      };
+      return sentence(`Cars and transport cost ${amount} a year ${better ? 'less' : 'more'} in ${to}.`);
     default:
-      return {
-        delta: row.delta,
-        sentence: `${row.label} ${better ? 'costs' : 'costs'} ${amount} ${better ? 'less' : 'more'}.`,
-      };
+      return sentence(`${row.label} costs ${amount} a year ${better ? 'less' : 'more'} in ${to}.`);
   }
 }
 

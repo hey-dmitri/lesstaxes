@@ -3,8 +3,10 @@ import { describe, expect, it } from 'vitest';
 import { defaultCityInputs, compare } from './compare';
 import { CURRENT_DATASET_VERSION } from './datasets';
 import {
+  biggestReason,
   breakEvenNarrative,
   changeInWords,
+  cityName,
   federalMovedReason,
   breakEvenSentence,
   percentIsMeaningful,
@@ -242,7 +244,8 @@ describe('why narrative', () => {
     // dearer of the two, so it moves more on both counts.
     const result = run(CHICAGO, AUSTIN, 150_000);
     expect(whySentence(result)).toBe(
-      'Austin, TX is $8,374 cheaper a year to live in at the same salary.',
+      // Abbreviated: this sentence is read, not added up.
+      'Austin, TX is $8.4K cheaper a year to live in at the same salary.',
     );
   });
 
@@ -332,7 +335,8 @@ describe('break-even narrative', () => {
     expect(be.against).toBe(90_000);
     expect(be.againstIsCurrentPay).toBe(false);
     expect(be.gap).toBeCloseTo(be.salary - 90_000, 6);
-    expect(breakEvenSentence(result)).toContain("the $90,000 you'd be paid there");
+    // Abbreviated, because this is a sentence rather than a column.
+    expect(breakEvenSentence(result)).toContain("the $90K you'd be paid there");
   });
 
   it('says "you earn now" when the pay is unchanged', () => {
@@ -465,5 +469,64 @@ describe('federal tax movement is explained, not left bare', () => {
     // deduction difference — never larger than it.
     expect(taxGap).toBeGreaterThan(0);
     expect(taxGap).toBeLessThan(deductionGap);
+  });
+});
+
+/**
+ * THE ONE LINE WHOSE JOB IS TO SAY WHAT DID THIS.
+ *
+ * It read "The pay on offer is $20,984 lower." There may be no offer — people
+ * run this before anyone has offered them anything — and "lower" than what? The
+ * card sits between two city names and named neither of them.
+ */
+describe('biggest single reason', () => {
+  const RALEIGH = '39580';
+  const LAFAYETTE = '29180';
+  const MIAMI = '33100';
+  const SF = '41860';
+
+  it('never assumes a job offer exists', () => {
+    for (const [from, to, pay, destinationPay] of [
+      [RALEIGH, LAFAYETTE, 78_592, 57_608],
+      [CHICAGO, AUSTIN, 90_000, 140_000],
+      [NYC, MIAMI, 150_000, 150_000],
+      [SF, 'rest-of-WY', 200_000, 90_000],
+    ] as const) {
+      const reason = biggestReason(run(from, to, pay, destinationPay));
+      expect(reason, `${from} to ${to}`).not.toBeNull();
+      expect(reason!.sentence, `${from} to ${to}`).not.toMatch(/offer/i);
+    }
+  });
+
+  it('names a place or a state, so the direction cannot be guessed wrong', () => {
+    for (const [from, to, pay, destinationPay] of [
+      [RALEIGH, LAFAYETTE, 78_592, 57_608],
+      [CHICAGO, AUSTIN, 90_000, 140_000],
+      [NYC, MIAMI, 150_000, 150_000],
+      [SF, 'rest-of-WY', 200_000, 90_000],
+    ] as const) {
+      const result = run(from, to, pay, destinationPay);
+      const reason = biggestReason(result)!;
+      const named = [
+        cityName(result.origin.metroId),
+        cityName(result.destination.metroId),
+        result.origin.stateCode,
+        result.destination.stateCode,
+      ];
+      expect(named.some((name) => reason.sentence.includes(name)), reason.sentence).toBe(true);
+    }
+  });
+
+  it('says which city pays less, in words that cannot be read backwards', () => {
+    // A $21,000 pay cut is the biggest row by construction here.
+    const reason = biggestReason(run(RALEIGH, LAFAYETTE, 78_592, 57_608))!;
+    expect(reason.sentence).toBe('Lafayette pays $21K less than Raleigh.');
+    expect(reason.delta).toBeLessThan(0);
+  });
+
+  it('abbreviates the figure, because a sentence is read and not scanned', () => {
+    const reason = biggestReason(run(CHICAGO, AUSTIN, 90_000, 140_000))!;
+    expect(reason.sentence).toMatch(/\$\d+(\.\d)?[KM]/);
+    expect(reason.sentence).not.toMatch(/\$\d{2},\d{3}/);
   });
 });

@@ -391,6 +391,24 @@ too wide to draw in a box:
 | `/methodology` | How the calculation works: the formula, the order of operations, every assumption and known limitation |
 | `/data` | Searchable browser over every figure in the dataset — all 438 locations, their price parities, housing, vehicles and tax treatment, with the source and vintage of each |
 
+**Abbreviated figures, added 2026-08-19.** Anything that is a summary is written short — "$10.9K",
+"$1.2M" — and anything that is a row of a table is written in full. The split is not cosmetic: the
+rows have to add up to the subtotal above them, and a reader checking that sum against rounded rows
+finds it out by hundreds. Summaries are quoted once and compared by eye, where six digits and two
+commas say a precision nobody uses and, at headline size, run the width of the column. The
+threshold is **a thousand**, not ten thousand, for consistency rather than brevity: at ten thousand
+two figures laid out for comparison could come out written differently — Raleigh's leftover was
+$13.8K beside Lafayette's $7,008, in matching cards — and two notations for the same quantity read
+as two different kinds of thing. `formatUSDShort` in `engine/money.ts`; the share card follows the
+same rule so the picture and the page agree.
+
+**The verdict leads, added 2026-08-19.** The Turn 5 design puts the money at 88px and the verdict in
+a 12px eyebrow above it, which is the wrong way round — the eyebrow is the answer and the figure is
+the evidence for it. Worse, a bare "$10,860" in coral says nothing about what it measures: a reader
+has to decide for themselves whether that is what they gain, lose, earn or spend. So the verdict is
+the headline, and the figure sits inside a sentence that names both cities and says which way it
+runs: *"Moving to Lafayette would leave you **$6.8K a year worse off** than staying in Raleigh."*
+
 **Which screen asks for what, revised 2026-08-18.** The setup screen asks only what this site
 cannot derive for you: the household, the two places, and the two salaries. Rent, cars, the home
 price and the three mortgage terms are all prefilled from real local figures, so nobody has to

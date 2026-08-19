@@ -10,7 +10,7 @@ import { ShareBar } from '@/components/share-bar';
 import { useComparisonForm } from '@/lib/use-comparison-form';
 import { describeComparison, describeHousehold } from '@/lib/shared-comparison';
 import type { SharedComparison } from '@/lib/share-link';
-import { formatUSD, cityName } from '@/engine';
+import { formatUSDShort, cityName } from '@/engine';
 
 function ArrowIcon() {
   return (
@@ -121,14 +121,14 @@ export function Answer({ initial }: { initial: SharedComparison }) {
           <span>
             {origin.metroId ? cityName(origin.metroId) : 'Nowhere yet'}{' '}
             <span className="tnum font-normal" style={{ color: 'var(--muted-strong)' }}>
-              {formatUSD(origin.grossSalary)}
+              {formatUSDShort(origin.grossSalary)}
             </span>
           </span>
           <ArrowIcon />
           <span>
             {destination.metroId ? cityName(destination.metroId) : 'Nowhere yet'}{' '}
             <span className="tnum font-normal" style={{ color: 'var(--muted-strong)' }}>
-              {formatUSD(destination.grossSalary)}
+              {formatUSDShort(destination.grossSalary)}
             </span>
           </span>
         </span>

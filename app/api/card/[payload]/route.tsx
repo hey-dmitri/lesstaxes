@@ -2,7 +2,7 @@ import { ImageResponse } from 'next/og';
 
 import {
   breakEvenNarrative,
-  formatUSD,
+  formatUSDShort,
   formatPercent,
   metro,
   percentIsMeaningful,
@@ -139,13 +139,15 @@ export async function GET(_request: Request, { params }: { params: Promise<{ pay
       : be.kind === 'wins-at-any-salary'
         ? { headline: 'No salary needed', note: `${metro(result.destination.metroId).shortName} wins at any pay.` }
         : be.kind === 'level'
-          ? { headline: formatUSD(be.salary), note: 'About level with the pay on the table.' }
+          ? { headline: formatUSDShort(be.salary), note: "About level with what you'd be paid there." }
           : {
-              headline: formatUSD(be.salary),
+              headline: formatUSDShort(be.salary),
               note:
                 be.kind === 'has-headroom'
-                  ? `The offer clears it by ${formatUSD(Math.abs(be.gap))}.`
-                  : `${formatUSD(Math.abs(be.gap))} more than the offer.`,
+                  // Not "the offer": there may not be one. The page's card
+                  // and this picture have to say the same thing.
+                  ? `You'd clear it by ${formatUSDShort(Math.abs(be.gap))}.`
+                  : `${formatUSDShort(Math.abs(be.gap))} more than you'd be paid there.`,
             };
 
     const v = verdict(result);
@@ -226,6 +228,17 @@ export async function GET(_request: Request, { params }: { params: Promise<{ pay
     color: FAINT,
   };
 
+  /**
+   * A subtotal in words, abbreviated: "$13.8K worse".
+   *
+   * changeInWords writes the full figure, which is right for the rows it was
+   * built for. A subtotal is a summary, and the page abbreviates every summary.
+   */
+  const shortChange = (value: number, kind: Parameters<typeof changeInWords>[1]) => {
+    const change = changeInWords(value, kind);
+    return change.unchanged ? change.text : `${formatUSDShort(change.amount)} ${change.word}`;
+  };
+
   /** What went in for one city: what they pay you, and what survives. */
   const cityBlock = (c: CardCity, highlight: boolean) => (
     <div
@@ -237,11 +250,11 @@ export async function GET(_request: Request, { params }: { params: Promise<{ pay
       <div style={{ display: 'flex', fontSize: 23, fontWeight: 600, color: INK }}>{c.name}</div>
       <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 19, color: MUTED }}>
         <div style={{ display: 'flex' }}>{card.salaryLabel}</div>
-        <div style={{ display: 'flex', color: INK }}>{formatUSD(c.salary)}</div>
+        <div style={{ display: 'flex', color: INK }}>{formatUSDShort(c.salary)}</div>
       </div>
       <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 19, color: MUTED }}>
         <div style={{ display: 'flex' }}>Take-home after tax</div>
-        <div style={{ display: 'flex', color: INK }}>{formatUSD(c.takeHome)}</div>
+        <div style={{ display: 'flex', color: INK }}>{formatUSDShort(c.takeHome)}</div>
       </div>
       <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 19, color: MUTED }}>
         <div style={{ display: 'flex' }}>Left over, a year</div>
@@ -251,7 +264,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ pay
             color: highlight ? accent : INK,
           }}
         >
-          {formatUSD(c.leftover)}
+          {formatUSDShort(c.leftover)}
         </div>
       </div>
     </div>
@@ -312,10 +325,10 @@ export async function GET(_request: Request, { params }: { params: Promise<{ pay
                   lineHeight: 1, marginTop: 6,
                 }}
               >
-                {formatUSD(Math.abs(card.delta))}
+                {formatUSDShort(Math.abs(card.delta))}
               </div>
               <div style={{ display: 'flex', fontSize: 21, color: INK, marginTop: 8 }}>
-                {`a year ${better ? 'better off' : 'worse off'} · ${formatUSD(Math.abs(card.monthly))} a month` +
+                {`a year ${better ? 'better off' : 'worse off'} · ${formatUSDShort(Math.abs(card.monthly))} a month` +
                   (card.pct === null
                     ? ''
                     : ` · ${formatPercent(Math.abs(card.pct))} ${better ? 'more' : 'less'}`)}
@@ -347,8 +360,13 @@ export async function GET(_request: Request, { params }: { params: Promise<{ pay
                   }}
                 >
                   <div style={{ display: 'flex' }}>{group.label}</div>
+                  {/*
+                    Abbreviated, like the page. The rows underneath are not:
+                    they have to add up to this, and a reader checking that sum
+                    against rounded rows finds it out by hundreds.
+                  */}
                   <div style={{ display: 'flex', color: group.total >= 0 ? GOOD : BAD }}>
-                    {changeInWords(group.total, group.kind).text}
+                    {shortChange(group.total, group.kind)}
                   </div>
                 </div>
                 {group.rows.map((row) => (
@@ -381,7 +399,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ pay
               {/* No sign: the label beside it already says more or less, and
                   "Less left over  −$3,326" reads as a double negative. */}
               <div style={{ display: 'flex', color: accent }}>
-                {formatUSD(Math.abs(card.delta))}
+                {formatUSDShort(Math.abs(card.delta))}
               </div>
             </div>
 

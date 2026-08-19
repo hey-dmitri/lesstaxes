@@ -12,6 +12,7 @@ import {
   breakEvenReference,
   formatPercent,
   formatUSD,
+  formatUSDShort,
   housingLabel,
   metro,
   percentIsMeaningful,
@@ -20,6 +21,7 @@ import {
   verdict,
   whyClause,
   whyNarrative,
+  type CityResult,
   type ComparisonResult,
   type DifferenceRow,
 } from '@/engine';
@@ -65,13 +67,19 @@ function glyphFor(row: DifferenceRow): string {
 }
 
 /**
- * The answer: how much, which way, and why.
+ * The answer: which way, how much, and why.
  *
- * Artboard 5b. The figure is the loudest thing on the page and everything
- * around it exists to stop it being read as something it is not — the eyebrow
- * says which city it points at, the line under it converts it to a month and
- * names the pay change it survived, and the sentence beside it says what did
- * the work.
+ * Artboard 5b, restructured after the first read of it. The design puts the
+ * money at 88px and the verdict in a 12px eyebrow above it, and that is the
+ * wrong way round — the eyebrow is the ANSWER and the figure is the evidence
+ * for it. Worse, a bare "$10,860" in coral says nothing about what it is: a
+ * reader has to decide for themselves whether that is what they gain, what
+ * they lose, what they earn or what they spend.
+ *
+ * So the verdict is the headline, at the size a headline gets, and the figure
+ * lives inside a sentence that says what it measures — still the second
+ * loudest thing on the page, still rolled up on arrival, but no longer a
+ * number with no noun.
  */
 function Verdict({ result, animate }: { result: ComparisonResult; animate: boolean }) {
   const v = verdict(result);
@@ -85,50 +93,81 @@ function Verdict({ result, animate }: { result: ComparisonResult; animate: boole
   const why = whyNarrative(result);
   const breakEven = breakEvenNarrative(result);
   const reason = biggestReason(result);
-  const salaryChanged = result.destination.grossSalary !== result.origin.grossSalary;
-  const payGap = result.destination.grossSalary - result.origin.grossSalary;
+
+  /**
+   * The figure, and what it means, on a line of their own.
+   *
+   * A block span mid-sentence, which is deliberate: the whole thing is still
+   * one sentence — "Moving to Lafayette would leave you $6.8K a year worse off
+   * than staying in Raleigh" — and it reads as one. But the figure is the part
+   * being quoted, and inline at twice the body size it broke the line wherever
+   * the column happened to end, leaving "$6.8K a year" and "worse off" on
+   * different lines with a ragged gap between them. Given its own line it takes
+   * its meaning with it.
+   */
+  const figure = (words: string) => (
+    <span
+      className="tnum block py-0.5 text-[1.6rem] font-bold leading-tight xl:text-[2rem]"
+      style={{ color: colour }}
+    >
+      {formatUSDShort(Math.abs(rolled))} a year{words ? ` ${words}` : ''}
+    </span>
+  );
 
   return (
     <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_20rem]">
       <div
-        className="flex flex-col gap-1"
+        className="flex flex-col gap-2"
         style={{ animation: animate ? 'pop 700ms ease-out both' : undefined }}
       >
-        {/*
-          The verdict in words, quietly, above the figure. It used to be the
-          loud line with the money underneath it, and that put the site's own
-          catchphrase where the reader was looking for a number. The wording
-          still comes from the engine, so this panel, the share card and the
-          link preview cannot describe the same move three different ways.
-        */}
         <span
-          className="font-display text-[0.7rem] font-medium uppercase tracking-[0.2em]"
+          className="font-display text-[0.75rem] font-medium uppercase tracking-[0.2em]"
           style={{ color: 'var(--muted)' }}
         >
-          The verdict &middot; {v.headline}
+          The verdict
         </span>
-        <span
-          className="tnum text-[3.4rem] font-bold leading-[1.02] tracking-[-0.045em] xl:text-[4.4rem]"
-          style={{ color: colour }}
+        {/*
+          The verdict itself, at headline size. The wording comes from the
+          engine, so this panel, the share card and the link preview cannot
+          describe the same move three different ways.
+        */}
+        {/*
+          The size steps down for a long place name. "Pack and move to Rest of
+          District of Columbia" is 45 characters against "Stay in Austin"'s 14,
+          and at one fixed size the long ones ran to three lines and pushed the
+          two cards beside them off the first screenful. Balanced rather than
+          ragged, so a two-line headline splits somewhere sensible.
+        */}
+        <h2
+          className={`font-display font-bold leading-[1.02] tracking-[-0.04em] ${
+            v.headline.length > 24
+              ? 'text-[1.9rem] sm:text-[2.3rem] xl:text-[2.7rem]'
+              : 'text-[2.4rem] sm:text-[3rem] xl:text-[3.6rem]'
+          }`}
+          style={{ color: colour, textWrap: 'balance' }}
         >
-          {formatUSD(Math.abs(rolled))}
-        </span>
-        <span className="text-[1.15rem] font-medium" style={{ color: 'var(--ink)' }}>
-          a year{' '}
-          <span style={{ color: 'var(--muted)' }}>
-            &middot; <span className="tnum">{formatUSD(Math.abs(result.deltaMonthly))}</span> a month
-            {salaryChanged && (
-              <>
-                , on <span className="tnum">{formatUSD(Math.abs(payGap))}</span>{' '}
-                {payGap < 0 ? 'less' : 'more'} pay
-              </>
-            )}
-          </span>
-        </span>
+          {v.headline}
+        </h2>
+        {/*
+          WHAT THE NUMBER IS, in a sentence. Every version reads "moving to X
+          would leave you ...", so the figure is always the same quantity
+          measured the same way round — which is the thing a bare signed number
+          could not tell anybody.
+        */}
+        <p
+          className="max-w-[46ch] text-[1.1rem] leading-snug xl:text-[1.2rem]"
+          style={{ color: 'var(--ink)' }}
+        >
+          Moving to {to} would leave you{tooClose ? ' within' : ''}
+          {figure(tooClose ? '' : better ? 'better off' : 'worse off')}
+          {tooClose ? 'of where you are in ' : 'than staying in '}
+          {from} &mdash;{' '}
+          <span className="tnum">{formatUSDShort(Math.abs(result.deltaMonthly))}</span> a month.
+        </p>
         <p className="max-w-[52ch] text-[1rem] leading-snug" style={{ color: 'var(--ink-soft)' }}>
           {to} is{' '}
           <strong style={{ color: why.cityCheaper ? 'var(--good)' : 'var(--bad)' }}>
-            <span className="tnum">{formatUSD(why.cityAmount)}</span>{' '}
+            <span className="tnum">{formatUSDShort(why.cityAmount)}</span>{' '}
             {why.cityCheaper ? 'cheaper' : 'pricier'}
           </strong>{' '}
           a year to live in
@@ -140,7 +179,6 @@ function Verdict({ result, animate }: { result: ComparisonResult; animate: boole
             the two partly cancelled, when in fact they add up.
           */}
           {whyClause(why)}
-          {!better && !tooClose && ` Staying in ${from} keeps the difference.`}
         </p>
         {/* Never advice. The engine writes this line for the same reason. */}
         <p className="text-[0.88rem]" style={{ color: 'var(--muted)' }}>
@@ -149,32 +187,43 @@ function Verdict({ result, animate }: { result: ComparisonResult; animate: boole
       </div>
 
       <div className="flex flex-col gap-2.5">
-        {breakEven && (
-          <StatCard
-            label={
-              breakEven.kind === 'wins-at-any-salary'
-                ? `No salary needed in ${to}`
-                : `Salary needed in ${to} to break even`
-            }
-            figure={breakEven.kind === 'wins-at-any-salary' ? 'None' : formatUSD(breakEven.salary)}
-            highlight={breakEven.kind === 'has-headroom'}
-          >
-            <BreakEvenLine breakEven={breakEven} to={to} />
-          </StatCard>
-        )}
         {/*
-          The single line doing most of the work, named. It has existed in the
-          engine since the redesign began and nothing on the page showed it —
-          so the reader got a total and a fourteen-row table, with no answer to
-          "what actually did this?" short of reading all fourteen.
+          THE REASON COMES FIRST, above break-even. It answers "what did this?",
+          which is the question a reader has the moment they have read the
+          verdict; break-even answers "what would change it?", which is the one
+          after. They were the other way round.
         */}
         {reason && (
           <StatCard
             label="Biggest single reason"
-            figure={formatUSD(reason.delta, { signed: true })}
+            figure={formatUSDShort(reason.delta, { signed: true })}
             figureColour={reason.delta >= 0 ? 'var(--good)' : 'var(--bad)'}
           >
             {reason.sentence}
+          </StatCard>
+        )}
+        {breakEven && (
+          <StatCard
+            /*
+              NO CITY IN THIS LABEL. "Salary needed in Lafayette to break even"
+              is one line for Lafayette and two for Louisville/Jefferson County,
+              so the card changed height with the name of the place. The city is
+              named in the sentence underneath, where a second line costs
+              nothing.
+            */
+            label={
+              breakEven.kind === 'wins-at-any-salary'
+                ? 'No salary needed to break even'
+                : 'Salary needed to break even'
+            }
+            figure={
+              breakEven.kind === 'wins-at-any-salary'
+                ? 'None'
+                : formatUSDShort(breakEven.salary)
+            }
+            highlight={breakEven.kind === 'has-headroom'}
+          >
+            <BreakEvenLine breakEven={breakEven} to={to} />
           </StatCard>
         )}
       </div>
@@ -207,7 +256,7 @@ function StatCard({
       <span className="eyebrow" style={{ color: 'var(--muted)' }}>
         {label}
       </span>
-      <span className="tnum text-[1.35rem] font-semibold" style={{ color: figureColour ?? 'var(--ink)' }}>
+      <span className="tnum text-[1.5rem] font-semibold" style={{ color: figureColour ?? 'var(--ink)' }}>
         {figure}
       </span>
       <span className="text-[0.88rem] leading-snug" style={{ color: 'var(--ink-soft)' }}>
@@ -229,21 +278,28 @@ function BreakEvenLine({
     return <>{to} comes out ahead even on no income at all.</>;
   }
   if (breakEven.kind === 'level') {
-    return <>About {breakEvenReference(breakEven)}.</>;
+    return <>In {to}, about {breakEvenReference(breakEven)}.</>;
   }
   const gap = (
     <strong
       className="tnum"
       style={{ color: breakEven.kind === 'has-headroom' ? 'var(--good)' : 'var(--bad)' }}
     >
-      {formatUSD(Math.abs(breakEven.gap))}
+      {formatUSDShort(Math.abs(breakEven.gap))}
     </strong>
   );
+  /*
+    Not "the offer clears it". There may not be an offer — people run this
+    before anyone has offered them anything, which is why the setup screen's
+    second column is headed "Moving to" rather than "The offer".
+  */
   return breakEven.kind === 'has-headroom' ? (
-    <>The offer clears it by {gap}.</>
+    <>
+      In {to} you&rsquo;d clear it by {gap}.
+    </>
   ) : (
     <>
-      You&rsquo;d need {gap} more than {breakEvenReference(breakEven)}.
+      In {to} you&rsquo;d need {gap} more than {breakEvenReference(breakEven)}.
     </>
   );
 }
@@ -269,10 +325,14 @@ function CitySummaries({ result }: { result: ComparisonResult }) {
     { city: result.destination, highlight: v.kind === 'pack' },
   ];
 
+  const livingFor = (city: CityResult) =>
+    city.housing.total + city.living.total + city.salesTax;
+  const money = formatUSDShort;
+
   return (
     <div className="grid gap-3 sm:grid-cols-2">
       {cities.map(({ city, highlight }) => {
-        const living = city.housing.total + city.living.total + city.salesTax;
+        const living = livingFor(city);
         return (
           <div
             key={city.metroId}
@@ -294,8 +354,8 @@ function CitySummaries({ result }: { result: ComparisonResult }) {
               >
                 {cityName(city.metroId, result.datasetVersion)}
               </h3>
-              <span className="tnum text-[0.82rem]" style={{ color: 'var(--muted)' }}>
-                {formatUSD(city.grossSalary)}
+              <span className="tnum text-[0.88rem]" style={{ color: 'var(--muted)' }}>
+                {money(city.grossSalary)}
               </span>
             </div>
 
@@ -303,16 +363,16 @@ function CitySummaries({ result }: { result: ComparisonResult }) {
               <span className="text-[0.88rem]" style={{ color: 'var(--muted-strong)' }}>
                 Take-home after tax
               </span>
-              <span className="tnum text-[1.15rem] font-semibold" style={{ color: 'var(--ink)' }}>
-                {formatUSD(city.takeHome)}
+              <span className="tnum text-[1.2rem] font-semibold" style={{ color: 'var(--ink)' }}>
+                {money(city.takeHome)}
               </span>
             </div>
             <div className="flex items-baseline justify-between gap-3">
               <span className="text-[0.88rem]" style={{ color: 'var(--muted-strong)' }}>
                 Typical living costs
               </span>
-              <span className="tnum text-[1rem] font-semibold" style={{ color: 'var(--bad)' }}>
-                &minus;{formatUSD(living)}
+              <span className="tnum text-[1.05rem] font-semibold" style={{ color: 'var(--bad)' }}>
+                &minus;{money(living)}
               </span>
             </div>
             <div
@@ -326,7 +386,7 @@ function CitySummaries({ result }: { result: ComparisonResult }) {
                 className="tnum text-[1.6rem] font-bold leading-none"
                 style={{ color: city.leftover < 0 ? 'var(--bad)' : highlight ? 'var(--accent)' : 'var(--ink)' }}
               >
-                {formatUSD(city.leftover)}
+                {money(city.leftover)}
               </span>
             </div>
             {/*
@@ -368,7 +428,7 @@ function WhatThisMeans({ result }: { result: ComparisonResult }) {
             {formatPercent(Math.abs(result.deltaPct))}
           </strong>{' '}
           {better ? 'more' : 'less'} than what you have left over in {from} today &mdash; a
-          percentage of the {formatUSD(result.origin.leftover)}, not of your salary.
+          percentage of the {formatUSDShort(result.origin.leftover)}, not of your salary.
         </p>
       )}
       <p style={{ color: 'var(--muted-strong)' }}>
@@ -503,7 +563,7 @@ function Table({
             color: change.unchanged ? 'var(--muted)' : change.better ? 'var(--good)' : 'var(--bad)',
           }}
         >
-          {formatUSD(total, { signed: true })}
+          {formatUSDShort(total, { signed: true })}
         </span>
       </div>
       {rows.map(({ row, note }) => (
@@ -645,14 +705,14 @@ function Breakdown({ result }: { result: ComparisonResult }) {
           In your pocket, the difference
         </span>
         <div className="flex items-baseline gap-5">
-          <span className="tnum text-[0.9rem] font-semibold" style={{ color: 'var(--ink-soft)' }}>
-            {formatUSD(Math.abs(result.deltaMonthly))} a month
+          <span className="tnum text-[0.95rem] font-semibold" style={{ color: 'var(--ink-soft)' }}>
+            {formatUSDShort(Math.abs(result.deltaMonthly))} a month
           </span>
           <span
-            className="tnum text-[1.35rem] font-bold"
+            className="tnum text-[1.4rem] font-bold"
             style={{ color: result.delta >= 0 ? 'var(--good)' : 'var(--bad)' }}
           >
-            {formatUSD(result.delta, { signed: true })} a year
+            {formatUSDShort(result.delta, { signed: true })} a year
           </span>
         </div>
       </div>
@@ -676,7 +736,7 @@ function Shortfall({ result }: { result: ComparisonResult }) {
   const short = shortfalls(result);
   if (short.length === 0) return null;
 
-  const named = short.map((s) => `${formatUSD(s.shortBy)} in ${metro(s.metroId).shortName}`);
+  const named = short.map((s) => `${formatUSDShort(s.shortBy)} in ${metro(s.metroId).shortName}`);
 
   return (
     <div

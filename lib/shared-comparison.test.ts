@@ -165,7 +165,10 @@ describe('describeComparison', () => {
     // whether that was good news or bad — and here it is bad, matching the
     // "worse off" title rather than reading against it.
     expect(summary.description).toMatch(/\$139,163/);
-    expect(summary.description).toMatch(/\$14,163 more than the \$125,000 you'd be paid there/);
+    // The gap and what it is measured against are abbreviated: a link preview
+    // is truncated at about 150 characters, so every digit spent on precision
+    // nobody quotes is a word of the sentence that gets cut.
+    expect(summary.description).toMatch(/\$14,163 more than the \$125K you'd be paid there/);
     expect(summary.description).toMatch(/21\.0% less spare cash/);
   });
 

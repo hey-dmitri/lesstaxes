@@ -69,7 +69,7 @@ export {
 export { computeHousing, firstYearInterest, monthlyMortgagePayment } from './housing';
 export { computeLiving, computeSalesTax, computeTransport, defaultCarCount } from './living';
 
-export { formatPercent, formatUSD, monthly, toDollars } from './money';
+export { formatPercent, formatUSD, formatUSDShort, monthly, toDollars } from './money';
 
 export {
   biggestReason,
