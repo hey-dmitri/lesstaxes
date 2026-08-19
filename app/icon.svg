@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="Pack or Stay">
+  <!--
+    Two bars of unequal height on the site's green: what is left over in one
+    city against the other, which is the only thing this site computes. It has
+    to survive 16 pixels in a tab strip, so it is two shapes and one colour —
+    a wordmark or anything with a stroke turns to mush at that size.
+  -->
+  <rect width="32" height="32" rx="7" fill="#2FD196"/>
+  <rect x="7" y="15" width="7" height="10" rx="2" fill="#08120D"/>
+  <rect x="18" y="7" width="7" height="18" rx="2" fill="#08120D"/>
+</svg>
