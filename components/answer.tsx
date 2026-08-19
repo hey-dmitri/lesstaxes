@@ -33,6 +33,17 @@ function ArrowIcon() {
   );
 }
 
+/**
+ * Every control on this screen is the same shape and weight.
+ *
+ * "Change anything" was a button, "Start over" was a small underlined link four
+ * screens below it, and "Done" was a dashed underline smaller than the sentence
+ * beside it — three ways of saying "press this", in descending order of how
+ * easy they were to find. They are one thing now.
+ */
+const ACTION_BUTTON =
+  'inline-flex items-center gap-2 rounded-lg border px-3.5 py-2 text-[0.88rem] font-semibold';
+
 function PencilIcon({ colour }: { colour: string }) {
   return (
     <svg
@@ -133,21 +144,40 @@ export function Answer({ initial }: { initial: SharedComparison }) {
             </span>
           </span>
         </span>
-        <button
-          type="button"
-          onClick={() => setEditing((open) => !open)}
-          aria-expanded={editing}
-          aria-controls="change-anything"
-          className="ml-auto inline-flex items-center gap-2 rounded-lg border px-3.5 py-2 text-[0.88rem] font-semibold"
-          style={{
-            borderColor: editing ? 'var(--accent)' : 'var(--rule-input)',
-            background: editing ? 'var(--accent-dim)' : 'var(--surface-raised)',
-            color: editing ? 'var(--accent)' : 'var(--ink)',
-          }}
-        >
-          <PencilIcon colour={editing ? 'var(--accent)' : 'var(--muted-strong)'} />
-          Change anything <span aria-hidden="true">{editing ? '▴' : '▾'}</span>
-        </button>
+        {/*
+          The two things you can do to this page, together, where the things you
+          can do to it belong. "Start over" was a small underlined link at the
+          bottom of the answer, four screens away from the other control and
+          weighted like a footnote.
+        */}
+        <div className="ml-auto flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => setEditing((open) => !open)}
+            aria-expanded={editing}
+            aria-controls="change-anything"
+            className={ACTION_BUTTON}
+            style={{
+              borderColor: editing ? 'var(--accent)' : 'var(--rule-input)',
+              background: editing ? 'var(--accent-dim)' : 'var(--surface-raised)',
+              color: editing ? 'var(--accent)' : 'var(--ink)',
+            }}
+          >
+            <PencilIcon colour={editing ? 'var(--accent)' : 'var(--muted-strong)'} />
+            Change anything <span aria-hidden="true">{editing ? '▴' : '▾'}</span>
+          </button>
+          <Link
+            href="/"
+            className={ACTION_BUTTON}
+            style={{
+              borderColor: 'var(--rule-input)',
+              background: 'var(--surface-raised)',
+              color: 'var(--muted-strong)',
+            }}
+          >
+            Start over
+          </Link>
+        </div>
       </div>
 
       {editing && (
@@ -203,29 +233,37 @@ export function Answer({ initial }: { initial: SharedComparison }) {
           </div>
 
           <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+            {/*
+              A STATEMENT, NOT A CONTROL. This was a bordered, tinted pill with
+              a dot in it, sitting in a panel full of things you press — so it
+              read as a button that did nothing when you pressed it. It is a
+              sentence with a dot beside it now.
+
+              And one sentence rather than two: the answer updating and the
+              address updating are the same fact about the same panel, and they
+              were two separate lines saying it.
+            */}
             <span
-              className="inline-flex items-center gap-2 rounded-lg border px-3 py-1.5 text-[0.88rem]"
-              style={{
-                borderColor: 'var(--picked-rule)',
-                background: 'var(--accent-dim)',
-                color: 'var(--accent)',
-              }}
+              className="inline-flex items-baseline gap-2 text-[0.92rem]"
+              style={{ color: 'var(--muted-strong)' }}
             >
               <span
                 aria-hidden="true"
-                className="inline-block h-[7px] w-[7px] rounded-full"
+                className="inline-block h-[7px] w-[7px] shrink-0 translate-y-[-1px] rounded-full"
                 style={{ background: 'var(--accent)' }}
               />
-              The answer updates as you type
-            </span>
-            <span className="text-[0.88rem]" style={{ color: 'var(--muted)' }}>
-              The address in your bar changes too, so the link you copy is this version.
+              The answer and the address both update as you type, so the link you copy is this
+              version.
             </span>
             <button
               type="button"
               onClick={() => setEditing(false)}
-              className="ml-auto border-b border-dashed text-[0.92rem]"
-              style={{ borderColor: 'var(--rule-input)', color: 'var(--muted-strong)' }}
+              className={`ml-auto ${ACTION_BUTTON}`}
+              style={{
+                borderColor: 'var(--accent)',
+                background: 'var(--accent-dim)',
+                color: 'var(--accent)',
+              }}
             >
               Done
             </button>

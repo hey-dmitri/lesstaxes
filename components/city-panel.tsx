@@ -767,15 +767,24 @@ export function CityRow(props: Props) {
         site used to charge those utilities a second time on top.
       */}
       <p className="text-[0.84rem] leading-snug" style={{ color: 'var(--muted)' }}>
+        {/*
+          What the box does NOT say. It said "Rent here is $1,642 for a 1-bed
+          at this salary" directly under a box reading 1,642 — so the only part
+          the reader could not already see was buried at the end of a sentence
+          that opened by repeating one they could.
+        */}
         {state.housing.tenure === 'rent' ? (
           <>
-            Rent here is {formatUSD(suggestedRent)} for a {bedrooms}-bed at this salary, with gas,
-            electricity, water and heating in it.
+            A {bedrooms}-bed at this salary, with gas, electricity, water and heating in it.
+            {state.housing.monthlyRent === suggestedRent ? '' : ` ${formatUSD(suggestedRent)} is typical.`}
           </>
         ) : (
-          <>A {formatUSD(suggestedPrice)} home is typical at this salary here.</>
+          <>
+            Typical at this salary here.
+            {state.housing.homePrice === suggestedPrice ? '' : ` ${formatUSD(suggestedPrice)} is the local figure.`}
+          </>
         )}{' '}
-        Households here run {transport.vehiclesPerAdult.toFixed(2)} cars per adult.
+        {transport.vehiclesPerAdult.toFixed(2)} cars per adult here.
       </p>
 
       {picking && picker}

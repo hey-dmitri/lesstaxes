@@ -16,7 +16,6 @@ import {
   housingLabel,
   metro,
   percentIsMeaningful,
-  shortfalls,
   utilitiesAreSplitOut,
   verdict,
   whyClause,
@@ -430,19 +429,39 @@ function CitySummaries({ result }: { result: ComparisonResult }) {
               </span>
             </div>
             {/*
-              This said "Living costs" over a single lump figure, which reads as
-              a statement about the reader: here is what you spend. Only the
-              housing half is theirs — they typed it. The rest is a national
-              spending basket re-priced for this metro and scaled to a household
-              of this size and income.
+              A CITY COMES OUT SHORT MORE OFTEN THAN YOU WOULD THINK, and when
+              it does the leftover figure above goes negative — which reads as a
+              broken calculator unless the page says otherwise. At the local
+              median rent and average household spending it is not an edge case:
+              a family of four on a middling salary is short in most metros.
+
+              This replaced a full-width paragraph that opened by restating the
+              figure — "Bakersfield comes out short ... by $358 in Bakersfield"
+              — beside a card already showing −$358 in red, and then repeated
+              the note below in different words. One line, in the card it is
+              about, only when it is true.
             */}
-            <span className="text-[0.82rem] leading-snug" style={{ color: 'var(--faint)' }}>
-              Your housing, plus what a household your size usually spends here. Not your own
-              budget.
-            </span>
+            {city.leftover < 0 && (
+              <span className="text-[0.82rem] leading-snug" style={{ color: 'var(--bad)' }}>
+                Typical costs here come to more than the pay. That is what the local medians say
+                at this salary &mdash; not an error.
+              </span>
+            )}
           </div>
         );
       })}
+      {/*
+        Said once, under both, because it was the same sentence twice — two
+        identical grey lines side by side, which reads as a caption on each card
+        rather than as the one caveat it is.
+      */}
+      <p
+        className="text-[0.84rem] leading-snug sm:col-span-2"
+        style={{ color: 'var(--faint)' }}
+      >
+        Both columns are your housing, plus what a household your size usually spends in that city.
+        Not your own budget &mdash; change any of it behind &ldquo;Change anything&rdquo;.
+      </p>
     </div>
   );
 }
@@ -719,9 +738,9 @@ function Breakdown({ result }: { result: ComparisonResult }) {
         >
           Everything that changes if you move to {to}
         </h3>
+        {/* The heading says where. This says which way round, and nothing else. */}
         <p className="text-[0.92rem] leading-snug" style={{ color: 'var(--muted-strong)' }}>
-          Every line below is {to} measured against {from}, and every one of them is what the move
-          does to your pocket. The two columns added together are the figure at the top of the page.
+          Every line is {to} measured against {from} &mdash; what the move does to your pocket.
         </p>
       </div>
 
@@ -789,44 +808,6 @@ function Breakdown({ result }: { result: ComparisonResult }) {
           </span>
         </div>
       </div>
-    </div>
-  );
-}
-
-/**
- * Shown when modelled costs run past the salary in either city.
- *
- * At the local median rent and average household spending this is not an edge
- * case — a family of four on a middling salary comes out short in most metros.
- * The comparison survives it, but the word "leftover" does not, and neither
- * does the percentage, so both are explained rather than quietly dropped.
- */
-function Shortfall({ result }: { result: ComparisonResult }) {
-  const short = shortfalls(result);
-  if (short.length === 0) return null;
-
-  const named = short.map((s) => `${formatUSDShort(s.shortBy)} in ${metro(s.metroId).shortName}`);
-
-  return (
-    <div
-      className="rounded-lg border px-4 py-3"
-      style={{ borderColor: 'var(--rule-strong)', background: 'var(--surface-sunken)' }}
-    >
-      <p className="text-[0.88rem] leading-snug" style={{ color: 'var(--ink-soft)' }}>
-        <strong>
-          {short.length === 2
-            ? 'Both cities come out short.'
-            : `${metro(short[0].metroId).shortName} comes out short.`}
-        </strong>{' '}
-        At this salary and household size, typical local costs come to more than a year&rsquo;s pay
-        &mdash; by {named.join(' and ')}. The comparison above is still like for like, but there is
-        no spare cash left to take a percentage of.
-      </p>
-      <p className="mt-1 text-[0.8rem] leading-snug" style={{ color: 'var(--muted)' }}>
-        This uses the local median rent and what US households at your income actually spend. If
-        your rent, cars or salary are different, change them &mdash; every field is editable behind
-        &ldquo;Change anything&rdquo;.
-      </p>
     </div>
   );
 }
@@ -998,8 +979,6 @@ export function Results({
       </div>
 
       <CitySummaries result={result} />
-
-      <Shortfall result={result} />
 
       <Breakdown result={result} />
 
