@@ -100,7 +100,7 @@ result, not a footnote. It turns the tool into something usable in a salary nego
 | D1 | Geographic granularity | **City / metro area** (~387 CBSAs) | State level cannot represent NYC city income tax or the fact that Austin ≠ rural Texas. Cost-of-living data is published per metro anyway. |
 | D2 | Data sourcing | **Free public/government data, bundled with the app** | $0/yr, no licence risk, no API keys, no backend, instant results. |
 | D3 | Household detail | **Filing status + number of children + household salary** | Filing status alone is a ~$9,000/yr swing at $150k — larger than the state-tax difference being measured. Non-negotiable input. |
-| D4 | Housing input | **Prefilled, fully editable** | Useful answer with zero typing; accurate for those who know their real numbers. Rent prefills are sized to the household and scaled to income (see D27); home prices are not yet — OPEN-4. |
+| D4 | Housing input | **Prefilled, fully editable** | Useful answer with zero typing; accurate for those who know their real numbers. Rent prefills are sized to the household and scaled to income (see D27), and home prices scale with income too — both anchored to the local median owner or renter income rather than a national multiplier (resolved 2026-08-13, dataset 2026.3; see OPEN-4). |
 | D5 | Tenure | **Independent rent/own per city** | "Rent in Chicago, buy in Austin" is the most common real relocation and where the math is most interesting. |
 | D6 | Non-housing spending | **Auto-modeled from BLS CES × BEA RPP** | Zero input, full category breakdown, every figure traceable to a federal table. |
 | D7 | Share links | **All state encoded in the URL, dataset version pinned** | No database, no cost, links never expire, no salary ever leaves the browser. |
