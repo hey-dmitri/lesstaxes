@@ -8,17 +8,22 @@
  *
  * Read from the engine so there is exactly one place that decides, and set
  * DATASET_VERSION in the environment to build a new dated release.
+ *
+ * It moved out of engine/datasets.ts and into engine/current-dataset.ts when
+ * older releases went behind a dynamic import: the current one is the only one
+ * still imported eagerly, so it is the only one that belongs in a module the
+ * whole bundle pulls in.
  */
 import { readFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
-const source = readFileSync(resolve(HERE, '..', '..', 'engine', 'datasets.ts'), 'utf8');
-const match = /CURRENT_DATASET_VERSION\s*=\s*'([^']+)'/.exec(source);
+const SOURCE = resolve(HERE, '..', '..', 'engine', 'current-dataset.ts');
+const match = /CURRENT_DATASET_VERSION\s*=\s*'([^']+)'/.exec(readFileSync(SOURCE, 'utf8'));
 
 if (!match) {
-  throw new Error('could not read CURRENT_DATASET_VERSION from engine/datasets.ts');
+  throw new Error('could not read CURRENT_DATASET_VERSION from engine/current-dataset.ts');
 }
 
 export const CURRENT_DATASET_VERSION = match[1];

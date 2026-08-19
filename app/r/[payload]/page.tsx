@@ -5,6 +5,7 @@ import { Answer } from '@/components/answer';
 import { cardPath } from '@/lib/share-card';
 import { comparisonFromShared, describeComparison } from '@/lib/shared-comparison';
 import { decodeComparison, type SharedComparison } from '@/lib/share-link';
+import { loadDataset } from '@/engine';
 import { SITE_NAME } from '@/lib/site';
 
 /**
@@ -21,7 +22,15 @@ export async function generateMetadata({
   const { payload } = await params;
 
   try {
-    const summary = describeComparison(comparisonFromShared(decodeComparison(payload)));
+    const shared = decodeComparison(payload);
+    /*
+      A link pinned to an older release needs that release fetched before it can
+      be replayed. Only the current one is bundled eagerly — see
+      engine/datasets.ts — and a no-op for anything already in memory, which is
+      every link made since the last refresh.
+    */
+    await loadDataset(shared.datasetVersion);
+    const summary = describeComparison(comparisonFromShared(shared));
     return {
       title: `${summary.title} — ${SITE_NAME}`,
       description: summary.description,

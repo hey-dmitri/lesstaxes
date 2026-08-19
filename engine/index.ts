@@ -27,6 +27,8 @@ export {
   CURRENT_DATASET_VERSION,
   datasetBundle,
   isKnownDatasetVersion,
+  loadAllDatasets,
+  loadDataset,
   type DatasetBundle,
 } from './datasets';
 

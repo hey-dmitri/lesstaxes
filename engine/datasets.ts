@@ -17,268 +17,32 @@
  * promise rests on, the accessors detect what a bundle actually carries and fall
  * back to how that version computed things. A 2026.1 link reproduces 2026.1,
  * including the cruder rent model it shipped with.
+ *
+ * ONLY ONE RELEASE IS EVER LOADED, AND USUALLY IT IS THE CURRENT ONE.
+ *
+ * This module used to import all 29 releases statically — 14.7MB of JSON in
+ * every bundle, parsed on every cold start of every function that touches the
+ * engine, and shipped to every browser. A comparison needs exactly one release:
+ * the one its link is pinned to, which for any link made today is the current
+ * one. So the current release is imported eagerly (./current-dataset, 0.6MB)
+ * and every older release sits behind a dynamic import that nothing fetches
+ * until a link asks for it.
+ *
+ * The cost is that reading an old release is now a two-step thing: await
+ * loadDataset(version), then read it synchronously as before. Only the two
+ * places that replay a pinned link do that — the shared page's metadata and the
+ * share card — and both were already async.
+ *
+ * A KNOWN VERSION THAT HAS NOT BEEN LOADED THROWS. It would be friendlier to
+ * fall back to the current release, and that is exactly the bug this module was
+ * built to prevent: quietly answering with the wrong year's numbers under a link
+ * that promises otherwise. An UNKNOWN version still falls back, because there is
+ * nothing else it could do.
  */
 
-import federal20261 from '../data/2026.1/federal.json';
-import housing20261 from '../data/2026.1/housing.json';
-import localTax20261 from '../data/2026.1/local-income-tax.json';
-import metros20261 from '../data/2026.1/metros.json';
-import salesTax20261 from '../data/2026.1/sales-tax.json';
-import spending20261 from '../data/2026.1/spending.json';
-import states20261 from '../data/2026.1/states.json';
-import transport20261 from '../data/2026.1/transport.json';
+import { CURRENT_BUNDLE, CURRENT_DATASET_VERSION } from './current-dataset';
 
-import federal20262 from '../data/2026.2/federal.json';
-import housing20262 from '../data/2026.2/housing.json';
-import localTax20262 from '../data/2026.2/local-income-tax.json';
-import metros20262 from '../data/2026.2/metros.json';
-import salesTax20262 from '../data/2026.2/sales-tax.json';
-import spending20262 from '../data/2026.2/spending.json';
-import states20262 from '../data/2026.2/states.json';
-import transport20262 from '../data/2026.2/transport.json';
-
-import federal20263 from '../data/2026.3/federal.json';
-import housing20263 from '../data/2026.3/housing.json';
-import localTax20263 from '../data/2026.3/local-income-tax.json';
-import metros20263 from '../data/2026.3/metros.json';
-import salesTax20263 from '../data/2026.3/sales-tax.json';
-import spending20263 from '../data/2026.3/spending.json';
-import states20263 from '../data/2026.3/states.json';
-import transport20263 from '../data/2026.3/transport.json';
-
-import federal20264 from '../data/2026.4/federal.json';
-import housing20264 from '../data/2026.4/housing.json';
-import localTax20264 from '../data/2026.4/local-income-tax.json';
-import metros20264 from '../data/2026.4/metros.json';
-import salesTax20264 from '../data/2026.4/sales-tax.json';
-import spending20264 from '../data/2026.4/spending.json';
-import states20264 from '../data/2026.4/states.json';
-import transport20264 from '../data/2026.4/transport.json';
-
-import federal20265 from '../data/2026.5/federal.json';
-import housing20265 from '../data/2026.5/housing.json';
-import localTax20265 from '../data/2026.5/local-income-tax.json';
-import metros20265 from '../data/2026.5/metros.json';
-import salesTax20265 from '../data/2026.5/sales-tax.json';
-import spending20265 from '../data/2026.5/spending.json';
-import states20265 from '../data/2026.5/states.json';
-import transport20265 from '../data/2026.5/transport.json';
-
-import federal20266 from '../data/2026.6/federal.json';
-import housing20266 from '../data/2026.6/housing.json';
-import localTax20266 from '../data/2026.6/local-income-tax.json';
-import metros20266 from '../data/2026.6/metros.json';
-import salesTax20266 from '../data/2026.6/sales-tax.json';
-import spending20266 from '../data/2026.6/spending.json';
-import states20266 from '../data/2026.6/states.json';
-import transport20266 from '../data/2026.6/transport.json';
-
-import federal20267 from '../data/2026.7/federal.json';
-import housing20267 from '../data/2026.7/housing.json';
-import localTax20267 from '../data/2026.7/local-income-tax.json';
-import metros20267 from '../data/2026.7/metros.json';
-import salesTax20267 from '../data/2026.7/sales-tax.json';
-import spending20267 from '../data/2026.7/spending.json';
-import states20267 from '../data/2026.7/states.json';
-import transport20267 from '../data/2026.7/transport.json';
-
-import federal20268 from '../data/2026.8/federal.json';
-import housing20268 from '../data/2026.8/housing.json';
-import localTax20268 from '../data/2026.8/local-income-tax.json';
-import metros20268 from '../data/2026.8/metros.json';
-import salesTax20268 from '../data/2026.8/sales-tax.json';
-import spending20268 from '../data/2026.8/spending.json';
-import states20268 from '../data/2026.8/states.json';
-import transport20268 from '../data/2026.8/transport.json';
-
-import federal20269 from '../data/2026.9/federal.json';
-import housing20269 from '../data/2026.9/housing.json';
-import localTax20269 from '../data/2026.9/local-income-tax.json';
-import metros20269 from '../data/2026.9/metros.json';
-import salesTax20269 from '../data/2026.9/sales-tax.json';
-import spending20269 from '../data/2026.9/spending.json';
-import states20269 from '../data/2026.9/states.json';
-import transport20269 from '../data/2026.9/transport.json';
-
-import federal202610 from '../data/2026.10/federal.json';
-import housing202610 from '../data/2026.10/housing.json';
-import localTax202610 from '../data/2026.10/local-income-tax.json';
-import metros202610 from '../data/2026.10/metros.json';
-import salesTax202610 from '../data/2026.10/sales-tax.json';
-import spending202610 from '../data/2026.10/spending.json';
-import states202610 from '../data/2026.10/states.json';
-import transport202610 from '../data/2026.10/transport.json';
-
-import federal202611 from '../data/2026.11/federal.json';
-import housing202611 from '../data/2026.11/housing.json';
-import localTax202611 from '../data/2026.11/local-income-tax.json';
-import metros202611 from '../data/2026.11/metros.json';
-import salesTax202611 from '../data/2026.11/sales-tax.json';
-import spending202611 from '../data/2026.11/spending.json';
-import states202611 from '../data/2026.11/states.json';
-import transport202611 from '../data/2026.11/transport.json';
-
-import federal202612 from '../data/2026.12/federal.json';
-import housing202612 from '../data/2026.12/housing.json';
-import localTax202612 from '../data/2026.12/local-income-tax.json';
-import metros202612 from '../data/2026.12/metros.json';
-import salesTax202612 from '../data/2026.12/sales-tax.json';
-import spending202612 from '../data/2026.12/spending.json';
-import states202612 from '../data/2026.12/states.json';
-import transport202612 from '../data/2026.12/transport.json';
-
-import federal202613 from '../data/2026.13/federal.json';
-import housing202613 from '../data/2026.13/housing.json';
-import localTax202613 from '../data/2026.13/local-income-tax.json';
-import metros202613 from '../data/2026.13/metros.json';
-import salesTax202613 from '../data/2026.13/sales-tax.json';
-import spending202613 from '../data/2026.13/spending.json';
-import states202613 from '../data/2026.13/states.json';
-import transport202613 from '../data/2026.13/transport.json';
-
-import federal202614 from '../data/2026.14/federal.json';
-import housing202614 from '../data/2026.14/housing.json';
-import localTax202614 from '../data/2026.14/local-income-tax.json';
-import metros202614 from '../data/2026.14/metros.json';
-import salesTax202614 from '../data/2026.14/sales-tax.json';
-import spending202614 from '../data/2026.14/spending.json';
-import states202614 from '../data/2026.14/states.json';
-import transport202614 from '../data/2026.14/transport.json';
-
-import federal202615 from '../data/2026.15/federal.json';
-import housing202615 from '../data/2026.15/housing.json';
-import localTax202615 from '../data/2026.15/local-income-tax.json';
-import metros202615 from '../data/2026.15/metros.json';
-import salesTax202615 from '../data/2026.15/sales-tax.json';
-import spending202615 from '../data/2026.15/spending.json';
-import states202615 from '../data/2026.15/states.json';
-import transport202615 from '../data/2026.15/transport.json';
-
-import federal202616 from '../data/2026.16/federal.json';
-import housing202616 from '../data/2026.16/housing.json';
-import localTax202616 from '../data/2026.16/local-income-tax.json';
-import metros202616 from '../data/2026.16/metros.json';
-import salesTax202616 from '../data/2026.16/sales-tax.json';
-import spending202616 from '../data/2026.16/spending.json';
-import states202616 from '../data/2026.16/states.json';
-import transport202616 from '../data/2026.16/transport.json';
-
-import federal202617 from '../data/2026.17/federal.json';
-import housing202617 from '../data/2026.17/housing.json';
-import localTax202617 from '../data/2026.17/local-income-tax.json';
-import metros202617 from '../data/2026.17/metros.json';
-import salesTax202617 from '../data/2026.17/sales-tax.json';
-import spending202617 from '../data/2026.17/spending.json';
-import states202617 from '../data/2026.17/states.json';
-import transport202617 from '../data/2026.17/transport.json';
-
-import federal202618 from '../data/2026.18/federal.json';
-import housing202618 from '../data/2026.18/housing.json';
-import localTax202618 from '../data/2026.18/local-income-tax.json';
-import metros202618 from '../data/2026.18/metros.json';
-import salesTax202618 from '../data/2026.18/sales-tax.json';
-import spending202618 from '../data/2026.18/spending.json';
-import states202618 from '../data/2026.18/states.json';
-import transport202618 from '../data/2026.18/transport.json';
-
-import federal202619 from '../data/2026.19/federal.json';
-import housing202619 from '../data/2026.19/housing.json';
-import localTax202619 from '../data/2026.19/local-income-tax.json';
-import metros202619 from '../data/2026.19/metros.json';
-import salesTax202619 from '../data/2026.19/sales-tax.json';
-import spending202619 from '../data/2026.19/spending.json';
-import states202619 from '../data/2026.19/states.json';
-import transport202619 from '../data/2026.19/transport.json';
-
-import federal202620 from '../data/2026.20/federal.json';
-import housing202620 from '../data/2026.20/housing.json';
-import localTax202620 from '../data/2026.20/local-income-tax.json';
-import metros202620 from '../data/2026.20/metros.json';
-import salesTax202620 from '../data/2026.20/sales-tax.json';
-import spending202620 from '../data/2026.20/spending.json';
-import states202620 from '../data/2026.20/states.json';
-import transport202620 from '../data/2026.20/transport.json';
-
-import federal202621 from '../data/2026.21/federal.json';
-import housing202621 from '../data/2026.21/housing.json';
-import localTax202621 from '../data/2026.21/local-income-tax.json';
-import metros202621 from '../data/2026.21/metros.json';
-import salesTax202621 from '../data/2026.21/sales-tax.json';
-import spending202621 from '../data/2026.21/spending.json';
-import states202621 from '../data/2026.21/states.json';
-import transport202621 from '../data/2026.21/transport.json';
-
-import federal202622 from '../data/2026.22/federal.json';
-import housing202622 from '../data/2026.22/housing.json';
-import localTax202622 from '../data/2026.22/local-income-tax.json';
-import metros202622 from '../data/2026.22/metros.json';
-import salesTax202622 from '../data/2026.22/sales-tax.json';
-import spending202622 from '../data/2026.22/spending.json';
-import states202622 from '../data/2026.22/states.json';
-import transport202622 from '../data/2026.22/transport.json';
-
-import federal202623 from '../data/2026.23/federal.json';
-import housing202623 from '../data/2026.23/housing.json';
-import localTax202623 from '../data/2026.23/local-income-tax.json';
-import metros202623 from '../data/2026.23/metros.json';
-import salesTax202623 from '../data/2026.23/sales-tax.json';
-import spending202623 from '../data/2026.23/spending.json';
-import states202623 from '../data/2026.23/states.json';
-import transport202623 from '../data/2026.23/transport.json';
-
-import federal202624 from '../data/2026.24/federal.json';
-import housing202624 from '../data/2026.24/housing.json';
-import localTax202624 from '../data/2026.24/local-income-tax.json';
-import metros202624 from '../data/2026.24/metros.json';
-import salesTax202624 from '../data/2026.24/sales-tax.json';
-import spending202624 from '../data/2026.24/spending.json';
-import states202624 from '../data/2026.24/states.json';
-import transport202624 from '../data/2026.24/transport.json';
-
-import federal202625 from '../data/2026.25/federal.json';
-import housing202625 from '../data/2026.25/housing.json';
-import localTax202625 from '../data/2026.25/local-income-tax.json';
-import metros202625 from '../data/2026.25/metros.json';
-import salesTax202625 from '../data/2026.25/sales-tax.json';
-import spending202625 from '../data/2026.25/spending.json';
-import states202625 from '../data/2026.25/states.json';
-import transport202625 from '../data/2026.25/transport.json';
-
-import federal202626 from '../data/2026.26/federal.json';
-import housing202626 from '../data/2026.26/housing.json';
-import localTax202626 from '../data/2026.26/local-income-tax.json';
-import metros202626 from '../data/2026.26/metros.json';
-import salesTax202626 from '../data/2026.26/sales-tax.json';
-import spending202626 from '../data/2026.26/spending.json';
-import states202626 from '../data/2026.26/states.json';
-import transport202626 from '../data/2026.26/transport.json';
-
-import federal202627 from '../data/2026.27/federal.json';
-import housing202627 from '../data/2026.27/housing.json';
-import localTax202627 from '../data/2026.27/local-income-tax.json';
-import metros202627 from '../data/2026.27/metros.json';
-import salesTax202627 from '../data/2026.27/sales-tax.json';
-import spending202627 from '../data/2026.27/spending.json';
-import states202627 from '../data/2026.27/states.json';
-import transport202627 from '../data/2026.27/transport.json';
-
-import federal202628 from '../data/2026.28/federal.json';
-import housing202628 from '../data/2026.28/housing.json';
-import localTax202628 from '../data/2026.28/local-income-tax.json';
-import metros202628 from '../data/2026.28/metros.json';
-import salesTax202628 from '../data/2026.28/sales-tax.json';
-import spending202628 from '../data/2026.28/spending.json';
-import states202628 from '../data/2026.28/states.json';
-import transport202628 from '../data/2026.28/transport.json';
-
-import federal202629 from '../data/2026.29/federal.json';
-import housing202629 from '../data/2026.29/housing.json';
-import localTax202629 from '../data/2026.29/local-income-tax.json';
-import metros202629 from '../data/2026.29/metros.json';
-import salesTax202629 from '../data/2026.29/sales-tax.json';
-import spending202629 from '../data/2026.29/spending.json';
-import states202629 from '../data/2026.29/states.json';
-import transport202629 from '../data/2026.29/transport.json';
+export { CURRENT_DATASET_VERSION };
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -294,339 +58,348 @@ export interface DatasetBundle {
   transport: any;
 }
 
+/**
+ * Releases already in memory. Starts with the current one and grows as older
+ * links are opened; a release is never evicted, because the files are immutable
+ * and a second reader of the same link should not pay for it twice.
+ */
 const BUNDLES: Record<string, DatasetBundle> = {
-  '2026.1': {
-    version: '2026.1',
-    federal: federal20261,
-    housing: housing20261,
-    localTax: localTax20261,
-    metros: metros20261,
-    salesTax: salesTax20261,
-    spending: spending20261,
-    states: states20261,
-    transport: transport20261,
-  },
-  '2026.2': {
-    version: '2026.2',
-    federal: federal20262,
-    housing: housing20262,
-    localTax: localTax20262,
-    metros: metros20262,
-    salesTax: salesTax20262,
-    spending: spending20262,
-    states: states20262,
-    transport: transport20262,
-  },
-  '2026.3': {
-    version: '2026.3',
-    federal: federal20263,
-    housing: housing20263,
-    localTax: localTax20263,
-    metros: metros20263,
-    salesTax: salesTax20263,
-    spending: spending20263,
-    states: states20263,
-    transport: transport20263,
-  },
-  '2026.4': {
-    version: '2026.4',
-    federal: federal20264,
-    housing: housing20264,
-    localTax: localTax20264,
-    metros: metros20264,
-    salesTax: salesTax20264,
-    spending: spending20264,
-    states: states20264,
-    transport: transport20264,
-  },
-  '2026.5': {
-    version: '2026.5',
-    federal: federal20265,
-    housing: housing20265,
-    localTax: localTax20265,
-    metros: metros20265,
-    salesTax: salesTax20265,
-    spending: spending20265,
-    states: states20265,
-    transport: transport20265,
-  },
-  '2026.6': {
-    version: '2026.6',
-    federal: federal20266,
-    housing: housing20266,
-    localTax: localTax20266,
-    metros: metros20266,
-    salesTax: salesTax20266,
-    spending: spending20266,
-    states: states20266,
-    transport: transport20266,
-  },
-  '2026.7': {
-    version: '2026.7',
-    federal: federal20267,
-    housing: housing20267,
-    localTax: localTax20267,
-    metros: metros20267,
-    salesTax: salesTax20267,
-    spending: spending20267,
-    states: states20267,
-    transport: transport20267,
-  },
-  '2026.8': {
-    version: '2026.8',
-    federal: federal20268,
-    housing: housing20268,
-    localTax: localTax20268,
-    metros: metros20268,
-    salesTax: salesTax20268,
-    spending: spending20268,
-    states: states20268,
-    transport: transport20268,
-  },
-  '2026.9': {
-    version: '2026.9',
-    federal: federal20269,
-    housing: housing20269,
-    localTax: localTax20269,
-    metros: metros20269,
-    salesTax: salesTax20269,
-    spending: spending20269,
-    states: states20269,
-    transport: transport20269,
-  },
-  '2026.10': {
-    version: '2026.10',
-    federal: federal202610,
-    housing: housing202610,
-    localTax: localTax202610,
-    metros: metros202610,
-    salesTax: salesTax202610,
-    spending: spending202610,
-    states: states202610,
-    transport: transport202610,
-  },
-  '2026.11': {
-    version: '2026.11',
-    federal: federal202611,
-    housing: housing202611,
-    localTax: localTax202611,
-    metros: metros202611,
-    salesTax: salesTax202611,
-    spending: spending202611,
-    states: states202611,
-    transport: transport202611,
-  },
-  '2026.12': {
-    version: '2026.12',
-    federal: federal202612,
-    housing: housing202612,
-    localTax: localTax202612,
-    metros: metros202612,
-    salesTax: salesTax202612,
-    spending: spending202612,
-    states: states202612,
-    transport: transport202612,
-  },
-  '2026.13': {
-    version: '2026.13',
-    federal: federal202613,
-    housing: housing202613,
-    localTax: localTax202613,
-    metros: metros202613,
-    salesTax: salesTax202613,
-    spending: spending202613,
-    states: states202613,
-    transport: transport202613,
-  },
-  '2026.14': {
-    version: '2026.14',
-    federal: federal202614,
-    housing: housing202614,
-    localTax: localTax202614,
-    metros: metros202614,
-    salesTax: salesTax202614,
-    spending: spending202614,
-    states: states202614,
-    transport: transport202614,
-  },
-  '2026.15': {
-    version: '2026.15',
-    federal: federal202615,
-    housing: housing202615,
-    localTax: localTax202615,
-    metros: metros202615,
-    salesTax: salesTax202615,
-    spending: spending202615,
-    states: states202615,
-    transport: transport202615,
-  },
-  '2026.16': {
-    version: '2026.16',
-    federal: federal202616,
-    housing: housing202616,
-    localTax: localTax202616,
-    metros: metros202616,
-    salesTax: salesTax202616,
-    spending: spending202616,
-    states: states202616,
-    transport: transport202616,
-  },
-  '2026.17': {
-    version: '2026.17',
-    federal: federal202617,
-    housing: housing202617,
-    localTax: localTax202617,
-    metros: metros202617,
-    salesTax: salesTax202617,
-    spending: spending202617,
-    states: states202617,
-    transport: transport202617,
-  },
-  '2026.18': {
-    version: '2026.18',
-    federal: federal202618,
-    housing: housing202618,
-    localTax: localTax202618,
-    metros: metros202618,
-    salesTax: salesTax202618,
-    spending: spending202618,
-    states: states202618,
-    transport: transport202618,
-  },
-  '2026.19': {
-    version: '2026.19',
-    federal: federal202619,
-    housing: housing202619,
-    localTax: localTax202619,
-    metros: metros202619,
-    salesTax: salesTax202619,
-    spending: spending202619,
-    states: states202619,
-    transport: transport202619,
-  },
-  '2026.20': {
-    version: '2026.20',
-    federal: federal202620,
-    housing: housing202620,
-    localTax: localTax202620,
-    metros: metros202620,
-    salesTax: salesTax202620,
-    spending: spending202620,
-    states: states202620,
-    transport: transport202620,
-  },
-  '2026.21': {
-    version: '2026.21',
-    federal: federal202621,
-    housing: housing202621,
-    localTax: localTax202621,
-    metros: metros202621,
-    salesTax: salesTax202621,
-    spending: spending202621,
-    states: states202621,
-    transport: transport202621,
-  },
-  '2026.22': {
-    version: '2026.22',
-    federal: federal202622,
-    housing: housing202622,
-    localTax: localTax202622,
-    metros: metros202622,
-    salesTax: salesTax202622,
-    spending: spending202622,
-    states: states202622,
-    transport: transport202622,
-  },
-  '2026.23': {
-    version: '2026.23',
-    federal: federal202623,
-    housing: housing202623,
-    localTax: localTax202623,
-    metros: metros202623,
-    salesTax: salesTax202623,
-    spending: spending202623,
-    states: states202623,
-    transport: transport202623,
-  },
-  '2026.24': {
-    version: '2026.24',
-    federal: federal202624,
-    housing: housing202624,
-    localTax: localTax202624,
-    metros: metros202624,
-    salesTax: salesTax202624,
-    spending: spending202624,
-    states: states202624,
-    transport: transport202624,
-  },
-  '2026.25': {
-    version: '2026.25',
-    federal: federal202625,
-    housing: housing202625,
-    localTax: localTax202625,
-    metros: metros202625,
-    salesTax: salesTax202625,
-    spending: spending202625,
-    states: states202625,
-    transport: transport202625,
-  },
-  '2026.26': {
-    version: '2026.26',
-    federal: federal202626,
-    housing: housing202626,
-    localTax: localTax202626,
-    metros: metros202626,
-    salesTax: salesTax202626,
-    spending: spending202626,
-    states: states202626,
-    transport: transport202626,
-  },
-  '2026.27': {
-    version: '2026.27',
-    federal: federal202627,
-    housing: housing202627,
-    localTax: localTax202627,
-    metros: metros202627,
-    salesTax: salesTax202627,
-    spending: spending202627,
-    states: states202627,
-    transport: transport202627,
-  },
-  '2026.28': {
-    version: '2026.28',
-    federal: federal202628,
-    housing: housing202628,
-    localTax: localTax202628,
-    metros: metros202628,
-    salesTax: salesTax202628,
-    spending: spending202628,
-    states: states202628,
-    transport: transport202628,
-  },
-  '2026.29': {
-    version: '2026.29',
-    federal: federal202629,
-    housing: housing202629,
-    localTax: localTax202629,
-    metros: metros202629,
-    salesTax: salesTax202629,
-    spending: spending202629,
-    states: states202629,
-    transport: transport202629,
-  },
+  [CURRENT_DATASET_VERSION]: CURRENT_BUNDLE,
 };
 
 /**
- * What a fresh visit computes with. Bumping this is the ONLY edit a new dataset
- * release needs on the engine side — everything downstream reads it from here,
- * which is what the two hardcoded boundary modules failed to provide.
+ * Every release before the current one, behind a dynamic import each.
+ *
+ * Written out rather than built from a template string, because a bundler can
+ * only split what it can see. A new entry is appended here by
+ * scripts/cut-dataset-version.mjs when the outgoing release stops being current.
  */
-export const CURRENT_DATASET_VERSION = '2026.29';
+const LOADERS: Record<string, () => Promise<DatasetBundle>> = {
+  '2026.1': async () => ({
+    version: '2026.1',
+    federal: (await import('../data/2026.1/federal.json')).default,
+    housing: (await import('../data/2026.1/housing.json')).default,
+    localTax: (await import('../data/2026.1/local-income-tax.json')).default,
+    metros: (await import('../data/2026.1/metros.json')).default,
+    salesTax: (await import('../data/2026.1/sales-tax.json')).default,
+    spending: (await import('../data/2026.1/spending.json')).default,
+    states: (await import('../data/2026.1/states.json')).default,
+    transport: (await import('../data/2026.1/transport.json')).default,
+  }),
+  '2026.2': async () => ({
+    version: '2026.2',
+    federal: (await import('../data/2026.2/federal.json')).default,
+    housing: (await import('../data/2026.2/housing.json')).default,
+    localTax: (await import('../data/2026.2/local-income-tax.json')).default,
+    metros: (await import('../data/2026.2/metros.json')).default,
+    salesTax: (await import('../data/2026.2/sales-tax.json')).default,
+    spending: (await import('../data/2026.2/spending.json')).default,
+    states: (await import('../data/2026.2/states.json')).default,
+    transport: (await import('../data/2026.2/transport.json')).default,
+  }),
+  '2026.3': async () => ({
+    version: '2026.3',
+    federal: (await import('../data/2026.3/federal.json')).default,
+    housing: (await import('../data/2026.3/housing.json')).default,
+    localTax: (await import('../data/2026.3/local-income-tax.json')).default,
+    metros: (await import('../data/2026.3/metros.json')).default,
+    salesTax: (await import('../data/2026.3/sales-tax.json')).default,
+    spending: (await import('../data/2026.3/spending.json')).default,
+    states: (await import('../data/2026.3/states.json')).default,
+    transport: (await import('../data/2026.3/transport.json')).default,
+  }),
+  '2026.4': async () => ({
+    version: '2026.4',
+    federal: (await import('../data/2026.4/federal.json')).default,
+    housing: (await import('../data/2026.4/housing.json')).default,
+    localTax: (await import('../data/2026.4/local-income-tax.json')).default,
+    metros: (await import('../data/2026.4/metros.json')).default,
+    salesTax: (await import('../data/2026.4/sales-tax.json')).default,
+    spending: (await import('../data/2026.4/spending.json')).default,
+    states: (await import('../data/2026.4/states.json')).default,
+    transport: (await import('../data/2026.4/transport.json')).default,
+  }),
+  '2026.5': async () => ({
+    version: '2026.5',
+    federal: (await import('../data/2026.5/federal.json')).default,
+    housing: (await import('../data/2026.5/housing.json')).default,
+    localTax: (await import('../data/2026.5/local-income-tax.json')).default,
+    metros: (await import('../data/2026.5/metros.json')).default,
+    salesTax: (await import('../data/2026.5/sales-tax.json')).default,
+    spending: (await import('../data/2026.5/spending.json')).default,
+    states: (await import('../data/2026.5/states.json')).default,
+    transport: (await import('../data/2026.5/transport.json')).default,
+  }),
+  '2026.6': async () => ({
+    version: '2026.6',
+    federal: (await import('../data/2026.6/federal.json')).default,
+    housing: (await import('../data/2026.6/housing.json')).default,
+    localTax: (await import('../data/2026.6/local-income-tax.json')).default,
+    metros: (await import('../data/2026.6/metros.json')).default,
+    salesTax: (await import('../data/2026.6/sales-tax.json')).default,
+    spending: (await import('../data/2026.6/spending.json')).default,
+    states: (await import('../data/2026.6/states.json')).default,
+    transport: (await import('../data/2026.6/transport.json')).default,
+  }),
+  '2026.7': async () => ({
+    version: '2026.7',
+    federal: (await import('../data/2026.7/federal.json')).default,
+    housing: (await import('../data/2026.7/housing.json')).default,
+    localTax: (await import('../data/2026.7/local-income-tax.json')).default,
+    metros: (await import('../data/2026.7/metros.json')).default,
+    salesTax: (await import('../data/2026.7/sales-tax.json')).default,
+    spending: (await import('../data/2026.7/spending.json')).default,
+    states: (await import('../data/2026.7/states.json')).default,
+    transport: (await import('../data/2026.7/transport.json')).default,
+  }),
+  '2026.8': async () => ({
+    version: '2026.8',
+    federal: (await import('../data/2026.8/federal.json')).default,
+    housing: (await import('../data/2026.8/housing.json')).default,
+    localTax: (await import('../data/2026.8/local-income-tax.json')).default,
+    metros: (await import('../data/2026.8/metros.json')).default,
+    salesTax: (await import('../data/2026.8/sales-tax.json')).default,
+    spending: (await import('../data/2026.8/spending.json')).default,
+    states: (await import('../data/2026.8/states.json')).default,
+    transport: (await import('../data/2026.8/transport.json')).default,
+  }),
+  '2026.9': async () => ({
+    version: '2026.9',
+    federal: (await import('../data/2026.9/federal.json')).default,
+    housing: (await import('../data/2026.9/housing.json')).default,
+    localTax: (await import('../data/2026.9/local-income-tax.json')).default,
+    metros: (await import('../data/2026.9/metros.json')).default,
+    salesTax: (await import('../data/2026.9/sales-tax.json')).default,
+    spending: (await import('../data/2026.9/spending.json')).default,
+    states: (await import('../data/2026.9/states.json')).default,
+    transport: (await import('../data/2026.9/transport.json')).default,
+  }),
+  '2026.10': async () => ({
+    version: '2026.10',
+    federal: (await import('../data/2026.10/federal.json')).default,
+    housing: (await import('../data/2026.10/housing.json')).default,
+    localTax: (await import('../data/2026.10/local-income-tax.json')).default,
+    metros: (await import('../data/2026.10/metros.json')).default,
+    salesTax: (await import('../data/2026.10/sales-tax.json')).default,
+    spending: (await import('../data/2026.10/spending.json')).default,
+    states: (await import('../data/2026.10/states.json')).default,
+    transport: (await import('../data/2026.10/transport.json')).default,
+  }),
+  '2026.11': async () => ({
+    version: '2026.11',
+    federal: (await import('../data/2026.11/federal.json')).default,
+    housing: (await import('../data/2026.11/housing.json')).default,
+    localTax: (await import('../data/2026.11/local-income-tax.json')).default,
+    metros: (await import('../data/2026.11/metros.json')).default,
+    salesTax: (await import('../data/2026.11/sales-tax.json')).default,
+    spending: (await import('../data/2026.11/spending.json')).default,
+    states: (await import('../data/2026.11/states.json')).default,
+    transport: (await import('../data/2026.11/transport.json')).default,
+  }),
+  '2026.12': async () => ({
+    version: '2026.12',
+    federal: (await import('../data/2026.12/federal.json')).default,
+    housing: (await import('../data/2026.12/housing.json')).default,
+    localTax: (await import('../data/2026.12/local-income-tax.json')).default,
+    metros: (await import('../data/2026.12/metros.json')).default,
+    salesTax: (await import('../data/2026.12/sales-tax.json')).default,
+    spending: (await import('../data/2026.12/spending.json')).default,
+    states: (await import('../data/2026.12/states.json')).default,
+    transport: (await import('../data/2026.12/transport.json')).default,
+  }),
+  '2026.13': async () => ({
+    version: '2026.13',
+    federal: (await import('../data/2026.13/federal.json')).default,
+    housing: (await import('../data/2026.13/housing.json')).default,
+    localTax: (await import('../data/2026.13/local-income-tax.json')).default,
+    metros: (await import('../data/2026.13/metros.json')).default,
+    salesTax: (await import('../data/2026.13/sales-tax.json')).default,
+    spending: (await import('../data/2026.13/spending.json')).default,
+    states: (await import('../data/2026.13/states.json')).default,
+    transport: (await import('../data/2026.13/transport.json')).default,
+  }),
+  '2026.14': async () => ({
+    version: '2026.14',
+    federal: (await import('../data/2026.14/federal.json')).default,
+    housing: (await import('../data/2026.14/housing.json')).default,
+    localTax: (await import('../data/2026.14/local-income-tax.json')).default,
+    metros: (await import('../data/2026.14/metros.json')).default,
+    salesTax: (await import('../data/2026.14/sales-tax.json')).default,
+    spending: (await import('../data/2026.14/spending.json')).default,
+    states: (await import('../data/2026.14/states.json')).default,
+    transport: (await import('../data/2026.14/transport.json')).default,
+  }),
+  '2026.15': async () => ({
+    version: '2026.15',
+    federal: (await import('../data/2026.15/federal.json')).default,
+    housing: (await import('../data/2026.15/housing.json')).default,
+    localTax: (await import('../data/2026.15/local-income-tax.json')).default,
+    metros: (await import('../data/2026.15/metros.json')).default,
+    salesTax: (await import('../data/2026.15/sales-tax.json')).default,
+    spending: (await import('../data/2026.15/spending.json')).default,
+    states: (await import('../data/2026.15/states.json')).default,
+    transport: (await import('../data/2026.15/transport.json')).default,
+  }),
+  '2026.16': async () => ({
+    version: '2026.16',
+    federal: (await import('../data/2026.16/federal.json')).default,
+    housing: (await import('../data/2026.16/housing.json')).default,
+    localTax: (await import('../data/2026.16/local-income-tax.json')).default,
+    metros: (await import('../data/2026.16/metros.json')).default,
+    salesTax: (await import('../data/2026.16/sales-tax.json')).default,
+    spending: (await import('../data/2026.16/spending.json')).default,
+    states: (await import('../data/2026.16/states.json')).default,
+    transport: (await import('../data/2026.16/transport.json')).default,
+  }),
+  '2026.17': async () => ({
+    version: '2026.17',
+    federal: (await import('../data/2026.17/federal.json')).default,
+    housing: (await import('../data/2026.17/housing.json')).default,
+    localTax: (await import('../data/2026.17/local-income-tax.json')).default,
+    metros: (await import('../data/2026.17/metros.json')).default,
+    salesTax: (await import('../data/2026.17/sales-tax.json')).default,
+    spending: (await import('../data/2026.17/spending.json')).default,
+    states: (await import('../data/2026.17/states.json')).default,
+    transport: (await import('../data/2026.17/transport.json')).default,
+  }),
+  '2026.18': async () => ({
+    version: '2026.18',
+    federal: (await import('../data/2026.18/federal.json')).default,
+    housing: (await import('../data/2026.18/housing.json')).default,
+    localTax: (await import('../data/2026.18/local-income-tax.json')).default,
+    metros: (await import('../data/2026.18/metros.json')).default,
+    salesTax: (await import('../data/2026.18/sales-tax.json')).default,
+    spending: (await import('../data/2026.18/spending.json')).default,
+    states: (await import('../data/2026.18/states.json')).default,
+    transport: (await import('../data/2026.18/transport.json')).default,
+  }),
+  '2026.19': async () => ({
+    version: '2026.19',
+    federal: (await import('../data/2026.19/federal.json')).default,
+    housing: (await import('../data/2026.19/housing.json')).default,
+    localTax: (await import('../data/2026.19/local-income-tax.json')).default,
+    metros: (await import('../data/2026.19/metros.json')).default,
+    salesTax: (await import('../data/2026.19/sales-tax.json')).default,
+    spending: (await import('../data/2026.19/spending.json')).default,
+    states: (await import('../data/2026.19/states.json')).default,
+    transport: (await import('../data/2026.19/transport.json')).default,
+  }),
+  '2026.20': async () => ({
+    version: '2026.20',
+    federal: (await import('../data/2026.20/federal.json')).default,
+    housing: (await import('../data/2026.20/housing.json')).default,
+    localTax: (await import('../data/2026.20/local-income-tax.json')).default,
+    metros: (await import('../data/2026.20/metros.json')).default,
+    salesTax: (await import('../data/2026.20/sales-tax.json')).default,
+    spending: (await import('../data/2026.20/spending.json')).default,
+    states: (await import('../data/2026.20/states.json')).default,
+    transport: (await import('../data/2026.20/transport.json')).default,
+  }),
+  '2026.21': async () => ({
+    version: '2026.21',
+    federal: (await import('../data/2026.21/federal.json')).default,
+    housing: (await import('../data/2026.21/housing.json')).default,
+    localTax: (await import('../data/2026.21/local-income-tax.json')).default,
+    metros: (await import('../data/2026.21/metros.json')).default,
+    salesTax: (await import('../data/2026.21/sales-tax.json')).default,
+    spending: (await import('../data/2026.21/spending.json')).default,
+    states: (await import('../data/2026.21/states.json')).default,
+    transport: (await import('../data/2026.21/transport.json')).default,
+  }),
+  '2026.22': async () => ({
+    version: '2026.22',
+    federal: (await import('../data/2026.22/federal.json')).default,
+    housing: (await import('../data/2026.22/housing.json')).default,
+    localTax: (await import('../data/2026.22/local-income-tax.json')).default,
+    metros: (await import('../data/2026.22/metros.json')).default,
+    salesTax: (await import('../data/2026.22/sales-tax.json')).default,
+    spending: (await import('../data/2026.22/spending.json')).default,
+    states: (await import('../data/2026.22/states.json')).default,
+    transport: (await import('../data/2026.22/transport.json')).default,
+  }),
+  '2026.23': async () => ({
+    version: '2026.23',
+    federal: (await import('../data/2026.23/federal.json')).default,
+    housing: (await import('../data/2026.23/housing.json')).default,
+    localTax: (await import('../data/2026.23/local-income-tax.json')).default,
+    metros: (await import('../data/2026.23/metros.json')).default,
+    salesTax: (await import('../data/2026.23/sales-tax.json')).default,
+    spending: (await import('../data/2026.23/spending.json')).default,
+    states: (await import('../data/2026.23/states.json')).default,
+    transport: (await import('../data/2026.23/transport.json')).default,
+  }),
+  '2026.24': async () => ({
+    version: '2026.24',
+    federal: (await import('../data/2026.24/federal.json')).default,
+    housing: (await import('../data/2026.24/housing.json')).default,
+    localTax: (await import('../data/2026.24/local-income-tax.json')).default,
+    metros: (await import('../data/2026.24/metros.json')).default,
+    salesTax: (await import('../data/2026.24/sales-tax.json')).default,
+    spending: (await import('../data/2026.24/spending.json')).default,
+    states: (await import('../data/2026.24/states.json')).default,
+    transport: (await import('../data/2026.24/transport.json')).default,
+  }),
+  '2026.25': async () => ({
+    version: '2026.25',
+    federal: (await import('../data/2026.25/federal.json')).default,
+    housing: (await import('../data/2026.25/housing.json')).default,
+    localTax: (await import('../data/2026.25/local-income-tax.json')).default,
+    metros: (await import('../data/2026.25/metros.json')).default,
+    salesTax: (await import('../data/2026.25/sales-tax.json')).default,
+    spending: (await import('../data/2026.25/spending.json')).default,
+    states: (await import('../data/2026.25/states.json')).default,
+    transport: (await import('../data/2026.25/transport.json')).default,
+  }),
+  '2026.26': async () => ({
+    version: '2026.26',
+    federal: (await import('../data/2026.26/federal.json')).default,
+    housing: (await import('../data/2026.26/housing.json')).default,
+    localTax: (await import('../data/2026.26/local-income-tax.json')).default,
+    metros: (await import('../data/2026.26/metros.json')).default,
+    salesTax: (await import('../data/2026.26/sales-tax.json')).default,
+    spending: (await import('../data/2026.26/spending.json')).default,
+    states: (await import('../data/2026.26/states.json')).default,
+    transport: (await import('../data/2026.26/transport.json')).default,
+  }),
+  '2026.27': async () => ({
+    version: '2026.27',
+    federal: (await import('../data/2026.27/federal.json')).default,
+    housing: (await import('../data/2026.27/housing.json')).default,
+    localTax: (await import('../data/2026.27/local-income-tax.json')).default,
+    metros: (await import('../data/2026.27/metros.json')).default,
+    salesTax: (await import('../data/2026.27/sales-tax.json')).default,
+    spending: (await import('../data/2026.27/spending.json')).default,
+    states: (await import('../data/2026.27/states.json')).default,
+    transport: (await import('../data/2026.27/transport.json')).default,
+  }),
+  '2026.28': async () => ({
+    version: '2026.28',
+    federal: (await import('../data/2026.28/federal.json')).default,
+    housing: (await import('../data/2026.28/housing.json')).default,
+    localTax: (await import('../data/2026.28/local-income-tax.json')).default,
+    metros: (await import('../data/2026.28/metros.json')).default,
+    salesTax: (await import('../data/2026.28/sales-tax.json')).default,
+    spending: (await import('../data/2026.28/spending.json')).default,
+    states: (await import('../data/2026.28/states.json')).default,
+    transport: (await import('../data/2026.28/transport.json')).default,
+  }),
+};
 
-export const ALL_DATASET_VERSIONS: readonly string[] = Object.keys(BUNDLES).sort();
+/** Oldest first, which is the order the releases were cut in. */
+export const ALL_DATASET_VERSIONS: readonly string[] = [
+  ...Object.keys(LOADERS),
+  CURRENT_DATASET_VERSION,
+];
 
-/** Every shipped bundle agrees with the version stamped inside its own files. */
-for (const [version, bundle] of Object.entries(BUNDLES)) {
+/**
+ * A bundle must agree with the version stamped inside its own files.
+ *
+ * A mismatch here silently changes what shared links resolve to, so it is a
+ * throw rather than a warning. Checked as each release is loaded rather than
+ * over all of them at startup, which is what loading them all at startup was
+ * for.
+ */
+function verify(version: string, bundle: DatasetBundle): DatasetBundle {
   for (const [name, file] of Object.entries(bundle)) {
     if (name === 'version') continue;
     const stamped = (file as { datasetVersion?: string }).datasetVersion;
@@ -637,10 +410,40 @@ for (const [version, bundle] of Object.entries(BUNDLES)) {
       );
     }
   }
+  return bundle;
 }
 
-if (!BUNDLES[CURRENT_DATASET_VERSION]) {
-  throw new Error(`CURRENT_DATASET_VERSION ${CURRENT_DATASET_VERSION} is not a shipped dataset`);
+verify(CURRENT_DATASET_VERSION, CURRENT_BUNDLE);
+
+/**
+ * Fetch an older release so that datasetBundle() can hand it back.
+ *
+ * Idempotent, and safe to call with the current version or an unknown one — in
+ * both cases there is nothing to fetch. Concurrent calls for the same version
+ * share one fetch rather than racing to parse the same 0.6MB twice.
+ */
+const IN_FLIGHT = new Map<string, Promise<void>>();
+
+export function loadDataset(version: string): Promise<void> {
+  if (BUNDLES[version]) return Promise.resolve();
+  const load = LOADERS[version];
+  if (!load) return Promise.resolve();
+
+  const existing = IN_FLIGHT.get(version);
+  if (existing) return existing;
+
+  const pending = load()
+    .then((bundle) => {
+      BUNDLES[version] = verify(version, bundle);
+    })
+    .finally(() => IN_FLIGHT.delete(version));
+  IN_FLIGHT.set(version, pending);
+  return pending;
+}
+
+/** Every release, loaded. Used by the test suite, which reads all of them. */
+export function loadAllDatasets(): Promise<void[]> {
+  return Promise.all(ALL_DATASET_VERSIONS.map((version) => loadDataset(version)));
 }
 
 /**
@@ -650,13 +453,28 @@ if (!BUNDLES[CURRENT_DATASET_VERSION]) {
  * from a FUTURE release — someone on an older cached build opening a colleague's
  * newer link — should still produce an answer, and a slightly-off answer beats a
  * blank page. A link from a version we simply never had is the same case.
+ *
+ * A version we DO have but have not loaded is not that case. Falling back there
+ * would answer with the current year's numbers under a link that promises the
+ * sender's, which is the one failure §9.2 exists to rule out, so it throws and
+ * names the call that was missing.
  */
 export function datasetBundle(version?: string): DatasetBundle {
   if (!version) return BUNDLES[CURRENT_DATASET_VERSION];
-  return BUNDLES[version] ?? BUNDLES[CURRENT_DATASET_VERSION];
+
+  const loaded = BUNDLES[version];
+  if (loaded) return loaded;
+
+  if (LOADERS[version]) {
+    throw new Error(
+      `dataset ${version} is a shipped release that has not been loaded — ` +
+        `await loadDataset('${version}') before computing against it`,
+    );
+  }
+  return BUNDLES[CURRENT_DATASET_VERSION];
 }
 
 /** Whether a version is one we actually hold data for. */
 export function isKnownDatasetVersion(version: string): boolean {
-  return Object.hasOwn(BUNDLES, version);
+  return version === CURRENT_DATASET_VERSION || Object.hasOwn(LOADERS, version);
 }

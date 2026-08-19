@@ -3,6 +3,7 @@ import { ImageResponse } from 'next/og';
 import {
   breakEvenNarrative,
   formatUSDShort,
+  loadDataset,
   formatPercent,
   metro,
   percentIsMeaningful,
@@ -90,6 +91,13 @@ export async function GET(_request: Request, { params }: { params: Promise<{ pay
 
   try {
     const shared = decodeComparison(payload);
+    /*
+      A link pinned to an older release needs that release fetched before it can
+      be replayed. Only the current one is bundled eagerly — see
+      engine/datasets.ts — and a no-op for anything already in memory, which is
+      every link made since the last refresh.
+    */
+    await loadDataset(shared.datasetVersion);
     const result = comparisonFromShared(shared);
 
     const city = (side: 'origin' | 'destination'): CardCity => ({

@@ -402,11 +402,24 @@ prefetch finishes; and `app/r/[payload]/loading.tsx` paints a **skeleton in the 
 answer** the instant navigation starts. None of them is a progress bar: the wait is a network round
 trip of unknown length and nothing on screen claims to know how far along it is.
 
-**The root cause is not fixed.** `engine/datasets.ts` statically imports all 29 shipped dataset
-releases, which is roughly 12MB of JSON parsed on every cold start of any function that touches the
-engine — and the same 12MB in the browser bundle. A link only ever needs the one release it is
-pinned to. Loading them lazily would make `datasetBundle()` async and ripple through every accessor
-in the engine, so it is recorded here rather than done in passing.
+**The root cause, fixed 2026-08-19.** `engine/datasets.ts` used to import all 29 shipped releases
+statically — **12,565 KB of JavaScript on the first page**, parsed on every cold start of every
+function that touches the engine, to answer a question that needs exactly one release: the one the
+link is pinned to. Only the current release is bundled eagerly now (`engine/current-dataset.ts`,
+0.6MB); every older release sits behind a dynamic import and is fetched only when a link asks for
+it. **The first page is 1,202 KB.**
+
+`datasetBundle()` stayed synchronous, so nothing in the engine changed shape. What is new is
+`loadDataset(version)`, awaited in the only two places that replay a pinned link — the shared page's
+metadata and the share card — both already async. The browser never needs an older release at all:
+the interactive form recomputes at the current version by construction.
+
+**A shipped release that has not been loaded throws.** Falling back to the current one would answer
+with this year's numbers under a link that promises the sender's, which is the exact failure §9.2
+exists to rule out and would be invisible. An *unknown* version still falls back, because there is
+nothing else it could do. Pinned by `engine/dataset-loading.test.ts`; the test suite loads every
+release up front through `engine/test-setup.ts` so the sweeps over `ALL_DATASET_VERSIONS` read as
+they did before.
 
 **Abbreviated figures, added 2026-08-19.** Anything that is a summary is written short — "$10.9K",
 "$1.2M" — and anything that is a row of a table is written in full. The split is not cosmetic: the

@@ -265,6 +265,7 @@ See `BUILD_PLAN.md` for the stages and `PROJECT.md` for the full specification.
 | Path | Contents |
 |---|---|
 | `engine/` | The calculation core. **Framework-free** — see `engine/README.md` |
+| `engine/current-dataset.ts` | The one release bundled eagerly. Older ones load on demand |
 | `data/` | Immutable dated datasets. **Never hand-edited** — see `data/README.md` |
 | `scripts/` | The data pipeline that generates `data/` — see `scripts/README.md` |
 | `lib/` | UI-side helpers (share-link encoding, formatting adapters, the shared form state) |

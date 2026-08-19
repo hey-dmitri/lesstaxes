@@ -14,9 +14,10 @@
  *
  * So the refresh cuts a release first, and rebuilds into that.
  *
- * This edits engine/datasets.ts, which is generated-ish but deliberately not
- * generated: the static imports have to be visible to the bundler, and a
- * reviewer should be able to see exactly which versions ship.
+ * This edits engine/current-dataset.ts and engine/datasets.ts, which are
+ * generated-ish but deliberately not generated: the imports have to be visible
+ * to the bundler — it can only code-split what it can see — and a reviewer
+ * should be able to see exactly which versions ship.
  */
 
 import { cpSync, existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
@@ -28,6 +29,7 @@ import { CURRENT_DATASET_VERSION } from './lib/version.mjs';
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(HERE, '..');
 const REGISTRY = resolve(ROOT, 'engine', 'datasets.ts');
+const CURRENT_MODULE = resolve(ROOT, 'engine', 'current-dataset.ts');
 
 const FILES = [
   'federal',
@@ -103,44 +105,80 @@ for (const file of readdirSync(to)) {
   }
 }
 
-// 3. Register it, and make it current.
-/** Match the hand-written style already in the registry: `housing20262`. */
-const suffix = target.replace('.', '');
-const varName = (name) => {
-  const camel = name.replace(/-([a-z])/g, (_, c) => c.toUpperCase());
-  return `${camel === 'localIncomeTax' ? 'localTax' : camel}${suffix}`;
-};
+/*
+ * 3. Register it, and make it current.
+ *
+ * TWO FILES, because only one release is bundled eagerly. The incoming release
+ * takes over engine/current-dataset.ts, which is regenerated whole — it is
+ * nothing but eight imports and a bundle. The OUTGOING release moves into the
+ * loader registry in engine/datasets.ts, behind a dynamic import, where it
+ * costs a chunk on disk and nothing at all until a link asks for it.
+ */
 const bundleKey = (name) => {
   const camel = name.replace(/-([a-z])/g, (_, c) => c.toUpperCase());
   return camel === 'localIncomeTax' ? 'localTax' : camel;
 };
+/** Match the style already in the file: `housing20262`. */
+const varName = (name, version) => `${bundleKey(name)}${version.replace('.', '')}`;
+
+const outgoing = CURRENT_DATASET_VERSION;
+
 let registry = readFileSync(REGISTRY, 'utf8');
-
-const importBlock = FILES.map(
-  (name) => `import ${varName(name)} from '../data/${target}/${name}.json';`,
-).join('\n');
-
-const bundleBlock =
-  `  '${target}': {\n` +
-  `    version: '${target}',\n` +
-  FILES.map((name) => `    ${bundleKey(name)}: ${varName(name)},`).join('\n') +
-  `\n  },\n`;
-
-if (registry.includes(`'${target}':`)) {
+if (registry.includes(`'${target}':`) || registry.includes(`data/${target}/`)) {
   throw new Error(`engine/datasets.ts already registers ${target}`);
 }
+if (registry.includes(`'${outgoing}': async`)) {
+  throw new Error(`engine/datasets.ts already demoted ${outgoing}`);
+}
+
+// The outgoing release joins the lazily-loaded ones, at the end, oldest first.
+const loaderBlock =
+  `  '${outgoing}': async () => ({\n` +
+  `    version: '${outgoing}',\n` +
+  FILES.map(
+    (name) =>
+      `    ${bundleKey(name)}: (await import('../data/${outgoing}/${name}.json')).default,`,
+  ).join('\n') +
+  `\n  }),\n`;
 
 registry = registry.replace(
-  /(\n\/\* eslint-disable)/,
-  `\n${importBlock}\n$1`,
+  /(\n};\n\n\/\*\* Oldest first)/,
+  `\n${loaderBlock}};\n\n/** Oldest first`,
 );
-registry = registry.replace(/(\n};\n\n\/\*\*\n \* What a fresh visit)/, `\n${bundleBlock}};\n\n/**\n * What a fresh visit`);
-registry = registry.replace(
-  /export const CURRENT_DATASET_VERSION = '[^']+';/,
-  `export const CURRENT_DATASET_VERSION = '${target}';`,
-);
-
 writeFileSync(REGISTRY, registry);
+
+// The incoming release becomes the one bundled eagerly.
+writeFileSync(
+  CURRENT_MODULE,
+  `/**
+ * The release a fresh visit computes with, and the ONLY one bundled eagerly.
+ *
+ * It lives in its own module so that cutting a release is a whole-file rewrite
+ * of nine lines rather than a surgical edit inside a registry — see
+ * scripts/cut-dataset-version.mjs, which regenerates this from a template.
+ *
+ * Everything else is behind a dynamic import in ./datasets. Static imports of
+ * all of them put 14.7MB of JSON in every bundle and parsed it on every cold
+ * start, to answer a question that only ever needs one release at a time.
+ */
+
+${FILES.map((name) => `import ${varName(name, target)} from '../data/${target}/${name}.json';`).join('\n')}
+
+/**
+ * What a fresh visit computes with. Bumping this is the ONLY edit a new dataset
+ * release needs on the engine side — everything downstream reads it from here,
+ * which is what the two hardcoded boundary modules failed to provide.
+ */
+export const CURRENT_DATASET_VERSION = '${target}';
+
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
+export const CURRENT_BUNDLE = {
+  version: CURRENT_DATASET_VERSION,
+${FILES.map((name) => `  ${bundleKey(name)}: ${varName(name, target)} as any,`).join('\n')}
+};
+`,
+);
 
 // Machine-readable, for the workflow that has to diff the two releases.
 if (process.env.GITHUB_OUTPUT) {
