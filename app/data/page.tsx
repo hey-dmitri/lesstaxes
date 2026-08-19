@@ -150,6 +150,8 @@ export default function DataPage() {
           subject="the data page"
           datasetVersion={DATASET_VERSION}
           className="!text-sm"
+          // The paragraph above already says why, at more length.
+          explain={false}
         />
       </Prose>
     </PageShell>

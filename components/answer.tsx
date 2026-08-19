@@ -5,6 +5,7 @@ import Link from 'next/link';
 
 import { CityRow } from '@/components/city-panel';
 import { HouseholdSentence } from '@/components/household';
+import { ReportProblem } from '@/components/report-problem';
 import { Results } from '@/components/results';
 import { ShareBar } from '@/components/share-bar';
 import { useComparisonForm } from '@/lib/use-comparison-form';
@@ -242,6 +243,27 @@ export function Answer({ initial }: { initial: SharedComparison }) {
               payload={share.payload}
               slug={describeComparison(result).slug}
               error={share.error}
+              trailing={
+                <>
+                  {/*
+                    The report carries the two cities and the release it was
+                    computed from, so it arrives saying which figure and which
+                    version rather than "the rent seems high".
+                  */}
+                  <ReportProblem
+                    compact
+                    subject={`${cityName(result.origin.metroId)} to ${cityName(result.destination.metroId)}`}
+                    datasetVersion={result.datasetVersion}
+                  />
+                  <Link
+                    href="/"
+                    className="text-[0.92rem] underline underline-offset-4"
+                    style={{ color: 'var(--accent)' }}
+                  >
+                    Start over
+                  </Link>
+                </>
+              }
             />
           }
         />
@@ -262,15 +284,6 @@ export function Answer({ initial }: { initial: SharedComparison }) {
           </p>
         </div>
       )}
-
-      <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-        <span className="text-[0.88rem]" style={{ color: 'var(--muted)' }}>
-          This page has its own address &mdash; the link carries every input and the data version.
-        </span>
-        <Link href="/" className="ml-auto text-[0.92rem] underline underline-offset-4" style={{ color: 'var(--accent)' }}>
-          Start over
-        </Link>
-      </div>
     </main>
   );
 }

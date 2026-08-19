@@ -26,7 +26,6 @@ import {
   type DifferenceRow,
 } from '@/engine';
 import { InfoDot } from '@/components/fields';
-import { ReportProblem } from '@/components/report-problem';
 import { useCountUp } from '@/lib/use-count-up';
 
 /** Rows whose value is fixed by federal law and cannot vary between cities. */
@@ -1013,12 +1012,8 @@ export function Results({
         </Disclosure>
       </div>
 
-      <div className="flex flex-col gap-2 border-t pt-3" style={{ borderColor: 'var(--rule)' }}>
+      <div className="border-t pt-4" style={{ borderColor: 'var(--rule)' }}>
         {share}
-        <ReportProblem
-          subject={`${metro(result.origin.metroId).shortName} to ${metro(result.destination.metroId).shortName}`}
-          datasetVersion={result.datasetVersion}
-        />
       </div>
     </div>
   );

@@ -156,16 +156,21 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             className="flex shrink-0 flex-wrap items-center gap-x-4 gap-y-1 pt-1.5 text-[0.8rem] leading-snug"
             style={{ color: 'var(--muted)' }}
           >
-            <nav className="flex gap-4" aria-label="More about this site">
-              {/* Always reachable, on every page, for the reader who spots a wrong figure. */}
-              <Link href="/data#report" className="underline underline-offset-2" style={{ color: 'var(--accent)' }}>
-                Report a problem
-              </Link>
-            </nav>
+            {/*
+              NO "REPORT A PROBLEM" HERE ANY MORE.
+              
+              It sat about forty pixels under the answer screen's own "Something
+              look wrong? Email me or open an issue" — two offers of the same
+              thing, worded differently, one generic and one carrying the two
+              cities and the release the figures came from. Every page that
+              shows a figure has the contextual one at the bottom of its own
+              content, which is both a better report and the place somebody is
+              standing when they notice.
+            */}
             <span className="flex-1">
               Estimates from public sources — Census, BEA, BLS, IRS, SSA, Case-Shiller, the Tax
               Foundation and state and city revenue departments. <strong>Not financial, tax or legal
-              advice.</strong> No accounts, no tracking, nothing stored.
+              advice.</strong> No accounts, no tracking.
             </span>
             <span className="whitespace-nowrap">
               Built by{' '}

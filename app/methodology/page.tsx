@@ -893,6 +893,8 @@ answer          =  in your pocket THERE  −  in your pocket HERE`}</pre>
           subject="the methodology page"
           datasetVersion={DATASET_VERSION}
           className="!text-sm"
+          // The paragraph above already says why, at more length.
+          explain={false}
         />
 
         <p style={{ color: 'var(--muted)' }}>

@@ -13,6 +13,17 @@ interface Props {
   slug: string;
   /** Non-null when the current inputs cannot be encoded. */
   error?: string | null;
+  /**
+   * What sits at the right-hand end of the button row.
+   *
+   * The bottom of the answer screen was four blocks stacked: two buttons, a
+   * sentence about them, a sentence about reporting a wrong figure, and a
+   * sentence about the address with "Start over" floating opposite it. Three
+   * greys saying overlapping things, and the address sentence repeated what the
+   * one under the buttons already said. It is one row and one line now, and
+   * this is where everything that is not a button goes.
+   */
+  trailing?: React.ReactNode;
 }
 
 type CopyStatus = 'idle' | 'copied' | 'manual';
@@ -79,7 +90,7 @@ function AlertIcon() {
   );
 }
 
-export function ShareBar({ path, payload, slug, error }: Props) {
+export function ShareBar({ path, payload, slug, error, trailing }: Props) {
   const [copyStatus, setCopyStatus] = useState<CopyStatus>('idle');
   const [saveStatus, setSaveStatus] = useState<SaveStatus>('idle');
   const timers = useRef<number[]>([]);
@@ -135,7 +146,7 @@ export function ShareBar({ path, payload, slug, error }: Props) {
 
   if (error) {
     return (
-      <p className="text-[0.76rem]" style={{ color: 'var(--muted)' }}>
+      <p className="text-[0.88rem]" style={{ color: 'var(--muted)' }}>
         This comparison can&rsquo;t be turned into a link: {error}
       </p>
     );
@@ -163,8 +174,8 @@ export function ShareBar({ path, payload, slug, error }: Props) {
     saveStatus === 'saved' ? <CheckIcon /> : saveStatus === 'failed' ? <AlertIcon /> : <ImageIcon />;
 
   return (
-    <div className="flex flex-col gap-1.5">
-      <div className="flex flex-wrap items-center gap-2">
+    <div className="flex flex-col gap-2">
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
         <button
           type="button"
           onClick={copyLink}
@@ -202,13 +213,21 @@ export function ShareBar({ path, payload, slug, error }: Props) {
           {saveIcon}
           {saveLabel}
         </button>
+        {trailing && (
+          <span className="ml-auto flex flex-wrap items-baseline gap-x-5 gap-y-2">{trailing}</span>
+        )}
       </div>
-      <span aria-live="polite" className="text-[0.84rem] leading-snug" style={{ color: 'var(--muted)' }}>
+      {/*
+        ONE SENTENCE, and it changes to confirm whichever button was pressed.
+        The page used to carry a second one underneath saying the link carries
+        every input and the data version — which is what this one says.
+      */}
+      <span aria-live="polite" className="text-[0.88rem] leading-snug" style={{ color: 'var(--muted)' }}>
         {copyStatus === 'copied'
-          ? 'Whoever opens it sees exactly these numbers — and the result shows up in the message itself.'
+          ? 'Whoever opens it sees exactly these numbers, and the result shows up in the message itself.'
           : saveStatus === 'saved'
-            ? 'The whole calculation as a picture: both salaries, both bottom lines and every line of the gap.'
-            : 'Link and image both carry the entire calculation and the data version. Nothing is stored.'}
+            ? 'The whole calculation as a picture — both salaries, both bottom lines and every line of the gap.'
+            : 'The link and the image both carry every input and the data version. Nothing is stored.'}
       </span>
     </div>
   );
