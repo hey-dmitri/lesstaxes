@@ -159,6 +159,12 @@ body {
 @keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
 /* The "Change anything" panel dropping out from under the context strip. */
 @keyframes drop { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: none; } }
+/*
+ * The answer screen's loading skeleton, and the button that sent you there.
+ * Opacity only — a shimmer that sweeps across the page draws more attention to
+ * itself than to the fact that something is on its way.
+ */
+@keyframes breathe { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
 @keyframes pop {
   0% { opacity: 0; transform: translateY(24px) scale(0.94); }
   60% { transform: translateY(0) scale(1.02); }

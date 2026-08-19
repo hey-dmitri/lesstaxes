@@ -391,6 +391,23 @@ too wide to draw in a box:
 | `/methodology` | How the calculation works: the formula, the order of operations, every assumption and known limitation |
 | `/data` | Searchable browser over every figure in the dataset — all 438 locations, their price parities, housing, vehicles and tax treatment, with the source and vintage of each |
 
+**The wait between the two screens, addressed 2026-08-19.** The answer screen is rendered on demand
+— its address carries the inputs, so there is nothing to prerender — and that round trip measured
+about 0.8s warm and about 3s on the first request after the server had been idle. Nothing was
+failing; the button simply did nothing visible for long enough that a stranger would press it
+again. Three things, in the order they take effect: the setup screen **prefetches** the answer 500ms
+after the two cities settle, so the page is usually already in hand before anybody clicks; the
+button enters a **pending state** through `useTransition`, for a click that lands before the
+prefetch finishes; and `app/r/[payload]/loading.tsx` paints a **skeleton in the shape of the
+answer** the instant navigation starts. None of them is a progress bar: the wait is a network round
+trip of unknown length and nothing on screen claims to know how far along it is.
+
+**The root cause is not fixed.** `engine/datasets.ts` statically imports all 29 shipped dataset
+releases, which is roughly 12MB of JSON parsed on every cold start of any function that touches the
+engine — and the same 12MB in the browser bundle. A link only ever needs the one release it is
+pinned to. Loading them lazily would make `datasetBundle()` async and ripple through every accessor
+in the engine, so it is recorded here rather than done in passing.
+
 **Abbreviated figures, added 2026-08-19.** Anything that is a summary is written short — "$10.9K",
 "$1.2M" — and anything that is a row of a table is written in full. The split is not cosmetic: the
 rows have to add up to the subtotal above them, and a reader checking that sum against rounded rows

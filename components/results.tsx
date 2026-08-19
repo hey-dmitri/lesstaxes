@@ -121,8 +121,8 @@ function Verdict({ result, animate }: { result: ComparisonResult; animate: boole
         style={{ animation: animate ? 'pop 700ms ease-out both' : undefined }}
       >
         <span
-          className="font-display text-[0.75rem] font-medium uppercase tracking-[0.2em]"
-          style={{ color: 'var(--muted)' }}
+          className="font-display text-[0.95rem] font-bold uppercase tracking-[0.18em]"
+          style={{ color: 'var(--muted-strong)' }}
         >
           The verdict
         </span>
@@ -158,7 +158,18 @@ function Verdict({ result, animate }: { result: ComparisonResult; animate: boole
           className="max-w-[46ch] text-[1.1rem] leading-snug xl:text-[1.2rem]"
           style={{ color: 'var(--ink)' }}
         >
-          Moving to {to} would leave you{tooClose ? ' within' : ''}
+          {/*
+            "This", not "Moving to Racine", WHERE THE HEADLINE HAS ALREADY SAID
+            IT. "Pack and move to Racine" followed by "Moving to Racine would
+            leave you" is the same four words twice in two lines.
+            
+            Only where the headline names the move, which is the pack case. On
+            a "Stay in Raleigh" verdict "this" would refer to staying, while the
+            figure underneath is what MOVING would do — the pronoun would point
+            at the wrong thing and reverse the sentence.
+          */}
+          {v.kind === 'pack' ? 'This' : `Moving to ${to}`} would leave you
+          {tooClose ? ' within' : ''}
           {figure(tooClose ? '' : better ? 'better off' : 'worse off')}
           {tooClose ? 'of where you are in ' : 'than staying in '}
           {from} &mdash;{' '}
@@ -180,10 +191,21 @@ function Verdict({ result, animate }: { result: ComparisonResult; animate: boole
           */}
           {whyClause(why)}
         </p>
-        {/* Never advice. The engine writes this line for the same reason. */}
-        <p className="text-[0.88rem]" style={{ color: 'var(--muted)' }}>
-          {v.qualifier}
-        </p>
+        {/*
+          "On money alone, the move comes out ahead" says nothing the headline
+          above it has not already said, so it is gone from the two decided
+          verdicts. It stays on "too close to call", where it is not a
+          disclaimer but the only explanation of the verdict: it names the
+          threshold the gap failed to clear, which is otherwise invisible and is
+          the first thing a reader who disagrees will want to check.
+
+          The "not advice" guard it used to carry is in the footer of every page.
+        */}
+        {tooClose && (
+          <p className="text-[0.92rem] leading-snug" style={{ color: 'var(--muted)' }}>
+            {v.qualifier}
+          </p>
+        )}
       </div>
 
       <div className="flex flex-col gap-2.5">
@@ -538,10 +560,13 @@ function Table({
   total,
   rows,
   totalKind,
+  rule = false,
 }: {
   heading: React.ReactNode;
   total: number;
   rows: Array<{ row: DifferenceRow; note?: React.ReactNode }>;
+  /** A dividing rule on the left, so the pair reads as one block split in two. */
+  rule?: boolean;
   /*
    * Only the total in the header uses this; each row works out its own from
    * its key. The pay table's total is 'mixed' because it adds a salary change
@@ -551,7 +576,10 @@ function Table({
 }) {
   const change = changeInWords(total, totalKind);
   return (
-    <div className="flex flex-col">
+    <div
+      className={`flex flex-col ${rule ? 'lg:border-l lg:pl-8' : ''}`}
+      style={rule ? { borderColor: 'var(--rule)' } : undefined}
+    >
       <div
         className="flex items-baseline justify-between gap-3 border-b pb-1.5"
         style={{ borderColor: 'var(--rule-strong)' }}
@@ -648,14 +676,40 @@ function Breakdown({ result }: { result: ComparisonResult }) {
   const livingTotal = livingRows.reduce((sum, r) => sum + r.delta, 0);
 
   return (
-    <div className="flex flex-col gap-4">
+    /*
+      ONE PANEL, NOT TWO TABLES.
+      
+      The two tables used to sit loose on the page, directly under the two city
+      cards — and a reader who did not stop to read the small heading took the
+      left table for Victoria's detail and the right one for Racine's. They are
+      nothing of the kind: BOTH are the move, measured one way round, and the
+      two of them add up to a single figure.
+      
+      So they are inside one bordered block with one heading across the top,
+      stated once and set large enough to be read before the rows are. Each
+      column keeps a short label with no city in it, which cannot be mistaken
+      for a card's title, and the rule between them says they are siblings.
+    */
+    <div
+      className="flex flex-col gap-4 rounded-xl border px-5 py-4 sm:px-6 sm:py-5"
+      style={{ borderColor: 'var(--rule-strong)', background: 'var(--surface-sunken)' }}
+    >
+      <div className="flex flex-col gap-1">
+        <h3
+          className="font-display text-[1.2rem] font-bold tracking-[-0.02em]"
+          style={{ color: 'var(--ink)' }}
+        >
+          Everything that changes if you move to {to}
+        </h3>
+        <p className="text-[0.92rem] leading-snug" style={{ color: 'var(--muted-strong)' }}>
+          Every line below is {to} measured against {from}, and every one of them is what the move
+          does to your pocket. The two columns added together are the figure at the top of the page.
+        </p>
+      </div>
+
       <div className="grid gap-x-8 gap-y-6 lg:grid-cols-2">
         <Table
-          heading={
-            <>
-              In {to} &middot; your pay and the tax on it
-            </>
-          }
+          heading={<>Your pay and the tax on it</>}
           total={payTotal}
           totalKind="mixed"
           rows={[
@@ -679,7 +733,8 @@ function Breakdown({ result }: { result: ComparisonResult }) {
           ]}
         />
         <Table
-          heading={<>In {to} &middot; what the household spends</>}
+          heading={<>What the household spends</>}
+          rule
           total={livingTotal}
           totalKind="cost"
           rows={livingRows.map((row) => ({
@@ -701,8 +756,8 @@ function Breakdown({ result }: { result: ComparisonResult }) {
         className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 border-t pt-3"
         style={{ borderColor: 'var(--rule-strong)' }}
       >
-        <span className="font-display text-[1.05rem] font-bold" style={{ color: 'var(--ink)' }}>
-          In your pocket, the difference
+        <span className="font-display text-[1.1rem] font-bold" style={{ color: 'var(--ink)' }}>
+          Both columns added together
         </span>
         <div className="flex items-baseline gap-5">
           <span className="tnum text-[0.95rem] font-semibold" style={{ color: 'var(--ink-soft)' }}>
@@ -716,10 +771,6 @@ function Breakdown({ result }: { result: ComparisonResult }) {
           </span>
         </div>
       </div>
-      <p className="text-[0.84rem] leading-snug" style={{ color: 'var(--muted)' }}>
-        Both tables are {to} against {from}, and every line is what the move does to your pocket.
-        Add the two totals together and you get the figure at the top.
-      </p>
     </div>
   );
 }

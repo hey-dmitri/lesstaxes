@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 
 import { CityCard } from '@/components/city-panel';
@@ -128,9 +128,38 @@ export function Setup() {
 
   const ready = bothChosen && !sameCity && share.path !== '';
 
+  /*
+   * THE ANSWER IS FETCHED BEFORE IT IS ASKED FOR.
+   *
+   * The answer screen is rendered on demand — its address carries the inputs,
+   * so there is nothing to prerender — and that round trip took the better part
+   * of a second warm and about three seconds on the first request after the
+   * server had been idle. Nothing was broken. The button simply did nothing
+   * visible for long enough that a stranger would press it again.
+   *
+   * Most of that wait is spent while the reader is still looking at the two
+   * cities, so it is spent for free: the moment the comparison is complete this
+   * asks for the page, and by the time anybody clicks it is usually already
+   * there. Debounced, because the address changes on every keystroke of a
+   * salary and prefetching each one would be a request per character.
+   */
+  useEffect(() => {
+    if (!ready) return;
+    const timer = window.setTimeout(() => router.prefetch(share.path), 500);
+    return () => window.clearTimeout(timer);
+  }, [ready, share.path, router]);
+
+  /*
+   * isPending covers the gap the prefetch does not: a cold server, a slow
+   * connection, or a click that lands before the prefetch finishes. Wrapping
+   * the push in a transition is what makes that gap observable at all — React
+   * holds the flag up until the new route has what it needs.
+   */
+  const [navigating, startNavigating] = useTransition();
+
   function onSubmit(event: React.FormEvent) {
     event.preventDefault();
-    if (ready) router.push(share.path);
+    if (ready) startNavigating(() => router.push(share.path));
   }
 
   return (
@@ -258,11 +287,25 @@ export function Setup() {
           <div className="flex flex-wrap items-center gap-x-5 gap-y-3">
             <button
               type="submit"
-              className="rounded-xl px-7 py-3.5 font-display text-[1.15rem] font-bold disabled:opacity-45"
+              className="inline-flex items-center gap-2.5 rounded-xl px-7 py-3.5 font-display text-[1.15rem] font-bold disabled:opacity-45"
               style={{ background: 'var(--accent)', color: '#ffffff' }}
-              disabled={!ready}
+              disabled={!ready || navigating}
+              aria-busy={navigating}
             >
-              {ACTION} <span aria-hidden="true">→</span>
+              {navigating ? (
+                <>
+                  <span
+                    aria-hidden="true"
+                    className="inline-block h-3 w-3 rounded-full"
+                    style={{ background: '#ffffff', animation: 'breathe 1.2s ease-in-out infinite' }}
+                  />
+                  Working it out&hellip;
+                </>
+              ) : (
+                <>
+                  {ACTION} <span aria-hidden="true">→</span>
+                </>
+              )}
             </button>
             <span className="max-w-[42ch] text-[0.92rem]" style={{ color: 'var(--muted)' }}>
               {bothChosen
