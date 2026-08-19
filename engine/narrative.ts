@@ -267,32 +267,68 @@ export function whyNarrative(result: ComparisonResult): WhyNarrative {
   };
 }
 
-/** The clause that follows "<city> is $X cheaper/pricier a year to live in". */
-export function whyClause(why: WhyNarrative): string {
-  if (!why.salaryChanged) return ' at the same salary.';
+/**
+ * The clause that follows "<city> is $X cheaper/pricier a year to live in",
+ * split at the figure so a caller with rich text can emphasise it.
+ *
+ * The sentence carries two quantities of the same kind — what the city does and
+ * what the pay does — and only the first was set in bold. They are the two
+ * halves of the same comparison and one of them was whispered.
+ *
+ * `amount` is null when the pay did not change, in which case there is no
+ * second figure and `before` is the whole clause.
+ */
+export interface WhyClause {
+  before: string;
+  amount: string | null;
+  /** True when the pay change is good news, which decides how it is coloured. */
+  amountIsGood: boolean;
+  after: string;
+}
+
+export function whyClauseParts(why: WhyNarrative): WhyClause {
+  const plain = (before: string) => ({
+    before,
+    amount: null,
+    amountIsGood: why.paidMore,
+    after: '',
+  });
+  if (!why.salaryChanged) return plain(' at the same salary.');
 
   // Abbreviated, because this clause finishes a sentence that opens with an
   // abbreviated figure — "$5,317 cheaper ... but the pay cut costs $12,152"
   // wrote the same kind of quantity two different ways inside one sentence.
   const amount = formatUSDShort(why.salaryAmount);
   const change = why.paidMore ? 'pay rise' : 'pay cut';
+  const split = (before: string, after: string) => ({
+    before,
+    amount,
+    amountIsGood: why.paidMore,
+    after,
+  });
 
   // Compounding: both forces push the same way, so nothing is being offset.
   if (!why.opposed) {
     return why.paidMore
-      ? `, and the ${change} adds another ${amount} on top.`
-      : `, and the ${change} costs another ${amount} on top.`;
+      ? split(`, and the ${change} adds another `, ' on top.')
+      : split(`, and the ${change} costs another `, ' on top.');
   }
 
   // Opposed: one force partly or wholly cancels the other.
   if (why.salaryWins) {
     return why.paidMore
-      ? `, but the ${change} is worth ${amount} — more than enough to cover it.`
-      : `, but the ${change} costs ${amount} — more than the saving.`;
+      ? split(`, but the ${change} is worth `, ' — more than enough to cover it.')
+      : split(`, but the ${change} costs `, ' — more than the saving.');
   }
   return why.paidMore
-    ? `, but the ${change} is only worth ${amount} — not enough to cover it.`
-    : `, but the ${change} costs ${amount} — not enough to wipe out the saving.`;
+    ? split(`, but the ${change} is only worth `, ' — not enough to cover it.')
+    : split(`, but the ${change} costs `, ' — not enough to wipe out the saving.');
+}
+
+/** The same clause as one string, for surfaces that cannot render rich text. */
+export function whyClause(why: WhyNarrative): string {
+  const parts = whyClauseParts(why);
+  return `${parts.before}${parts.amount ?? ''}${parts.after}`;
 }
 
 /** The complete sentence, for surfaces that cannot render rich text. */

@@ -82,6 +82,7 @@ export {
   percentIsMeaningful,
   shortfalls,
   whyClause,
+  whyClauseParts,
   whyNarrative,
   whySentence,
   verdict,
@@ -91,6 +92,7 @@ export {
   type ChangeInWords,
   type Shortfall,
   type Verdict,
+  type WhyClause,
   type WhyNarrative,
 } from './narrative';
 

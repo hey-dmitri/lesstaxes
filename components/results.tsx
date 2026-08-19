@@ -18,7 +18,7 @@ import {
   percentIsMeaningful,
   utilitiesAreSplitOut,
   verdict,
-  whyClause,
+  whyClauseParts,
   whyNarrative,
   type CityResult,
   type ComparisonResult,
@@ -89,6 +89,7 @@ function Verdict({ result, animate }: { result: ComparisonResult; animate: boole
   const from = cityName(result.origin.metroId, result.datasetVersion);
   const to = cityName(result.destination.metroId, result.datasetVersion);
   const why = whyNarrative(result);
+  const whyParts = whyClauseParts(why);
   const breakEven = breakEvenNarrative(result);
   const reason = biggestReason(result);
 
@@ -187,7 +188,19 @@ function Verdict({ result, animate }: { result: ComparisonResult; animate: boole
             into a pricier city "does not outweigh" the expense told the reader
             the two partly cancelled, when in fact they add up.
           */}
-          {whyClause(why)}
+          {/*
+            The second figure, set like the first. Both are the same kind of
+            quantity — what the city does and what the pay does — and they are
+            the two halves of the same comparison, so one of them being plain
+            text made the sentence read as one fact with an aside after it.
+          */}
+          {whyParts.before}
+          {whyParts.amount && (
+            <strong style={{ color: whyParts.amountIsGood ? 'var(--good)' : 'var(--bad)' }}>
+              <span className="tnum">{whyParts.amount}</span>
+            </strong>
+          )}
+          {whyParts.after}
         </p>
         {/*
           "On money alone, the move comes out ahead" says nothing the headline
@@ -390,27 +403,47 @@ function CitySummaries({ result }: { result: ComparisonResult }) {
               "take-home after tax", which only makes sense if this one is the
               pay before any.
             */}
+            {/*
+              ONE SIZE FOR THE THREE STEPS, and one for the answer.
+              
+              They were 1.05rem, 1.2rem and 1.05rem — three sizes for three
+              figures that are a single subtraction, which made take-home look
+              like a conclusion rather than a step on the way to one. Colour
+              still separates them: grey where the money starts, ink for what
+              reaches you, coral for what leaves, accent for what survives.
+            */}
             <div className="flex items-baseline justify-between gap-3">
-              <span className="text-[0.88rem]" style={{ color: 'var(--muted-strong)' }}>
+              <span className={CARD_LABEL} style={{ color: 'var(--muted-strong)' }}>
                 Salary, before tax
               </span>
-              <span className="tnum text-[1.05rem] font-semibold" style={{ color: 'var(--muted-strong)' }}>
+              <span className={CARD_FIGURE} style={{ color: 'var(--muted-strong)' }}>
                 {money(city.grossSalary)}
               </span>
             </div>
             <div className="flex items-baseline justify-between gap-3">
-              <span className="text-[0.88rem]" style={{ color: 'var(--muted-strong)' }}>
+              <span className={CARD_LABEL} style={{ color: 'var(--muted-strong)' }}>
                 Take-home after tax
               </span>
-              <span className="tnum text-[1.2rem] font-semibold" style={{ color: 'var(--ink)' }}>
+              <span className={CARD_FIGURE} style={{ color: 'var(--ink)' }}>
                 {money(city.takeHome)}
               </span>
             </div>
             <div className="flex items-baseline justify-between gap-3">
-              <span className="text-[0.88rem]" style={{ color: 'var(--muted-strong)' }}>
+              <span className={`flex items-baseline gap-1.5 ${CARD_LABEL}`} style={{ color: 'var(--muted-strong)' }}>
                 Typical living costs
+                {/*
+                  What "typical" means, on the label it qualifies. It was a grey
+                  line under both cards saying the same thing about each — out
+                  in the layout, away from the word it explains.
+                */}
+                <InfoDot label="What is in typical living costs?">
+                  Your housing, which you typed, plus what a household your size usually spends in
+                  this city &mdash; rent or mortgage, property tax, cars, food, utilities and
+                  healthcare. It is not your own budget: somebody who cooks at home and cycles will
+                  beat it. Change any of it behind &ldquo;Change anything&rdquo;.
+                </InfoDot>
               </span>
-              <span className="tnum text-[1.05rem] font-semibold" style={{ color: 'var(--bad)' }}>
+              <span className={CARD_FIGURE} style={{ color: 'var(--bad)' }}>
                 &minus;{money(living)}
               </span>
             </div>
@@ -418,7 +451,7 @@ function CitySummaries({ result }: { result: ComparisonResult }) {
               className="flex items-baseline justify-between gap-3 border-t pt-2.5"
               style={{ borderColor: highlight ? 'var(--picked-rule)' : 'var(--rule)' }}
             >
-              <span className="text-[0.92rem] font-semibold" style={{ color: 'var(--ink)' }}>
+              <span className={`${CARD_LABEL} font-semibold`} style={{ color: 'var(--ink)' }}>
                 What&rsquo;s left over, a year
               </span>
               <span
@@ -450,18 +483,6 @@ function CitySummaries({ result }: { result: ComparisonResult }) {
           </div>
         );
       })}
-      {/*
-        Said once, under both, because it was the same sentence twice — two
-        identical grey lines side by side, which reads as a caption on each card
-        rather than as the one caveat it is.
-      */}
-      <p
-        className="text-[0.84rem] leading-snug sm:col-span-2"
-        style={{ color: 'var(--faint)' }}
-      >
-        Both columns are your housing, plus what a household your size usually spends in that city.
-        Not your own budget &mdash; change any of it behind &ldquo;Change anything&rdquo;.
-      </p>
     </div>
   );
 }
@@ -536,6 +557,10 @@ function Disclosure({
 }
 
 const ROW = 'grid grid-cols-[1.4rem_minmax(0,1fr)_4rem_6.5rem] items-baseline gap-2.5';
+
+/** One label size and one figure size for every step of a city's subtraction. */
+const CARD_LABEL = 'text-[0.92rem]';
+const CARD_FIGURE = 'tnum text-[1.15rem] font-semibold';
 
 /**
  * One cell: "$4,055 less", "$1,200 more", or "the same".
@@ -617,13 +642,21 @@ function Table({
       className={`flex flex-col ${rule ? 'lg:border-l lg:pl-8' : ''}`}
       style={rule ? { borderColor: 'var(--rule)' } : undefined}
     >
+      {/*
+        A heading and a total, not a pair of captions. These were 12px
+        uppercase, the same treatment as a field label, over the two columns
+        that are the whole point of the panel — and the totals beside them are
+        the two figures that add up to the answer.
+      */}
       <div
-        className="flex items-baseline justify-between gap-3 border-b pb-1.5"
+        className="flex items-baseline justify-between gap-3 border-b pb-2"
         style={{ borderColor: 'var(--rule-strong)' }}
       >
-        <span className="eyebrow">{heading}</span>
+        <span className="font-display text-[1rem] font-semibold" style={{ color: 'var(--ink)' }}>
+          {heading}
+        </span>
         <span
-          className="tnum text-[0.88rem] font-semibold"
+          className="tnum text-[1.05rem] font-bold"
           style={{
             color: change.unchanged ? 'var(--muted)' : change.better ? 'var(--good)' : 'var(--bad)',
           }}

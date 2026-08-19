@@ -451,18 +451,6 @@ function ChosenCity({
   const m = metro(state.metroId);
   const stateCode = resolveStateCode(state.metroId, state.stateCode);
 
-  const change = (
-    <button
-      type="button"
-      onClick={onPick}
-      aria-expanded={picking}
-      className="shrink-0 border-b border-dashed text-[0.82rem]"
-      style={{ borderColor: 'var(--rule-input)', color: 'var(--muted)' }}
-    >
-      {picking ? 'done' : 'change'}
-    </button>
-  );
-
   return (
     <div className="flex min-w-0 flex-col gap-1.5">
       {/*
@@ -472,17 +460,33 @@ function ChosenCity({
         compact row keeps its label, where the box is small enough to be
         mistaken for anything.
       */}
-      {size === 'small' && (
-        <div className="flex items-baseline gap-2">
-          <span className="eyebrow">City</span>
-          <span className="ml-auto">{change}</span>
-        </div>
-      )}
-      <div
-        className={`flex items-center gap-2 rounded-[0.6rem] border ${
+      {size === 'small' && <span className="eyebrow">City</span>}
+      {/*
+        THE WHOLE BOX OPENS THE LIST.
+        
+        It was a word: "change", set in 13px grey at the right-hand end. Beside
+        it sat a hundred-odd points of city name in a bordered box that looks
+        exactly like every other field on the screen, and every other field on
+        the screen does something when you click it. So people clicked the city
+        and nothing happened, and the one thing that worked was the smallest
+        thing in the row.
+        
+        A button rather than a div with a handler, so it is reachable by keyboard
+        and announces its own expanded state. "change" stays as a span inside it
+        — a button cannot contain a button, and it was never the control, only
+        the sign that there was one.
+      */}
+      <button
+        type="button"
+        onClick={onPick}
+        aria-expanded={picking}
+        className={`flex w-full items-center gap-2 rounded-[0.6rem] border text-left ${
           size === 'large' ? 'px-3.5 py-3' : 'px-3 py-2'
         }`}
-        style={{ background: 'var(--ground)', borderColor: 'var(--rule-input)' }}
+        style={{
+          background: 'var(--ground)',
+          borderColor: picking ? 'var(--accent)' : 'var(--rule-input)',
+        }}
       >
         <PinIcon />
         <span
@@ -502,8 +506,17 @@ function ChosenCity({
             {stateCode}
           </span>
         </span>
-        {size === 'large' && <span className="ml-auto">{change}</span>}
-      </div>
+        <span
+          aria-hidden="true"
+          className="ml-auto shrink-0 border-b border-dashed text-[0.82rem]"
+          style={{
+            borderColor: picking ? 'var(--accent)' : 'var(--rule-input)',
+            color: picking ? 'var(--accent)' : 'var(--muted)',
+          }}
+        >
+          {picking ? 'done' : 'change'}
+        </span>
+      </button>
       {size === 'large' && (
         <span className="truncate text-[0.84rem]" style={{ color: 'var(--faint)' }}>
           {m.name}
