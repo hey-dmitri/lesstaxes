@@ -376,11 +376,30 @@ function CitySummaries({ result }: { result: ComparisonResult }) {
               >
                 {cityName(city.metroId, result.datasetVersion)}
               </h3>
-              <span className="tnum text-[0.88rem]" style={{ color: 'var(--muted)' }}>
+            </div>
+
+            {/*
+              THE SALARY JOINS THE COLUMN IT BELONGS TO.
+              
+              It was tucked in beside the city name, left-aligned, while the
+              three figures it leads to were stacked in a right-hand column
+              underneath — so the one number that starts the sum was the only one
+              outside it. The card is a subtraction and now reads as one: pay in,
+              tax out, costs out, what survives, four figures down a single edge.
+              
+              It picks up a label on the way. A bare figure beside a place name
+              could be anything the city costs; the row beneath it says
+              "take-home after tax", which only makes sense if this one is the
+              pay before any.
+            */}
+            <div className="flex items-baseline justify-between gap-3">
+              <span className="text-[0.88rem]" style={{ color: 'var(--muted-strong)' }}>
+                Salary, before tax
+              </span>
+              <span className="tnum text-[1.05rem] font-semibold" style={{ color: 'var(--muted-strong)' }}>
                 {money(city.grossSalary)}
               </span>
             </div>
-
             <div className="flex items-baseline justify-between gap-3">
               <span className="text-[0.88rem]" style={{ color: 'var(--muted-strong)' }}>
                 Take-home after tax
